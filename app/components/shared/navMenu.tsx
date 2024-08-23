@@ -35,16 +35,11 @@ import { Button, buttonVariants } from "~/components/ui/button"
 
 export const mainNav = [
 
+
   {
-    title: "Custom Features",
-    to: "/customFeatures",
-    description:
-      "Do you need something that is not available? We can help.",
-  },
-  {
-    title: "CRM",
-    to: "/crm",
-    description: "Beta version now available, at a discounted price.",
+    title: "The Why",
+    to: "/why",
+    description: "As an owner/manager, what can you do that would have the most impact on your team?",
   },
   {
     title: "Roadmap",
@@ -59,10 +54,10 @@ export const mainNav = [
       "Your privacy held up to the highest standards.",
   },
   {
-    title: "The Difference",
-    to: "/demo/dashboard",
+    title: "Custom Features",
+    to: "/customFeatures",
     description:
-      "What makes us different and better than any other crm.",
+      "Do you need something that is not available? We can help.",
   },
 
   {

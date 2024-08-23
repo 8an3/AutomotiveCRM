@@ -36,6 +36,7 @@ export async function GetUser(email) {
       role: { select: { symbol: true, name: true } },
       customerSync: { select: { orderId: true, updatedAt: true } },
       ColumnStateInventory: { select: { id: true, state: true } },
+      //   ColumnStateClient: { select: { id: true, state: true } },
       columnStateSales: { select: { id: true, state: true } }
     },
   });

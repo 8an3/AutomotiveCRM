@@ -1,13 +1,19 @@
 import React, { HTMLAttributes, HTMLProps, useState, useEffect, Suspense, useRef, } from 'react'
 import { Await, Form, Link, useActionData, useFetcher, useLoaderData, useLocation, useNavigation, useSubmit } from '@remix-run/react'
-import { Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup, } from "~/components/ui/index";
+import {
+    Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup, Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "~/components/ui/index";
 import { CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons"
 import { getExpandedRowModel, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, getFacetedRowModel, getFacetedUniqueValues, getFacetedMinMaxValues, sortingFns } from "@tanstack/react-table";
-import type {
-    Table, Column, SortingFn, ColumnDef, ColumnFiltersState, SortingState, VisibilityState, FilterFn, ExpandedState, FilterFns,
-} from "@tanstack/react-table";
+import { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState, } from "@tanstack/react-table"
 import { toast } from "sonner"
-import { Table as Table2, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
 import { type LinksFunction, type DataFunctionArgs, json } from '@remix-run/node';
 import { type RankingInfo, rankItem, compareItems, } from '@tanstack/match-sorter-utils'
 import { DataTable } from "~/components/data-table"
@@ -30,7 +36,6 @@ import WishList from '~/components/dashboard/wishlist/wishList'
 import secondary from "~/styles/secondary.css";
 import DemoDay from '~/components/dashboard/demoDay/demoDay';
 import useSWR, { SWRConfig, mutate, useSWRConfig } from 'swr';
-import Spinner from '~/components/shared/spinner';
 import {
     Card,
     CardContent,
@@ -52,12 +57,14 @@ import {
     DropdownMenuSeparator,
     DropdownMenuShortcut,
     DropdownMenuSub,
+    DropdownMenuCheckboxItem,
+
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
 import WebLeads from '~/components/dashboard/demoDay/webLeads';
-import { Mail, MessageSquare } from 'lucide-react';
+import { CalendarCheck, Mail, MessageSquare, UserPlus, X } from 'lucide-react';
 import { Message, Conversation, Participant, Client, ConnectionState, Paginator, } from "@twilio/conversations";
 import emitter from '~/routes/__authorized/dealer/emitter';
 import {
@@ -75,6 +82,8 @@ import axios from 'axios';
 import PresetFollowUpDay from '~/components/dashboard/calls/presetFollowUpDay';
 import { prisma } from '~/libs';
 import IndeterminateCheckbox, { fuzzyFilter, fuzzySort, login, getToken, invariant, Loading, checkForMobileDevice, TableMeta, Filter, DebouncedInput, defaultColumn } from '~/components/actions/shared'
+import { DataTablePagination } from "~/components/dashboard/calls/pagination";
+import { TextFunction } from '~/components/dashboard/calls/massSms';
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: secondary },
@@ -87,7 +96,7 @@ export let loader = dashboardLoader
 export let action = dashboardAction
 
 export default function Mainboard() {
-    const { finance, searchData, user, getTemplates, callToken, conversationsData, convoList, newToken, email } = useLoaderData();
+    const { user, } = useLoaderData();
 
     const location = useLocation()
     const pathname = location.pathname
@@ -397,7 +406,7 @@ export function MainDashbaord({ user }) {
         return string[0].toUpperCase() + string.slice(1);
     }
 
-    const columns: ColumnDef<Payment>[] = [
+    const columns = [
         {
             id: 'select',
             header: ({ table }) => (
@@ -422,7 +431,7 @@ export function MainDashbaord({ user }) {
             ),
         },
         {
-            id:'firstName',
+            id: 'firstName',
             accessorKey: "firstName",
             filterFn: 'fuzzy',
             sortingFn: fuzzySort,
@@ -441,7 +450,7 @@ export function MainDashbaord({ user }) {
 
         },
         {
-            id:'lastName',
+            id: 'lastName',
             accessorKey: "lastName",
             filterFn: 'fuzzy',
             sortingFn: fuzzySort,
@@ -457,7 +466,7 @@ export function MainDashbaord({ user }) {
 
         },
         {
-            id:'status',
+            id: 'status',
             accessorKey: "status",
             filterFn: 'equalsString',
             header: ({ column }) => {
@@ -473,7 +482,7 @@ export function MainDashbaord({ user }) {
             },
         },
         {
-            id:'nextAppointment',
+            id: 'nextAppointment',
             accessorKey: "nextAppointment",
             filterFn: 'equalsString',
             header: ({ column }) => (
@@ -487,7 +496,7 @@ export function MainDashbaord({ user }) {
             },
         },
         {
-            id:'customerState',
+            id: 'customerState',
             accessorKey: "customerState",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="State" />
@@ -516,7 +525,7 @@ export function MainDashbaord({ user }) {
             },
         },
         {
-            id:'contact',
+            id: 'contact',
             accessorKey: "contact",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Contact" />
@@ -578,7 +587,7 @@ export function MainDashbaord({ user }) {
             },
         },
         {
-            id:'model',
+            id: 'model',
             accessorKey: "model",
             filterFn: 'fuzzy',
             sortingFn: fuzzySort,
@@ -593,7 +602,7 @@ export function MainDashbaord({ user }) {
             },
         },
         {
-            id:'tradeDesc',
+            id: 'tradeDesc',
             accessorKey: "tradeDesc",
             filterFn: 'fuzzy',
             sortingFn: fuzzySort,
@@ -606,7 +615,7 @@ export function MainDashbaord({ user }) {
 
         },
         {
-            id:'twoDaysFromNow',
+            id: 'twoDaysFromNow',
             accessorKey: "twoDaysFromNow",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Set New Apt." />
@@ -624,7 +633,7 @@ export function MainDashbaord({ user }) {
             },
         },
         {
-            id:'completeCall',
+            id: 'completeCall',
             accessorKey: "completeCall",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Complete Call" />
@@ -642,7 +651,7 @@ export function MainDashbaord({ user }) {
             },
         },
         {
-            id:'contactTimesByType',
+            id: 'contactTimesByType',
             accessorKey: "contactTimesByType",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Contact Times By Type" />
@@ -658,7 +667,7 @@ export function MainDashbaord({ user }) {
             },
         },
         {
-            id:'pickUpDate',
+            id: 'pickUpDate',
             accessorKey: "pickUpDate",
             enableGlobalFilter: true,
             header: ({ column }) => (
@@ -678,7 +687,7 @@ export function MainDashbaord({ user }) {
             },
         },
         {
-            id:'lastContact',
+            id: 'lastContact',
             accessorKey: "lastContact",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Last Contacted" className="bg-transparent text-foreground mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary" />
@@ -707,7 +716,7 @@ export function MainDashbaord({ user }) {
 
         },
         {
-            id:'unitPicker',
+            id: 'unitPicker',
             accessorKey: "unitPicker",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Turnover" />
@@ -770,7 +779,7 @@ export function MainDashbaord({ user }) {
 
         },
         {
-                        id:'email',
+            id: 'email',
             accessorKey: "email",
             enableGlobalFilter: true,
             header: ({ column }) => (
@@ -782,7 +791,7 @@ export function MainDashbaord({ user }) {
 
         },
         {
-                        id:'phone',
+            id: 'phone',
             accessorKey: "phone",
             enableGlobalFilter: true,
             header: ({ column }) => (
@@ -793,7 +802,7 @@ export function MainDashbaord({ user }) {
 
         },
         {
-                        id:'address',
+            id: 'address',
             accessorKey: "address",
             enableGlobalFilter: true,
             header: ({ column }) => (
@@ -804,7 +813,7 @@ export function MainDashbaord({ user }) {
 
         },
         {
-                        id:'postal',
+            id: 'postal',
             accessorKey: "postal",
             header: ({ column }) => (
                 <p className="text-center">postal</p>
@@ -819,7 +828,7 @@ export function MainDashbaord({ user }) {
 
         },
         {
-                        id:'city',
+            id: 'city',
             accessorKey: "city",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="city" />
@@ -834,7 +843,7 @@ export function MainDashbaord({ user }) {
 
         },
         {
-                        id:'province',
+            id: 'province',
             accessorKey: "province",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="province" />
@@ -849,7 +858,7 @@ export function MainDashbaord({ user }) {
 
         },
         {
-                        id:'financeId',
+            id: 'financeId',
             accessorKey: "financeId",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="financeId" />
@@ -859,7 +868,7 @@ export function MainDashbaord({ user }) {
 
         },
         {
-            id:'userEmail',
+            id: 'userEmail',
             accessorKey: "userEmail",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="userEmail" />
@@ -875,7 +884,7 @@ export function MainDashbaord({ user }) {
 
         },
         {
-            id:'pickUpTime',
+            id: 'pickUpTime',
             accessorKey: "pickUpTime",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Pick Up Time" />
@@ -889,62 +898,62 @@ export function MainDashbaord({ user }) {
         },
 
         {
-            id:'timeToContact',
+            id: 'timeToContact',
             accessorKey: "timeToContact",
             header: "model1",
         },
         {
-            id:'deliveredDate',
+            id: 'deliveredDate',
             accessorKey: "deliveredDate",
             header: "deliveredDate",
         },
         {
-            id:'timeOfDay',
+            id: 'timeOfDay',
             accessorKey: "timeOfDay",
             header: "timeOfDay",
         },
         {
-            id:'msrp',
+            id: 'msrp',
             accessorKey: "msrp",
             header: "msrp",
         },
         {
-            id:'freight',
+            id: 'freight',
             accessorKey: "freight",
             header: "freight",
         },
         {
-            id:'pdi',
+            id: 'pdi',
             accessorKey: "pdi",
             header: "pdi",
         },
         {
-            id:'admin',
+            id: 'admin',
             accessorKey: "admin",
             header: "admin",
         },
         {
-            id:'commodity',
+            id: 'commodity',
             accessorKey: "commodity",
             header: "commodity",
         },
         {
-            id:'accessories',
+            id: 'accessories',
             accessorKey: "accessories",
             header: "accessories",
         },
         {
-            id:'labour',
+            id: 'labour',
             accessorKey: "labour",
             header: "labour",
         },
         {
-            id:'painPrem',
+            id: 'painPrem',
             accessorKey: "painPrem",
             header: "painPrem",
         },
         {
-            id:'licensing',
+            id: 'licensing',
             accessorKey: "licensing",
             header: "licensing",
         },
@@ -1070,110 +1079,110 @@ export function MainDashbaord({ user }) {
             header: "visited",
         },
         {
-            id:'aptShowed',
+            id: 'aptShowed',
             accessorKey: "aptShowed",
             header: "aptShowed",
         },
         {
-            id:'bookedApt',
+            id: 'bookedApt',
             accessorKey: "bookedApt",
             header: "bookedApt",
         },
         {
-            id:'aptNoShowed',
+            id: 'aptNoShowed',
             accessorKey: "aptNoShowed",
             header: "aptNoShowed",
         },
         {
-            id:'testDrive',
+            id: 'testDrive',
             accessorKey: "testDrive",
             header: "testDrive",
         },
         {
-            id:'metParts',
+            id: 'metParts',
             accessorKey: "metParts",
             header: "metParts",
         },
         {
-            id:'sold',
+            id: 'sold',
             accessorKey: "sold",
             header: "sold",
         },
 
         {
-            id:'refund',
+            id: 'refund',
             accessorKey: "refund",
             header: "refund",
         },
         {
-            id:'turnOver',
+            id: 'turnOver',
             accessorKey: "turnOver",
             header: "turnOver",
         },
         {
-            id:'financeApp',
+            id: 'financeApp',
             accessorKey: "financeApp",
             header: "financeApp",
         },
         {
-            id:'approved',
+            id: 'approved',
             accessorKey: "approved",
             header: "approved",
         },
         {
-            id:'signed',
+            id: 'signed',
             accessorKey: "signed",
             header: "signed",
         },
 
         {
-            id:'pickUpSet',
+            id: 'pickUpSet',
             accessorKey: "pickUpSet",
             header: "pickUpSet",
         },
         {
-            id:'demoed',
+            id: 'demoed',
             accessorKey: "demoed",
             header: "demoed",
         },
 
         {
-            id:'tradeMake',
+            id: 'tradeMake',
             accessorKey: "tradeMake",
             header: "tradeMake",
         },
         {
-            id:'tradeYear',
+            id: 'tradeYear',
             accessorKey: "tradeYear",
             header: "tradeYear",
         },
         {
-            id:'tradeTrim',
+            id: 'tradeTrim',
             accessorKey: "tradeTrim",
             header: "tradeTrim",
         },
         {
-            id:'tradeColor',
+            id: 'tradeColor',
             accessorKey: "tradeColor",
             header: "tradeColor",
         },
         {
-            id:'tradeVin',
+            id: 'tradeVin',
             accessorKey: "tradeVin",
             header: "tradeVin",
         },
         {
-            id:'delivered',
+            id: 'delivered',
             accessorKey: "delivered",
             header: "delivered",
         },
         {
-            id:'desiredPayments',
+            id: 'desiredPayments',
             accessorKey: "desiredPayments",
             header: "desiredPayments",
         },
         {
-            id:'result',
+            id: 'result',
             accessorKey: "result",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Result" />
@@ -1351,17 +1360,17 @@ export function MainDashbaord({ user }) {
             header: "total",
         },
         {
-            id:'typeOfContact',
+            id: 'typeOfContact',
             accessorKey: "typeOfContact",
             header: "typeOfContact",
         },
         {
-            id:'contactMethod',
+            id: 'contactMethod',
             accessorKey: "contactMethod",
             header: "contactMethod",
         },
         {
-            id:'note',
+            id: 'note',
             accessorKey: "note",
             header: "note",
         },
@@ -1369,7 +1378,7 @@ export function MainDashbaord({ user }) {
 
 
     ]
-    const smColumns: ColumnDef<Payment>[] = [
+    const smColumns = [
         {
             accessorKey: "firstName",
             header: ({ column }) => {
@@ -2256,19 +2265,1407 @@ export function MainDashbaord({ user }) {
         setOpenResponse(false)
         return json({ update })
     };
+    /// -=--=-=-=-=-=-=-=-==-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-DATA TABLE-=--=-=-=-=-=-=-=-==-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-
 
+
+
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+        dl: false,
+        id: false,
+        pdi: false,
+        city: false,
+        msrp: false,
+        note: false,
+        on60: false,
+        qc60: false,
+        sold: false,
+        vinE: false,
+        admin: false,
+        color: false,
+        email: false,
+        iRate: false,
+        nat60: false,
+        onTax: false,
+        oth60: false,
+        phone: false,
+        qcTax: false,
+        total: false,
+        demoed: false,
+        labour: false,
+        model1: false,
+        months: false,
+        postal: false,
+        refund: false,
+        result: false,
+        signed: false,
+        visits: false,
+        weekly: false,
+        address: false,
+        deposit: false,
+        freight: false,
+        trailer: false,
+        userGap: false,
+        visited: false,
+        approved: false,
+        biweekly: false,
+        discount: false,
+        lastNote: false,
+        metParts: false,
+        otherTax: false,
+        painPrem: false,
+        progress: false,
+        province: false,
+        referral: false,
+        stockNum: false,
+        tradeVin: false,
+        turnOver: false,
+        turnover: false,
+        weeklyqc: false,
+        aptShowed: false,
+        biweekOth: false,
+        bookedApt: false,
+        commodity: false,
+        delivered: false,
+        financeId: false,
+        licensing: false,
+        modelCode: false,
+        paintPrem: false,
+        pickUpSet: false,
+        seenTrade: false,
+        testDrive: false,
+        timeOfDay: false,
+        tradeMake: false,
+        tradeTrim: false,
+        tradeYear: false,
+        userEmail: false,
+        userOther: false,
+        weeklyOth: false,
+        biweeklNat: false,
+        biweeklyqc: false,
+        docsSigned: false,
+        financeApp: false,
+        metFinance: false,
+        metManager: false,
+        metService: false,
+        pickUpTime: false,
+        tradeColor: false,
+        tradeValue: false,
+        unitPicker: false,
+        weeklylNat: false,
+        accessories: false,
+        aptNoShowed: false,
+        depositMade: false,
+        discountPer: false,
+        followUpDay: false,
+        userExtWarr: false,
+        clientfileId: false,
+        rustProofing: false,
+        tradeRepairs: false,
+        userLoanProt: false,
+        contactMethod: false,
+        deliveredDate: false,
+        nat60WOptions: false,
+        oth60WOptions: false,
+        singleFinNote: false,
+        timeToContact: false,
+        typeOfContact: false,
+        deliveryCharge: false,
+        documentUpload: false,
+        lifeDisability: false,
+        metSalesperson: false,
+        timesContacted: false,
+        userTireandRim: false,
+        desiredPayments: false,
+        userServicespkg: false,
+        totalWithOptions: false,
+        biweekOthWOptions: false,
+        weeklyOthWOptions: false,
+        biweeklNatWOptions: false,
+        financeApplication: false,
+        weeklylNatWOptions: false,
+        otherTaxWithOptions: false
+    });
+
+    useEffect(() => {
+        const jsonString = user.columnStateSales.state
+        // let validJsonString = jsonString.replace(/'/g, '"').replace(/\\'/g, "'");
+        //   let jsonObject = JSON.parse(jsonString);
+        console.log(jsonString, 'string objectg')
+
+        setColumnVisibility(jsonString)
+    }, []);
+
+    useEffect(() => {
+        fetcher.submit(
+            { state: JSON.stringify(columnVisibility), intent: 'columnState' },
+            { method: "post" }
+        );
+    }, [columnVisibility]);
+
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [rowSelection, setRowSelection] = useState({});
+
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [globalFilter, setGlobalFilter] = useState("");
+
+    const table = useReactTable({
+        data,
+        columns,
+        filterFns: { fuzzy: fuzzyFilter },
+
+        state: {
+            sorting,
+            columnFilters,
+            columnVisibility,
+            rowSelection,
+            globalFilter,
+        },
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        onSortingChange: setSorting,
+        getSortedRowModel: getSortedRowModel(),
+        onColumnVisibilityChange: setColumnVisibility,
+
+        onColumnFiltersChange: setColumnFilters,
+        getFilteredRowModel: getFilteredRowModel(),
+        enableRowSelection: true,
+        onRowSelectionChange: setRowSelection,
+        onGlobalFilterChange: setGlobalFilter,
+        enableGlobalFilter: true,
+        globalFilterFn: "fuzzy",
+    });
+
+    const [filterBy, setFilterBy] = useState("");
+    const handleInputChange = (name) => {
+        setFilterBy(columnId);
+    };
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-indexed in JavaScript
+        const day = String(date.getDate()).padStart(2, "0");
+        const hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    };
+    const formatMonth = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-indexed in JavaScript
+        const day = String(date.getDate()).padStart(2, "0");
+        const hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+
+        return `${year}-${month}`;
+    };
+    const now = new Date();
+    const formattedDate = formatDate(now);
+    function getToday() {
+        const today = new Date();
+        today.setDate(today.getDate());
+        console.log(formatDate(today), "today");
+        return formatDate(today);
+    }
+    function getTomorrow() {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return formatDate(tomorrow);
+    }
+    function getYesterday() {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        return formatDate(yesterday);
+    }
+    function getLastDayOfPreviousMonth() {
+        const date = new Date();
+        date.setDate(1); // sets the day to the last day of the previous month
+        return formatMonth(date);
+    }
+    function getFirstDayOfCurrentMonth() {
+        const date = new Date();
+        date.setDate(1); // sets the day to the first day of the current month
+        return formatDate(date);
+    }
+    function getFirstDayOfTwoMonthsAgo() {
+        const date = new Date();
+        date.setMonth(date.getMonth() - 2);
+        date.setDate(1); // sets the day to the first day of the month two months ago
+        return formatMonth(date);
+    }
+    function getYear() {
+        const today = new Date();
+        return today.getFullYear().toString();
+    }
+    const getThisYear = getYear();
+    const [todayfilterBy, setTodayfilterBy] = useState(null);
+    const DeliveriesList = [
+        {
+            key: "todaysDeliveries",
+            name: "Deliveries - Today",
+        },
+        {
+            key: "tomorowsDeliveries",
+            name: "Deliveries - Tomorrow",
+        },
+        {
+            key: "yestDeliveries",
+            name: "Deliveries - Yesterday",
+        },
+        {
+            key: "deliveredThisMonth",
+            name: "Delivered - Current Month",
+        },
+        {
+            key: "deliveredLastMonth",
+            name: "Delivered - Last Month",
+        },
+        {
+            key: "deliveredThisYear",
+            name: "Delivered - Year",
+        },
+    ];
+    const DepositsTakenList = [
+        {
+            key: "depositsToday",
+            name: "Deposit Taken - Need to Finalize Deal",
+        },
+    ];
+
+    const CallsList = [
+        {
+            key: "pendingCalls",
+            name: "Pending Calls",
+        },
+        {
+            key: "todaysCalls",
+            name: "Today's Calls",
+        },
+        {
+            key: "tomorowsCalls",
+            name: "Tomorrow's Calls",
+        },
+        {
+            key: "yestCalls",
+            name: "Yesterday's if missed",
+        },
+        {
+            key: "missedCalls",
+            name: "Missed Calls - Current Month",
+        },
+        {
+            key: "missedCallsLastMonth",
+            name: "Missed Calls - Last Month",
+        },
+        {
+            key: "missedCallsTwoMonths",
+            name: "Missed Calls - 2 Months Ago",
+        },
+        {
+            key: "missedCallsYear",
+            name: "Missed Calls - Year",
+        },
+    ];
+
+    const handleFilterChange = (selectedFilter) => {
+        setAllFilters();
+        const customerStateColumn = table.getColumn("customerState");
+        const nextAppointmentColumn = table.getColumn("nextAppointment");
+        const deliveredDate = table.getColumn("deliveredDate");
+        const pickUpDate = table.getColumn("pickUpDate");
+        const status = table.getColumn("status");
+        const depositMade = table.getColumn("depositMade");
+        const sold = table.getColumn("sold");
+        const delivered = table.getColumn("delivered");
+        const signed = table.getColumn("signed");
+        const financeApp = table.getColumn("financeApp");
+
+        if (selectedFilter === "deliveredThisMonth") {
+            customerStateColumn?.setFilterValue("delivered");
+            deliveredDate?.setFilterValue(getFirstDayOfCurrentMonth);
+            status?.setFilterValue("active");
+        }
+
+        if (selectedFilter === "deliveredLastMonth") {
+            customerStateColumn?.setFilterValue("delivered");
+            deliveredDate?.setFilterValue(getLastDayOfPreviousMonth);
+            status?.setFilterValue("active");
+        }
+
+        if (selectedFilter === "deliveredThisYear") {
+            customerStateColumn?.setFilterValue("delivered");
+            deliveredDate?.setFilterValue(getThisYear);
+            status?.setFilterValue("active");
+        }
+
+        if (selectedFilter === "pendingCalls") {
+            customerStateColumn?.setFilterValue("Pending");
+            status?.setFilterValue("active");
+        }
+
+        if (selectedFilter === "todaysCalls") {
+            nextAppointmentColumn?.setFilterValue(getToday);
+            console.log(nextAppointmentColumn, "nextAppointmentColumn");
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("off");
+            sold?.setFilterValue("off");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "tomorowsCalls") {
+            nextAppointmentColumn?.setFilterValue(getTomorrow);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("off");
+            sold?.setFilterValue("off");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "yestCalls") {
+            nextAppointmentColumn?.setFilterValue(getYesterday);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("off");
+            sold?.setFilterValue("off");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "missedCalls") {
+            nextAppointmentColumn?.setFilterValue(getFirstDayOfCurrentMonth);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("off");
+            sold?.setFilterValue("off");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "missedCallsLastMonth") {
+            nextAppointmentColumn?.setFilterValue(getLastDayOfPreviousMonth);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("off");
+            sold?.setFilterValue("off");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "missedCallsTwoMonths") {
+            nextAppointmentColumn?.setFilterValue(getFirstDayOfTwoMonthsAgo);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("off");
+            sold?.setFilterValue("off");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "missedCallsYear") {
+            nextAppointmentColumn?.setFilterValue(getThisYear);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("off");
+            sold?.setFilterValue("off");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "todaysDeliveries") {
+            pickUpDate?.setFilterValue(getToday);
+            status?.setFilterValue("active");
+            sold?.setFilterValue("on");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "tomorowsDeliveries") {
+            pickUpDate?.setFilterValue(getTomorrow);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("on");
+            sold?.setFilterValue("on");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "yestDeliveries") {
+            pickUpDate?.setFilterValue(getYesterday);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("on");
+            sold?.setFilterValue("on");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "depositsToday") {
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("on");
+            sold?.setFilterValue("on");
+            delivered?.setFilterValue("off");
+            signed?.setFilterValue("off");
+            financeApp?.setFilterValue("off");
+        }
+    };
+
+    // clears filters
+    const setAllFilters = () => {
+        setColumnFilters([]);
+        setSorting([]);
+        setFilterBy("");
+        setGlobalFilter([]);
+    };
+
+    // toggle column filters
+    const [showFilter, setShowFilter] = useState(false);
+
+    const toggleFilter = () => {
+        setShowFilter(!showFilter);
+    };
+    const toggleEmail = () => {
+        setMassEmail(!showFilter);
+    };
+
+    async function rotateSalesQueue() {
+        console.log(salesPeople, "rotateSalesQueue");
+        const formData = new FormData();
+        formData.append("intent", "rotateSalesQueue");
+        const update = submit(formData, { method: "post" });
+        return update;
+    }
+    async function rotateFinanceQueue() {
+        console.log(salesPeople, "rotateFinanceQueue");
+        const formData = new FormData();
+        formData.append("intent", "rotateFinanceQueue");
+        const update = submit(formData, { method: "post" });
+        return update;
+    }
+    async function resetQueueFinance() {
+        console.log(salesPeople, "resetQueueFinance");
+        const formData = new FormData();
+        formData.append("intent", "rotateFinanceQueue");
+        const update = submit(formData, { method: "post" });
+        return update;
+    }
+    async function resetQueue() {
+        console.log(salesPeople, "resetQueue");
+        const formData = new FormData();
+        formData.append("intent", "resetQueue");
+        const update = submit(formData, { method: "post" });
+        return update;
+    }
+
+    const [salesPeople, setSalesPeople] = useState([]);
+    const [financeManager, setFinanceManager] = useState([]);
+    const [massSms, setMassSms] = useState(false);
+    const [massEmail, setMassEmail] = useState(false);
+    const [addCustomer, setAddCustomer] = useState(false);
+
+    const swrFetcher = (url) => fetch(url).then((r) => r.json());
+
+    const { data: userFetch, userError } = useSWR(
+        "/dealer/api/findManyUsers",
+        swrFetcher,
+        {
+            refreshInterval: 60000,
+            revalidateOnMount: true,
+            revalidateOnReconnect: true,
+        }
+    );
+    const { data: financeFetch, financeError } = useSWR(
+        "/dealer/api/findManyFinance",
+        swrFetcher,
+        {
+            refreshInterval: 60000,
+            revalidateOnMount: true,
+            revalidateOnReconnect: true,
+        }
+    );
+
+    useEffect(() => {
+        if (userFetch) {
+            console.log(userFetch.users, "userFetch");
+            setSalesPeople(userFetch.users);
+        }
+        if (financeFetch) {
+            console.log(financeFetch.users, "userFetch");
+            setFinanceManager(financeFetch.users);
+        }
+    }, [userFetch, financeFetch]);
+
+    const [customerMessages, setCustomerMessages] = useState([]);
+    const [conversationSid, setConversationSid] = useState("");
+
+    useEffect(() => {
+        const accountSid = "AC9b5b398f427c9c925f18f3f1e204a8e2";
+        const authToken = "d38e2fd884be4196d0f6feb0b970f63f";
+        setCustomer(smsDetails);
+
+        if (smsDetails) {
+            const newConversationSid = smsDetails.conversationId;
+            setConversationSid(newConversationSid);
+
+            if (newConversationSid) {
+                const url = `https://conversations.twilio.com/v1/Conversations/${newConversationSid}/Messages`;
+                const credentials = `${accountSid}:${authToken}`;
+                const base64Credentials = btoa(credentials);
+
+                async function fetchMessages() {
+                    try {
+                        const response = await fetch(url, {
+                            method: "GET",
+                            headers: { Authorization: `Basic ${base64Credentials}` },
+                        });
+                        console.log(response, "response");
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        if (data.length !== 0) {
+                            setCustomerMessages(data.messages);
+                        } else {
+                            setCustomerMessages([]);
+                        }
+                        console.log(data, "fetched messages");
+                        return data;
+                    } catch (error) {
+                        console.error("Failed to fetch messages:", error);
+                    }
+                }
+
+                fetchMessages();
+            }
+        }
+        /* else {
+
+          async function GetNumber() {
+            const areaCode = user.phone.slice(0, 3);
+            const locals = await client.availablePhoneNumbers("CA").local.list({
+              areaCode: areaCode,
+              limit: 1,
+            });
+            const incomingPhoneNumber = await client.incomingPhoneNumbers.create({
+              phoneNumber: locals.available_phone_numbers[0].phone_number,
+            });
+            // create new conversation sid
+
+            // save invo in twilioSMSDetails
+            const saved = await prisma.twilioSMSDetails.create({
+              data: {
+                conversationSid: '',
+                participantSid: '',
+                userSid: '',
+                username: 'skylerzanth',
+                password: 'skylerzanth1234',
+                userEmail: user.email,
+                passClient: '',
+                myPhone: locals.available_phone_numbers[0].phone_number,
+                proxyPhone: '',
+              }
+            })
+               const newConversationSid = saved.conversationId;
+          setConversationSid(newConversationSid);
+             if (newConversationSid) {
+            const url = `https://conversations.twilio.com/v1/Conversations/${newConversationSid}/Messages`;
+            const credentials = `${accountSid}:${authToken}`;
+            const base64Credentials = btoa(credentials);
+
+            async function fetchMessages() {
+              try {
+                const response = await fetch(url, {
+                  method: 'GET',
+                  headers: { 'Authorization': `Basic ${base64Credentials}` },
+                });
+                console.log(response, 'response')
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data.length !== 0) {
+                  setCustomerMessages(data.messages);
+
+                }
+                else {
+                  setCustomerMessages([])
+                }
+                console.log(data, 'fetched messages');
+                return data;
+              } catch (error) {
+                console.error('Failed to fetch messages:', error);
+              }
+            }
+
+            fetchMessages();
+          }
+          }
+
+        GetNumber()
+        }*/
+    }, [smsDetails]);
+
+    const userEmail = user?.email;
+
+    const initial = {
+        firstName: "",
+        lastName: "",
+    };
+    const [formData, setFormData] = useState(initial);
+    const firstName = formData.firstName;
+    const lastName = formData.lastName;
+    const handleChange = (e) => {
+        const { name, value, checked, type } = e.target;
+        setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+    };
+    const [brandId, setBrandId] = useState("");
+    const [modelList, setModelList] = useState();
+
+    const handleBrand = (e) => {
+        setBrandId(e.target.value);
+        console.log(brandId, modelList);
+    };
+
+    useEffect(() => {
+        async function getData() {
+            const res = await fetch(`/api/modelList/${brandId}`);
+            if (!res.ok) {
+                throw new Error("Failed to fetch data");
+            }
+            return res.json();
+        }
+
+        if (brandId.length > 3) {
+            const fetchData = async () => {
+                const result = await getData();
+                setModelList(result);
+                console.log(brandId, result); // Log the updated result
+            };
+            fetchData();
+        }
+    }, [brandId]);
+    //const [open, setOpen] = useState(false);-------------------------------------------------------------------
+
+    const [rowData, setRowData] = useState();
+
+    useEffect(() => {
+        if (rowData) {
+            const serializedUser = JSON.stringify(user);
+            const cust = rowData.rowData.map((user) => user.email);
+            console.log(cust, "cust");
+            const serializedCust = JSON.stringify(cust);
+            window.localStorage.setItem("user", serializedUser);
+            window.localStorage.setItem("customer", serializedCust);
+        }
+    }, []);
+
+
+    const MyIFrameComponent = () => {
+        const [isLoading, setIsLoading] = useState(true);
+        useEffect(() => {
+            const handleHeightMessage = (event: MessageEvent) => {
+                if (
+                    event.data &&
+                    event.data.type === "iframeHeight" &&
+                    event.data.height
+                ) {
+                    setIsLoading(false);
+                    if (iFrameRef.current) {
+                        iFrameRef.current.style.height = `${event.data.height}px`;
+                    }
+                }
+            };
+            const currentHost =
+                typeof window !== "undefined" ? window.location.host : null;
+            if (iFrameRef.current) {
+                if (currentHost === "localhost:3000") {
+                    iFrameRef.current.src =
+                        "http://localhost:3000/dealer/email/massEmail";
+                }
+                if (currentHost === "dealersalesassistant.ca") {
+                    iFrameRef.current.src =
+                        "https://www.dealersalesassistant.ca/dealer/email/massEmail";
+                }
+                window.addEventListener("message", handleHeightMessage);
+                const cust = rowData;
+
+                const sendData = { cust, user };
+
+                // Add load event listener to ensure iframe is loaded
+                const onLoad = () => {
+                    iFrameRef.current.contentWindow?.postMessage(sendData, "*");
+                };
+                iFrameRef.current.addEventListener("load", onLoad);
+
+                return () => {
+                    window.removeEventListener("message", handleHeightMessage);
+                    iFrameRef.current?.removeEventListener("load", onLoad);
+                };
+            }
+        }, []);
+
+        return (
+            <>
+                <div className="size-full ">
+                    <iframe
+                        ref={iFrameRef}
+                        title="my-iframe"
+                        width="100%"
+                        className=" border-none"
+                        style={{
+                            minHeight: "40vh",
+                        }}
+                    />
+                </div>
+            </>
+        );
+    };
+
+    useEffect(() => {
+        if (rowData) {
+            const serializedUser = JSON.stringify(user);
+            const serializedCust = JSON.stringify(rowData);
+            window.localStorage.setItem("user", serializedUser);
+            window.localStorage.setItem("customer", serializedCust);
+        }
+    }, [rowData]);
+
+    const [selectedColumn, setSelectedColumn] = useState("");
+    const [selectedGlobal, setSelectedGlobal] = useState(false);
+
+    const setColumnFilterDropdown = (event) => {
+        const columnId = event.target.getAttribute("data-value");
+        setSelectedColumn(columnId);
+        console.log("Selected column:", columnId);
+        // Add your logic here to handle the column selection
+    };
+
+    const handleGlobalChange = (value) => {
+        console.log("value", value);
+        table.getColumn(selectedColumn)?.setFilterValue(value);
+    };
+    //apply the fuzzy sort if the fullName column is being filtered
+    useEffect(() => {
+        if (table.getState().columnFilters[0]?.id === "fullName") {
+            if (table.getState().sorting[0]?.id !== "fullName") {
+                table.setSorting([{ id: "fullName", desc: false }]);
+            }
+        }
+    }, [table.getState().columnFilters[0]?.id]);
+
+
+    const [getTheState, setGetTheState] = useState([])
+    const [getTheState2, setGetTheState2] = useState([])
+    useEffect(() => {
+        const formData = new FormData();
+        formData.append("userEmail", user.email);
+        formData.append("columnState", getTheState2);
+        formData.append("intent", "salesColumns");
+        fetcher.submit(formData, { method: "post" });
+    }, [getTheState2, getTheState]);
+
+    /// -=--=-=-=-=-=-=-=-==-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-DATA TABLE-=--=-=-=-=-=-=-=-==-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-
     return (
         <div>
             <div className="block md:hidden">
                 <SmDataTable columns={smColumns} data={data} />
             </div>
             <div className="hidden md:block">
-                <DataTable
-                    columns={columns}
-                    data={data}
-                    user={user}
-                    columnState={columnState}
-                />
+                <div className="mb-[20px]  justify-center  rounded    even:bg-background">
+                    <div className="ml-auto flex items-center">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline">Menu</Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56 border border-border bg-background text-foreground">
+                                <DropdownMenuLabel>Dashboard Actions</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem
+                                        className="cursor-pointer"
+                                        onSelect={() => setSelectedGlobal(true)}
+                                    >
+                                        Global Filter
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSub>
+                                        <DropdownMenuSubTrigger className="cursor-pointer">
+                                            Default Filters
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuPortal>
+                                            <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                                                <DropdownMenuLabel>
+                                                    {todayfilterBy || "Default Filters"}
+                                                </DropdownMenuLabel>
+                                                <DropdownMenuSeparator />
+                                                {CallsList.map((item) => (
+                                                    <DropdownMenuItem
+                                                        onSelect={(event) => {
+                                                            const value =
+                                                                event.currentTarget.getAttribute("data-value");
+                                                            const item =
+                                                                CallsList.find((i) => i.key === value) ||
+                                                                DeliveriesList.find((i) => i.key === value) ||
+                                                                DepositsTakenList.find((i) => i.key === value);
+                                                            if (item) {
+                                                                handleFilterChange(item.key);
+                                                                setTodayfilterBy(item.name);
+                                                            }
+                                                        }}
+                                                        data-value={item.key}
+                                                        textValue={item.key}
+                                                    >
+                                                        {item.name}
+                                                    </DropdownMenuItem>
+                                                ))}
+                                                {CallsList.map((item) => (
+                                                    <DropdownMenuItem
+                                                        onSelect={(event) => {
+                                                            const value =
+                                                                event.currentTarget.getAttribute("data-value");
+                                                            const item =
+                                                                CallsList.find((i) => i.key === value) ||
+                                                                DeliveriesList.find((i) => i.key === value) ||
+                                                                DepositsTakenList.find((i) => i.key === value);
+                                                            if (item) {
+                                                                handleFilterChange(item.key);
+                                                                setTodayfilterBy(item.name);
+                                                            }
+                                                        }}
+                                                        data-value={item.key}
+                                                        textValue={item.key}
+                                                    >
+                                                        {item.name}
+                                                    </DropdownMenuItem>
+                                                ))}
+                                                {CallsList.map((item) => (
+                                                    <DropdownMenuItem
+                                                        onSelect={(event) => {
+                                                            const value =
+                                                                event.currentTarget.getAttribute("data-value");
+                                                            const item =
+                                                                CallsList.find((i) => i.key === value) ||
+                                                                DeliveriesList.find((i) => i.key === value) ||
+                                                                DepositsTakenList.find((i) => i.key === value);
+                                                            if (item) {
+                                                                handleFilterChange(item.key);
+                                                                setTodayfilterBy(item.name);
+                                                            }
+                                                        }}
+                                                        data-value={item.key}
+                                                        textValue={item.key}
+                                                    >
+                                                        {item.name}
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuSubContent>
+                                        </DropdownMenuPortal>
+                                    </DropdownMenuSub>
+                                    <DropdownMenuSub>
+                                        <DropdownMenuSubTrigger className="cursor-pointer">
+                                            Global Filters
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuPortal>
+                                            <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                                                {table
+                                                    .getAllColumns()
+                                                    .filter((column) => column.getCanHide())
+                                                    .map((column) => (
+                                                        <DropdownMenuItem
+                                                            onSelect={(event) => {
+                                                                setColumnFilterDropdown(event);
+                                                            }}
+                                                            data-value={column.id}
+                                                            key={column.id}
+                                                            className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline"
+                                                        >
+                                                            {column.id}
+                                                        </DropdownMenuItem>
+                                                    ))}
+                                            </DropdownMenuSubContent>
+                                        </DropdownMenuPortal>
+                                    </DropdownMenuSub>
+                                    <DropdownMenuItem
+                                        className="cursor-pointer"
+                                        onSelect={() => {
+                                            setAllFilters([]);
+                                            setSelectedGlobal(false);
+                                        }}
+                                    >
+                                        Clear
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+
+                                <DropdownMenuSeparator />
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem
+                                        className="cursor-pointer"
+                                        onSelect={toggleFilter}
+                                    >
+                                        Toggle All Columns
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSub>
+                                        <DropdownMenuSubTrigger className="cursor-pointer">
+                                            Column Toggle
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuPortal>
+                                            <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                                                {table
+                                                    .getAllColumns()
+                                                    .filter((column) => column.getCanHide())
+                                                    .map((column) => {
+                                                        return (
+                                                            <DropdownMenuCheckboxItem
+                                                                key={column.id}
+                                                                className="cursor-pointer bg-background  capitalize text-foreground"
+                                                                checked={column.getIsVisible()}
+                                                                onCheckedChange={(value) => {
+                                                                    column.toggleVisibility(!!value);
+                                                                    const columnState = JSON.stringify(table.getState().columnVisibility);
+                                                                    const getVisibleFlatColumns = JSON.stringify(table.getVisibleFlatColumns());
+                                                                    const formattedColumnState = columnState.replace(/"/g, "'").replace(/\s+/g, '');
+                                                                    const formattedgetVisibleFlatColumns = columnState.replace(/"/g, "'").replace(/\s+/g, '');
+                                                                    setGetTheState(formattedColumnState)
+                                                                    setGetTheState2(formattedgetVisibleFlatColumns)
+                                                                }}
+                                                            >
+                                                                {column.id}
+                                                            </DropdownMenuCheckboxItem>
+                                                        );
+                                                    })}
+                                            </DropdownMenuSubContent>
+                                        </DropdownMenuPortal>
+                                    </DropdownMenuSub>
+
+                                    <div className="w-[650px]">
+                                        <Dialog>
+                                            <DialogTrigger className="w-full cursor-pointer">
+                                                <DropdownMenuItem
+                                                    onSelect={(e) => e.preventDefault()}
+                                                    className="w-full cursor-pointer"
+                                                >
+                                                    Mass SMS
+                                                    <DropdownMenuShortcut>
+                                                        {" "}
+                                                        <MessageSquare color="foreground" />
+                                                    </DropdownMenuShortcut>
+                                                </DropdownMenuItem>
+                                            </DialogTrigger>
+                                            <DialogContent className="w-[600px] max-w-[600px]">
+                                                <DialogHeader className="w-[600px] max-w-[600px]">
+                                                    <DialogTitle>Mass SMS</DialogTitle>
+                                                    <DialogDescription>
+                                                        <TextFunction
+                                                            customerMessages={customerMessages}
+                                                            customer={customer}
+                                                            data={data}
+                                                            user={user}
+                                                            smsDetails={smsDetails}
+                                                        />
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </div>
+
+                                    <div className="w-[650px]">
+                                        <Dialog>
+                                            <DialogTrigger className="w-full cursor-pointer">
+                                                <DropdownMenuItem
+                                                    onSelect={(e) => e.preventDefault()}
+                                                    className="w-full cursor-pointer"
+                                                >
+                                                    Mass Email
+                                                    <DropdownMenuShortcut>
+                                                        {" "}
+                                                        <Mail color="foreground" />
+                                                    </DropdownMenuShortcut>
+                                                </DropdownMenuItem>
+                                            </DialogTrigger>
+                                            <DialogContent className="w-[600px] max-w-[600px]">
+                                                <DialogHeader className="w-[600px] max-w-[600px]">
+                                                    <DialogTitle>Mass Email</DialogTitle>
+                                                    <DialogDescription>
+                                                        <MyIFrameComponent />
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </div>
+
+                                    <DropdownMenuSub>
+                                        <DropdownMenuSubTrigger className="cursor-pointer">
+                                            Rotation
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuPortal>
+                                            <DropdownMenuSubContent className="overflow-y-auto border border-border bg-background text-foreground">
+                                                <DropdownMenuGroup>
+                                                    <DropdownMenuLabel>Sales Rotation</DropdownMenuLabel>
+                                                    <DropdownMenuSeparator />
+                                                    {salesPeople.map((person) => (
+                                                        <DropdownMenuItem
+                                                            className="mt-2 text-muted-foreground"
+                                                            key={person.id}
+                                                        >
+                                                            {person.name}
+                                                        </DropdownMenuItem>
+                                                    ))}
+                                                </DropdownMenuGroup>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuGroup>
+                                                    <DropdownMenuLabel>Finance Rotation</DropdownMenuLabel>
+                                                    <DropdownMenuSeparator />
+                                                    {financeManager.map((person) => (
+                                                        <DropdownMenuItem
+                                                            className="mt-2 text-muted-foreground"
+                                                            key={person.id}
+                                                        >
+                                                            {person.name}
+                                                        </DropdownMenuItem>
+                                                    ))}
+                                                </DropdownMenuGroup>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuSub>
+                                                    <DropdownMenuSubTrigger>Actions</DropdownMenuSubTrigger>
+                                                    <DropdownMenuPortal>
+                                                        <DropdownMenuSubContent className=" overflow-y-auto border border-border bg-background text-foreground">
+                                                            <DropdownMenuItem
+                                                                onClick={() => {
+                                                                    rotateSalesQueue();
+                                                                    toast.success(`Rotating sales...`);
+                                                                }}
+                                                            >
+                                                                Rotate Sales
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                onClick={() => {
+                                                                    rotateFinanceQueue();
+                                                                    toast.success(`Rotating sales...`);
+                                                                }}
+                                                            >
+                                                                {" "}
+                                                                Rotate Finance
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                onClick={() => {
+                                                                    resetQueue();
+                                                                    toast.success(`Rotating sales...`);
+                                                                }}
+                                                            >
+                                                                Reset Sales
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                onClick={() => {
+                                                                    resetQueueFinance();
+                                                                    toast.success(`Rotating sales...`);
+                                                                }}
+                                                            >
+                                                                Reset Finance
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuSubContent>
+                                                    </DropdownMenuPortal>
+                                                </DropdownMenuSub>
+                                            </DropdownMenuSubContent>
+                                        </DropdownMenuPortal>
+                                    </DropdownMenuSub>
+                                </DropdownMenuGroup>
+
+                                <DropdownMenuGroup>
+                                    <div className="w-[650px]">
+                                        <Dialog>
+                                            <DialogTrigger className="w-full cursor-pointer">
+                                                <DropdownMenuItem
+                                                    onSelect={(e) => e.preventDefault()}
+                                                    className="w-full cursor-pointer"
+                                                >
+                                                    Add Customer
+                                                    <DropdownMenuShortcut>
+                                                        {" "}
+                                                        <UserPlus color="foreground" />
+                                                    </DropdownMenuShortcut>
+                                                </DropdownMenuItem>
+                                            </DialogTrigger>
+                                            <DialogContent className="w-[600px] max-w-[600px]">
+                                                <DialogHeader className="w-[600px] max-w-[600px]">
+                                                    <DialogTitle> Add Customer</DialogTitle>
+                                                    <DialogDescription>
+                                                        <>
+                                                            <fetcher.Form method="post" className="  w-[95%] ">
+                                                                <div className="flex flex-col   ">
+                                                                    <div className="relative mt-3">
+                                                                        <Input
+                                                                            type="text"
+                                                                            name="firstName"
+                                                                            onChange={handleChange}
+                                                                            className="border-border bg-background"
+                                                                        />
+                                                                        <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                                                            First Name
+                                                                        </label>
+                                                                    </div>
+                                                                    <div className="relative mt-3">
+                                                                        <Input
+                                                                            type="text"
+                                                                            name="lastName"
+                                                                            onChange={handleChange}
+                                                                            className="border-border bg-background "
+                                                                        />
+                                                                        <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                                                            Last Name
+                                                                        </label>
+                                                                    </div>
+                                                                    <div className="relative mt-3">
+                                                                        <Input
+                                                                            className="border-border bg-background   "
+                                                                            type="number"
+                                                                            name="phone"
+                                                                        />
+                                                                        <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                                                            Phone
+                                                                        </label>
+                                                                    </div>
+                                                                    <div className="relative mt-3">
+                                                                        <Input
+                                                                            className="border-border bg-background  "
+                                                                            type="email"
+                                                                            name="email"
+                                                                        />
+                                                                        <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                                                            Email
+                                                                        </label>
+                                                                    </div>
+                                                                    <div className="relative mt-3">
+                                                                        <Input
+                                                                            className="border-border bg-background   "
+                                                                            type="text"
+                                                                            name="address"
+                                                                        />
+                                                                        <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                                                            Address
+                                                                        </label>
+                                                                    </div>
+                                                                    <div className="relative mt-3">
+                                                                        <Input
+                                                                            className="border-border bg-background   "
+                                                                            type="text"
+                                                                            list="ListOptions2"
+                                                                            name="brand"
+                                                                            onChange={handleBrand}
+                                                                        />
+                                                                        <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                                                            Brand
+                                                                        </label>
+                                                                    </div>
+                                                                    <datalist id="ListOptions">
+                                                                        <option value="BMW-Motorrad" />
+                                                                        <option value="Can-Am" />
+                                                                        <option value="Can-Am-SXS" />
+                                                                        <option value="Harley-Davidson" />
+                                                                        <option value="Indian" />
+                                                                        <option value="Kawasaki" />
+                                                                        <option value="KTM" />
+                                                                        <option value="Manitou" />
+                                                                        <option value="Sea-Doo" />
+                                                                        <option value="Switch" />
+                                                                        <option value="Ski-Doo" />
+                                                                        <option value="Suzuki" />
+                                                                        <option value="Triumph" />
+                                                                        <option value="Spyder" />
+                                                                        <option value="Yamaha" />
+                                                                        <option value="Used" />
+                                                                    </datalist>
+                                                                    {modelList && (
+                                                                        <>
+                                                                            <div className="relative mt-3">
+                                                                                <Input
+                                                                                    className="  "
+                                                                                    type="text"
+                                                                                    list="ListOptions2"
+                                                                                    name="model"
+                                                                                />
+                                                                                <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                                                                    Model
+                                                                                </label>
+                                                                            </div>
+                                                                            <datalist id="ListOptions2">
+                                                                                {modelList.models.map((item, index) => (
+                                                                                    <option key={index} value={item.model} />
+                                                                                ))}
+                                                                            </datalist>
+                                                                        </>
+                                                                    )}
+                                                                </div>
+                                                                <Input
+                                                                    type="hidden"
+                                                                    name="iRate"
+                                                                    defaultValue={10.99}
+                                                                />
+                                                                <Input
+                                                                    type="hidden"
+                                                                    name="tradeValue"
+                                                                    defaultValue={0}
+                                                                />
+                                                                <Input
+                                                                    type="hidden"
+                                                                    name="discount"
+                                                                    defaultValue={0}
+                                                                />
+                                                                <Input
+                                                                    type="hidden"
+                                                                    name="deposit"
+                                                                    defaultValue={0}
+                                                                />
+                                                                <Input
+                                                                    type="hidden"
+                                                                    name="months"
+                                                                    defaultValue={60}
+                                                                />
+                                                                <Input
+                                                                    type="hidden"
+                                                                    name="userEmail"
+                                                                    defaultValue={userEmail}
+                                                                />
+                                                                <Input
+                                                                    type="hidden"
+                                                                    name="name"
+                                                                    defaultValue={
+                                                                        `${firstName}` + " " + `${lastName}`
+                                                                    }
+                                                                />
+                                                                <div className="mt-[25px] flex justify-end">
+                                                                    <Button
+                                                                        name="intent"
+                                                                        value="AddCustomer"
+                                                                        type="submit"
+                                                                        size="sm"
+                                                                        className="bg-primary"
+                                                                    >
+                                                                        Add
+                                                                    </Button>
+                                                                </div>
+                                                            </fetcher.Form>
+                                                        </>
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </div>
+
+                                    <DropdownMenuItem>
+                                        <Link
+                                            to="/dealer/calendar/sales"
+                                            className="flex w-full items-center justify-between"
+                                        >
+                                            <p>Calendar</p>
+                                            <DropdownMenuShortcut>
+                                                <CalendarCheck
+                                                    color="#cbd0d4"
+                                                    size={20}
+                                                    strokeWidth={1.5}
+                                                />
+                                            </DropdownMenuShortcut>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        {selectedColumn && (
+                            <div className="relative ">
+
+                                <Input
+                                    placeholder={`Filter ${selectedColumn}...`}
+                                    onChange={(e) => handleGlobalChange(e.target.value)}
+                                    className="ml-2 max-w-sm w-auto "
+                                />
+                                <Button
+                                    onClick={() => {
+                                        setAllFilters([]);
+                                        setSelectedGlobal(false);
+                                    }}
+                                    size="icon"
+                                    variant="ghost"
+                                    className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+
+                                    <X />
+                                </Button>
+                            </div>
+                        )}
+                        {selectedGlobal === true && (
+                            <div className="relative ">
+                                <DebouncedInput
+                                    value={globalFilter ?? ""}
+                                    onChange={(value) => setGlobalFilter(String(value))}
+                                    className="ml-3 border border-border p-2 shadow max-w-sm w-auto"
+                                    placeholder="Search all columns..."
+                                    autoFocus
+                                />
+
+                                <Button
+                                    onClick={() => {
+                                        setGlobalFilter([]);
+                                        setSelectedGlobal(false);
+                                    }}
+                                    size="icon"
+                                    variant="ghost"
+                                    className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+
+                                    <X />
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+
+                    <div style={{ direction: table.options.columnResizeDirection }}>
+                        <div className="mt-[20px] rounded-md  border border-border text-foreground">
+                            <Table className="overflow-x-auto rounded-md border-border"             >
+                                <TableHeader>
+                                    {table.getHeaderGroups().map((headerGroup) => (
+                                        <TableRow key={headerGroup.id} className=" border-border">
+                                            {headerGroup.headers.map((header) => {
+                                                return (
+                                                    <TableHead key={header.id}                                              >
+                                                        <>
+                                                            {header.isPlaceholder
+                                                                ? null
+                                                                : flexRender(
+                                                                    header.column.columnDef.header,
+                                                                    header.getContext()
+                                                                )}
+
+                                                            {header.column.getCanFilter() && showFilter && (
+                                                                <div className="mx-auto cursor-pointer items-center justify-center text-center ">
+                                                                    <Filter column={header.column} table={table} />
+                                                                </div>
+                                                            )}
+
+                                                        </>
+                                                    </TableHead>
+                                                );
+                                            })}
+                                        </TableRow>
+                                    ))}
+                                </TableHeader>
+                                <TableBody className="overflow-x-auto border-border">
+                                    {table.getRowModel().rows?.length ? (
+                                        table.getRowModel().rows.map((row, index) => (
+                                            <TableRow
+                                                key={row.id}
+                                                data-state={row.getIsSelected() && "selected"}
+                                                className={`cursor-pointer border-border bg-background p-4 capitalize text-foreground  ${index % 2 === 0 ? "bg-background" : "bg-background"
+                                                    }`}
+                                            >
+                                                {row.getVisibleCells().map((cell) => (
+                                                    <TableCell key={cell.id}                                              >
+                                                        {flexRender(
+                                                            cell.column.columnDef.cell,
+                                                            cell.getContext()
+                                                        )}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell
+                                                colSpan={columns.length}
+                                                className="h-24 cursor-pointer bg-background text-center capitalize text-foreground hover:text-primary"
+                                            >
+                                                No results.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
+
+                        <DataTablePagination table={table} />
+
+                    </div>
+                </div>
             </div>
             {lockData && (
                 <AlertDialog open={openResponse} onOpenChange={setOpenResponse}>

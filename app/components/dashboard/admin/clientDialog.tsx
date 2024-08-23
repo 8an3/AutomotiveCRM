@@ -3557,36 +3557,666 @@ function WorkOrders({ finance, deFees }) {
     </div>
   )
 }
-function AccOrders({ finance }) {
+function AccOrders({ finance, deFees, salesPerson }) {
+  console.log(finance, 'insalesaccaorder')
+  const addProduct = useFetcher();
+  const submit = useSubmit()
+  const formRef = useRef();
+  const [discount, setDiscount] = useState(false)
+  const fetcher = useFetcher();
+  let inputRef = useRef<HTMLInputElement>(null);
+  let buttonRef = useRef<HTMLButtonElement>(null);
+  const [discDollar, setDiscDollar] = useState(0.00)
+  const [discPer, setDiscPer] = useState(0.00)
+  const [paymentType, setPaymentType] = useState('');
+  const [input, setInput] = useState("");
+  const inputLength = input.trim().length
+  const payment = useFetcher();
+
+  const options2 = {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  };
+
+
+  const taxMultiplier = Number(deFees.userTax);
+  const taxRate = 1 + taxMultiplier / 100;
+  let totalAccessoriesCost = 0.00
+  let totalAmountPaid = 0.00
+  let total = 0.00
+  let remaining = 0.00
+  let toReceipt = {}
+
+  const [accOrder, setAccOrder] = useState()
+  const [firstPageAcc, setFirstPageAcc] = useState(true)
+  const [secPageAcc, setSecPageAcc] = useState(false)
+
+  useEffect(() => {
+    console.log('use effect going offf1234124123211231')
+    if (accOrder) {
+
+      totalAccessoriesCost = accOrder.AccessoriesOnOrders.reduce((total, order) => {
+        return total + (order.quantity * order.accessory.price);
+      }, 0);
+
+      totalAmountPaid = accOrder.Payments.reduce((total, finance) => {
+        return total + finance.amountPaid;
+      }, 0);
+
+      const total2 = ((totalAccessoriesCost - parseFloat(discDollar)) * taxRate).toFixed(2);
+      const total1 = (((totalAccessoriesCost * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
+
+      total = discPer === 0 ? total2 : total1;
+
+
+      /**
+       *
+      const [changeSize, setChangeSize] = useState(false)
+
+      const client = data.id
+
+       const { AccessoriesOnOrders } = order;
+        const maxAccessories = 19;
+
+        const toReceipt = {
+          qrCode: order.id,
+          subTotal: `$${totalAccessoriesCost.toFixed(2)}`,
+          tax: `${tax.userTax}%`,
+          total: `$${total}`,
+          remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
+          firstName: client.firstName,
+          lastName: client.lastName,
+          phone: client.phone,
+          email: client.email,
+          address: client.address,
+          date: new Date(order.createdAt).toLocaleDateString("en-US", options2),
+          cardNum: '',
+          paymentType: '',
+          image: dealerImage.dealerLogo
+        };
+
+          AccessoriesOnOrders.forEach((result, index) => {
+        if (index < maxAccessories) {
+          toReceipt[`desc${index + 1}`] = `${result.accessory.brand} ${result.accessory.name}`;
+          toReceipt[`qt${index + 1}`] = String(result.quantity);
+          toReceipt[`price${index + 1}`] = String(result.accessory.price);
+        }
+      });
+
+      for (let i = AccessoriesOnOrders.length + 1; i <= maxAccessories; i++) {
+        toReceipt[`desc${i}`] = '';
+        toReceipt[`qt${i}`] = '';
+        toReceipt[`price${i}`] = '';
+      }
+
+
+
+      */
+      remaining = parseFloat(total) - parseFloat(totalAmountPaid)
+
+
+    }
+  }, [accOrder]);
+
+
+  function handleNextPage() {
+    if (firstPageAcc === true) {
+      setFirstPageAcc(false)
+      setSecPageAcc(true)
+    }
+    if (secPageAcc === true) {
+      setFirstPageAcc(true)
+      setSecPageAcc(false)
+    }
+  }
+  function handlePrevPage() {
+    if (firstPageAcc === true) {
+      setFirstPageAcc(false)
+      setSecPageAcc(true)
+    }
+    if (secPageAcc === true) {
+      setFirstPageAcc(true)
+      setSecPageAcc(false)
+    }
+  }
+
   return (
     <Card className="overflow-hidden rounded-lg text-foreground" x-chunk="dashboard-05-chunk-4"  >
       <CardHeader className="flex flex-row items-start  bg-muted/50 ">
         <CardTitle className="group flex items-center gap-2 text-lg">
-          PAC Orders
+          PAC Orders on Contract
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip bg-background p-6 text-sm">
-        {/* AccOrder Data */}
-        {AccOrder && AccOrder.length > 0 && (
-          <div className="mb-4">
-            <h3 className="text-xl font-semibold">Accessory Orders</h3>
-            <ul>
-              {AccOrder.map((order) => (
-                <li key={order.id} className="mb-2 p-2 border rounded">
-                  <p><strong>ID:</strong> {order.id}</p>
-                  <p><strong>Description:</strong> {order.description}</p>
-                  {/* Add other AccOrder fields as needed */}
-                </li>
-              ))}
+      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip max-h-[600px] bg-background p-6 text-sm">
+
+        {firstPageAcc && (
+          <>
+            <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
+              {finance.AccOrders && finance.AccOrders.map((order, index) => {
+                return (
+                  <li
+                    onClick={() => {
+                      handleNextPage()
+                      setAccOrder(order)
+                    }}
+                    key={index}
+                    className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]">
+                    <div className='flex-col'>
+                      <div className='flex justify-between items-center'>
+                        <p className='font-medium text-left'>Status: {order.status}</p>
+                        <p className='text-muted-foreground font-medium text-right'>{order.userName}</p>
+                      </div>
+                      <div className='flex justify-between items-center'>
+                        <p className='text-muted-foreground text-left'>Total: {order.total}</p>
+                        <p className='text-muted-foreground text-right'>Dept: {order.dept}</p>
+                      </div>
+                      <p className='text-muted-foreground text-left'>{new Date(order.createdAt).toLocaleDateString("en-US", options2)}</p>
+                    </div>
+                  </li>
+                )
+              })}
             </ul>
-          </div>
+          </>
         )}
 
+        {secPageAcc && (
+          <>
+            <div className='flex flex-col'>
+
+              <div className='flex justify-between'>
+                <div className='flex-col'>
+                  <p> Current Order: {accOrder.id}</p>
+                  <p className='text-muted-foreground'>   Date:{" "}
+                    {new Date(accOrder.createdAt).toLocaleDateString(
+                      "en-US",
+                      options2
+                    )}</p>
+                </div>
+                <div className="ml-auto flex items-center gap-1">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button size="icon" variant="outline" className="h-8 w-8">
+                        <MoreVertical className="h-3.5 w-3.5" />
+                        <span className="sr-only">More</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      className="border border-border"
+                    >
+                      <DropdownMenuItem onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>Show Discount</DropdownMenuItem>
+                      <DropdownMenuItem>Discount</DropdownMenuItem>
+                      <DropdownMenuItem
+                        onSelect={() => {
+                          const formData = new FormData();
+                          formData.append("financeId", accOrder.financeId);
+                          formData.append("subTotal", totalAccessoriesCost);
+                          formData.append("intent", 'pushSubtotal');
+                          submit(formData, { method: "post", });
+                        }}
+                      >Push Sub Total to Finance</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onSelect={() => {
+
+                        }}>Delete</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+              <div className="grid gap-3">
+                <div className="font-semibold">Order Details</div>
+                <ul className="grid gap-3 max-h-[400px] h-auto overflow-y-auto">
+                  {accOrder.AccessoriesOnOrders && accOrder.AccessoriesOnOrders.map((result, index) => (
+                    <li
+                      className="flex items-center justify-between"
+                      key={index}
+                    >
+                      <div>
+                        <ContextMenu>
+                          <ContextMenuTrigger>
+                            <div className='grid grid-cols-1'>
+                              <div className='flex items-center group '>
+                                <div className="font-medium">
+                                  {result.accessory.name}
+                                </div>
+                                <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                  <input type="hidden" name="id" value={result.id} />
+                                  <input type='hidden' name='total' value={total} />
+                                  <input type='hidden' name='accOrderId' value={accOrder.id} />
+                                  <Button
+                                    size="icon"
+                                    variant="outline"
+                                    name="intent" value='deleteOrderItem'
+                                    className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                    type='submit'
+                                  >
+                                    <X className="h-4 w-4 text-foreground" />
+                                  </Button>
+                                </addProduct.Form>
+                              </div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                {result.accessory.brand}
+                              </div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                {result.accessory.category}{" "}{result.accessory.description}
+                              </div>
+                              <div>
+                                <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                              </div>
+                            </div>
+                          </ContextMenuTrigger>
+                          <ContextMenuContent className='border-border'>
+                            <ContextMenuCheckboxItem
+                              checked={result.status === 'In Stock'}
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("accOnOrderId", result.id);
+                                formData.append("status", 'In Stock');
+                                formData.append("intent", 'updateAccOnOrders');
+                                submit(formData, { method: "post", });
+                              }}
+                            >In Stock</ContextMenuCheckboxItem>
+                            <ContextMenuCheckboxItem
+                              checked={result.status === 'On Order'}
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("accOnOrderId", result.id);
+                                formData.append("status", 'On Order');
+                                formData.append("intent", 'updateAccOnOrders');
+                                submit(formData, { method: "post", });
+                              }}
+                            >On Order</ContextMenuCheckboxItem>
+                            <ContextMenuCheckboxItem
+                              checked={result.status === 'Back Order'}
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("accOnOrderId", result.id);
+                                formData.append("status", 'Back Order');
+                                formData.append("intent", 'updateAccOnOrders');
+                                submit(formData, { method: "post", });
+                              }}
+                            >Back Order</ContextMenuCheckboxItem>
+                            <ContextMenuCheckboxItem
+                              checked={result.status === 'Fulfilled'}
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("accOnOrderId", result.id);
+                                formData.append("status", 'Fulfilled');
+                                formData.append("intent", 'updateAccOnOrders');
+                                submit(formData, { method: "post", });
+                              }}
+                            >Fulfilled</ContextMenuCheckboxItem>
+                          </ContextMenuContent>
+                        </ContextMenu>
+                      </div>
+                      <span>${result.accessory.price}{" "}{" "}x{" "}{" "}{result.quantity}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className='mt-auto'>
+                <Separator className="my-2 mt-auto" />
+                <ul className="grid gap-3">
+                  <li className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span>${totalAccessoriesCost.toFixed(2)}</span>
+                  </li>
+                  {accOrder.discount && (
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Discount</span>
+                      <span>${accOrder.discount}</span>
+                    </li>
+                  )}
+                  {accOrder.discPer && (
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Discount</span>
+                      <span>{accOrder.discPer}%</span>
+                    </li>
+                  )}
+                  {discount && (
+                    <>
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Discount $</span>
+                        <fetcher.Form
+                          method="post"
+                          onSubmit={() => {
+                            buttonRef.current?.focus();
+                          }}
+                          preventScrollReset
+                        >
+                          <input
+                            name='accOrderId'
+                            defaultValue={accOrder.id}
+                            type='hidden'
+                          />
+                          <input
+                            name='intent'
+                            defaultValue='updateDiscount'
+                            type='hidden'
+                          />
+                          <input
+                            name='total'
+                            defaultValue={totalAccessoriesCost}
+                            type='hidden'
+                          />
+                          <div className="relative ml-auto flex-1 md:grow-0 ">
+                            <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-foreground" />
+                            <Input
+                              ref={inputRef}
+                              name='discDollar'
+                              className='text-right pr-10 w-[100px]'
+                              defaultValue={discDollar}
+                              onChange={(event) => setDiscDollar(event.target.value)}
+                              onKeyDown={(event) => {
+                                if (event.key === "Escape") {
+                                  buttonRef.current?.focus();
+                                }
+                              }}
+                              onBlur={(event) => {
+                                if (
+                                  inputRef.current?.value !== discDollar &&
+                                  inputRef.current?.value.trim() !== ""
+                                ) {
+                                  fetcher.submit(event.currentTarget);
+                                }
+                              }}
+                            />
+                            <Button
+                              type="submit"
+                              size="icon"
+
+                              disabled={!discDollar}
+                              className='bg-primary mr-2 absolute right-1.5 top-2.5 h-4 w-4 text-foreground '>
+                              <PaperPlaneIcon className="h-4 w-4" />
+                              <span className="sr-only">Cash</span>
+                            </Button>
+                          </div>
+                        </fetcher.Form>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Discount %</span>
+                        <fetcher.Form
+                          method="post"
+                          onSubmit={() => {
+                            buttonRef.current?.focus();
+                          }}
+                          preventScrollReset
+                        >
+                          <input
+                            name='accOrderId'
+                            defaultValue={accOrder.id}
+                            type='hidden'
+                          />
+                          <input
+                            name='intent'
+                            defaultValue='updateDiscPerc'
+                            type='hidden'
+                          />
+                          <input
+                            name='total'
+                            defaultValue={totalAccessoriesCost}
+                            type='hidden'
+                          />
+                          <div className="relative ml-auto flex-1 md:grow-0 ">
+                            <Input
+                              ref={inputRef}
+                              name='discPer'
+                              className='text-right pr-[43px] w-[100px]'
+                              value={discPer}
+                              onChange={(event) => setDiscPer(event.target.value)}
+                              onKeyDown={(event) => {
+                                if (event.key === "Escape") {
+                                  buttonRef.current?.focus();
+                                }
+                              }}
+                              onBlur={(event) => {
+                                if (
+                                  inputRef.current?.value !== discPer &&
+                                  inputRef.current?.value.trim() !== ""
+                                ) {
+                                  fetcher.submit(event.currentTarget);
+                                }
+                              }}
+                            />
+                            <Percent className="absolute right-10 top-[8px] h-4 w-4 text-foreground" />
+                            <Button
+                              type="submit"
+                              size="icon"
+
+                              disabled={!discPer}
+                              className='bg-primary mr-2 absolute right-1.5 top-[8px] h-4 w-4 text-foreground '>
+                              <PaperPlaneIcon className="h-4 w-4" />
+                              <span className="sr-only">Cash</span>
+                            </Button>
+                          </div>
+                        </fetcher.Form>
+
+                      </li>
+                    </>
+                  )}
+                  <li className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Tax</span>
+                    <span>{deFees.userTax}%</span>
+                  </li>
+                  <li className="flex items-center justify-between font-semibold">
+                    <span className="text-muted-foreground">Total</span>
+                    <span>${total}</span>
+                  </li>
+                </ul>
+                <Separator className="my-4" />
+                <div className="grid gap-3">
+                  <div className="font-semibold">Payment</div>
+                  <dl className="grid gap-3">
+
+                    <div className="flex flex-col" >
+                      <div className='flex items-center justify-center text-foreground'>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className={cn('mr-2 bg-primary', paymentType === 'Visa' ? "bg-secondary" : "", "")}
+                          onClick={() => setPaymentType('Visa')}
+                        >
+                          <CreditCard className="h-4 w-4 text-foreground" />
+                          <p className="">Visa</p>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className={cn('mr-2 bg-primary', paymentType === 'Mastercard' ? "bg-secondary" : "", "")}
+                          onClick={() => setPaymentType('Mastercard')}
+                        >
+                          <CreditCard className="h-4 w-4 text-foreground" />
+                          <p className="">Mastercard</p>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setPaymentType('Debit')}
+                          className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
+                        >
+                          <CreditCard className="h-4 w-4 text-foreground" />
+                          <p className="">Debit</p>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setPaymentType('Cheque')}
+                          className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
+                        >
+                          <CreditCard className="h-4 w-4 text-foreground" />
+                          <p className="">Cheque</p>
+                        </Button>
+                      </div>
+                      <div className='flex items-center justify-center text-foreground mt-2'>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className={cn('mr-2 bg-primary', paymentType === 'Cash' ? "bg-secondary" : "", "")}
+                          onClick={() => setPaymentType('Cash')}
+                        >
+                          <BanknoteIcon className="h-4 w-4 text-foreground" />
+                          <p className="">Cash</p>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className={cn(' bg-primary mr-2', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
+                          onClick={() => setPaymentType('Online Transaction')}
+                        >
+                          <PanelTop className="h-4 w-4 text-foreground" />
+                          <p className="">Online Transaction</p>
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className={cn(' bg-primary', paymentType === 'E-Transfer' ? "bg-secondary" : "", "")}
+                          onClick={() => setPaymentType('E-Transfer')}
+                        >
+                          <PanelTop className="h-4 w-4 text-foreground" />
+                          <p className="">E-Transfer</p>
+                        </Button>
+                      </div>
+                    </div>
+                  </dl>
+                </div>
+                <div className="grid gap-3">
+                  <ul className="grid gap-3">
+                    {accOrder.Payments && accOrder.Payments.map((result, index) => (
+                      <li className="flex items-center justify-between" key={index}                    >
+                        <span className="text-muted-foreground">{result.paymentType}</span>
+                        <span>${result.amountPaid}</span>
+                      </li>
+                    ))}
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Balance</span>
+                      <span>${remaining}</span>
+
+                    </li>
+                    {remaining === 0 && (
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground"></span>
+                        <Badge className='bg-[#30A46C]'>PAID</Badge>
+                      </li>
+                    )}
+                    {paymentType !== '' && (
+                      <>
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Amount to be charged on {paymentType}</span>
+                          <payment.Form method="post" ref={formRef} >
+                            <input type='hidden' name='accOrderId' value={accOrder.id} />
+                            <input type='hidden' name='paymentType' value={paymentType} />
+                            <input type='hidden' name='remaining' value={remaining} />
+                            <input type='hidden' name='intent' value='createPayment' />
+                            <input type='hidden' name='total' value={total} />
+                            <div className="relative ml-auto flex-1 md:grow-0 ">
+                              <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                              <Input
+                                name='amountPaid'
+                                className='text-right pr-9'
+                                value={input}
+                                onChange={(event) => setInput(event.target.value)}
+                              />
+                              <Button
+                                type="submit"
+                                size="icon"
+                                onClick={() => {
+                                  toast.success(`Payment rendered!`)
+                                }}
+                                disabled={inputLength === 0}
+                                className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                                <PaperPlaneIcon className="h-4 w-4" />
+                                <span className="sr-only">Cash</span>
+                              </Button>
+                            </div>
+                          </payment.Form>
+                        </li>
+                      </>
+                    )}
+
+                  </ul>
+                </div>
+              </div>
+
+
+
+            </div >
+          </>
+        )}
+
+
+
+
       </CardContent>
-      <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
-        <div>
-        </div>
+      <CardFooter className="flex items-center border-t border-border   bg-muted/50  px-6 py-3">
+        {secPageAcc && (
+          <>
+            <div className="text-xs text-muted-foreground flex items-center justify-between">
+              <div classname='flex items-center'>
+                <div>
+                  <Badge size='sm' className='text-foreground text-center mx-auto w-auto'>
+                    {salesPerson.name}
+                  </Badge>
+                </div>
+                <div>
+                  <ClientOnly fallback={<p>Fallback component ...</p>}>
+                    {() => (
+                      <React.Suspense fallback={<div>Loading...</div>}>
+                        <Button
+                          size='sm'
+                          variant='outline'
+                          className='bg-background text-foreground border-border border ml-3'
+                          onClick={() => {
+                            console.log(toReceipt)
+                            PrintReceipt(toReceipt)
+                          }}>
+                          Print Receipt
+                        </Button>
+                      </React.Suspense>
+                    )}
+                  </ClientOnly>
+                </div>
+              </div>
+
+              <div>
+                <Pagination className="ml-auto mr-0 w-auto">
+                  <PaginationContent>
+                    <PaginationItem>
+                      <Button size="icon"
+                        variant="outline"
+                        className="h-6 w-6"
+                        onClick={() => {
+                          handlePrevPage()
+                        }}>
+                        <ChevronLeft className="h-3.5 w-3.5" />
+                        <span className="sr-only">Previous Order</span>
+                      </Button>
+                    </PaginationItem>
+                    <PaginationItem>
+                      <Button size="icon"
+                        variant="outline"
+                        className="h-6 w-6"
+                        onClick={() => {
+                          handleNextPage()
+                        }}>
+                        <ChevronRight className="h-3.5 w-3.5" />
+                        <span className="sr-only">Next Order</span>
+                      </Button>
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+
+            </div>
+          </>
+        )}
+
       </CardFooter>
-    </Card>
+    </Card >
   )
 }

@@ -107,15 +107,14 @@ const labels = [
   { dept: "Service", label: "Service" },
   { dept: "Accessories", label: "Accessories" },
   { dept: "Parts", label: "Parts" },
+  { dept: "Admin", label: "Admin" },
 ];
 const sortConversationsByDept = (conversations, labels) => {
-  // Create a map for quick lookup of room labels by department
   const roomLabelMap = new Map();
   labels.forEach((room) => {
     roomLabelMap.set(room.dept, room.label);
   });
 
-  // Sort conversations by department matching the room labels
   return conversations.sort((a, b) => {
     const roomA = roomLabelMap.get(a.dept);
     const roomB = roomLabelMap.get(b.dept);
@@ -197,7 +196,7 @@ export default function StaffChat({ content }) {
   }, []);
 
   useEffect(() => {
-    console.log("Conversations:", conversations); // Check if the component rerenders after state update
+    console.log("Conversations:", conversations);
   }, [conversations]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -242,7 +241,6 @@ export default function StaffChat({ content }) {
   };
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom whenever conversations change
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;

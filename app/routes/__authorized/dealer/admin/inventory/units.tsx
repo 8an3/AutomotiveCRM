@@ -25,25 +25,6 @@ import { cn } from "~/components/ui/utils";
 import AddUnitDialog from "~/components/dashboard/inventory/addUnitDiaolog";
 
 
-export const defaultColumn = {
-  cell: ({ row, column: { id } }) => {
-    const data = row.original
-    return (
-      <EditableText
-        value={row.getValue(id)}
-        fieldName="name"
-        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 "
-        buttonClassName="text-center py-1 px-2 text-foreground mx-auto flex justify-center"
-        buttonLabel={`Edit "${id}"`}
-        inputLabel={`Edit "${id}"`}
-      >
-        <input type="hidden" name="intent" value='updateDefaultColumn' />
-        <input type="hidden" name="id" value={data.id} />
-        <input type="hidden" name="colName" value={id} />
-      </EditableText>
-    )
-  },
-}
 function Consignment({ data }) {
   const fetcher = useFetcher();
 
@@ -454,6 +435,48 @@ export default function UnitInv() {
       setReferrer(referer)
     }
   }, []);
+  console.log(user, 'inventory units')
+  const userIsManager = user.positions.some(
+    (pos) => pos.position === 'Manager' || pos.position === 'Administrator'
+  );
+
+
+  let defaultColumn
+  if (userIsManager) {
+    defaultColumn = {
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <EditableText
+            value={row.getValue(id)}
+            fieldName="name"
+            inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 "
+            buttonClassName="text-center py-1 px-2 text-foreground mx-auto flex justify-center"
+            buttonLabel={`Edit "${id}"`}
+            inputLabel={`Edit "${id}"`}
+          >
+            <input type="hidden" name="intent" value='updateDefaultColumn' />
+            <input type="hidden" name="id" value={data.id} />
+            <input type="hidden" name="colName" value={id} />
+          </EditableText>
+        )
+      },
+    }
+  } else {
+    defaultColumn = {
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <p
+            className="text-center py-1 px-2 text-foreground mx-auto flex justify-center"
+          >
+            {row.getValue(id)}
+          </p>
+        )
+      },
+    }
+  }
+
 
 
   console.log(referrer, 'referer')
@@ -553,6 +576,19 @@ export default function UnitInv() {
           />
         </div>
       ),
+    },
+    {
+      id: 'Unit File',
+      accessorKey: "Unit File",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <UnitDialog data={data} user={user} />
+        )
+      },
     },
     {
       accessorKey: "id",
@@ -1544,180 +1580,182 @@ export default function UnitInv() {
   const navigate = useNavigate()
   return (
     <div className="w-[95%] mt-[15px] mx-auto">
-      <div className="flex items-center py-3">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size='sm' variant="outline" className='mr-3' >Menu</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 border border-border bg-background text-foreground">
-            <DropdownMenuLabel>Dashboard Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onSelect={() => setSelectedGlobal(true)}
-              >
-                Global Filter
-              </DropdownMenuItem>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="cursor-pointer">
-                  Default Filters
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent className="h-auto max-h-[175px] overflow-y-auto border border-border bg-background text-foreground">
-                    <DropdownMenuLabel>
-                      {todayfilterBy || "Default Filters"}
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {CallsList.map((item) => (
-                      <DropdownMenuItem
-                        onSelect={(event) => {
-                          const value =
-                            event.currentTarget.getAttribute("data-value");
-                          const item =
-                            CallsList.find((i) => i.key === value) ||
-                            DeliveriesList.find((i) => i.key === value) ||
-                            DepositsTakenList.find((i) => i.key === value);
-                          if (item) {
-                            handleFilterChange(item.key);
-                            setTodayfilterBy(item.name);
-                          }
-                        }}
-                        data-value={item.key}
-                        textValue={item.key}
-                      >
-                        {item.name}
-                      </DropdownMenuItem>
-                    ))}
 
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="cursor-pointer">
-                  Global Filters
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
-                    {table
-                      .getAllColumns()
-                      .filter((column) => column.getCanHide())
-                      .map((column) => (
+      <div className="container mx-auto py-3">
+        <div className="flex items-center py-3">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size='sm' variant="outline" className='mr-3' >Menu</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 border border-border bg-background text-foreground">
+              <DropdownMenuLabel>Dashboard Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onSelect={() => setSelectedGlobal(true)}
+                >
+                  Global Filter
+                </DropdownMenuItem>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="cursor-pointer">
+                    Default Filters
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent className="h-auto max-h-[175px] overflow-y-auto border border-border bg-background text-foreground">
+                      <DropdownMenuLabel>
+                        {todayfilterBy || "Default Filters"}
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {CallsList.map((item) => (
                         <DropdownMenuItem
                           onSelect={(event) => {
-                            setColumnFilterDropdown(event);
+                            const value =
+                              event.currentTarget.getAttribute("data-value");
+                            const item =
+                              CallsList.find((i) => i.key === value) ||
+                              DeliveriesList.find((i) => i.key === value) ||
+                              DepositsTakenList.find((i) => i.key === value);
+                            if (item) {
+                              handleFilterChange(item.key);
+                              setTodayfilterBy(item.name);
+                            }
                           }}
-                          data-value={column.id}
-                          key={column.id}
-                          className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline"
+                          data-value={item.key}
+                          textValue={item.key}
                         >
-                          {column.id}
+                          {item.name}
                         </DropdownMenuItem>
                       ))}
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onSelect={() => {
+
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="cursor-pointer">
+                    Global Filters
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                      {table
+                        .getAllColumns()
+                        .filter((column) => column.getCanHide())
+                        .map((column) => (
+                          <DropdownMenuItem
+                            onSelect={(event) => {
+                              setColumnFilterDropdown(event);
+                            }}
+                            data-value={column.id}
+                            key={column.id}
+                            className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline"
+                          >
+                            {column.id}
+                          </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onSelect={() => {
+                    setAllFilters([]);
+                    setSelectedGlobal(false);
+                  }}
+                >
+                  Clear
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onSelect={toggleFilter}
+                >
+                  Toggle All Columns
+                </DropdownMenuItem>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="cursor-pointer">
+                    Column Toggle
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                      {table
+                        .getAllColumns()
+                        .filter((column) => column.getCanHide())
+                        .map((column) => {
+                          return (
+                            <DropdownMenuCheckboxItem
+                              key={column.id}
+                              className="cursor-pointer bg-background  capitalize text-foreground"
+                              checked={column.getIsVisible()}
+                              onCheckedChange={(value) =>
+                                column.toggleVisibility(!!value)
+                              }
+                            >
+                              {column.id}
+                            </DropdownMenuCheckboxItem>
+                          );
+                        })}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {userIsManager && (
+            <AddUnitDialog />
+          )}
+          {selectedColumn && (
+            <div className="relative flex-1 md:grow-0 ">
+
+              <Input
+                placeholder={`Filter ${selectedColumn}...`}
+                onChange={(e) => handleGlobalChange(e.target.value)}
+                className="ml-2 max-w-sm w-auto "
+                autoFocus
+              />
+              <Button
+                onClick={() => {
                   setAllFilters([]);
                   setSelectedGlobal(false);
                 }}
-              >
-                Clear
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
+                size="icon"
+                variant="ghost"
+                className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
 
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem
-                className="cursor-pointer"
-                onSelect={toggleFilter}
-              >
-                Toggle All Columns
-              </DropdownMenuItem>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="cursor-pointer">
-                  Column Toggle
-                </DropdownMenuSubTrigger>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
-                    {table
-                      .getAllColumns()
-                      .filter((column) => column.getCanHide())
-                      .map((column) => {
-                        return (
-                          <DropdownMenuCheckboxItem
-                            key={column.id}
-                            className="cursor-pointer bg-background  capitalize text-foreground"
-                            checked={column.getIsVisible()}
-                            onCheckedChange={(value) =>
-                              column.toggleVisibility(!!value)
-                            }
-                          >
-                            {column.id}
-                          </DropdownMenuCheckboxItem>
-                        );
-                      })}
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <AddUnitDialog />
-        {selectedColumn && (
-          <div className="relative flex-1 md:grow-0 ">
+                <X />
+              </Button>
+            </div>
+          )}
+          {selectedGlobal === true && (
+            <div className="relative flex-1 md:grow-0 ">
+              <DebouncedInput
+                value={globalFilter ?? ""}
+                onChange={(value) => setGlobalFilter(String(value))}
+                className="mx-1 ml-3 rounded-md border border-border bg-background p-2 text-foreground shadow max-w-sm w-auto"
+                placeholder="Search all columns..." autoFocus
+              />
 
-            <Input
-              placeholder={`Filter ${selectedColumn}...`}
-              onChange={(e) => handleGlobalChange(e.target.value)}
-              className="ml-2 max-w-sm w-auto "
-              autoFocus
-            />
-            <Button
-              onClick={() => {
-                setAllFilters([]);
-                setSelectedGlobal(false);
-              }}
-              size="icon"
-              variant="ghost"
-              className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+              <Button
+                onClick={() => {
+                  setGlobalFilter([]);
+                  setSelectedGlobal(false);
+                }}
+                size="icon"
+                variant="ghost"
+                className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                <X size={16} />
+              </Button>
+            </div>
+          )}
+          {referrer === '/dealer/manager/inventory' && (
+            <Button size='sm' variant="outline" className='mr-3' onClick={() => {
+              navigate(-1)
+            }} >Back to Manager Dash</Button>
+          )}
 
-              <X />
-            </Button>
-          </div>
-        )}
-        {selectedGlobal === true && (
-          <div className="relative flex-1 md:grow-0 ">
-            <DebouncedInput
-              value={globalFilter ?? ""}
-              onChange={(value) => setGlobalFilter(String(value))}
-              className="mx-1 ml-3 rounded-md border border-border bg-background p-2 text-foreground shadow max-w-sm w-auto"
-              placeholder="Search all columns..." autoFocus
-            />
-
-            <Button
-              onClick={() => {
-                setGlobalFilter([]);
-                setSelectedGlobal(false);
-              }}
-              size="icon"
-              variant="ghost"
-              className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
-              <X size={16} />
-            </Button>
-          </div>
-        )}
-        {referrer === '/dealer/manager/inventory' && (
-          <Button size='sm' variant="outline" className='mr-3' onClick={() => {
-            navigate(-1)
-          }} >Back to Manager Dash</Button>
-        )}
-        http://localhost:3000/dealer/admin/inventory/units
-
-      </div>
-      <div className="container mx-auto py-3">
+        </div>
         <div className="rounded-md border border-border    h-auto max-h-[600px] overflow-y-auto  ">
           <Table className='border border-border text-foreground bg-background'>
             <TableHeader className='border border-border text-muted-foreground bg-background'>

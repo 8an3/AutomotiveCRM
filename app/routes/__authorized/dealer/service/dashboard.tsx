@@ -25,6 +25,8 @@ import {
   Scan,
   X,
   Users2Icon,
+  Eye,
+  Navigation,
 } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import {
@@ -667,7 +669,7 @@ export default function Dashboard() {
                                       showPrevOrderById(result.id)
                                     }}
                                   >
-                                    <ShoppingCart className="h-5 w-5" />
+                                    <Eye className="h-5 w-5" />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent side="right">
@@ -676,16 +678,17 @@ export default function Dashboard() {
                               </Tooltip>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <Button
-                                    size="icon"
-                                    variant="ghost"
-                                    className="mr-3 hover:bg-primary"
-                                    onClick={() => {
-                                      navigate(`/dealer/accessories/newOrder/${result.id}`)
-                                    }}
-                                  >
-                                    <FileCheck className="h-5 w-5" />
-                                  </Button>
+                                  <Link to={`/dealer/accessories/newOrder/${result.id}`} >
+
+                                    <Button
+                                      size="icon"
+                                      variant="ghost"
+                                      className="mr-3 hover:bg-primary"
+
+                                    >
+                                      <Navigation className="h-5 w-5" />
+                                    </Button>
+                                  </Link>
                                 </TooltipTrigger>
                                 <TooltipContent side="right">
                                   Go To Order

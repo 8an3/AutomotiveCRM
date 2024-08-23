@@ -1,4 +1,4 @@
-import { Button } from '~/components';
+import { Button, Separator } from '~/components';
 import { Link, useSubmit, useNavigate, useLocation } from '@remix-run/react';
 import { MsalProvider, AuthenticatedTemplate, useMsal, UnauthenticatedTemplate } from '@azure/msal-react';
 import { useAppContext } from '~/components/microsoft/AppContext';
@@ -72,7 +72,7 @@ export default function Welcome() {
 
   const OnClickContinue = async () => {
     console.log(user, 'user')
-    const goTo = navigate(`/createSession?email=${email}&name=${name}`)
+    const goTo = navigate()
     return goTo
   }
 
@@ -105,7 +105,7 @@ export default function Welcome() {
                   <p className="mr-1">Login with </p>
                   <TfiMicrosoft className="text-[28px]" />{" "}
                 </Button>
-                <hr className="solid text-muted-foreground" />
+                <Separator className="border-border" />
                 <Link to="/privacy">
                   <Button variant='outline' type="submit" className="w-full bg-background">
                     <p className="text-muted-foreground">To review our Privacy Policy</p>
@@ -135,15 +135,17 @@ export default function Welcome() {
             </CardHeader>
             <CardContent>
               <div className="grid gap-4">
-                <Button
-                  onClick={() => {
-                    OnClickContinue()
-                  }}
-                  variant="outline"
-                  className=" w-full text-foreground bg-primary"  >
-                  Continue...
-                </Button>
-                <hr className="solid text-foreground" />
+                <Link to={`/createSession?email=${email}&name=${name}`} >
+                  <Button
+                    onClick={() => {
+                    }}
+                    variant="outline"
+                    className=" w-full text-foreground bg-primary"  >
+                    Continue...
+                  </Button>
+                </Link>
+
+                <Separator className="border-border" />
                 <Link to="/privacy">
                   <Button onClick={OnClickLogout} className="w-full  text-foreground ">
                     <p className="mr-1">Logout of your </p>

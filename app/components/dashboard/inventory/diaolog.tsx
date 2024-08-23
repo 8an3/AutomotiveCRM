@@ -100,7 +100,7 @@ import { cn } from "~/components/ui/utils";
 import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
 
-export default function UnitDialog({ data }) {
+export default function UnitDialog({ data, user }) {
   let sortedEvents = [];
 
   let customerCard = [
@@ -169,6 +169,14 @@ export default function UnitDialog({ data }) {
   const loggedDate = new Date()
 
   const [datefloorPlanDueDate, setDatefloorPlanDueDate] = useState<Date>()
+
+  const userIsManager = user.positions.some(
+    (pos) => pos.position === 'Manager' || pos.position === 'Administrator'
+  );
+  const userIsDEV = user.positions.some(
+    (pos) => pos.position === 'DEV' || pos.position === 'Administrator'
+  );
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -550,35 +558,56 @@ export default function UnitDialog({ data }) {
                               Consignment
                             </label>
                           </div>
+                          {userIsManager ? (<>
+                            {customerCard.map((user, index) => (
+                              <div key={index} className="relative mt-5">
+                                <Input
+                                  name={user.name}
+                                  defaultValue={user.value}
+                                  className={` border border-border bg-background text-foreground`}
+                                />
+                                <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                                  {user.label}
+                                </label>
+                              </div>
+                            ))}
+                            {customerCard2.map((user, index) => (
+                              <div key={index} className="relative mt-5">
+                                <Input
+                                  name={user.name}
+                                  defaultValue={user.value}
+                                  className={` border border-border bg-background text-foreground`}
+                                />
+                                <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                                  {user.label}
+                                </label>
+                              </div>
+                            ))}
+                            <input type='hidden' name='id' value={data.id} />
+                            <div>
+                              <Button type='submit' name='intent' value='updateUnit' size='sm' >Save</Button>
+                            </div>
+                          </>
+                          ) : (
+                            <>
+                              {customerCard.map((user, index) => (
+                                <div key={index} className=" mt-5">
+                                  <p className={` border border-border bg-background text-foreground`}                              >
+                                    {user.value}
+                                  </p>
+                                </div>
+                              ))}
+                              {customerCard2.map((user, index) => (
+                                <div key={index} className=" mt-5">
+                                  <p className={` border border-border bg-background text-foreground`}                              >
+                                    {user.value}
+                                  </p>
+                                </div>
+                              ))}
 
-                          {customerCard.map((user, index) => (
-                            <div key={index} className="relative mt-5">
-                              <Input
-                                name={user.name}
-                                defaultValue={user.value}
-                                className={` border border-border bg-background text-foreground`}
-                              />
-                              <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
-                                {user.label}
-                              </label>
-                            </div>
-                          ))}
-                          {customerCard2.map((user, index) => (
-                            <div key={index} className="relative mt-5">
-                              <Input
-                                name={user.name}
-                                defaultValue={user.value}
-                                className={` border border-border bg-background text-foreground`}
-                              />
-                              <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
-                                {user.label}
-                              </label>
-                            </div>
-                          ))}
-                          <input type='hidden' name='id' value={data.id} />
-                          <div>
-                            <Button type='submit' name='intent' value='updateUnit' size='sm' >Save</Button>
-                          </div>
+                            </>
+                          )}
+
                         </div>
 
                       </Form>

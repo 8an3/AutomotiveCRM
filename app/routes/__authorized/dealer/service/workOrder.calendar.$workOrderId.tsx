@@ -1669,7 +1669,7 @@ export function EventInfoModal({ user, open, handleClose, currentEvent, techs }:
                     formData.append("workOrderId", String(data.workOrderId));
                     formData.append("techEmail", value);
                     formData.append("intent", 'updateTechnician');
-                    submit(formData, { method: "post" });
+                    fetcher.submit(formData, { method: "post" });
                     toast.success(`Changed technician to ${value}`)
                   }}
                 >

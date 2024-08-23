@@ -491,6 +491,7 @@ export default function Purchase() {
   let buttonRef = useRef<HTMLButtonElement>(null);
   let search = useFetcher();
   let fetcher = useFetcher();
+  let productAdd = useFetcher();
   const submit = useSubmit()
 
 
@@ -1022,7 +1023,7 @@ export default function Purchase() {
                       </dl>
 
                       <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="item-1">
+                        <AccordionItem value="item-1" className='border-border'>
                           <AccordionTrigger>More Info</AccordionTrigger>
                           <AccordionContent>
                             <ul className="grid gap-3 text-sm mt-2">
@@ -1223,20 +1224,22 @@ export default function Purchase() {
                               <TableCell>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <fetcher.Form method='post' preventScrollReset >
-                                      <Button
-                                        size="icon"
-                                        variant="ghost"
-                                        className="bg-primary"
-                                        name='intent'
-                                        value='updateOrder'
+                                    <Button
+                                      size="icon"
+                                      variant="ghost"
+                                      className="bg-primary"
+                                      onClick={() => {
+                                        const formData = new FormData();
+                                        formData.append("accId", result.id);
+                                        formData.append("intent", 'updateOrder');
+                                        formData.append("orderId", order.id);
+                                        console.log(formData, 'formData');
+                                        productAdd.submit(formData, { method: "post" });
+                                      }}
 
-                                      >
-                                        <Plus className="h-5 w-5" />
-                                      </Button>
-                                      <input type='hidden' name='accId' value={result.id} />
-                                      <input type='hidden' name='orderId' value={order.id} />
-                                    </fetcher.Form>
+                                    >
+                                      <Plus className="h-5 w-5" />
+                                    </Button>
                                   </TooltipTrigger>
                                   <TooltipContent side="right">
                                     Add To Order

@@ -148,7 +148,12 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog"
 import { Wrench } from "lucide-react";
-
+import { Calendar } from "iconoir-react";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "~/components/ui/alert"
 
 export default function Dashboard() {
   const { order, user, tax, dealerImage, services } = useLoaderData();
@@ -381,7 +386,137 @@ export default function Dashboard() {
   ];
 
   const remaining = parseFloat(total) - parseFloat(totalAmountPaid)
-  //console.log(order, 'order')
+  console.log(order, 'order')
+  /**     <div className="grid gap-3">
+  <div className="font-semibold">Work Order Services</div>
+  <ul className="grid gap-3">
+    {order.ServicesOnWorkOrders && order.ServicesOnWorkOrders.map((result, index) => {
+      const hours = result.hr || result.service.estHr || 0.00;
+
+      return (
+        <li key={index} className="flex items-center justify-between">
+          <div>
+            <ContextMenu>
+              <ContextMenuTrigger>
+                <div className='grid grid-cols-1'>
+                  <div className='flex items-center group '>
+                    <div className="font-medium flex-col">
+                      <p>{result.service.service}</p>
+                      <p className='text-muted-foreground'>{result.service.description}</p>
+                    </div>
+                    <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                      <input type="hidden" name="id" value={result.id} />
+                      <input type='hidden' name='total' value={total} />
+                      <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        name="intent" value='deleteServiceItem'
+                        className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                        type='submit'
+                      >
+                        <X className="h-4 w-4 text-foreground" />
+                      </Button>
+                    </addProduct.Form>
+                  </div>
+                  <div className="hidden text-sm text-muted-foreground md:inline">
+                    <div className='flex items-center'>
+                      <div className="font-medium">
+                        <EditableText
+                          value={hours}
+                          fieldName="name"
+                          inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
+                          buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                          buttonLabel={`Edit name`}
+                          inputLabel={`Edit name`}
+                        >
+                          <input type="hidden" name="intent" value='updateHr' />
+                          <input type="hidden" name="id" value={result.id} />
+                          <input type="hidden" name="colName" value='hr' />
+                        </EditableText>
+
+                      </div>
+                      <p>/hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                    </div>
+                  </div>
+                  {result.status && (
+                    <div>
+                      <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                    </div>
+                  )}
+                </div>
+              </ContextMenuTrigger>
+              <ContextMenuContent className='border-border'>
+                <ContextMenuSub>
+                  <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
+                  <ContextMenuSubContent className="w-48 border-border">
+                    <ContextMenuItem>{result.service.service}</ContextMenuItem>
+                    <ContextMenuItem>{result.service.description}</ContextMenuItem>
+                    <ContextMenuSeparator />
+                    <ContextMenuItem>
+                      Est. Hours
+                      <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
+                    </ContextMenuItem>
+                    <ContextMenuItem>
+                      Price
+                      <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
+                    </ContextMenuItem>
+                  </ContextMenuSubContent>
+                </ContextMenuSub>
+                <ContextMenuSeparator />
+                <ContextMenuCheckboxItem
+                  checked={result.status === 'In Stock'}
+                  onSelect={() => {
+                    const formData = new FormData();
+                    formData.append("id", result.id);
+                    formData.append("status", 'In Stock');
+                    formData.append("intent", 'updateServiceOnOrders');
+                    submit(formData, { method: "post", });
+                  }}
+                >In Stock</ContextMenuCheckboxItem>
+                <ContextMenuCheckboxItem
+                  checked={result.status === 'On Order'}
+                  onSelect={() => {
+                    const formData = new FormData();
+                    formData.append("id", result.id);
+                    formData.append("status", 'On Order');
+                    formData.append("intent", 'updateServiceOnOrders');
+                    submit(formData, { method: "post", });
+                  }}
+                >On Order</ContextMenuCheckboxItem>
+                <ContextMenuCheckboxItem
+                  checked={result.status === 'Completed'}
+                  onSelect={() => {
+                    const formData = new FormData();
+                    formData.append("id", result.id);
+                    formData.append("status", 'Completed');
+                    formData.append("intent", 'updateServiceOnOrders');
+                    submit(formData, { method: "post", });
+                  }}
+                >Completed</ContextMenuCheckboxItem>
+                <ContextMenuCheckboxItem
+                  checked={result.status === 'Back Order'}
+                  onSelect={() => {
+                    const formData = new FormData();
+                    formData.append("id", result.id);
+                    formData.append("status", 'Back Order');
+                    formData.append("intent", 'updateServiceOnOrders');
+                    submit(formData, { method: "post", });
+                  }}
+                >Back Order</ContextMenuCheckboxItem>
+              </ContextMenuContent>
+            </ContextMenu>
+          </div>
+          <span>
+            x{" "}{" "}{result.quantity}
+
+          </span>
+        </li>
+      )
+    })}
+  </ul>
+</div>
+<Separator className="my-4" /> */
   return (
     <div>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
@@ -503,6 +638,7 @@ export default function Dashboard() {
               <TabsList>
                 <TabsTrigger value="week">W / O</TabsTrigger>
                 <TabsTrigger value="Parts">Parts</TabsTrigger>
+                <TabsTrigger value="Appts">Appts</TabsTrigger>
               </TabsList>
               <Button size='sm' className='ml-auto text-foreground' onClick={() => {
                 const formData = new FormData();
@@ -658,136 +794,7 @@ export default function Dashboard() {
                       </AccordionItem>
                     </Accordion>
                     <p className='mt-4 mb-5'></p>
-                    <div className="grid gap-3">
-                      <div className="font-semibold">Work Order Services</div>
-                      <ul className="grid gap-3">
-                        {order.ServicesOnWorkOrders && order.ServicesOnWorkOrders.map((result, index) => {
-                          const hours = result.hr || result.service.estHr || 0.00;
 
-                          return (
-                            <li key={index} className="flex items-center justify-between">
-                              <div>
-                                <ContextMenu>
-                                  <ContextMenuTrigger>
-                                    <div className='grid grid-cols-1'>
-                                      <div className='flex items-center group '>
-                                        <div className="font-medium flex-col">
-                                          <p>{result.service.service}</p>
-                                          <p className='text-muted-foreground'>{result.service.description}</p>
-                                        </div>
-                                        <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                                          <input type="hidden" name="id" value={result.id} />
-                                          <input type='hidden' name='total' value={total} />
-                                          <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                                          <Button
-                                            size="icon"
-                                            variant="outline"
-                                            name="intent" value='deleteServiceItem'
-                                            className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                                            type='submit'
-                                          >
-                                            <X className="h-4 w-4 text-foreground" />
-                                          </Button>
-                                        </addProduct.Form>
-                                      </div>
-                                      <div className="hidden text-sm text-muted-foreground md:inline">
-                                        <div className='flex items-center'>
-                                          <div className="font-medium">
-                                            <EditableText
-                                              value={hours}
-                                              fieldName="name"
-                                              inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
-                                              buttonClassName="text-center py-1 px-2 text-muted-foreground"
-                                              buttonLabel={`Edit name`}
-                                              inputLabel={`Edit name`}
-                                            >
-                                              <input type="hidden" name="intent" value='updateHr' />
-                                              <input type="hidden" name="id" value={result.id} />
-                                              <input type="hidden" name="colName" value='hr' />
-                                            </EditableText>
-
-                                          </div>
-                                          <p>/hrs{" "}{" "}@{" "}${tax.userLabour}</p>
-                                        </div>
-                                      </div>
-                                      {result.status && (
-                                        <div>
-                                          <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </ContextMenuTrigger>
-                                  <ContextMenuContent className='border-border'>
-                                    <ContextMenuSub>
-                                      <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
-                                      <ContextMenuSubContent className="w-48 border-border">
-                                        <ContextMenuItem>{result.service.service}</ContextMenuItem>
-                                        <ContextMenuItem>{result.service.description}</ContextMenuItem>
-                                        <ContextMenuSeparator />
-                                        <ContextMenuItem>
-                                          Est. Hours
-                                          <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
-                                        </ContextMenuItem>
-                                        <ContextMenuItem>
-                                          Price
-                                          <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
-                                        </ContextMenuItem>
-                                      </ContextMenuSubContent>
-                                    </ContextMenuSub>
-                                    <ContextMenuSeparator />
-                                    <ContextMenuCheckboxItem
-                                      checked={result.status === 'In Stock'}
-                                      onSelect={() => {
-                                        const formData = new FormData();
-                                        formData.append("id", result.id);
-                                        formData.append("status", 'In Stock');
-                                        formData.append("intent", 'updateServiceOnOrders');
-                                        submit(formData, { method: "post", });
-                                      }}
-                                    >In Stock</ContextMenuCheckboxItem>
-                                    <ContextMenuCheckboxItem
-                                      checked={result.status === 'On Order'}
-                                      onSelect={() => {
-                                        const formData = new FormData();
-                                        formData.append("id", result.id);
-                                        formData.append("status", 'On Order');
-                                        formData.append("intent", 'updateServiceOnOrders');
-                                        submit(formData, { method: "post", });
-                                      }}
-                                    >On Order</ContextMenuCheckboxItem>
-                                    <ContextMenuCheckboxItem
-                                      checked={result.status === 'Completed'}
-                                      onSelect={() => {
-                                        const formData = new FormData();
-                                        formData.append("id", result.id);
-                                        formData.append("status", 'Completed');
-                                        formData.append("intent", 'updateServiceOnOrders');
-                                        submit(formData, { method: "post", });
-                                      }}
-                                    >Completed</ContextMenuCheckboxItem>
-                                    <ContextMenuCheckboxItem
-                                      checked={result.status === 'Back Order'}
-                                      onSelect={() => {
-                                        const formData = new FormData();
-                                        formData.append("id", result.id);
-                                        formData.append("status", 'Back Order');
-                                        formData.append("intent", 'updateServiceOnOrders');
-                                        submit(formData, { method: "post", });
-                                      }}
-                                    >Back Order</ContextMenuCheckboxItem>
-                                  </ContextMenuContent>
-                                </ContextMenu>
-                              </div>
-                              <span>
-                                x{" "}{" "}{result.quantity}
-
-                              </span>
-                            </li>
-                          )
-                        })}
-                      </ul>
-                    </div>
-                    <Separator className="my-4" />
                     <div className="font-semibold">Services</div>
 
                     <div className='grid grid-cols-2 mt-4'>
@@ -996,7 +1003,37 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
             </TabsContent>
-            <TabsContent value="Calendar">
+            <TabsContent value="Appts">
+              <Card x-chunk="dashboard-05-chunk-3">
+                <CardHeader className="px-7">
+                  <CardTitle>Appointments</CardTitle>
+                  <CardDescription>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className=' grid grid-cols-1'>
+                    {order.WorkOrderApts && order.WorkOrderApts.map((result, index) => {
+                      <>
+                        <Alert key={index}>
+                          <Calendar className="h-4 w-4" />
+                          <AlertTitle>{result.start} - {result.end}</AlertTitle>
+                          <AlertDescription>
+                            <p>{result.color} {result.unit}  </p>
+                            <p>{result.vin}  </p>
+                            <p>{result.location}  </p>
+                            <p>{result.tech} - {result.writer}  </p>
+                            <p>Completed? {result.completed}  </p>
+                          </AlertDescription>
+                        </Alert>
+                      </>
+                    })}
+                  </div>
+                </CardContent>
+                <CardFooter>
+
+                </CardFooter>
+
+              </Card>
             </TabsContent>
           </Tabs>
         </div>
@@ -2138,6 +2175,30 @@ export async function loader({ request, params }: LoaderFunction) {
               price: true,
             }
           }
+        }
+      },
+      // FinanceUnit
+      //  WorkOrderClockEntries
+      //  ServiceUnit
+      WorkOrderApts: {
+        select: {
+          id: true,
+          tech: true,
+          techEmail: true,
+          writer: true,
+          start: true,
+          end: true,
+          title: true,
+          workOrderId: true,
+          completed: true,
+          resourceId: true,
+          unit: true,
+          mileage: true,
+          vin: true,
+          tag: true,
+          motor: true,
+          color: true,
+          location: true,
         }
       }
     },

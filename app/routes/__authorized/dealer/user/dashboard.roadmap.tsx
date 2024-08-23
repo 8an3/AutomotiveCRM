@@ -66,7 +66,12 @@ export const metadata = {
   description: "Example dashboard app built using the components.",
 }
 
+
 const completed = [
+  { board: "dev", column: "GET DONE NOW", item: "end of day reports, choose date so you can print any day" },
+  { board: "dev", column: "ISSUE", item: "accessories/parts differiantiati between parts and acc by sellingDept on dashboard" },
+  { board: "dev", column: "DONE NEEDS TESTING", item: "invite user section where it send an email with links to the crm and" },
+
   { board: "dev", column: "WIP", item: "manager Dashboard" },
   { board: "dev", column: "WIP", item: "admin dash" },
   { board: "dev", column: "done needs testing", item: "need to test all functions due to database changes" },
@@ -375,19 +380,26 @@ const completed = [
 
 ]
 const getDoneNow = [
-  { board: "dev", column: "GET DONE NOW", item: "need to swap out for financeUnit/tradeunit from just finance in schema" },
-
-  { board: "dev", column: "GET DONE NOW", item: "use swr with auto revalidation for workorders so it updates in real time to get rid of the issue of 1 work order only open, set to fast on work orders for service writers but slow on tech's page" },
-
-  { board: "dev", column: "GET DONE NOW", item: "end of day reports, choose date so you can print any day" },
+  { board: "dev", column: "GET DONE NOW", item: "notes in client file fix" },
+  { board: "dev", column: "GET DONE NOW", item: "in clientfile under service tab create back button to see the list of workorders again" },
+  { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
+  { board: "dev", column: "GET DONE NOW", item: "put in a room for admin for people to leave notes for the admin team" },
+  { board: "dev", column: "GET DONE NOW", item: "put swr places it needs to be, part, unit, workorder, like the way you did on sales dashbaord" },
 
   { board: "dev", column: "GET DONE NOW", item: "saving doc templates, see if you can save big json strings in database- this produces a problem of linking the database data to the end points on the persons template you either have to input each manually or have a legend where they click the data point they want and it copies the actual database value and they paste it into the value on the template" },
 
   { board: "dev", column: "GET DONE NOW", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase in managers dash" },
 
   { board: "dev", column: "GET DONE NOW", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down" },
-
-
+  { board: "dev", column: "ISSUE", item: "FIX ADMIN AND MANAGER SECTIONS" },
+  { board: "dev", column: "ISSUE", item: "Parts order printout and workorder printout for srevice" },
+]
+const issue = [
+  { board: "dev", column: "ISSUE", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
+  { board: "dev", column: "ISSUE", item: "end of day report, sales people arent printing out" },
+  { board: "dev", column: "ISSUE", item: "need winter storage dash for service / winter storage long term" },
+  { board: "dev", column: "ISSUE", item: "user docs instead of having a doc section have button where it brings them to utube video to teach them about page" },
+  { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
 ]
 const BACKBURNER = [
   { board: "dev", column: "BACKBURNER", item: "set up more parts pages - started - Manitou done - switch started" },
@@ -395,19 +407,15 @@ const BACKBURNER = [
   { board: "dev", column: "BACKBURNER", item: "have it populate api keys so managers can hand them out" },
   { board: "dev", column: "BACKBURNER", item: "cross platform ad manager, post it once here and push it to different providors" },
 ]
-const issue = [
-  { board: "dev", column: "ISSUE", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
-  { board: "dev", column: "ISSUE", item: "user docs instead of having a doc section have button where it brings them to utube video to teach them about page" },
-  { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
-  { board: "dev", column: "ISSUE", item: "FIX ADMIN AND MANAGER SECTIONS" },
-]
+
 const doneneedstesting = [
+  { board: "dev", column: "GET DONE NOW", item: "use swr with auto revalidation for workorders so it updates in real time to get rid of the issue of 1 work order only open, set to fast on work orders for service writers but slow on tech's page" },
+
   { board: "dev", column: "DONE NEEDS TESTING", item: "use same system as notifications to check on new mail - USE SWR" },
   { board: "dev", column: "DONE NEEDS TESTING", item: "webhook for incoming emails, save notifiation and messeages" },
   { board: "dev", column: "DONE NEEDS TESTING", item: "mass sms - wip" },
   { board: "dev", column: "DONE NEEDS TESTING", item: "email" },
   { board: "dev", column: "DONE NEEDS TESTING", item: "sms" },
-  { board: "dev", column: "DONE NEEDS TESTING", item: "invite user section where it send an email with links to the crm and" },
   { board: "dev", column: "DONE NEEDS TESTING", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
 ]
 const WIP = [
@@ -438,10 +446,10 @@ const automation = [
   { board: "dev", column: "AUTOMATION", item: "customer 2 months after pick up to make sure everything is still good" },
 ]
 const service = [
-  { board: "dev", column: "SERVICE", item: "tech should just be aqble to look at his agenda and know what hes doing for the day, he should have access to all the information he needs from his terminal without having to go find anyone and bug them about it and no more paperwork" },
-  { board: "dev", column: "SERVICE", item: "service writer dash" },
-  { board: "dev", column: "SERVICE", item: "tech dash" },
-  { board: "dev", column: "SERVICE", item: "scan incoming crates and add them into inventory or something, maybe a inbox for the admin to convert them to inventory" },
+  { board: "dev", column: "service", item: "tech should just be aqble to look at his agenda and know what hes doing for the day, he should have access to all the information he needs from his terminal without having to go find anyone and bug them about it and no more paperwork" },
+  { board: "dev", column: "service", item: "service writer dash" },
+  { board: "dev", column: "service", item: "tech dash" },
+  { board: "dev", column: "service", item: "scan incoming crates and add them into inventory or something, maybe a inbox for the admin to convert them to inventory" },
 ]
 const docs = [
   { board: "dev", column: "docs", item: "Videos for docs" },
@@ -488,8 +496,8 @@ const dash = [
   { board: "dev", column: "dash", item: "dynamic dashboard widgets" },
 ]
 const communications = [
-  { board: "dev", column: "COMMUNICATIONS", item: "email / sms campaigns" },
-  { board: "dev", column: "COMMUNICATIONS", item: "fb msgr integration" },
+  { board: "dev", column: "communications", item: "email / sms campaigns" },
+  { board: "dev", column: "communications", item: "fb msgr integration" },
 
 ]
 const paidfeature = [
@@ -526,7 +534,29 @@ export const roadMapItems = [
   ...accessories,
   ...parts,
 ]
-
+export {
+  paidfeature,
+  dash,
+  parts,
+  docs,
+  owner,
+  quote,
+  automation,
+  admin,
+  service,
+  accessories,
+  manager,
+  dealerOnboarding,
+  infastructure,
+  sales,
+  WIP,
+  getDoneNow,
+  doneneedstesting,
+  BACKBURNER,
+  completed,
+  issue,
+  ideas,
+}
 
 //const todoRoadmap = roadMapItems
 /*  docs,

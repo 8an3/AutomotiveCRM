@@ -244,6 +244,7 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     }
   }
 
+
   const userAgent = request.headers.get('User-Agent');
   const isMobileDevice = checkForMobileDevice(userAgent);
   const rotationList = await prisma.user.findMany()
@@ -283,8 +284,8 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
   const userId = user?.id;
   const intent = formPayload.intent;
   if (intent === 'columnState') {
-    const update = await prisma.columnStateInventory.update({
-      where: { id: user.ColumnStateInventory.id },
+    const update = await prisma.columnStateSales.update({
+      where: { id: user.columnStateSales.id },
       data: { state: JSON.parse(formPayload.state) }
     })
     return json({ update })
