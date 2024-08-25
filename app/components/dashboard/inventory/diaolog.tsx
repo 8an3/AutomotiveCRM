@@ -162,6 +162,8 @@ export default function UnitDialog({ data, user }) {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
+    hour12: false,
+    timeZoneName: "short"
   };
 
   const [date, setDate] = useState<Date>()

@@ -25,6 +25,7 @@ import {
   Scan,
   X,
   Users2Icon,
+  Trash,
 } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import {
@@ -304,6 +305,8 @@ export default function Dashboard() {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
+    hour12: false,
+    timeZoneName: "short"
   };
 
   let toReceipt
@@ -1012,21 +1015,53 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className=' grid grid-cols-1'>
-                    {order.WorkOrderApts && order.WorkOrderApts.map((result, index) => {
-                      <>
-                        <Alert key={index}>
+                    {order.WorkOrderApts && order.WorkOrderApts.map((result) => (
+                      <div className='group relative'>
+                        <Alert key={result.id} className='border-border'>
                           <Calendar className="h-4 w-4" />
-                          <AlertTitle>{result.start} - {result.end}</AlertTitle>
-                          <AlertDescription>
-                            <p>{result.color} {result.unit}  </p>
-                            <p>{result.vin}  </p>
-                            <p>{result.location}  </p>
-                            <p>{result.tech} - {result.writer}  </p>
-                            <p>Completed? {result.completed}  </p>
+                          <AlertTitle className='flex justify-between'>
+                            <p>{new Date(result.start).toLocaleString("en-US", options2)} - {new Date(result.end).toLocaleString("en-US", options2)}</p>
+                          </AlertTitle>
+                          <AlertDescription className='gap-3'>
+                            <div className='flex justify-between gap-3'>
+                              <p>{result.color} {result.unit}</p>
+                              <p>{result.vin}</p>
+                              <p>{result.location}</p>
+                            </div>
+                            <div className='flex justify-between'>
+                              <p>Writer: {result.writer}</p>
+                              <p>{result.tech && (<p>Tech: {result.tech}</p>)}</p>
+                            </div>
                           </AlertDescription>
                         </Alert>
-                      </>
-                    })}
+                        <div className=' absolute right-3 -top-1 flex items-center gap-3 '>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            onClick={() => {
+
+
+                            }}
+                            className=" h-[28px] w-[28px]  opacity-0 transition-opacity group-hover:opacity-100 "
+                          >
+                            <Trash className="h-4 w-4" />
+                            <span className="sr-only">Delete</span>
+                          </Button>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            onClick={() => {
+
+                            }}
+                            className="h-[28px] w-[28px] opacity-0 transition-opacity group-hover:opacity-100 "
+                          >
+                            <Wrench className="h-4 w-4" />
+                            <span className="sr-only">Edit</span>
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+
                   </div>
                 </CardContent>
                 <CardFooter>

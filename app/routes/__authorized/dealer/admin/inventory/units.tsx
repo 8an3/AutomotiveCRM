@@ -553,6 +553,8 @@ export default function UnitInv() {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
+    hour12: false,
+    timeZoneName: "short"
   };
 
   const columns = [

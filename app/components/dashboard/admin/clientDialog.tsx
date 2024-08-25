@@ -237,6 +237,8 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
+    hour12: false,
+    timeZoneName: "short"
   };
 
 
@@ -1268,6 +1270,8 @@ function SalesAccOrder({ finance, deFees, salesPerson }) {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
+    hour12: false,
+    timeZoneName: "short"
   };
 
 
@@ -2676,6 +2680,8 @@ function WorkOrders({ finance, deFees }) {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
+    hour12: false,
+    timeZoneName: "short"
   };
 
 
@@ -3581,6 +3587,8 @@ function AccOrders({ finance, deFees, salesPerson }) {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
+    hour12: false,
+    timeZoneName: "short"
   };
 
 

@@ -1396,7 +1396,10 @@ export async function loader({ request, params }: LoaderFunction) {
   let appointment
 
   if (order.WorkOrderApts) {
-    appointment = await prisma.workOrderApts.findUnique({ where: { id: order.WorkOrderApts.id } })
+    appointment = await prisma.workOrderApts.findFirst({
+      where: { id: order.WorkOrderApts.id, techEmail: 'serviceDesk@email.com' },
+      orderBy: { createdAt: 'desc', },
+    })
   }
   const allUsers = await prisma.user.findMany({
     select: {
