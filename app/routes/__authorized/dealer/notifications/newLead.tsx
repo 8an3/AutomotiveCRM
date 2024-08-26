@@ -7,15 +7,22 @@ export async function loader({ request, params }: LoaderFunction) {
     where: {
       type: 'New Lead',
     },
-    include: {
-      reads: {
-        select: {
-          read: true,
-        },
-      },
-    },
     orderBy: {
       createdAt: 'desc', // Optional: Order by creation date
+    },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      dismiss: true,
+      type: true,
+      subType: true,
+      financeId: true,
+      clientfileId: true,
+      to: true,
+      from: true,
+      userEmail: true,
+      read: true,
     },
   });
   const getloadNewLead = () => {

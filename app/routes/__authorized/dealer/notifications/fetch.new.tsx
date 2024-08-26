@@ -24,11 +24,10 @@ export async function loader({ request, params }: LoaderFunction) {
 
   return eventStream(request.signal, function setup(send) {
     async function run() {
-      for await (let _ of interval(1000 * 60 * 3, { signal: request.signal })) { // Check every 3 minutes
-        // Fetch new notifications from the database
+      for await (let _ of interval(1000 * 60 * 3, { signal: request.signal })) {
         const notifications = await prisma.notificationsUser.findMany({
           where: {
-            userEmail: email, // Replace this with your actual session handling logic
+            userEmail: email,
             read: false,
             createdAt: {
               gte: new Date(Date.now() - 1000 * 60 * 60),
@@ -37,7 +36,6 @@ export async function loader({ request, params }: LoaderFunction) {
         });
 
 
-        // Send new notifications to the client
         for (const notification of notifications) {
           send({ event: 'notification', data: JSON.stringify(notification) });
         }

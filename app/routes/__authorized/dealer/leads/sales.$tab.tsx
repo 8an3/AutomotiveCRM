@@ -471,7 +471,31 @@ export function MainDashbaord({ user }) {
             filterFn: 'equalsString',
             header: ({ column }) => {
                 return <>
-                    <DataTableColumnHeader column={column} title="Status" />
+                    <Select onValueChange={(value) => {
+                        const status = table.getColumn("status")
+                        status?.setFilterValue(value)
+                    }}                                >
+                        <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                            <SelectValue placeholder='Status' />
+                        </SelectTrigger>
+                        <SelectContent className='bg-background text-foreground border border-border'>
+                            <SelectGroup>
+                                <SelectLabel>Status</SelectLabel>
+                                <SelectItem value='Active' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                    Active
+                                </SelectItem>
+                                <SelectItem value='Duplicate' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                    Duplicate
+                                </SelectItem>
+                                <SelectItem value='Invalid' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                    Invalid
+                                </SelectItem>
+                                <SelectItem value='Lost' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                    Lost
+                                </SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 </>
             },
             cell: ({ row }) => {
@@ -2566,6 +2590,7 @@ export function MainDashbaord({ user }) {
             name: "Missed Calls - Year",
         },
     ];
+
 
     const handleFilterChange = (selectedFilter) => {
         setAllFilters();

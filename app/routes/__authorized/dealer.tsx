@@ -55,7 +55,23 @@ export async function loader({ request, params }: LoaderFunction) {
   const interruptionsData = await prisma.interruptions.findMany({ where: { userEmail: email } });
   const notifications = await prisma.notificationsUser.findMany({
     where: { userEmail: email, },
-    include: { reads: true, },
+    select: {
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+      title: true,
+      content: true,
+      dismiss: true,
+      type: true,
+      subType: true,
+      financeId: true,
+      clientfileId: true,
+      to: true,
+      from: true,
+      userEmail: true,
+      customerName: true,
+      read: true,
+    },
     orderBy: { createdAt: 'desc', },
   });
   const host = request.headers.get('host');
@@ -69,7 +85,6 @@ export async function action({ request, params }: ActionFunction) {
   const email = session.get('email')
   const user = await GetUser(email)
   const location = String(formData.pathname)
-  const title = ''
   const date = new Date()
   const options = {
     weekday: 'short',
@@ -145,30 +160,27 @@ export async function action({ request, params }: ActionFunction) {
           read: 'true'
         }
       });
-      //const finance = await prisma
-      const location = formData.pathname //'/dealer/leads/sales'
+      const location = formData.pathname
       return redirect(String(location));
     } catch (error) {
       console.error('Error updating interruption:', error);
-      // Handle the error gracefully, such as displaying a message to the user or logging additional information
-      throw error; // Rethrow the error to propagate it further if needed
+      throw error;
     }
   }
   if (formData.intent === 'updateNewLead') {
     await prisma.notificationsUser.update({
-      where: { id: formData.id },
+      where: { id: formData.notificationId },
       data: {
-        read: 'true'
+        read: true
       }
     });
     const location = `/dealer/leads/sales/newLeads`
     return redirect(location);
   }
   if (formData.intent === 'newLead') {
-    await prisma.notificationRead.create({
+    await prisma.notificationsUser.update({
+      where: { id: formData.notificationId },
       data: {
-        userEmail: formData.userEmail,
-        notificationId: formData.notificationId,
         read: true
       }
     })
@@ -184,18 +196,23 @@ export async function action({ request, params }: ActionFunction) {
     return redirect(formData.navigate)
   }
   if (formData.intent === 'newMsg') {
-    await prisma.notificationRead.create({
+    await prisma.notificationsUser.update({
+      where: { id: formData.notificationId },
       data: {
-        userEmail: formData.userEmail,
-        notificationId: formData.notificationId,
         read: true
       }
     })
     return redirect(formData.navigate)
   }
-
-
-
+  if (formData.intent === 'newUpdate') {
+    await prisma.notificationsUser.update({
+      where: { id: formData.notificationId },
+      data: {
+        read: true
+      }
+    })
+    return redirect(formData.navigate)
+  }
   return null
 };
 
@@ -474,9 +491,10 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
 
   }, [notificationsList])
 
-  const msgsength = Object.keys(messages).length || 0;
-  const intLength = Object.keys(interruptions).length || 0;
-  const updatesLength = Object.keys(updates).length || 0;
+  const msgsLength = messages.filter(item => !item.read).length || 0;
+  const intLength = interruptions.filter(item => !item.read).length || 0;
+  const updatesLength = updates.filter(item => !item.read).length || 0;
+
 
   const shouldShowNotification = (
     messages.some(item => !item.reads || Object.keys(item.reads).length === 0) ||
@@ -485,20 +503,6 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
     interruptions.some(item => item.read === 'false')
   );
 
-
-  /**  const [menuOpen, setMenuOpen] = useState(false)
-    useEffect(() => {
-      let listener = (event) => {
-       // if ((event.metaKey || event.ctrlKey) && event.key === 'm') {
-        if (event.key === 'F4') {
-       setMenuOpen(true)
-        }
-      }
-      window.addEventListener('keydown', listener)
-      return () => window.removeEventListener('keydown', listener)
-    }, []) */
-
-
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 25, left: 25 });
 
@@ -506,19 +510,18 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
   // Handle keydown events
   const handleKeyDown = (event) => {
     if (event.key === 'F4') {
-      event.preventDefault(); // Prevent default action
+      event.preventDefault();
 
-      // Open the dropdown at the stored cursor position
       setDropdownOpen(true);
     }
   };
 
   // Handle mousemove to track cursor position
   const handleMouseMove = (event) => {
-    if (isDropdownOpen) return; // Stop tracking if dropdown is open
+    if (isDropdownOpen) return;
     setDropdownPosition({
-      top: event.clientY,  // Cursor vertical position
-      left: event.clientX, // Cursor horizontal position
+      top: event.clientY,
+      left: event.clientX,
     });
   };
 
@@ -535,13 +538,13 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
 
   // Handle button click
   const handleButtonClick = () => {
-    setDropdownOpen(prev => !prev); // Toggle dropdown visibility
+    setDropdownOpen(prev => !prev);
   };
 
   useEffect(() => {
     if (messages) {
       messages.forEach(item => {
-        if (!item.reads || Object.keys(item.reads).length === 0) {
+        if (item.read === false) {
           if (item.subType === 'email') {
             toast(`Incoming email! `, {
               description: `${item.title}`,
@@ -584,10 +587,11 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
       });
     }
   }, [messages]);
+
   useEffect(() => {
     if (lead) {
       lead.forEach(item => {
-        if (!item.reads || Object.keys(item.reads).length === 0) {
+        if (item.read === false) {
           toast(`Incoming new lead! `, {
             description: `${item.title} - ${item.content}`,
             duration: Infinity,
@@ -608,10 +612,11 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
       });
     }
   }, [lead]);
+
   useEffect(() => {
     if (lead) {
       lead.forEach(item => {
-        if (!item.reads || Object.keys(item.reads).length === 0) {
+        if (item.read === false) {
           toast(`Incoming new lead! `, {
             description: `${item.title} - ${item.content}`,
             duration: Infinity,
@@ -671,11 +676,11 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className='cursor-pointer'>
                   <div className='mr-2'>
-                    {messages && messages.some(item => !item.reads || Object.keys(item.reads).length === 0) && (
+                    {messages && messages.some(item => !item.read) && (
                       <span className="relative flex h-[20px] w-[20px] items-center justify-center">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-[20px] w-[20px] bg-[#3b99fc] flex items-center justify-center">
-                          <p className='text-white hover:text-primary text-xs'>{msgsength}</p>
+                          <p className='text-white hover:text-primary text-xs'>{msgsLength}</p>
                         </span>
                       </span>
                     )}
@@ -684,23 +689,30 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
                   <DropdownMenuSubContent className="bg-background w-[300px] border border-border">
-                    {messages ? messages.map((item, index) => (
-                      <DropdownMenuItem
-                        key={index}
-                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer ${item.reads.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
-                        onSelect={() => {
-                          const formData = new FormData();
-                          formData.append("notificationId", item.id);
-                          formData.append("userEmail", user.email);
-                          formData.append("userName", user.name);
-                          formData.append("navigate", `/dealer/customer/${item.clientfileId}/${item.financeId}`);
-                          formData.append("intent", 'newMsg');
-                          submit(formData, { method: "post" });
-                        }}
-                      >
-                        {item.title}
-                      </DropdownMenuItem>
-                    )) : <DropdownMenuItem>No messages available</DropdownMenuItem>}
+                    {messages ? messages.map((item, index) => {
+                      return (
+                        <DropdownMenuItem
+                          key={index}
+                          className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
+            ${item.read === true ? 'bg-background' : 'bg-[#181818]'}`}
+                          onSelect={() => {
+                            const formData = new FormData();
+                            formData.append("notificationId", item.id);
+                            formData.append("userEmail", user.email);
+                            formData.append("userName", user.name);
+                            formData.append("navigate", `/dealer/customer/${item.clientfileId}/${item.financeId}`);
+                            formData.append("intent", 'newMsg');
+                            submit(formData, { method: "post" });
+                          }}
+                        >
+                          {item.title}
+                        </DropdownMenuItem>
+                      );
+                    }) : (
+                      <DropdownMenuItem>No messages available</DropdownMenuItem>
+                    )}
+
+
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
@@ -708,7 +720,7 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className='cursor-pointer'>
                   <div className='mr-2'>
-                    {lead.length > 0 && lead.every(l => l.reads && Object.keys(l.reads).length === 0) && (
+                    {lead && lead.some(item => !item.read) && (
                       <span className="relative flex h-[20px] w-[20px] items-center justify-center">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-[20px] w-[20px] bg-[#3b99fc] flex items-center justify-center">
@@ -725,7 +737,8 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                       {lead ? lead.map((item, index) => (
                         <DropdownMenuItem
                           key={index}
-                          className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer ${item.reads.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                          className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
+                            ${item.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
                           onSelect={() => {
                             const formData = new FormData();
                             formData.append("notificationId", item.id);
@@ -751,7 +764,7 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className='cursor-pointer'>
                   <div className='mr-2'>
-                    {updates && updates.some(item => !item.reads || Object.keys(item.reads).length === 0) && (
+                    {updates && updates.some(item => !item.read) && (
                       <span className="relative flex h-[20px] w-[20px] items-center justify-center">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-[20px] w-[20px] bg-[#3b99fc] flex items-center justify-center">
@@ -767,7 +780,17 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                     {updates ? updates.map((item, index) => (
                       <DropdownMenuItem
                         key={index}
-                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer ${item.reads.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
+                          ${item.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                        onSelect={() => {
+                          const formData = new FormData();
+                          formData.append("notificationId", item.id);
+                          formData.append("userEmail", user.email);
+                          formData.append("userName", user.name);
+                          formData.append("navigate", `/dealer/customer/${item.clientfileId}/${item.financeId}`);
+                          formData.append("intent", 'newUpdate');
+                          submit(formData, { method: "post" });
+                        }}
                       >
                         <p className='w-[95%] rounded-[6px] flex justify-between items-center'>
                           {item.title}
@@ -799,7 +822,8 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                     {interruptions ? (interruptions.map((item, index) => (
                       <DropdownMenuItem
                         key={index}
-                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer ${item.read === 'true' ? 'bg-background ' : 'bg-[#181818]'}`}
+                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
+                          ${item.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
                         onSelect={() => {
                           const formData = new FormData();
                           formData.append("notificationId", item.id);
@@ -821,6 +845,7 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
+
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuSub>
@@ -1359,11 +1384,11 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className='cursor-pointer'>
                   <div className='mr-2'>
-                    {messages && messages.some(item => !item.reads || Object.keys(item.reads).length === 0) && (
+                    {messages && messages.some(item => !item.read) && (
                       <span className="relative flex h-[20px] w-[20px] items-center justify-center">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-[20px] w-[20px] bg-[#3b99fc] flex items-center justify-center">
-                          <p className='text-white hover:text-primary text-xs'>{msgsength}</p>
+                          <p className='text-white hover:text-primary text-xs'>{msgsLength}</p>
                         </span>
                       </span>
                     )}
@@ -1372,23 +1397,30 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
                   <DropdownMenuSubContent className="bg-background w-[300px] border border-border">
-                    {messages ? messages.map((item, index) => (
-                      <DropdownMenuItem
-                        key={index}
-                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer ${item.reads.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
-                        onSelect={() => {
-                          const formData = new FormData();
-                          formData.append("notificationId", item.id);
-                          formData.append("userEmail", user.email);
-                          formData.append("userName", user.name);
-                          formData.append("navigate", `/dealer/customer/${item.clientfileId}/${item.financeId}`);
-                          formData.append("intent", 'newMsg');
-                          submit(formData, { method: "post" });
-                        }}
-                      >
-                        {item.title}
-                      </DropdownMenuItem>
-                    )) : <DropdownMenuItem>No messages available</DropdownMenuItem>}
+                    {messages ? messages.map((item, index) => {
+                      return (
+                        <DropdownMenuItem
+                          key={index}
+                          className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
+            ${item.read === true ? 'bg-background' : 'bg-[#181818]'}`}
+                          onSelect={() => {
+                            const formData = new FormData();
+                            formData.append("notificationId", item.id);
+                            formData.append("userEmail", user.email);
+                            formData.append("userName", user.name);
+                            formData.append("navigate", `/dealer/customer/${item.clientfileId}/${item.financeId}`);
+                            formData.append("intent", 'newMsg');
+                            submit(formData, { method: "post" });
+                          }}
+                        >
+                          {item.title}
+                        </DropdownMenuItem>
+                      );
+                    }) : (
+                      <DropdownMenuItem>No messages available</DropdownMenuItem>
+                    )}
+
+
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
@@ -1396,7 +1428,7 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className='cursor-pointer'>
                   <div className='mr-2'>
-                    {lead.length > 0 && lead.every(l => l.reads && Object.keys(l.reads).length === 0) && (
+                    {lead && lead.some(item => !item.read) && (
                       <span className="relative flex h-[20px] w-[20px] items-center justify-center">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-[20px] w-[20px] bg-[#3b99fc] flex items-center justify-center">
@@ -1413,7 +1445,8 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                       {lead ? lead.map((item, index) => (
                         <DropdownMenuItem
                           key={index}
-                          className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer ${item.reads.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                          className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
+                            ${item.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
                           onSelect={() => {
                             const formData = new FormData();
                             formData.append("notificationId", item.id);
@@ -1439,7 +1472,7 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className='cursor-pointer'>
                   <div className='mr-2'>
-                    {updates && updates.some(item => !item.reads || Object.keys(item.reads).length === 0) && (
+                    {updates && updates.some(item => !item.read) && (
                       <span className="relative flex h-[20px] w-[20px] items-center justify-center">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-[20px] w-[20px] bg-[#3b99fc] flex items-center justify-center">
@@ -1455,7 +1488,17 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                     {updates ? updates.map((item, index) => (
                       <DropdownMenuItem
                         key={index}
-                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer ${item.reads.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
+                          ${item.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                        onSelect={() => {
+                          const formData = new FormData();
+                          formData.append("notificationId", item.id);
+                          formData.append("userEmail", user.email);
+                          formData.append("userName", user.name);
+                          formData.append("navigate", `/dealer/customer/${item.clientfileId}/${item.financeId}`);
+                          formData.append("intent", 'newUpdate');
+                          submit(formData, { method: "post" });
+                        }}
                       >
                         <p className='w-[95%] rounded-[6px] flex justify-between items-center'>
                           {item.title}
@@ -1487,7 +1530,8 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                     {interruptions ? (interruptions.map((item, index) => (
                       <DropdownMenuItem
                         key={index}
-                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer ${item.read === 'true' ? 'bg-background ' : 'bg-[#181818]'}`}
+                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
+                          ${item.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
                         onSelect={() => {
                           const formData = new FormData();
                           formData.append("notificationId", item.id);

@@ -8731,41 +8731,41 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         userEmail: formData.userEmail,
         clientfileId: formData.clientfileId,
         userName: formData.userName,
-        financeId: formData.financeId,
+        finance: {
+          connect: { id: formData.financeId }
+        }
       },
     });
-    /**    const notiFinance = await prisma.finance.findUnique({ where: { id: formData.financeId }, });
-        let notification;
-        if (formData.userEmail !== notiFinance.userEmail) {
-          notification = await prisma.notificationsUser.create({
-            data: {
-              title: `Note left on ${notiFinance?.name} by ${user?.username}`,
-              //  content: formData.content,
-              read: 'false',
-              type: 'Note',
-              content: formData.customContent,
-              userId: user?.id,
-              financeId: formData.financeId,
-              clientfileId: formData.clientfileId,
-            },
-          });
+    const notiFinance = await prisma.finance.findUnique({ where: { id: formData.financeId }, });
+    let notification;
+    if (formData.userEmail !== notiFinance.userEmail) {
+      notification = await prisma.notificationsUser.create({
+        data: {
+          title: `Note left on ${notiFinance?.name} by ${user?.username}`,
+          //  content: formData.content,
+          read: false,
+          type: 'updates',
+          content: formData.customContent,
+          userEmail: formData.userEmail,
+          financeId: formData.financeId,
+          clientfileId: formData.clientfileId,
+        },
+      });
+    }
+    let saved
+    if (formData.ccUser) {
+      saved = await prisma.notificationsUser.create({
+        data: {
+          title: `New note on ${formData.name}'s file.`,
+          content: `Note left by ${formData.author}`,
+          read: false,
+          type: 'updates',
+          userEmail: formData.ccUser,
+          financeId: financeId,
+          clientfileId: clientfileId,
         }
-        let saved
-        if (formData.ccUser) {
-          saved = await prisma.notificationsUser.create({
-            data: {
-              title: `New note on ${formData.name}'s file.`,
-              content: `Note left by ${formData.author}`,
-              read: 'no',
-              userId: formData.ccUser,
-              financeId: financeId,
-              clientfileId: clientfileId,
-            }
-          })
-        }
-        if (user?.activixActivated === 'yes') {
-          await CreateNote(formData)
-        } */
+      })
+    }
     return json({ SaveFinanceNote, })
   }
   if (intent === 'deleteFinanceNote') {

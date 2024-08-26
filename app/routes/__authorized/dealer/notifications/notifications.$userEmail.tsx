@@ -20,14 +20,7 @@ export async function loader({ request, params }: LoaderFunction) {
       to: true,
       from: true,
       userEmail: true,
-      reads: {
-        select: {
-          id: true,
-          notificationId: true,
-          userEmail: true,
-          read: true,
-        },
-      },
+      read: true,
     },
   });
   return notifications;

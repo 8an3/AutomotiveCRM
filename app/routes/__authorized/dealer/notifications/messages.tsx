@@ -12,22 +12,21 @@ export async function loader({ request, params }: LoaderFunction) {
   // let messages = notifications.filter(notification =>    notification.to === user.email && notification.type == 'messages'  );
   const notiMessages = await prisma.notificationsUser.findMany({
     where: {
-      reads: {
-        some: {
-          userEmail: email,
-        },
-      },
       type: 'messages',
     },
-    include: {
-      reads: {
-        where: {
-          userEmail: email,
-        },
-        select: {
-          read: true,
-        },
-      },
+    select: {
+      id: true,
+      title: true,
+      content: true,
+      dismiss: true,
+      type: true,
+      subType: true,
+      financeId: true,
+      clientfileId: true,
+      to: true,
+      from: true,
+      userEmail: true,
+      read: true,
     },
     orderBy: {
       createdAt: 'desc', // Optional: Order by creation date

@@ -145,6 +145,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
+  DialogFooter,
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog"
@@ -155,9 +156,14 @@ import {
   AlertDescription,
   AlertTitle,
 } from "~/components/ui/alert"
+import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
+import { Calendar as SmallCalendar } from '~/components/ui/calendar';
+import { format } from "date-fns"
+
+
 
 export default function Dashboard() {
-  const { order, user, tax, dealerImage, services } = useLoaderData();
+  const { order, user, tax, dealerImage, services, techs } = useLoaderData();
 
   const [scannedCode, setScannedCode] = useState('')
   useEffect(() => {
@@ -520,6 +526,10 @@ export default function Dashboard() {
   </ul>
 </div>
 <Separator className="my-4" /> */
+
+  const newDate = new Date()
+
+
   return (
     <div>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
@@ -951,6 +961,7 @@ export default function Dashboard() {
                         <TableHead className="text-right">
                           Quantity
                         </TableHead>
+
                       </TableRow>
                     </TableHeader>
                     <TableBody className='max-h-[700px] h-auto overflow-y-auto'>
@@ -960,6 +971,7 @@ export default function Dashboard() {
                             const formData = new FormData();
                             formData.append("accessoryId", result.id);
                             formData.append("workOrderId", order.workOrderId);
+                            formData.append("quantity", result.quantity);
                             formData.append("accOrderId", order.AccOrders[0].id);
                             formData.append("intent", 'addAccToWorkOrder');
                             submit(formData, { method: "post", });
@@ -999,6 +1011,7 @@ export default function Dashboard() {
                             <TableCell className="hidden md:table-cell">
                               {result.quantity}
                             </TableCell>
+
                           </TableRow>
                         ))}
                     </TableBody>
@@ -1015,52 +1028,177 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className=' grid grid-cols-1'>
-                    {order.WorkOrderApts && order.WorkOrderApts.map((result) => (
-                      <div className='group relative'>
-                        <Alert key={result.id} className='border-border'>
-                          <Calendar className="h-4 w-4" />
-                          <AlertTitle className='flex justify-between'>
-                            <p>{new Date(result.start).toLocaleString("en-US", options2)} - {new Date(result.end).toLocaleString("en-US", options2)}</p>
-                          </AlertTitle>
-                          <AlertDescription className='gap-3'>
-                            <div className='flex justify-between gap-3'>
-                              <p>{result.color} {result.unit}</p>
-                              <p>{result.vin}</p>
-                              <p>{result.location}</p>
-                            </div>
-                            <div className='flex justify-between'>
-                              <p>Writer: {result.writer}</p>
-                              <p>{result.tech && (<p>Tech: {result.tech}</p>)}</p>
-                            </div>
-                          </AlertDescription>
-                        </Alert>
-                        <div className=' absolute right-3 -top-1 flex items-center gap-3 '>
-                          <Button
-                            size="icon"
-                            variant="outline"
-                            onClick={() => {
+                    {order.WorkOrderApts && order.WorkOrderApts.map((result) => {
+                      const [date, setDate] = useState<Date>(new Date(result.start))
+                      return (
+                        <div className='group relative'>
+                          <Alert key={result.id} className='border-border'>
+                            <Calendar className="h-5 w-5" />
+                            <AlertTitle className='flex justify-between'>
+                              <p>{new Date(result.start).toLocaleString("en-US", options2)} - {new Date(result.end).toLocaleString("en-US", options2)}</p>
+                              <p>Status: {order.status}</p>
+                            </AlertTitle>
+                            <AlertDescription className='gap-3'>
+                              <div className='flex justify-between gap-3'>
+                                <p>{result.color} {result.unit}</p>
+                                <p>VIN: {result.vin}</p>
+                                <p>Location: {result.location}</p>
+                              </div>
+                              <div className='flex justify-between'>
+                                <p>Writer: {result.writer}</p>
+                                <p>{result.tech && (<p>Tech: {result.tech}</p>)}</p>
+                              </div>
+                            </AlertDescription>
+                          </Alert>
+                          <div className=' absolute left-2  -top-1   grid grid-cols-1 gap-2 '>
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              onClick={() => {
+                                const formData = new FormData();
+                                formData.append("id", result.id);
+                                formData.append("intent", 'deleteAppt');
+                                submit(formData, { method: "post" });
+                              }}
+                              className=" h-[28px] w-[28px]  opacity-0 transition-opacity group-hover:opacity-100 "
+                            >
+                              <Trash className="h-4 w-4" />
+                              <span className="sr-only">Delete</span>
+                            </Button>
 
-
-                            }}
-                            className=" h-[28px] w-[28px]  opacity-0 transition-opacity group-hover:opacity-100 "
-                          >
-                            <Trash className="h-4 w-4" />
-                            <span className="sr-only">Delete</span>
-                          </Button>
-                          <Button
-                            size="icon"
-                            variant="outline"
-                            onClick={() => {
-
-                            }}
-                            className="h-[28px] w-[28px] opacity-0 transition-opacity group-hover:opacity-100 "
-                          >
-                            <Wrench className="h-4 w-4" />
-                            <span className="sr-only">Edit</span>
-                          </Button>
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button
+                                  size="icon"
+                                  variant="outline"
+                                  className="h-[28px] w-[28px] opacity-0transition-opacity group-hover:opacity-100 "
+                                >
+                                  <Wrench className="h-4 w-4" />
+                                  <span className="sr-only">Edit</span>
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="sm:max-w-[425px] border-border">
+                                <Form method='post'>
+                                  <DialogHeader>
+                                    <DialogTitle>Edit Appointment</DialogTitle>
+                                  </DialogHeader>
+                                  <div className='grid grid-cols-1 gap-3' >
+                                    <Select
+                                      defaultValue={result.tech}
+                                      name='tech'
+                                    >
+                                      <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                                        <SelectValue defaultValue={result.tech} />
+                                      </SelectTrigger>
+                                      <SelectContent className='bg-background text-foreground border border-border'>
+                                        <SelectGroup>
+                                          <SelectLabel>Technicians</SelectLabel>
+                                          {techs.map((user) => (
+                                            <SelectItem key={user.email} value={user.email} className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                              {user.username}
+                                            </SelectItem>
+                                          ))}
+                                        </SelectGroup>
+                                      </SelectContent>
+                                    </Select>
+                                    <div className=' mt-5 flex-col mx-auto justify-center'>
+                                      <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
+                                        <div className='  my-3 flex justify-center   '>
+                                          <CalendarIcon className="mr-2 size-8 " />
+                                          {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
+                                        </div>
+                                        <SmallCalendar
+                                          className='mx-auto w-auto   bg-background text-foreground'
+                                          mode="single"
+                                          selected={date}
+                                          onSelect={setDate}
+                                          initialFocus
+                                        />
+                                      </div>
+                                    </div>
+                                    {result.start !== date && (
+                                      <>
+                                        <Select name='hour'                >
+                                          <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                                            <SelectValue placeholder='Select Hour' />
+                                          </SelectTrigger>
+                                          <SelectContent className='bg-background text-foreground border border-border'>
+                                            <SelectGroup>
+                                              <SelectLabel>Select Hour</SelectLabel>
+                                              <SelectItem value='8' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                8:00
+                                              </SelectItem>
+                                              <SelectItem value='9' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                9:00
+                                              </SelectItem>
+                                              <SelectItem value='10' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                10:00
+                                              </SelectItem>
+                                              <SelectItem value='11' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                11:00
+                                              </SelectItem>
+                                              <SelectItem value='12' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                12:00
+                                              </SelectItem>
+                                              <SelectItem value="13" className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                13:00
+                                              </SelectItem>
+                                              <SelectItem value='14' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                14:00
+                                              </SelectItem>
+                                              <SelectItem value='15' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                15:00
+                                              </SelectItem>
+                                              <SelectItem value='16' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                16:00
+                                              </SelectItem>
+                                              <SelectItem value='17' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                17:00
+                                              </SelectItem>
+                                              <SelectItem value='18' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                18:00
+                                              </SelectItem>
+                                            </SelectGroup>
+                                          </SelectContent>
+                                        </Select>
+                                        <Select name='min'                >
+                                          <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                                            <SelectValue placeholder='Select Min' />
+                                          </SelectTrigger>
+                                          <SelectContent className='bg-background text-foreground border border-border'>
+                                            <SelectGroup>
+                                              <SelectLabel>Select Min</SelectLabel>
+                                              <SelectItem value='00' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                00
+                                              </SelectItem>
+                                              <SelectItem value='15' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                15
+                                              </SelectItem>
+                                              <SelectItem value='30' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                30
+                                              </SelectItem>
+                                              <SelectItem value='45' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                                45
+                                              </SelectItem>
+                                            </SelectGroup>
+                                          </SelectContent>
+                                        </Select>
+                                      </>
+                                    )}
+                                  </div>
+                                  <DialogFooter>
+                                    <input type='hidden' name='date' value={date} />
+                                    <input type='hidden' name='id' value={order.id} />
+                                    <input type='hidden' name='apptId' value={result.id} />
+                                    <Button type="submit" name='intent' className='text-foreground' value='updateWorkOrderAppt'>Save changes</Button>
+                                  </DialogFooter>
+                                </Form>
+                              </DialogContent>
+                            </Dialog>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    })}
 
                   </div>
                 </CardContent>
@@ -2247,7 +2385,23 @@ export async function loader({ request, params }: LoaderFunction) {
   });
   const dealerImage = await prisma.dealerLogo.findUnique({ where: { id: 1 } })
   const services = await prisma.services.findMany({})
-  return json({ order, user, tax, dealerImage, services });
+  const allUsers = await prisma.user.findMany({
+    select: {
+      name: true,
+      username: true,
+      email: true,
+      profileId: true,
+      phone: true,
+      dept: true,
+      omvicNumber: true,
+      positions: true,
+      role: true,
+    }
+  });
+  const techs = allUsers.filter(user =>
+    user.role.name === 'Technician'
+  );
+  return json({ order, user, tax, dealerImage, services, techs });
 }
 
 
@@ -2259,6 +2413,14 @@ export async function action({ request, params }: ActionFunction) {
   const user = await GetUser(email)
   const id = params.workOrderId
   console.log(formPayload, 'formpayload')
+
+  if (intent === "deleteAppt") {
+    const update = await prisma.WorkOrderApts.delete({
+      where: { workOrderId: formPayload.id },
+
+    });
+    return json({ update })
+  }
   if (intent === "createBooking") {
     const order = await prisma.workOrder.findUnique({
       where: { workOrderId: Number(id) },
@@ -2672,6 +2834,88 @@ export async function action({ request, params }: ActionFunction) {
 
     return redirect(`/dealer/service/workOrder/calendar/${id}`)
   }
+  if (intent === "updateWorkOrderAppt") {
+    const order = await prisma.workOrder.findUnique({
+      where: { workOrderId: Number(id) },
+      select: {
+        workOrderId: true,
+        unit: true,
+        mileage: true,
+        vin: true,
+        tag: true,
+        motor: true,
+        budget: true,
+        totalLabour: true,
+        totalParts: true,
+        subTotal: true,
+        total: true,
+        writer: true,
+        userEmail: true,
+        tech: true,
+        notes: true,
+        customerSig: true,
+        status: true,
+        location: true,
+        quoted: true,
+        paid: true,
+        remaining: true,
+        FinanceUnitId: true,
+        financeId: true,
+        clientfileId: true,
+        createdAt: true,
+        updatedAt: true,
+        ServicesOnWorkOrders: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            quantity: true,
+            status: true,
+            workOrderId: true,
+            serviceId: true,
+            hr: true,
+            service: {
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                description: true,
+                estHr: true,
+                service: true,
+                price: true,
+              }
+            }
+          }
+        }
+      },
+    });
+    const start = new Date(formPayload.date);
+    start.setHours(formPayload.hour, formPayload.min, 0, 0);
+
+    const totalHours = order?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
+      const hours = serviceOnOrder.hr ?? serviceOnOrder.service.estHr ?? 0;
+      const quantity = serviceOnOrder.quantity ?? 1;
+      const entryHours = hours * quantity;
+      return total + entryHours;
+    }, 0);
+
+    console.log(`Total Hours: ${totalHours}`);
+
+    const end = new Date(start);
+    end.setHours(end.getHours() + totalHours);
+
+    await prisma.workOrderApts.update({
+      where: { id: formPayload.apptId },
+      data: {
+        start: String(start),
+        end: String(end),
+        techEmail: 'serviceDesk@email.com',
+        tech: 'Service Desk',
+      }
+    })
+
+    return redirect(`/dealer/service/workOrder/calendar/${id}`)
+  }
   if (intent === "scanOrder") {
     await prisma.customerSync.update({
       where: { userEmail: email },
@@ -2837,6 +3081,7 @@ export async function action({ request, params }: ActionFunction) {
           accessoryId: formPayload.accessoryId,
           accOrderId: accOrder.id,
           quantity: 1,
+          status: formPayload.qunatity >= 1 ? 'In Stock' : "Not In Stock"
         }
       })
     } else {

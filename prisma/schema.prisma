@@ -401,24 +401,11 @@ model NotificationsUser {
   from         String?
   userEmail    String
   customerName String?
+  read         Boolean  @default(false)
 
-  reads NotificationRead[]
-  User  User               @relation(fields: [userEmail], references: [email], onDelete: Cascade)
+  User User @relation(fields: [userEmail], references: [email], onDelete: Cascade)
 
   @@index([userEmail])
-}
-
-model NotificationRead {
-  id             String   @id @default(cuid())
-  createdAt      DateTime @default(now())
-  notificationId String
-  userEmail      String
-  read           Boolean  @default(false)
-
-  // Relations
-  notificationsUser NotificationsUser @relation(fields: [notificationId], references: [id])
-
-  @@unique([notificationId])
 }
 
 model Note {

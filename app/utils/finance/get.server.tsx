@@ -50,13 +50,17 @@ export async function getClientFileById(clientfileId) {
             userEmail: true,
             userName: true,
             dept: true,
+            sellingDept: true,
             total: true,
             discount: true,
             discPer: true,
+            paid: true,
+            paidDate: true,
             status: true,
-            clientfileId: true,
             workOrderId: true,
+            note: true,
             financeId: true,
+            clientfileId: true,
             AccessoriesOnOrders: {
               select: {
                 id: true,
@@ -64,6 +68,10 @@ export async function getClientFileById(clientfileId) {
                 accOrderId: true,
                 status: true,
                 orderNumber: true,
+                OrderInvId: true,
+                accessoryId: true,
+                service: true,
+                hour: true,
                 accessory: {
                   select: {
                     id: true,
@@ -75,6 +83,7 @@ export async function getClientFileById(clientfileId) {
                     price: true,
                     cost: true,
                     quantity: true,
+                    minQuantity: true,
                     description: true,
                     category: true,
                     subCategory: true,
@@ -82,6 +91,7 @@ export async function getClientFileById(clientfileId) {
                     distributer: true,
                     location: true,
                     note: true,
+                    workOrderSuggestion: true,
                   },
                 },
               },
@@ -90,11 +100,15 @@ export async function getClientFileById(clientfileId) {
               select: {
                 id: true,
                 createdAt: true,
-                accOrderId: true,
                 paymentType: true,
+                cardType: true,
                 amountPaid: true,
                 cardNum: true,
                 receiptId: true,
+                financeId: true,
+                userEmail: true,
+                accOrderId: true,
+                workOrderId: true,
               },
             },
             AccHandoff: {
@@ -102,12 +116,13 @@ export async function getClientFileById(clientfileId) {
                 id: true,
                 createdAt: true,
                 updatedAt: true,
-                status: true,
                 sendTo: true,
-                sendToCompleted: true,
                 handOffTime: true,
+                status: true,
+                sendToCompleted: true,
                 completedTime: true,
                 notes: true,
+                handOffDept: true,
                 AccOrderId: true,
               },
             }
@@ -115,14 +130,10 @@ export async function getClientFileById(clientfileId) {
         },
         Finance: {
           select: {
-            id: true,
-            // employees
             financeManager: true,
             userEmail: true,
             userName: true,
             financeManagerName: true,
-
-            // client
             email: true,
             firstName: true,
             lastName: true,
@@ -136,8 +147,6 @@ export async function getClientFileById(clientfileId) {
             typeOfContact: true,
             timeToContact: true,
             dob: true,
-
-            // finance
             othTax: true,
             optionsTotal: true,
             lienPayout: true,
@@ -187,8 +196,6 @@ export async function getClientFileById(clientfileId) {
             lifeDisability: true,
             rustProofing: true,
             userOther: true,
-
-            // dates
             referral: true,
             visited: true,
             bookedApt: true,
@@ -207,7 +214,6 @@ export async function getClientFileById(clientfileId) {
             signed: true,
             pickUpSet: true,
             demoed: true,
-            delivered: true,
             lastContact: true,
             status: true,
             customerState: true,
@@ -216,6 +222,7 @@ export async function getClientFileById(clientfileId) {
             nextAppointment: true,
             followUpDay: true,
             deliveryDate: true,
+            delivered: true,
             deliveredDate: true,
             notes: true,
             visits: true,
@@ -259,15 +266,11 @@ export async function getClientFileById(clientfileId) {
             firstPayment: true,
             loanMaturity: true,
             quoted: true,
-
-            // calls
             InPerson: true,
             Phone: true,
             SMS: true,
             Email: true,
             Other: true,
-
-            // wanted unit
             paintPrem: true,
             licensing: true,
             stockNum: true,
@@ -287,8 +290,8 @@ export async function getClientFileById(clientfileId) {
             vin: true,
             bikeStatus: true,
             invId: true,
-
-            // trade
+            motor: true,
+            tag: true,
             tradeValue: true,
             tradeDesc: true,
             tradeColor: true,
@@ -299,6 +302,12 @@ export async function getClientFileById(clientfileId) {
             tradeMileage: true,
             tradeLocation: true,
             lien: true,
+            id: true,
+            activixId: true,
+            theRealActId: true,
+            createdAt: true,
+            updatedAt: true,
+            clientfileId: true,
 
             /// bmwMotoOptions: {          select: {          }        },
             financeStorage: {
@@ -481,13 +490,17 @@ export async function getClientFileById(clientfileId) {
                 userEmail: true,
                 userName: true,
                 dept: true,
+                sellingDept: true,
                 total: true,
                 discount: true,
                 discPer: true,
+                paid: true,
+                paidDate: true,
                 status: true,
-                clientfileId: true,
                 workOrderId: true,
+                note: true,
                 financeId: true,
+                clientfileId: true,
                 AccessoriesOnOrders: {
                   select: {
                     id: true,
@@ -495,6 +508,10 @@ export async function getClientFileById(clientfileId) {
                     accOrderId: true,
                     status: true,
                     orderNumber: true,
+                    OrderInvId: true,
+                    accessoryId: true,
+                    service: true,
+                    hour: true,
                     accessory: {
                       select: {
                         id: true,
@@ -506,6 +523,7 @@ export async function getClientFileById(clientfileId) {
                         price: true,
                         cost: true,
                         quantity: true,
+                        minQuantity: true,
                         description: true,
                         category: true,
                         subCategory: true,
@@ -513,6 +531,7 @@ export async function getClientFileById(clientfileId) {
                         distributer: true,
                         location: true,
                         note: true,
+                        workOrderSuggestion: true,
                       },
                     },
                   },
@@ -521,12 +540,15 @@ export async function getClientFileById(clientfileId) {
                   select: {
                     id: true,
                     createdAt: true,
-                    accOrderId: true,
                     paymentType: true,
+                    cardType: true,
                     amountPaid: true,
                     cardNum: true,
                     receiptId: true,
+                    financeId: true,
                     userEmail: true,
+                    accOrderId: true,
+                    workOrderId: true,
                   },
                 },
                 AccHandoff: {
@@ -534,12 +556,14 @@ export async function getClientFileById(clientfileId) {
                     id: true,
                     createdAt: true,
                     updatedAt: true,
-                    status: true,
                     sendTo: true,
-                    sendToCompleted: true,
                     handOffTime: true,
+                    status: true,
+                    sendToCompleted: true,
                     completedTime: true,
                     notes: true,
+                    handOffDept: true,
+                    AccOrderId: true,
                   },
                 }
               }
@@ -548,13 +572,15 @@ export async function getClientFileById(clientfileId) {
               select: {
                 id: true,
                 createdAt: true,
-                accOrderId: true,
                 paymentType: true,
+                cardType: true,
                 amountPaid: true,
                 cardNum: true,
                 receiptId: true,
                 financeId: true,
                 userEmail: true,
+                accOrderId: true,
+                workOrderId: true,
               }
             }
           },

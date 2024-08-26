@@ -1,658 +1,216 @@
+import type { LoaderArgs, } from "@remix-run/node";
 import { Input, Separator, PopoverTrigger, PopoverContent, Popover, TextArea, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "~/components/ui/index";
 import * as React from "react"
 import { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, sortingFns, } from "@tanstack/react-table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "~/components/ui/dialog"
 import { useEffect, useState } from "react";
-import {
-    type RankingInfo,
-    rankItem,
-    compareItems,
-} from '@tanstack/match-sorter-utils'
-import { Form, useLoaderData, useSubmit, useFetcher } from "@remix-run/react";
+import { Form, useLoaderData, useSubmit, useFetcher, useNavigate } from "@remix-run/react";
 import { getSession } from "~/sessions/auth-session.server";
 import { prisma } from "~/libs";
 import { type MetaFunction, redirect, type LoaderFunctionArgs, json, ActionFunction } from '@remix-run/node'
 import { GetUser } from "~/utils/loader.server";
 import { fuzzyFilter, fuzzySort, TableMeta, getTableMeta, DebouncedInput } from "~/components/actions/shared";
-import { Cross2Icon, CaretSortIcon, CalendarIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons";
+import { Cross2Icon, CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons";
 import IndeterminateCheckbox, { EditableText, Filter } from '~/components/actions/shared'
 import { X } from "lucide-react";
 import { toast } from "sonner";
 import { DataTablePagination } from "~/components/dashboard/calls/pagination";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import UnitDialog from '~/components/dashboard/inventory/diaolog'
-
-export const columns = [
-    {
-        id: 'select',
-        header: ({ table }) => (
-            <IndeterminateCheckbox
-                checked={table.getIsAllRowsSelected()}
-                indeterminate={table.getIsSomeRowsSelected()}
-                onChange={table.getToggleAllRowsSelectedHandler()}
-                className='border-primary mx-auto'
-            />
-        ),
-        cell: ({ row }) => (
-            <div className="px-1">
-                <IndeterminateCheckbox
-                    checked={row.getIsSelected()}
-                    indeterminate={row.getIsSomeSelected()}
-                    onChange={row.getToggleSelectedHandler()}
-                    className='border-primary mx-auto'
-                />
-            </div>
-        ),
-    },
-    {
-        accessorKey: "id",
-        header: "id",
-        cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("id")}</div>
-        ),
-    },
-    {
-        accessorKey: "unitInfo",
-        cell: ({ row, column: { id } }) => {
-            const data = row.original
-            return (
-                <UnitDialog data={data} />
-            )
-        },
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-    },
-    {
-        accessorKey: "stockNumber",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    className='mx-auto justify-center'
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Stock #
-                    <CaretSortIcon className="ml-2 h-4 w-4 " />
-                </Button>
-            )
-        },
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "year",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    className='mx-auto'
-
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Year
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "make",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    className=''
-
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Make
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "model",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Model
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "modelName",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Model Name
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "submodel",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Sub Model
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "subSubmodel",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Sub SuB Model
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "price",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Price
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "exteriorColor",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Ext Color
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "mileage",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Mileage
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "consignment",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Consignment
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "onOrder",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    On Order
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
+import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
+import { format } from "date-fns"
+import { Calendar as SmallCalendar } from '~/components/ui/calendar';
+import { cn } from "~/components/ui/utils";
+import AddUnitDialog from "~/components/dashboard/inventory/addUnitDiaolog";
 
 
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "expectedOn",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Expected On
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
+function Consignment({ data }) {
+    const fetcher = useFetcher();
 
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "status",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Status
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
+    return (
+        <Select
+            onValueChange={(value) => {
+                const formData = new FormData();
+                formData.append("id", data.id);
+                formData.append("consignment", value);
+                formData.append("intent", 'consignment');
+                console.log(formData, 'formData');
+                fetcher.submit(formData, { method: "post" });
+            }}
+            defaultValue={data.consignment || false}
+            name='consignment'>
+            <SelectTrigger className="w-auto focus:border-primary">
+                <SelectValue defaultValue={data.consignment || false} />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+                <SelectItem value="true">true</SelectItem>
+                <SelectItem value="false">false</SelectItem>
+            </SelectContent>
+        </Select>
+    )
+}
+function OnOrder({ data }) {
+    const fetcher = useFetcher();
 
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "orderStatus",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Order Status
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
+    return (
+        <Select
+            defaultValue={String(data.onOrder)}
+            onValueChange={(value) => {
+                const formData = new FormData();
+                formData.append("id", data.id);
+                formData.append("onOrder", value);
+                formData.append("intent", 'onOrder');
+                console.log(formData, 'formData');
+                fetcher.submit(formData, { method: "post" });
+            }}
+            name='onOrder'>
+            <SelectTrigger className="w-auto focus:border-primary" >
+                <SelectValue />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+                <SelectItem value="true">true</SelectItem>
+                <SelectItem value="false">false</SelectItem>
+            </SelectContent>
+        </Select>
+    )
+}
+function Sold({ data }) {
+    const fetcher = useFetcher();
 
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "vin",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    VIN
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
+    return (
+        <Select
+            onValueChange={(value) => {
+                const formData = new FormData();
+                formData.append("id", data.id);
+                formData.append("sold", value);
+                formData.append("intent", 'sold');
+                console.log(formData, 'formData');
+                fetcher.submit(formData, { method: "post" });
+            }}
+            defaultValue={String(data.isNew)}
+            name='sold'>
+            <SelectTrigger className="w-auto focus:border-primary">
+                <SelectValue />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+                <SelectItem value="true">true</SelectItem>
+                <SelectItem value="false">false</SelectItem>
+            </SelectContent>
+        </Select>
+    )
+}
+function Status({ data }) {
+    const fetcher = useFetcher();
 
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "age",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Age
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
+    return (
+        <Select
+            onValueChange={(value) => {
+                const formData = new FormData();
+                formData.append("id", data.id);
+                formData.append("status", value);
+                formData.append("intent", 'status');
+                console.log(formData, 'formData');
+                fetcher.submit(formData, { method: "post" });
+            }}
+            defaultValue={data.status}
+            name='status'>
+            <SelectTrigger className="w-auto focus:border-primary">
+                <SelectValue />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+                <SelectItem value="Available">Available</SelectItem>
+                <SelectItem value="Reserved">Reserved</SelectItem>
+            </SelectContent>
+        </Select>
+    )
+}
+function OrderStatus({ data }) {
+    const fetcher = useFetcher();
 
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "floorPlanDueDate",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Floor Plan Due Date
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
+    return (
+        <Select
+            onValueChange={(value) => {
+                const formData = new FormData();
+                formData.append("id", data.id);
+                formData.append("orderStatus", value);
+                formData.append("intent", 'orderStatus');
+                console.log(formData, 'formData');
+                fetcher.submit(formData, { method: "post" });
+            }}
+            defaultValue={data.orderStatus}
+            name='status'>
+            <SelectTrigger className="w-auto focus:border-primary">
+                <SelectValue />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+                <SelectItem value="On Order">On Order</SelectItem>
+                <SelectItem value="Stock">Stock</SelectItem>
+                <SelectItem value="Reserved">Reserved</SelectItem>
+                <SelectItem value="Wish">Wish</SelectItem>
+            </SelectContent>
+        </Select>
+    )
+}
+function IsNew({ data }) {
+    const fetcher = useFetcher();
 
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "location",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Location
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
+    return (
+        <Select
+            onValueChange={(value) => {
+                const formData = new FormData();
+                formData.append("id", data.id);
+                formData.append("isNew", value);
+                formData.append("intent", 'isNew');
+                console.log(formData, 'formData');
+                fetcher.submit(formData, { method: "post" });
+            }}
+            defaultValue={data.isNew}
+            name='isNew'>
+            <SelectTrigger className="w-auto focus:border-primary">
+                <SelectValue />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+                <SelectItem value="true">true</SelectItem>
+                <SelectItem value="false">false</SelectItem>
+            </SelectContent>
+        </Select>
+    )
+}
+function Stocked({ data }) {
+    const fetcher = useFetcher();
 
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "isNew",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    New?
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "keyNumber",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Key Number
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-
-    },
-    {
-        filterFn: fuzzyFilter,
-        sortingFn: fuzzySort,
-        accessorKey: "sold",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Sold
-                    <CaretSortIcon className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-
-    },
-    {
-        accessorKey: "packageNumber",
-        header: "Package Number",
-        id: 'packageNumber',
-        footer: props => props.column.id,
-    },
-    {
-        accessorKey: "packagePrice",
-        header: "Package Price",
-
-    },
-    {
-        accessorKey: "type",
-        header: "type",
-
-
-    },
-    {
-        accessorKey: "class",
-        header: "class",
-
-    },
-    {
-        accessorKey: "hdcFONumber",
-        header: "hdcFONumber",
-
-    },
-    {
-        accessorKey: "hdmcFONumber",
-        header: "hdmcFONumber",
-
-    },
-    {
-        accessorKey: "stocked",
-        header: "Stocked",
-        id: 'stocked',
-        cell: info => info.getValue(),
-        footer: props => props.column.id,
-
-    },
-    {
-        accessorKey: "stockedDate",
-        header: "Stocked Date",
-        id: 'stockedDate',
-        cell: info => info.getValue(),
-        footer: props => props.column.id,
-
-    },
-    {
-        accessorKey: "isNew",
-        header: "Is New",
-        id: 'isNew',
-        cell: info => info.getValue(),
-        footer: props => props.column.id,
-
-    },
-    {
-        accessorKey: "mfgSerialNumber",
-        header: "mfgSerialNumber",
-
-    },
-    {
-        accessorKey: "actualCost",
-        header: "actualCost",
-
-    },
-    {
-        accessorKey: "engineNumber",
-        header: "engineNumber",
-
-    },
-    {
-        accessorKey: "plates",
-        header: "plates",
-    },
-
-    {
-        accessorKey: "width",
-        header: "width",
-
-    },
-    {
-        accessorKey: "engine",
-        header: "engine",
-
-    },
-    {
-        accessorKey: "fuelType",
-        header: "fuelType",
-
-    },
-    {
-        accessorKey: "power",
-        header: "power",
-
-    },
-    {
-        accessorKey: "chassisNumber",
-        header: "chassisNumber",
-
-    },
-    {
-        accessorKey: "chassisYear",
-        header: "chassisYear",
-
-    },
-    {
-        accessorKey: "chassisMake",
-        header: "chassisMake",
-
-    },
-    {
-        accessorKey: "chassisModel",
-        header: "chassisModel",
-    },
-
-    {
-        accessorKey: "chassisType",
-        header: "chassisType",
-
-    },
-    {
-        accessorKey: "registrationState",
-        header: "registrationState",
-
-    },
-    {
-        accessorKey: "registrationExpiry",
-        header: "registrationExpiry",
-
-    },
-    {
-        accessorKey: "netWeight",
-        header: "netWeight",
-
-    },
-    {
-        accessorKey: "grossWeight",
-        header: "grossWeight",
-
-    },
-    {
-        accessorKey: "insuranceCompany",
-        header: "insuranceCompany",
-
-    },
-    {
-        accessorKey: "policyNumber",
-        header: "policyNumber",
-
-    },
-    {
-        accessorKey: "insuranceStartDate",
-        header: "insuranceStartDate",
-
-    },
-    {
-        accessorKey: "insuranceAgent",
-        header: "insuranceAgent",
-
-    },
-    {
-        accessorKey: "insuranceEndDate",
-        header: "insuranceEndDate",
-
-    },
-    {
-        accessorKey: "length",
-        header: "length",
-    },
-
-]
-
-// Give our default column cell renderer editing superpowers!
-export const defaultColumn = {
-    cell: ({ row, column: { id } }) => {
-        const data = row.original
-        return (
-            <EditableText
-                value={row.getValue(id)}
-                fieldName="name"
-                inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 "
-                buttonClassName="text-center py-1 px-2 text-foreground"
-                buttonLabel={`Edit "${id}"`}
-                inputLabel={`Edit "${id}"`}
-            >
-                <input type="hidden" name="intent" value='updateDefaultColumn' />
-                <input type="hidden" name="id" value={data.id} />
-                <input type="hidden" name="colName" value={id} />
-            </EditableText>
-        )
-    },
+    return (
+        <Select
+            onValueChange={(value) => {
+                const formData = new FormData();
+                formData.append("id", data.id);
+                formData.append("stocked", value);
+                formData.append("intent", 'stocked');
+                console.log(formData, 'formData');
+                fetcher.submit(formData, { method: "post" });
+            }}
+            defaultValue={data.stocked}
+            name='Stocked'>
+            <SelectTrigger className="w-auto focus:border-primary">
+                <SelectValue />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+                <SelectItem value="true">true</SelectItem>
+                <SelectItem value="false">false</SelectItem>
+            </SelectContent>
+        </Select>
+    )
 }
 
 export const loader = async ({ request }) => {
     const session = await getSession(request.headers.get("Cookie"));
     const email = session.get("email")
     const user = await GetUser(email)
-    const inventoryMotorcycle = await prisma.inventoryMotorcycle.findMany()
-
     if (!user) { redirect('/login') }
-    return json({ user, inventoryMotorcycle });
+    const inventoryMotorcycle = await prisma.inventoryMotorcycle.findMany({})
+
+    return json({ user, inventoryMotorcycle, });
 }
 export const action: ActionFunction = async ({ request, params }) => {
     const formPayload = Object.fromEntries(await request.formData());
@@ -660,12 +218,90 @@ export const action: ActionFunction = async ({ request, params }) => {
     const userSession = await getSession(request.headers.get("Cookie"));
     if (!userSession) { return json({ status: 302, redirect: 'login' }); };
     const email = userSession.get("email");
-    const user = await GetUser(email)
+    const user = await prisma.user.findUnique({
+        where: { email: email },
+        select: {
+            id: true,
+            ColumnStateInventory: {
+                select: {
+                    id: true,
+                    state: true,
+                }
+            }
+        }
+    })
     const intent = formData.intent
-
+    if (intent === 'columnState') {
+        const update = await prisma.columnStateInventory.update({
+            where: { id: user.ColumnStateInventory.id },
+            data: { state: JSON.parse(formPayload.state) }
+        })
+        return json({ update })
+    }
+    if (intent === 'addUnit') {
+        const update = await prisma.inventoryMotorcycle.create({
+            data: {
+                packageNumber: formPayload.packageNumber,
+                packagePrice: formPayload.packagePrice,
+                stockNumber: formPayload.stockNumber,
+                type: formPayload.type,
+                class: formPayload.class,
+                year: formPayload.year,
+                make: formPayload.make,
+                model: formPayload.model,
+                modelName: formPayload.modelName,
+                submodel: formPayload.submodel,
+                subSubmodel: formPayload.subSubmodel,
+                price: formPayload.price,
+                exteriorColor: formPayload.exteriorColor,
+                mileage: formPayload.mileage,
+                consignment: Boolean(formPayload.consignment),
+                onOrder: Boolean(formPayload.onOrder),
+                expectedOn: formPayload.expectedOn,
+                status: formPayload.status,
+                orderStatus: formPayload.orderStatus,
+                hdcFONumber: formPayload.hdcFONumber,
+                hdmcFONumber: formPayload.hdmcFONumber,
+                vin: formPayload.vin,
+                age: parseInt(formPayload.age),
+                floorPlanDueDate: formPayload.floorPlanDueDate,
+                location: formPayload.location,
+                stocked: Boolean(formPayload.stocked),
+                stockedDate: formPayload.stockedDate,
+                isNew: Boolean(formPayload.isNew),
+                actualCost: formPayload.actualCost,
+                mfgSerialNumber: formPayload.mfgSerialNumber,
+                engineNumber: formPayload.engineNumber,
+                plates: formPayload.plates,
+                keyNumber: formPayload.keyNumber,
+                length: formPayload.length,
+                width: formPayload.width,
+                engine: formPayload.engine,
+                fuelType: formPayload.fuelType,
+                power: formPayload.power,
+                chassisNumber: formPayload.chassisNumber,
+                chassisYear: formPayload.chassisYear,
+                chassisMake: formPayload.chassisMake,
+                chassisModel: formPayload.chassisModel,
+                chassisType: formPayload.chassisType,
+                registrationState: formPayload.registrationState,
+                registrationExpiry: formPayload.registrationExpiry,
+                grossWeight: formPayload.grossWeight,
+                netWeight: formPayload.netWeight,
+                insuranceCompany: formPayload.insuranceCompany,
+                policyNumber: formPayload.policyNumber,
+                insuranceAgent: formPayload.insuranceAgent,
+                insuranceStartDate: formPayload.insuranceStartDate,
+                insuranceEndDate: formPayload.insuranceEndDate,
+                sold: Boolean(formPayload.sold),
+                financeId: formPayload.financeId,
+            }
+        })
+        return json({ update })
+    }
     if (intent === 'updateUnit') {
-        const update = await prisma.InventoryMotorcycle.update({
-            where: { id: data.id },
+        const update = await prisma.inventoryMotorcycle.update({
+            where: { id: formData.id },
             data: {
                 packageNumber: formData.packageNumber,
                 packagePrice: formData.packagePrice,
@@ -681,20 +317,12 @@ export const action: ActionFunction = async ({ request, params }) => {
                 price: formData.price,
                 exteriorColor: formData.exteriorColor,
                 mileage: formData.mileage,
-                consignment: formData.consignment,
-                onOrder: formData.onOrder,
-                expectedOn: formData.expectedOn,
-                status: formData.status,
                 orderStatus: formData.orderStatus,
                 hdcFONumber: formData.hdcFONumber,
                 hdmcFONumber: formData.hdmcFONumber,
                 vin: formData.vin,
-                age: formData.age,
-                floorPlanDueDate: formData.floorPlanDueDate,
+                age: parseInt(formData.age),
                 location: formData.location,
-                stocked: formData.stocked,
-                stockedDate: formData.stockedDate,
-                isNew: formData.isNew,
                 actualCost: formData.actualCost,
                 mfgSerialNumber: formData.mfgSerialNumber,
                 engineNumber: formData.engineNumber,
@@ -719,8 +347,76 @@ export const action: ActionFunction = async ({ request, params }) => {
                 insuranceAgent: formData.insuranceAgent,
                 insuranceStartDate: formData.insuranceStartDate,
                 insuranceEndDate: formData.insuranceEndDate,
-                sold: formData.sold,
             }
+        })
+        return json({ update })
+    }
+    if (intent === 'consignment') {
+        const update = await prisma.inventoryMotorcycle.update({
+            where: { id: formData.id },
+            data: { consignment: Boolean(formPayload.consignment) }
+        })
+        return json({ update })
+    }
+    if (intent === 'onOrder') {
+        const update = await prisma.inventoryMotorcycle.update({
+            where: { id: formData.id },
+            data: { onOrder: Boolean(formPayload.onOrder) }
+        })
+        return json({ update })
+    }
+    if (intent === 'expectedOn') {
+        const update = await prisma.inventoryMotorcycle.update({
+            where: { id: formData.id },
+            data: { expectedOn: String(formPayload.expectedOn) }
+        })
+        return json({ update })
+    }
+    if (intent === 'status') {
+        const update = await prisma.inventoryMotorcycle.update({
+            where: { id: formData.id },
+            data: { status: String(formPayload.status) }
+        })
+        return json({ update })
+    }
+    if (intent === 'orderStatus') {
+        const update = await prisma.inventoryMotorcycle.update({
+            where: { id: formData.id },
+            data: { orderStatus: String(formPayload.orderStatus) }
+        })
+        return json({ update })
+    }
+    if (intent === 'floorPlanDueDate') {
+        const update = await prisma.inventoryMotorcycle.update({
+            where: { id: formData.id },
+            data: { floorPlanDueDate: String(formPayload.floorPlanDueDate) }
+        })
+        return json({ update })
+    }
+    if (intent === 'isNew') {
+        const update = await prisma.inventoryMotorcycle.update({
+            where: { id: formData.id },
+            data: { isNew: Boolean(formPayload.isNew) }
+        })
+        return json({ update })
+    }
+    if (intent === 'sold') {
+        const update = await prisma.inventoryMotorcycle.update({
+            where: { id: formData.id },
+            data: {
+                sold: Boolean(formPayload.sold),
+                status: formPayload.sold ? "Reserved" : null,
+                orderStatus: formPayload.sold ? "Reserved" : null,
+            }
+        })
+        return json({ update })
+    }
+
+
+    if (intent === 'stocked') {
+        const update = await prisma.inventoryMotorcycle.update({
+            where: { id: formData.id },
+            data: { stocked: Boolean(formPayload.stocked), stockedDate: formPayload.stocked ? String(new Date()) : null }
         })
         return json({ update })
     }
@@ -730,12 +426,66 @@ export const action: ActionFunction = async ({ request, params }) => {
 export default function UnitInv() {
     const { inventoryMotorcycle, user } = useLoaderData()
     const [data, setPaymentData,] = useState(inventoryMotorcycle);
+    const fetcher = useFetcher();
+    const submit = useSubmit();
+    const [referrer, setReferrer] = useState()
+    useEffect(() => {
+        const referer = document.referrer;
+        if (referer) {
+            setReferrer(referer)
+        }
+    }, []);
+    console.log(user, 'inventory units')
+    const userIsManager = user.positions.some(
+        (pos) => pos.position === 'Manager' || pos.position === 'Administrator'
+    );
 
+
+    let defaultColumn
+    if (userIsManager) {
+        defaultColumn = {
+            cell: ({ row, column: { id } }) => {
+                const data = row.original
+                return (
+                    <EditableText
+                        value={row.getValue(id)}
+                        fieldName="name"
+                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 "
+                        buttonClassName="text-center py-1 px-2 text-foreground mx-auto flex justify-center"
+                        buttonLabel={`Edit "${id}"`}
+                        inputLabel={`Edit "${id}"`}
+                    >
+                        <input type="hidden" name="intent" value='updateDefaultColumn' />
+                        <input type="hidden" name="id" value={data.id} />
+                        <input type="hidden" name="colName" value={id} />
+                    </EditableText>
+                )
+            },
+        }
+    } else {
+        defaultColumn = {
+            cell: ({ row, column: { id } }) => {
+                const data = row.original
+                return (
+                    <p
+                        className="text-center py-1 px-2 text-foreground mx-auto flex justify-center"
+                    >
+                        {row.getValue(id)}
+                    </p>
+                )
+            },
+        }
+    }
+
+
+
+    console.log(referrer, 'referer')
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
     );
-    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    const savedVisibility = user.ColumnStateInventory.state
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(savedVisibility || {
         id: false,
         packageNumber: false,
         packagePrice: false,
@@ -770,8 +520,16 @@ export default function UnitInv() {
         insuranceAgent: false,
         insuranceEndDate: false,
         model2: false,
-        consignment: false,
+        // consignment: false,
     });
+
+    useEffect(() => {
+        fetcher.submit(
+            { state: JSON.stringify(columnVisibility), intent: 'columnState' },
+            { method: "post" }
+        );
+    }, [columnVisibility]);
+
     const [rowSelection, setRowSelection] = React.useState({});
     const [globalFilter, setGlobalFilter] = useState('')
     const [selectedRowData, setSelectedRowData] = useState(null);
@@ -782,12 +540,823 @@ export default function UnitInv() {
     const [selectedGlobal, setSelectedGlobal] = useState(false);
     const [todayfilterBy, setTodayfilterBy] = useState(null);
 
+    const [date, setDate] = useState<Date>()
+
+    const newDate = new Date()
+    const [datefloorPlanDueDate, setDatefloorPlanDueDate] = useState<Date>()
+
+    const options2 = {
+        weekday: "short",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+        timeZoneName: "short"
+    };
+
+    const columns = [
+        {
+            id: 'select',
+            header: ({ table }) => (
+                <IndeterminateCheckbox
+                    checked={table.getIsAllRowsSelected()}
+                    indeterminate={table.getIsSomeRowsSelected()}
+                    onChange={table.getToggleAllRowsSelectedHandler()}
+                    className='border-primary mx-auto'
+                />
+            ),
+            cell: ({ row }) => (
+                <div className="px-1">
+                    <IndeterminateCheckbox
+                        checked={row.getIsSelected()}
+                        indeterminate={row.getIsSomeSelected()}
+                        onChange={row.getToggleSelectedHandler()}
+                        className='border-primary mx-auto'
+                    />
+                </div>
+            ),
+        },
+        {
+            id: 'Unit File',
+            accessorKey: "Unit File",
+            filterFn: 'fuzzy',
+            sortingFn: fuzzySort,
+
+            cell: ({ row, column: { id } }) => {
+                const data = row.original
+                return (
+                    <UnitDialog data={data} user={user} />
+                )
+            },
+        },
+        {
+            accessorKey: "id",
+            header: "id",
+            cell: ({ row }) => (
+                <div className="capitalize">{row.getValue("id")}</div>
+            ),
+        },
+        {
+            accessorKey: "unitInfo",
+            cell: ({ row, column: { id } }) => {
+                const data = row.original
+                return (
+                    <UnitDialog data={data} />
+                )
+            },
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+        },
+        {
+            accessorKey: "stockNumber",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        className='mx-auto justify-center'
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Stock #
+                        <CaretSortIcon className="ml-2 h-4 w-4 " />
+                    </Button>
+                )
+            },
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "year",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        className='mx-auto'
+
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Year
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "make",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        className=''
+
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Make
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "model",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Model
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "modelName",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Model Name
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "submodel",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Sub Model
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "subSubmodel",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Sub SuB Model
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "price",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Price
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "exteriorColor",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Ext Color
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "mileage",
+
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Mileage
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "consignment",
+            header: ({ column }) => {
+                return <>
+                    <Select onValueChange={(value) => {
+                        const status = table.getColumn("consignment")
+                        status?.setFilterValue(value)
+                    }}                                >
+                        <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                            <SelectValue placeholder='Consignment' />
+                        </SelectTrigger>
+                        <SelectContent className='bg-background text-foreground border-border'>
+                            <SelectItem value="true">true</SelectItem>
+                            <SelectItem value="false">false</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </>
+            },
+            cell: ({ row }) => {
+                const data = row.original
+                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+                    <Consignment data={data} />
+                </div>
+            },
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "onOrder",
+            header: ({ column }) => {
+                return <>
+                    <Select onValueChange={(value) => {
+                        const status = table.getColumn("onOrder")
+                        status?.setFilterValue(value)
+                    }}                                >
+                        <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                            <SelectValue placeholder='On Order' />
+                        </SelectTrigger>
+                        <SelectContent className='bg-background text-foreground border-border'>
+                            <SelectItem value="true">true</SelectItem>
+                            <SelectItem value="false">false</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </>
+            },
+            cell: ({ row }) => {
+                const data = row.original
+                //
+
+                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+                    <OnOrder data={data} />
+                </div>
+            },
+
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "expectedOn",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        className='mx-auto'
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Expected On
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => {
+                const data = row.original
+
+                return <div className="w-[175px]  bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+                    {data.expectedOn ? (<p>{new Date(data.expectedOn).toLocaleDateString("en-US", options2)}</p>) : (
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    size='sm'
+                                    variant={"outline"}
+                                    className={cn(
+                                        "  justify-start text-left font-normal",
+                                        !date && "text-muted-foreground"
+                                    )}
+                                >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {date ? format(date, "PPP") : <span>Pick a date</span>}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0 border-border" align="start">
+                                <div className="mx-auto w-[280px] rounded-md border-border bg-background px-3 text-foreground " >
+                                    <div className='  my-3 flex justify-center   '>
+                                        <CalendarIcon className="mr-2 size-8 " />
+                                        {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
+                                    </div>
+                                    <SmallCalendar
+                                        className='mx-auto w-auto   bg-background text-foreground'
+                                        mode="single"
+                                        selected={date}
+                                        onSelect={setDate}
+                                        initialFocus
+                                    />
+                                    <Button size='sm' className='mx-auto m-3' onClick={() => {
+                                        const formData = new FormData();
+                                        formData.append("id", data.id);
+                                        formData.append("expectedOn", new Date(date).toLocaleDateString("en-US", options2));
+                                        formData.append("intent", 'expectedOn');
+                                        console.log(formData, 'formData');
+                                        fetcher.submit(formData, { method: "post" });
+                                    }} >
+                                        Submit
+                                    </Button>
+                                </div>
+                            </PopoverContent >
+                        </Popover >
+                    )}
+                </div >
+            },
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "sold",
+            header: ({ column }) => {
+                return <>
+                    <Select onValueChange={(value) => {
+                        const status = table.getColumn("sold")
+                        status?.setFilterValue(value)
+                    }}                                >
+                        <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                            <SelectValue placeholder='Sold' />
+                        </SelectTrigger>
+                        <SelectContent className='bg-background text-foreground border-border'>
+                            <SelectItem value="true">true</SelectItem>
+                            <SelectItem value="false">false</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </>
+            },
+            cell: ({ row }) => {
+                const data = row.original
+                //
+
+                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+                    <Sold data={data} />
+                </div>
+            },
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "status",
+            header: ({ column }) => {
+                return <>
+                    <Select onValueChange={(value) => {
+                        const status = table.getColumn("status")
+                        status?.setFilterValue(value)
+                    }}                                >
+                        <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                            <SelectValue placeholder='Status' />
+                        </SelectTrigger>
+                        <SelectContent className='bg-background text-foreground border-border'>
+                            <SelectItem value="Available">Available</SelectItem>
+                            <SelectItem value="Reserved">Reserved</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </>
+            },
+            cell: ({ row }) => {
+                const data = row.original
+                //
+
+                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+                    <Status data={data} />
+                </div>
+            },
+
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "orderStatus",
+            header: ({ column }) => {
+                return <>
+                    <Select onValueChange={(value) => {
+                        const status = table.getColumn("orderStatus")
+                        status?.setFilterValue(value)
+                    }}                                >
+                        <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                            <SelectValue placeholder='Order Status' />
+                        </SelectTrigger>
+                        <SelectContent className='bg-background text-foreground border-border'>
+                            <SelectItem value="On Order">On Order</SelectItem>
+                            <SelectItem value="Stock">Stock</SelectItem>
+                            <SelectItem value="Reserved">Reserved</SelectItem>
+                            <SelectItem value="Wish">Wish</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </>
+            },
+            cell: ({ row }) => {
+                const data = row.original
+                //
+
+                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+                    <OrderStatus data={data} />
+                </div>
+            },
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "vin",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        VIN
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "age",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Age
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "floorPlanDueDate",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Floor Plan Due Date
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+            cell: ({ row }) => {
+                const data = row.original
+
+
+                return <div className="w-[175px] bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+                    {data.floorPlanDueDate ? (<p>{new Date(data.floorPlanDueDate).toLocaleDateString("en-US", options2)}</p>) : (
+
+                        <Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    size='sm'
+                                    variant={"outline"}
+                                    className={cn(
+                                        "  justify-start text-left font-normal",
+                                        !datefloorPlanDueDate && "text-muted-foreground"
+                                    )}
+                                >
+                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                    {datefloorPlanDueDate ? format(datefloorPlanDueDate, "PPP") : <span>Pick a date</span>}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0 border-border" align="start">
+                                <div className="mx-auto w-[280px] rounded-md border-border bg-background px-3 text-foreground " >
+                                    <div className='  my-3 flex justify-center   '>
+                                        <CalendarIcon className="mr-2 size-8 " />
+                                        {datefloorPlanDueDate ? format(datefloorPlanDueDate, "PPP") : <span>{format(newDate, "PPP")}</span>}
+                                    </div>
+                                    <SmallCalendar
+                                        className='mx-auto w-auto   bg-background text-foreground'
+                                        mode="single"
+                                        selected={datefloorPlanDueDate}
+                                        onSelect={setDatefloorPlanDueDate}
+                                        initialFocus
+                                    />
+                                    <Button size='sm' className='mx-auto m-3' onClick={() => {
+                                        const formData = new FormData();
+                                        formData.append("id", data.id);
+                                        formData.append("floorPlanDueDate", new Date(datefloorPlanDueDate).toLocaleDateString("en-US", options2));
+                                        formData.append("intent", 'floorPlanDueDate');
+                                        console.log(formData, 'formData');
+                                        fetcher.submit(formData, { method: "post" });
+                                    }} >
+                                        Submit
+                                    </Button>
+                                </div>
+                            </PopoverContent >
+                        </Popover >
+                    )}
+                </div >
+            },
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "location",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Location
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "isNew",
+            header: ({ column }) => {
+                return <>
+                    <Select onValueChange={(value) => {
+                        const status = table.getColumn("isNew")
+                        status?.setFilterValue(value)
+                    }}                                >
+                        <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                            <SelectValue placeholder='Is New' />
+                        </SelectTrigger>
+                        <SelectContent className='bg-background text-foreground border-border'>
+                            <SelectItem value="true">true</SelectItem>
+                            <SelectItem value="false">false</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </>
+            },
+            cell: ({ row }) => {
+                const data = row.original
+                //
+
+                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+                    <IsNew data={data} />
+                </div>
+            },
+        },
+        {
+            filterFn: fuzzyFilter,
+            sortingFn: fuzzySort,
+            accessorKey: "keyNumber",
+            header: ({ column }) => {
+                return (
+                    <Button
+                        variant="ghost"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                        Key Number
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </Button>
+                )
+            },
+
+        },
+
+        {
+            accessorKey: "packageNumber",
+            header: "Package Number",
+            id: 'packageNumber',
+            footer: props => props.column.id,
+        },
+        {
+            accessorKey: "packagePrice",
+            header: "Package Price",
+
+        },
+        {
+            accessorKey: "type",
+            header: "type",
+
+
+        },
+        {
+            accessorKey: "class",
+            header: "class",
+
+        },
+        {
+            accessorKey: "hdcFONumber",
+            header: "hdcFONumber",
+
+        },
+        {
+            accessorKey: "hdmcFONumber",
+            header: "hdmcFONumber",
+
+        },
+        {
+            accessorKey: "stocked",
+            header: ({ column }) => {
+                return <>
+                    <Select onValueChange={(value) => {
+                        const status = table.getColumn("stocked")
+                        status?.setFilterValue(value)
+                    }}                                >
+                        <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                            <SelectValue placeholder='Stocked' />
+                        </SelectTrigger>
+                        <SelectContent className='bg-background text-foreground border-border'>
+                            <SelectItem value="true">true</SelectItem>
+                            <SelectItem value="false">false</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </>
+            },
+            id: 'stocked',
+            footer: props => props.column.id,
+            cell: ({ row }) => {
+                const data = row.original
+                //
+
+                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+                    <Stocked data={data} />
+                </div>
+            },
+        },
+        {
+            accessorKey: "stockedDate",
+            header: "Stocked Date",
+            id: 'stockedDate',
+            footer: props => props.column.id,
+            cell: ({ row }) => {
+                const data = row.original
+                return <div className="w-[175px] bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+                    <p>{data.stockedDate ? new Date(data.stockedDate).toLocaleDateString("en-US", options2) : ''}</p>
+                </div >
+            },
+        },
+
+        {
+            accessorKey: "mfgSerialNumber",
+            header: "mfgSerialNumber",
+
+        },
+        {
+            accessorKey: "actualCost",
+            header: "actualCost",
+
+        },
+        {
+            accessorKey: "engineNumber",
+            header: "engineNumber",
+
+        },
+        {
+            accessorKey: "plates",
+            header: "plates",
+        },
+        {
+            accessorKey: "width",
+            header: "width",
+
+        },
+        {
+            accessorKey: "engine",
+            header: "engine",
+
+        },
+        {
+            accessorKey: "fuelType",
+            header: "fuelType",
+
+        },
+        {
+            accessorKey: "power",
+            header: "power",
+
+        },
+        {
+            accessorKey: "chassisNumber",
+            header: "chassisNumber",
+
+        },
+        {
+            accessorKey: "chassisYear",
+            header: "chassisYear",
+
+        },
+        {
+            accessorKey: "chassisMake",
+            header: "chassisMake",
+
+        },
+        {
+            accessorKey: "chassisModel",
+            header: "chassisModel",
+        },
+        {
+            accessorKey: "chassisType",
+            header: "chassisType",
+
+        },
+        {
+            accessorKey: "registrationState",
+            header: "registrationState",
+
+        },
+        {
+            accessorKey: "registrationExpiry",
+            header: "registrationExpiry",
+
+        },
+        {
+            accessorKey: "netWeight",
+            header: "netWeight",
+
+        },
+        {
+            accessorKey: "grossWeight",
+            header: "grossWeight",
+
+        },
+        {
+            accessorKey: "insuranceCompany",
+            header: "insuranceCompany",
+
+        },
+        {
+            accessorKey: "policyNumber",
+            header: "policyNumber",
+
+        },
+        {
+            accessorKey: "insuranceStartDate",
+            header: "insuranceStartDate",
+
+        },
+        {
+            accessorKey: "insuranceAgent",
+            header: "insuranceAgent",
+
+        },
+        {
+            accessorKey: "insuranceEndDate",
+            header: "insuranceEndDate",
+
+        },
+        {
+            accessorKey: "length",
+            header: "length",
+        },
+
+    ]
+
     const table = useReactTable({
         data,
         columns,
         defaultColumn,
         filterFns: { fuzzy: fuzzyFilter, },
         globalFilterFn: 'fuzzy',
+        initialState: { columnVisibility },
 
         state: {
             sorting,
@@ -802,7 +1371,10 @@ export default function UnitInv() {
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
+
         onColumnVisibilityChange: setColumnVisibility,
+
+
         onRowSelectionChange: setRowSelection,
         enableColumnResizing: true,
         columnResizeMode: 'onChange',
@@ -811,8 +1383,8 @@ export default function UnitInv() {
     });
 
     // -------- my components --------  //
-    const submit = useSubmit();
-    const fetcher = useFetcher();
+
+
 
     // clears filters
     const setAllFilters = () => {
@@ -840,6 +1412,10 @@ export default function UnitInv() {
         {
             key: "inStock",
             name: "In Stock",
+        },
+        {
+            key: "available",
+            name: "Available",
         },
         {
             key: "inStockArrived",
@@ -914,6 +1490,10 @@ export default function UnitInv() {
         switch (selectedFilter) {
             case 'inStock':
                 table.getColumn('status')?.setFilterValue('available');
+                table.getColumn('onOrder')?.setFilterValue('false');
+                break;
+            case 'available':
+                table.getColumn('status')?.setFilterValue('available');
                 break;
             case 'inStockArrived':
                 table.getColumn('status')?.setFilterValue('available');
@@ -976,8 +1556,6 @@ export default function UnitInv() {
                 signed?.setFilterValue('off')
                 financeApp?.setFilterValue('off')
                 break;
-
-
             default:
                 null;
         }
@@ -1042,254 +1620,190 @@ export default function UnitInv() {
         return today.getFullYear().toString();
     }
     const getThisYear = getYear();
-
+    const navigate = useNavigate()
     return (
-        <div className="w-[95%] mt-[35px] mx-auto">
-            <div className="flex items-center py-4">
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" >Menu</Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56 border border-border bg-background text-foreground">
-                        <DropdownMenuLabel>Dashboard Actions</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem
-                                className="cursor-pointer"
-                                onSelect={() => setSelectedGlobal(true)}
-                            >
-                                Global Filter
-                            </DropdownMenuItem>
-                            <DropdownMenuSub>
-                                <DropdownMenuSubTrigger className="cursor-pointer">
-                                    Default Filters
-                                </DropdownMenuSubTrigger>
-                                <DropdownMenuPortal>
-                                    <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
-                                        <DropdownMenuLabel>
-                                            {todayfilterBy || "Default Filters"}
-                                        </DropdownMenuLabel>
-                                        <DropdownMenuSeparator />
-                                        {CallsList.map((item) => (
-                                            <DropdownMenuItem
-                                                onSelect={(event) => {
-                                                    const value =
-                                                        event.currentTarget.getAttribute("data-value");
-                                                    const item =
-                                                        CallsList.find((i) => i.key === value) ||
-                                                        DeliveriesList.find((i) => i.key === value) ||
-                                                        DepositsTakenList.find((i) => i.key === value);
-                                                    if (item) {
-                                                        handleFilterChange(item.key);
-                                                        setTodayfilterBy(item.name);
-                                                    }
-                                                }}
-                                                data-value={item.key}
-                                                textValue={item.key}
-                                            >
-                                                {item.name}
-                                            </DropdownMenuItem>
-                                        ))}
-                                        {CallsList.map((item) => (
-                                            <DropdownMenuItem
-                                                onSelect={(event) => {
-                                                    const value =
-                                                        event.currentTarget.getAttribute("data-value");
-                                                    const item =
-                                                        CallsList.find((i) => i.key === value) ||
-                                                        DeliveriesList.find((i) => i.key === value) ||
-                                                        DepositsTakenList.find((i) => i.key === value);
-                                                    if (item) {
-                                                        handleFilterChange(item.key);
-                                                        setTodayfilterBy(item.name);
-                                                    }
-                                                }}
-                                                data-value={item.key}
-                                                textValue={item.key}
-                                            >
-                                                {item.name}
-                                            </DropdownMenuItem>
-                                        ))}
-                                        {CallsList.map((item) => (
-                                            <DropdownMenuItem
-                                                onSelect={(event) => {
-                                                    const value =
-                                                        event.currentTarget.getAttribute("data-value");
-                                                    const item =
-                                                        CallsList.find((i) => i.key === value) ||
-                                                        DeliveriesList.find((i) => i.key === value) ||
-                                                        DepositsTakenList.find((i) => i.key === value);
-                                                    if (item) {
-                                                        handleFilterChange(item.key);
-                                                        setTodayfilterBy(item.name);
-                                                    }
-                                                }}
-                                                data-value={item.key}
-                                                textValue={item.key}
-                                            >
-                                                {item.name}
-                                            </DropdownMenuItem>
-                                        ))}
-                                    </DropdownMenuSubContent>
-                                </DropdownMenuPortal>
-                            </DropdownMenuSub>
-                            <DropdownMenuSub>
-                                <DropdownMenuSubTrigger className="cursor-pointer">
-                                    Global Filters
-                                </DropdownMenuSubTrigger>
-                                <DropdownMenuPortal>
-                                    <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
-                                        {table
-                                            .getAllColumns()
-                                            .filter((column) => column.getCanHide())
-                                            .map((column) => (
+        <div className="w-[95%] mt-[15px] mx-auto">
+
+            <div className="container mx-auto py-3">
+                <div className="flex items-center py-3">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button size='sm' variant="outline" className='mr-3' >Menu</Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56 border border-border bg-background text-foreground">
+                            <DropdownMenuLabel>Dashboard Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuGroup>
+                                <DropdownMenuItem
+                                    className="cursor-pointer"
+                                    onSelect={() => setSelectedGlobal(true)}
+                                >
+                                    Global Filter
+                                </DropdownMenuItem>
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger className="cursor-pointer">
+                                        Default Filters
+                                    </DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                        <DropdownMenuSubContent className="h-auto max-h-[175px] overflow-y-auto border border-border bg-background text-foreground">
+                                            <DropdownMenuLabel>
+                                                {todayfilterBy || "Default Filters"}
+                                            </DropdownMenuLabel>
+                                            <DropdownMenuSeparator />
+                                            {CallsList.map((item) => (
                                                 <DropdownMenuItem
                                                     onSelect={(event) => {
-                                                        setColumnFilterDropdown(event);
+                                                        const value =
+                                                            event.currentTarget.getAttribute("data-value");
+                                                        const item =
+                                                            CallsList.find((i) => i.key === value) ||
+                                                            DeliveriesList.find((i) => i.key === value) ||
+                                                            DepositsTakenList.find((i) => i.key === value);
+                                                        if (item) {
+                                                            handleFilterChange(item.key);
+                                                            setTodayfilterBy(item.name);
+                                                        }
                                                     }}
-                                                    data-value={column.id}
-                                                    key={column.id}
-                                                    className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline"
+                                                    data-value={item.key}
+                                                    textValue={item.key}
                                                 >
-                                                    {column.id}
+                                                    {item.name}
                                                 </DropdownMenuItem>
                                             ))}
-                                    </DropdownMenuSubContent>
-                                </DropdownMenuPortal>
-                            </DropdownMenuSub>
-                            <DropdownMenuItem
-                                className="cursor-pointer"
-                                onSelect={() => {
+
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger className="cursor-pointer">
+                                        Global Filters
+                                    </DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                        <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                                            {table
+                                                .getAllColumns()
+                                                .filter((column) => column.getCanHide())
+                                                .map((column) => (
+                                                    <DropdownMenuItem
+                                                        onSelect={(event) => {
+                                                            setColumnFilterDropdown(event);
+                                                        }}
+                                                        data-value={column.id}
+                                                        key={column.id}
+                                                        className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline"
+                                                    >
+                                                        {column.id}
+                                                    </DropdownMenuItem>
+                                                ))}
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
+                                <DropdownMenuItem
+                                    className="cursor-pointer"
+                                    onSelect={() => {
+                                        setAllFilters([]);
+                                        setSelectedGlobal(false);
+                                    }}
+                                >
+                                    Clear
+                                </DropdownMenuItem>
+                            </DropdownMenuGroup>
+
+                            <DropdownMenuSeparator />
+                            <DropdownMenuGroup>
+                                <DropdownMenuItem
+                                    className="cursor-pointer"
+                                    onSelect={toggleFilter}
+                                >
+                                    Toggle All Columns
+                                </DropdownMenuItem>
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger className="cursor-pointer">
+                                        Column Toggle
+                                    </DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                        <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                                            {table
+                                                .getAllColumns()
+                                                .filter((column) => column.getCanHide())
+                                                .map((column) => {
+                                                    return (
+                                                        <DropdownMenuCheckboxItem
+                                                            key={column.id}
+                                                            className="cursor-pointer bg-background  capitalize text-foreground"
+                                                            checked={column.getIsVisible()}
+                                                            onCheckedChange={(value) =>
+                                                                column.toggleVisibility(!!value)
+                                                            }
+                                                        >
+                                                            {column.id}
+                                                        </DropdownMenuCheckboxItem>
+                                                    );
+                                                })}
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
+                            </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    {userIsManager && (
+                        <AddUnitDialog />
+                    )}
+                    {selectedColumn && (
+                        <div className="relative flex-1 md:grow-0 ">
+
+                            <Input
+                                placeholder={`Filter ${selectedColumn}...`}
+                                onChange={(e) => handleGlobalChange(e.target.value)}
+                                className="ml-2 max-w-sm w-auto "
+                                autoFocus
+                            />
+                            <Button
+                                onClick={() => {
                                     setAllFilters([]);
                                     setSelectedGlobal(false);
                                 }}
-                            >
-                                Clear
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
+                                size="icon"
+                                variant="ghost"
+                                className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
 
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem
-                                className="cursor-pointer"
-                                onSelect={toggleFilter}
-                            >
-                                Toggle All Columns
-                            </DropdownMenuItem>
-                            <DropdownMenuSub>
-                                <DropdownMenuSubTrigger className="cursor-pointer">
-                                    Column Toggle
-                                </DropdownMenuSubTrigger>
-                                <DropdownMenuPortal>
-                                    <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
-                                        {table
-                                            .getAllColumns()
-                                            .filter((column) => column.getCanHide())
-                                            .map((column) => {
-                                                return (
-                                                    <DropdownMenuCheckboxItem
-                                                        key={column.id}
-                                                        className="cursor-pointer bg-background  capitalize text-foreground"
-                                                        checked={column.getIsVisible()}
-                                                        onCheckedChange={(value) =>
-                                                            column.toggleVisibility(!!value)
-                                                        }
-                                                    >
-                                                        {column.id}
-                                                    </DropdownMenuCheckboxItem>
-                                                );
-                                            })}
-                                    </DropdownMenuSubContent>
-                                </DropdownMenuPortal>
-                            </DropdownMenuSub>
-                        </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-                {selectedColumn && (
-                    <div className="relative flex-1 md:grow-0 ">
+                                <X />
+                            </Button>
+                        </div>
+                    )}
+                    {selectedGlobal === true && (
+                        <div className="relative flex-1 md:grow-0 ">
+                            <DebouncedInput
+                                value={globalFilter ?? ""}
+                                onChange={(value) => setGlobalFilter(String(value))}
+                                className="mx-1 ml-3 rounded-md border border-border bg-background p-2 text-foreground shadow max-w-sm w-auto"
+                                placeholder="Search all columns..." autoFocus
+                            />
 
-                        <Input
-                            placeholder={`Filter ${selectedColumn}...`}
-                            onChange={(e) => handleGlobalChange(e.target.value)}
-                            className="ml-2 max-w-sm w-auto "
-                            autoFocus
-                        />
-                        <Button
-                            onClick={() => {
-                                setAllFilters([]);
-                                setSelectedGlobal(false);
-                            }}
-                            size="icon"
-                            variant="ghost"
-                            className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                            <Button
+                                onClick={() => {
+                                    setGlobalFilter([]);
+                                    setSelectedGlobal(false);
+                                }}
+                                size="icon"
+                                variant="ghost"
+                                className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                                <X size={16} />
+                            </Button>
+                        </div>
+                    )}
+                    {referrer === '/dealer/manager/inventory' && (
+                        <Button size='sm' variant="outline" className='mr-3' onClick={() => {
+                            navigate(-1)
+                        }} >Back to Manager Dash</Button>
+                    )}
 
-                            <X />
-                        </Button>
-                    </div>
-                )}
-                {selectedGlobal === true && (
-                    <div className="relative flex-1 md:grow-0 ">
-                        <DebouncedInput
-                            value={globalFilter ?? ""}
-                            onChange={(value) => setGlobalFilter(String(value))}
-                            className="mx-1 ml-3 rounded-md border border-border bg-background p-2 text-foreground shadow max-w-sm w-auto"
-                            placeholder="Search all columns..." autoFocus
-                        />
-
-                        <Button
-                            onClick={() => {
-                                setGlobalFilter([]);
-                                setSelectedGlobal(false);
-                            }}
-                            size="icon"
-                            variant="ghost"
-                            className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
-                            <X size={16} />
-                        </Button>
-                    </div>
-                )}
-                <Button
-                    variant="outline"
-                    className='ml-3'
-                    onClick={() => {
-                        console.info('table.getSelectedRowModel().flatRows',)
-                        setSelectedModel(table.getSelectedRowModel().flatRows[0].original);
-                        /*   const formData = new FormData();
-                           formData.append("stockNum", selectedModel.lockedId);
-                           formData.append("financeId", finance.lockedId);
-                           formData.append("year", selectedModel.year);
-                           formData.append("color", selectedModel.color);
-                           formData.append("model1", selectedModel.model1);
-                           formData.append("model", selectedModel.model);
-                           formData.append("vin", selectedModel.vin);
-                           formData.append("bikeStatus", selectedModel.bikeStatus);
-                           formData.append("location", selectedModel.location);
-                           formData.append("make", selectedModel.make);
-                           formData.append("modelName", selectedModel.modelName);
-                           formData.append("color", selectedModel.color);
-                           formData.append("msrp", selectedModel.msrp);
-                           formData.append("mileage", selectedModel.mileage);
-                           formData.append("expectedOn", selectedModel.expectedOn);
-                           formData.append("orderStatus", selectedModel.orderStatus);
-                           formData.append("age", selectedModel.age);
-                           formData.append("isNew", selectedModel.isNew);
-                           formData.append("keyNumber", selectedModel.keyNumber);
-                           formData.append("onOrder", selectedModel.onOrder);
-                           formData.append("vehicleIdWanted", selectedModel.vehicleIdWanted);
-                           formData.append("intent", 'updateFinanceWanted');
-                           submit(formData, { method: "post" });*/
-                        toast.message('Unit has been saved to contract.', {
-                            description: `finance.firstName}, finance.lastName}`,
-                        })
-                    }}
-                >Assign Unit</Button>
-            </div>
-            <div className="container mx-auto py-5">
-                <div className="rounded-md border">
+                </div>
+                <div className="rounded-md border border-border    h-auto max-h-[600px] overflow-y-auto  ">
                     <Table className='border border-border text-foreground bg-background'>
                         <TableHeader className='border border-border text-muted-foreground bg-background'>
                             {table.getHeaderGroups().map((headerGroup) => (
-                                <TableRow key={headerGroup.id}>
+                                <TableRow key={headerGroup.id} className='border-border'>
                                     {headerGroup.headers.map((header) => {
                                         return (
                                             <TableHead key={header.id}>
@@ -1300,7 +1814,7 @@ export default function UnitInv() {
                                                         header.getContext()
                                                     )}
                                                 {header.column.getCanFilter() && showFilter && (
-                                                    <div className="mx-auto items-center justify-center cursor-pointer text-center ">
+                                                    <div className="sticky  z-5 mx-auto items-center justify-center cursor-pointer text-center ">
                                                         <Filter column={header.column} table={table} />
                                                     </div>
                                                 )}
@@ -1310,7 +1824,8 @@ export default function UnitInv() {
                                 </TableRow>
                             ))}
                         </TableHeader>
-                        <TableBody className='border border-border text-foreground bg-background'>
+
+                        <TableBody className='border border-border text-foreground bg-background '>
                             {table.getRowModel().rows?.length ? (
                                 table.getRowModel().rows.map((row) => (
                                     <TableRow
@@ -1333,10 +1848,12 @@ export default function UnitInv() {
                                 </TableRow>
                             )}
                         </TableBody>
+
                     </Table>
                 </div>
+                <DataTablePagination table={table} />
+
             </div>
-            <DataTablePagination table={table} />
         </div>
     );
 };
@@ -1344,7 +1861,7 @@ export default function UnitInv() {
 
 export const meta: MetaFunction = () => {
     return [
-        { title: 'Motorcycle Inventory - Dealer Sales Assistant' },
+        { title: 'Inventory - Dealer Sales Assistant' },
         {
             property: "og:title",
             content: "Your very own assistant!",

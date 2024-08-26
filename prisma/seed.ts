@@ -4645,6 +4645,7 @@ export async function seedUsers() {
     },
   });
   // creating admin
+  const stateSales = { "id": false, "SMS": false, "pdi": false, "tag": false, "vin": false, "bank": false, "lien": false, "lost": false, "msrp": false, "on60": false, "qc60": false, "sold": false, "trim": false, "ucda": false, "vinE": false, "year": false, "Other": false, "Phone": false, "admin": false, "brand": false, "color": false, "iRate": false, "invId": false, "motor": false, "nat60": false, "notes": false, "onTax": false, "oth60": false, "qcTax": false, "total": false, "dLCopy": false, "demoed": false, "funded": false, "labour": false, "model1": false, "months": false, "othTax": false, "quoted": false, "refund": false, "result": false, "signed": false, "visits": false, "weekly": false, "deposit": false, "freight": false, "insCopy": false, "mileage": false, "options": false, "userGap": false, "visited": false, "voidChq": false, "InPerson": false, "approved": false, "biweekly": false, "discount": false, "lastNote": false, "leadNote": false, "metParts": false, "otherTax": false, "progress": false, "referral": false, "refunded": false, "signBill": false, "stockNum": false, "tradeVin": false, "turnOver": false, "userName": false, "weeklyqc": false, "activixId": false, "aptShowed": false, "biweekOth": false, "bookedApt": false, "cancelled": false, "commodity": false, "createdAt": false, "delivered": false, "licensing": false, "loanOther": false, "modelCode": false, "otherDocs": false, "paintPrem": false, "pickUpSet": false, "seenTrade": false, "testDrive": false, "tradeDesc": false, "tradeInsp": false, "tradeMake": false, "tradeTrim": false, "tradeYear": false, "updatedAt": false, "userEmail": false, "userOther": false, "weeklyOth": false, "bikeStatus": false, "biweeklNat": false, "biweeklyqc": false, "customerWS": false, "dealNumber": false, "docsSigned": false, "financeApp": false, "idVerified": false, "leadSource": false, "lienPayout": false, "loanNumber": false, "metFinance": false, "metManager": false, "metService": false, "pickUpDate": false, "pickUpTime": false, "testDrForm": false, "tradeColor": false, "tradeValue": false, "weeklylNat": false, "accessories": false, "aptNoShowed": false, "depositMade": false, "discountPer": false, "userExtWarr": false, "clientfileId": false, "firstPayment": false, "liceningDone": false, "loanMaturity": false, "optionsTotal": false, "rustProofing": false, "theRealActId": false, "tradeMileage": false, "tradeRepairs": false, "userLoanProt": false, "deliveredDate": false, "licensingSent": false, "nat60WOptions": false, "oth60WOptions": false, "tradeLocation": false, "deliveryCharge": false, "financeManager": false, "lifeDisability": false, "metSalesperson": false, "timesContacted": false, "userTireandRim": false, "applicationDone": false, "desiredPayments": false, "salesCommission": false, "userServicespkg": false, "dealerCommission": false, "depositTakenDate": false, "sendToFinanceNow": false, "totalWithOptions": false, "biweekOthWOptions": false, "financeCommission": false, "urgentFinanceNote": false, "weeklyOthWOptions": false, "biweeklNatWOptions": false, "financeApplication": false, "financeManagerName": false, "weeklylNatWOptions": false, "otherTaxWithOptions": false, "financeDeptProductsTotal": false }
   console.log(chalk.yellow("creating admin..."));
   const admin = await prisma.user.create({
     data: {
@@ -4658,7 +4659,7 @@ export async function seedUsers() {
 
       customerSync: { create: { orderId: null } },
       ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
-      columnStateSales: { create: { state: { "id": false, "SMS": false, "pdi": false, "tag": false, "vin": false, "bank": false, "lien": false, "lost": false, "msrp": false, "on60": false, "qc60": false, "sold": false, "trim": false, "ucda": false, "vinE": false, "year": false, "Other": false, "Phone": false, "admin": false, "brand": false, "color": false, "iRate": false, "invId": false, "motor": false, "nat60": false, "notes": false, "onTax": false, "oth60": false, "qcTax": false, "total": false, "dLCopy": false, "demoed": false, "funded": false, "labour": false, "model1": false, "months": false, "othTax": false, "quoted": false, "refund": false, "result": false, "signed": false, "visits": false, "weekly": false, "deposit": false, "freight": false, "insCopy": false, "mileage": false, "options": false, "userGap": false, "visited": false, "voidChq": false, "InPerson": false, "approved": false, "biweekly": false, "discount": false, "lastNote": false, "leadNote": false, "metParts": false, "otherTax": false, "progress": false, "referral": false, "refunded": false, "signBill": false, "stockNum": false, "tradeVin": false, "turnOver": false, "userName": false, "weeklyqc": false, "activixId": false, "aptShowed": false, "biweekOth": false, "bookedApt": false, "cancelled": false, "commodity": false, "createdAt": false, "delivered": false, "licensing": false, "loanOther": false, "modelCode": false, "otherDocs": false, "paintPrem": false, "pickUpSet": false, "seenTrade": false, "testDrive": false, "tradeDesc": false, "tradeInsp": false, "tradeMake": false, "tradeTrim": false, "tradeYear": false, "updatedAt": false, "userEmail": false, "userOther": false, "weeklyOth": false, "bikeStatus": false, "biweeklNat": false, "biweeklyqc": false, "customerWS": false, "dealNumber": false, "docsSigned": false, "financeApp": false, "idVerified": false, "leadSource": false, "lienPayout": false, "loanNumber": false, "metFinance": false, "metManager": false, "metService": false, "pickUpDate": false, "pickUpTime": false, "testDrForm": false, "tradeColor": false, "tradeValue": false, "weeklylNat": false, "accessories": false, "aptNoShowed": false, "depositMade": false, "discountPer": false, "userExtWarr": false, "clientfileId": false, "firstPayment": false, "liceningDone": false, "loanMaturity": false, "optionsTotal": false, "rustProofing": false, "theRealActId": false, "tradeMileage": false, "tradeRepairs": false, "userLoanProt": false, "deliveredDate": false, "licensingSent": false, "nat60WOptions": false, "oth60WOptions": false, "tradeLocation": false, "deliveryCharge": false, "financeManager": false, "lifeDisability": false, "metSalesperson": false, "timesContacted": false, "userTireandRim": false, "applicationDone": false, "desiredPayments": false, "salesCommission": false, "userServicespkg": false, "dealerCommission": false, "depositTakenDate": false, "sendToFinanceNow": false, "totalWithOptions": false, "biweekOthWOptions": false, "financeCommission": false, "urgentFinanceNote": false, "weeklyOthWOptions": false, "biweeklNatWOptions": false, "financeApplication": false, "financeManagerName": false, "weeklylNatWOptions": false, "otherTaxWithOptions": false, "financeDeptProductsTotal": false } } },
+      columnStateSales: { create: { state: stateSales } },
       profile: { create: { headline: "I am Admin", bio: "The administrator of this app." } },
     },
   });
@@ -6305,10 +6306,15 @@ export async function Board() {
   const completed = [
     { board: "dev", column: "GET DONE NOW", item: "put in a room for admin for people to leave notes for the admin team" },
     { board: "dev", column: "GET DONE NOW", item: "fetcher on technician update for workorder appt in caleddnar modal" },
+    { board: "dev", column: "GET DONE NOW", item: "notes in client file fix" },
+    { board: "dev", column: "GET DONE NOW", item: "in clientfile under service tab create back button to see the list of workorders again" },
+    { board: "dev", column: "GET DONE NOW", item: "workorder/workorderid add  appts tab where you can see select and edit appts, maybe add?" },
+    { board: "dev", column: "GET DONE NOW", item: "workorder/workorderid when adding part pull part status before saving" },
 
     { board: "dev", column: "GET DONE NOW", item: "end of day reports, choose date so you can print any day" },
     { board: "dev", column: "ISSUE", item: "accessories/parts differiantiati between parts and acc by sellingDept on dashboard" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "invite user section where it send an email with links to the crm and" },
+    { board: "dev", column: "ISSUE", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
 
     { board: "dev", column: "WIP", item: "manager Dashboard" },
     { board: "dev", column: "WIP", item: "admin dash" },
@@ -6618,9 +6624,6 @@ export async function Board() {
 
   ]
   const getDoneNow = [
-    { board: "dev", column: "GET DONE NOW", item: "workorder/workorderid add  appts tab where you can see select and edit appts, maybe add?" },
-    { board: "dev", column: "GET DONE NOW", item: "notes in client file fix" },
-    { board: "dev", column: "GET DONE NOW", item: "in clientfile under service tab create back button to see the list of workorders again" },
     { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
     { board: "dev", column: "GET DONE NOW", item: "put swr places it needs to be, part, unit, workorder, like the way you did on sales dashbaord" },
 
@@ -6633,19 +6636,18 @@ export async function Board() {
     { board: "dev", column: "ISSUE", item: "Parts order printout and workorder printout for srevice" },
   ]
   const issue = [
-    { board: "dev", column: "ISSUE", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
     { board: "dev", column: "ISSUE", item: "end of day report, sales people arent printing out" },
     { board: "dev", column: "ISSUE", item: "need winter storage dash for service / winter storage long term" },
     { board: "dev", column: "ISSUE", item: "user docs instead of having a doc section have button where it brings them to utube video to teach them about page" },
     { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
   ]
-  const BACKBURNER = [
-    { board: "dev", column: "BACKBURNER", item: "set up more parts pages - started - Manitou done - switch started" },
-    { board: "dev", column: "BACKBURNER", item: "payment processor for purchases?" },
-    { board: "dev", column: "BACKBURNER", item: "have it populate api keys so managers can hand them out" },
-    { board: "dev", column: "BACKBURNER", item: "cross platform ad manager, post it once here and push it to different providors" },
+  const WIP = [
+    { board: "dev", column: "WIP", item: "have your own csi reporting for the dealer that can be sent to customers JUST NEED TO MAKE MOCK EMAIL FOR IT" },
+    { board: "dev", column: "WIP", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
+    { board: "dev", column: "WIP", item: "mass email/sms - wip" },
+    { board: "dev", column: "WIP", item: "clientfile/financeid cc user for notes" },
+    { board: "dev", column: "WIP", item: "https://developers.klaviyo.com/en/reference/get_campaigns" },
   ]
-
   const doneneedstesting = [
     { board: "dev", column: "GET DONE NOW", item: "use swr with auto revalidation for workorders so it updates in real time to get rid of the issue of 1 work order only open, set to fast on work orders for service writers but slow on tech's page" },
 
@@ -6656,16 +6658,17 @@ export async function Board() {
     { board: "dev", column: "DONE NEEDS TESTING", item: "sms" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
   ]
-  const WIP = [
-
-    { board: "dev", column: "WIP", item: "have your own csi reporting for the dealer that can be sent to customers JUST NEED TO MAKE MOCK EMAIL FOR IT" },
-    { board: "dev", column: "WIP", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
-    { board: "dev", column: "WIP", item: "mass email/sms - wip" },
-    { board: "dev", column: "WIP", item: "https://developers.klaviyo.com/en/reference/get_campaigns" },
+  const BACKBURNER = [
+    { board: "dev", column: "BACKBURNER", item: "set up more parts pages - started - Manitou done - switch started" },
+    { board: "dev", column: "BACKBURNER", item: "payment processor for purchases?" },
+    { board: "dev", column: "BACKBURNER", item: "have it populate api keys so managers can hand them out" },
+    { board: "dev", column: "BACKBURNER", item: "cross platform ad manager, post it once here and push it to different providors" },
   ]
   const ideas = [
+    { board: "dev", column: "IDEAS", item: "service calendar - select mechanic and it only shows that mechanics appts" },
     { board: "dev", column: "IDEAS", item: "save form to local storage, never loose data for a internet hiccup or outage" },
     { board: "dev", column: "IDEAS", item: "have blue book values on quote section" },
+    { board: "dev", column: "IDEAS", item: "service dash - tab where it shows customers who havent had a service in 6 months" },
     { board: "dev", column: "IDEAS", item: "idea for a chart current contact time, 1 day 7 days 14 days 30 days 60 days 90 days" },
   ]
   const sales = [

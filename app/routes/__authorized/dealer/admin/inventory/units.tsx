@@ -38,10 +38,10 @@ function Consignment({ data }) {
         console.log(formData, 'formData');
         fetcher.submit(formData, { method: "post" });
       }}
-      defaultValue={data.consignment}
+      defaultValue={data.consignment || false}
       name='consignment'>
       <SelectTrigger className="w-auto focus:border-primary">
-        <SelectValue />
+        <SelectValue defaultValue={data.consignment || false} />
       </SelectTrigger>
       <SelectContent className='bg-background text-foreground border-border'>
         <SelectItem value="true">true</SelectItem>
@@ -790,43 +790,47 @@ export default function UnitInv() {
       sortingFn: fuzzySort,
       accessorKey: "consignment",
       header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Consignment
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
-        )
+        return <>
+          <Select onValueChange={(value) => {
+            const status = table.getColumn("consignment")
+            status?.setFilterValue(value)
+          }}                                >
+            <SelectTrigger className="w-full bg-background text-foreground border border-border">
+              <SelectValue placeholder='Consignment' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+              <SelectItem value="true">true</SelectItem>
+              <SelectItem value="false">false</SelectItem>
+            </SelectContent>
+          </Select>
+        </>
       },
       cell: ({ row }) => {
-        //
-
-
         const data = row.original
         return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
           <Consignment data={data} />
         </div>
       },
-
     },
-
-
     {
       filterFn: fuzzyFilter,
       sortingFn: fuzzySort,
       accessorKey: "onOrder",
       header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            On Order
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
-        )
+        return <>
+          <Select onValueChange={(value) => {
+            const status = table.getColumn("onOrder")
+            status?.setFilterValue(value)
+          }}                                >
+            <SelectTrigger className="w-full bg-background text-foreground border border-border">
+              <SelectValue placeholder='On Order' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+              <SelectItem value="true">true</SelectItem>
+              <SelectItem value="false">false</SelectItem>
+            </SelectContent>
+          </Select>
+        </>
       },
       cell: ({ row }) => {
         const data = row.original
@@ -908,15 +912,20 @@ export default function UnitInv() {
       sortingFn: fuzzySort,
       accessorKey: "sold",
       header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Sold
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
-        )
+        return <>
+          <Select onValueChange={(value) => {
+            const status = table.getColumn("sold")
+            status?.setFilterValue(value)
+          }}                                >
+            <SelectTrigger className="w-full bg-background text-foreground border border-border">
+              <SelectValue placeholder='Sold' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+              <SelectItem value="true">true</SelectItem>
+              <SelectItem value="false">false</SelectItem>
+            </SelectContent>
+          </Select>
+        </>
       },
       cell: ({ row }) => {
         const data = row.original
@@ -932,15 +941,20 @@ export default function UnitInv() {
       sortingFn: fuzzySort,
       accessorKey: "status",
       header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Status
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
-        )
+        return <>
+          <Select onValueChange={(value) => {
+            const status = table.getColumn("status")
+            status?.setFilterValue(value)
+          }}                                >
+            <SelectTrigger className="w-full bg-background text-foreground border border-border">
+              <SelectValue placeholder='Status' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+              <SelectItem value="Available">Available</SelectItem>
+              <SelectItem value="Reserved">Reserved</SelectItem>
+            </SelectContent>
+          </Select>
+        </>
       },
       cell: ({ row }) => {
         const data = row.original
@@ -957,15 +971,22 @@ export default function UnitInv() {
       sortingFn: fuzzySort,
       accessorKey: "orderStatus",
       header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Order Status
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
-        )
+        return <>
+          <Select onValueChange={(value) => {
+            const status = table.getColumn("orderStatus")
+            status?.setFilterValue(value)
+          }}                                >
+            <SelectTrigger className="w-full bg-background text-foreground border border-border">
+              <SelectValue placeholder='Order Status' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+              <SelectItem value="On Order">On Order</SelectItem>
+              <SelectItem value="Stock">Stock</SelectItem>
+              <SelectItem value="Reserved">Reserved</SelectItem>
+              <SelectItem value="Wish">Wish</SelectItem>
+            </SelectContent>
+          </Select>
+        </>
       },
       cell: ({ row }) => {
         const data = row.original
@@ -1098,15 +1119,20 @@ export default function UnitInv() {
       sortingFn: fuzzySort,
       accessorKey: "isNew",
       header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            New?
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
-        )
+        return <>
+          <Select onValueChange={(value) => {
+            const status = table.getColumn("isNew")
+            status?.setFilterValue(value)
+          }}                                >
+            <SelectTrigger className="w-full bg-background text-foreground border border-border">
+              <SelectValue placeholder='Is New' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+              <SelectItem value="true">true</SelectItem>
+              <SelectItem value="false">false</SelectItem>
+            </SelectContent>
+          </Select>
+        </>
       },
       cell: ({ row }) => {
         const data = row.original
@@ -1169,7 +1195,22 @@ export default function UnitInv() {
     },
     {
       accessorKey: "stocked",
-      header: "Stocked",
+      header: ({ column }) => {
+        return <>
+          <Select onValueChange={(value) => {
+            const status = table.getColumn("stocked")
+            status?.setFilterValue(value)
+          }}                                >
+            <SelectTrigger className="w-full bg-background text-foreground border border-border">
+              <SelectValue placeholder='Stocked' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+              <SelectItem value="true">true</SelectItem>
+              <SelectItem value="false">false</SelectItem>
+            </SelectContent>
+          </Select>
+        </>
+      },
       id: 'stocked',
       footer: props => props.column.id,
       cell: ({ row }) => {
@@ -1810,8 +1851,9 @@ export default function UnitInv() {
 
           </Table>
         </div>
+        <DataTablePagination table={table} />
+
       </div>
-      <DataTablePagination table={table} />
     </div>
   );
 };
