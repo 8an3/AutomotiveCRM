@@ -1396,12 +1396,12 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                   Messages
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
-                  <DropdownMenuSubContent className="bg-background w-[300px] border border-border">
+                  <DropdownMenuSubContent className="bg-background w-[400px] border border-border h-[500px] max-h-[500x]">
                     {messages ? messages.map((item, index) => {
                       return (
                         <DropdownMenuItem
                           key={index}
-                          className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
+                          className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer h-[90px]
             ${item.read === true ? 'bg-background' : 'bg-[#181818]'}`}
                           onSelect={() => {
                             const formData = new FormData();
@@ -1413,7 +1413,14 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                             submit(formData, { method: "post" });
                           }}
                         >
-                          {item.title}
+                          <div className='flex items-center'>
+
+                            <div className='grid grid-cols-1'>
+                              <p>   {item.title}</p>
+                              <p className='text-muted-foreground'>   {item.createdAt}</p>
+                            </div>
+                          </div>
+
                         </DropdownMenuItem>
                       );
                     }) : (

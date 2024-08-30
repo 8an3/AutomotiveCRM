@@ -11,7 +11,7 @@ import {
 
 export default function Why() {
   return (
-    <Card className='w-[600px] mt-5 mx-auto mb-5'>
+    <Card className='w-[600px] mt-5 mx-auto mb-5 bg-background'>
       <CardHeader>
         <CardTitle>Why...</CardTitle>
         <CardDescription>Outside of sales training, what can you do that would have an impact on your team and sales?</CardDescription>
