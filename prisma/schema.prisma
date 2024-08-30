@@ -1743,6 +1743,8 @@ model WorkOrder {
   writer        String?
   userEmail     String?
   tech          String?
+  discDollar    Float?
+  discPer       Float?
   techEmail     String?
   notes         String?
   customerSig   String?
@@ -1792,14 +1794,14 @@ model WorkOrderClockEntry {
 }
 
 model WorkOrderApts {
-  id          String   @id @default(cuid())
+  id          String     @id @default(cuid())
   tech        String?
   techEmail   String?
   writer      String?
   start       String?
   end         String?
   title       String?
-  workOrderId Int?     @unique
+  workOrderId Int?       @unique
   completed   Boolean?
   resourceId  String?
   unit        String?
@@ -1809,10 +1811,10 @@ model WorkOrderApts {
   motor       String?
   color       String?
   location    String?
+  WorkOrder   WorkOrder? @relation(fields: [workOrderId], references: [workOrderId], onDelete: Cascade)
 
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  WorkOrder WorkOrder? @relation(fields: [workOrderId], references: [workOrderId], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([workOrderId])
 }

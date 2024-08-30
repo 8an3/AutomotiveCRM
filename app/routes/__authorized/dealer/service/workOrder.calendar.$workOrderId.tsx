@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { type LinksFunction, type LoaderFunction, type ActionFunction, json, redirect, } from '@remix-run/node'
-import { useLoaderData, Link, useNavigate, useSubmit, useFetcher, useSearchParams, Form } from '@remix-run/react'
+import { useLoaderData, Link, useNavigate, useSubmit, useFetcher, useSearchParams, Form, useNavigation } from '@remix-run/react'
 import { prisma } from "~/libs";
 import { Text, } from '@radix-ui/themes';
 import { UserPlus, Gauge, CalendarPlus, ChevronsLeft, ChevronsRightLeft, ChevronsRight } from 'lucide-react';
@@ -47,6 +47,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { ListFilter } from 'lucide-react'
 import { toast } from "sonner"
+import useSWR from 'swr'
 
 const useScreenSize = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -391,6 +392,28 @@ export default function DnDResource() {
     )
   }
 
+  const navigation = useNavigation();
+  console.log(navigation.state, 'nav state workorder calendar id');
+  const isSubmitting = navigation.state === "submitting" || navigation.state === "loading";
+
+  const dataFetcher = (url) => fetch(url).then(res => res.json());
+
+  const { data: swrData, mutate } = useSWR(null, dataFetcher, {});
+
+  useEffect(() => {
+    if (isSubmitting) {
+      mutate(`http://localhost:3000/dealer/service/calendar/reload`);
+    }
+  }, [isSubmitting, mutate]);
+
+  useEffect(() => {
+    if (swrData) {
+      setMyEvents(swrData);
+      console.log('hitswr!! ');
+    }
+  }, [swrData]);
+
+
   const LargeScreenUI = () => {
     return (
       <Fragment>
@@ -528,6 +551,7 @@ export default function DnDResource() {
                 onDeleteEvent={onDeleteEvent}
                 currentEvent={selected}
                 user={user}
+                setMyEvents={setMyEvents}
                 onCompleteEvent={onCompleteEvent}
                 techs={techs}
               />
@@ -643,6 +667,7 @@ export async function action({ request }: ActionFunction) {
       data: {
         tech: tech.username,
         resourceId: tech.username,
+        techEmail: tech.email
       }
     })
     return json({ update })
@@ -1642,7 +1667,7 @@ interface IProps {
   techs: any
 }
 
-export function EventInfoModal({ user, open, handleClose, currentEvent, techs }: IProps) {
+export function EventInfoModal({ user, open, handleClose, currentEvent, techs, setMyEvents }: IProps) {
   const data = currentEvent
   const fetcher = useFetcher()
   const tech = data.tech ? data.tech : '';
@@ -1672,8 +1697,16 @@ export function EventInfoModal({ user, open, handleClose, currentEvent, techs }:
                     formData.append("workOrderId", String(data.workOrderId));
                     formData.append("techEmail", value);
                     formData.append("intent", 'updateTechnician');
-                    fetcher.submit(formData, { method: "post" });
+                    const submitIt = submit(formData, { method: "post" });
+                    const tech = techs.filter(item => item.email === value)
+
                     toast.success(`Changed technician to ${value}`)
+                    setMyEvents((prev) => {
+                      const existing = prev.find((ev) => ev.id === data.id) ?? {}
+                      const filtered = prev.filter((ev) => ev.id !== data.id)
+                      return [...filtered, { ...existing, resourceId: tech.userName }]
+                    })
+                    return submitIt
                   }}
                 >
                   <SelectTrigger className="w-full bg-background text-foreground border border-border">

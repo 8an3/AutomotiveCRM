@@ -1030,7 +1030,7 @@ export default function Purchase() {
                       <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">${totalValue}</div>
+                      <div className="text-2xl font-bold">${totalValue.toFixed(2)}</div>
                       <p className="text-xs text-muted-foreground">
                         {/**  +20.1% from last month*/}
                       </p>
@@ -1088,14 +1088,12 @@ export default function Purchase() {
                           Todays transactions from your store.
                         </CardDescription>
                       </div>
-                      <Button asChild size="sm" className="ml-auto gap-1">
-                        <Link to="#">
-                          Print Report
-                          <ArrowUpRight className="h-4 w-4" />
-                        </Link>
+                      <Button size="sm" className="ml-auto gap-1">
+                        Print Report
+                        <ArrowUpRight className="h-4 w-4" />
                       </Button>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className='h-[400px] max-h-[400px] overflow-y-auto'>
                       <Table>
                         <TableHeader>
                           <TableRow>
@@ -1105,9 +1103,6 @@ export default function Purchase() {
                             </TableHead>
                             <TableHead className="hidden xl:table-column">
                               Dept
-                            </TableHead>
-                            <TableHead className="hidden xl:table-column">
-                              Date
                             </TableHead>
                             <TableHead className="text-right">Amount</TableHead>
                           </TableRow>
@@ -1122,12 +1117,7 @@ export default function Purchase() {
                                 </div>
                               </TableCell>
                               <TableCell className="hidden xl:table-column">
-                                {result.userName}
-                              </TableCell>
-                              <TableCell className="hidden xl:table-column">
-                                <Badge className="text-xs bg-[#30A46C]" variant="outline">
-                                  {result.dept}
-                                </Badge>
+                                {result.dept}
                               </TableCell>
                               <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
                                 {new Date(result.paidDate).toLocaleDateString("en-US", options2)}
@@ -1143,22 +1133,23 @@ export default function Purchase() {
                     <CardHeader>
                       <CardTitle>Recent Sales</CardTitle>
                     </CardHeader>
-                    <CardContent className="grid gap-8">
-                      <div className="flex items-center gap-4">
-                        <Avatar className="hidden h-9 w-9 sm:flex">
-                          <Users2Icon />
-                        </Avatar>
-                        <div className="grid gap-1">
-                          <p className="text-sm font-medium leading-none">
-                            Olivia Martin
-                          </p>
-                          <p className="text-sm text-muted-foreground">
-                            olivia.martin@email.com
-                          </p>
+                    <CardContent className="grid gap-8 h-[400px] max-h-[400px] overflow-y-auto">
+                      {paidOrder && paidOrder.map((result, index) => (
+                        <div className="flex items-center gap-4">
+                          <Avatar className="hidden h-9 w-9 sm:flex">
+                            <Users2Icon />
+                          </Avatar>
+                          <div className="grid gap-1">
+                            <p className="text-sm font-medium leading-none">
+                              {result.userName}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              {result.userEmail}
+                            </p>
+                          </div>
+                          <div className="ml-auto font-medium">${result.total}</div>
                         </div>
-                        <div className="ml-auto font-medium">+$1,999.00</div>
-                      </div>
-
+                      ))}
                     </CardContent>
                   </Card>
                 </div>

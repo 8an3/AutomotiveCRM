@@ -286,12 +286,47 @@ export async function action({ request, params }: LoaderFunction) {
         paidDate: currentAccOrder.paidDate ? currentAccOrder.paidDate : String(new Date()),
       },
     });
+    const accessoriesOnOrders = await prisma.accessoriesOnOrders.findMany({
+      where: { accOrderId: formPayload.accOrderId },
+    });
+
+    for (const accessoryOnOrder of accessoriesOnOrders) {
+      await prisma.accessoriesOnOrders.update({
+        where: { id: accessoryOnOrder.id },
+        data: { status: 'Fulfilled' }
+      });
+
+      const accessory = await prisma.accessories.findUnique({
+        where: { id: accessoryOnOrder.accId }
+      });
+
+      const quantityToSubtract = Number(accessoryOnOrder.quantity);
+      const newQuantity = accessory.quantity - quantityToSubtract;
+
+      await prisma.accessories.update({
+        where: { id: accessoryOnOrder.accId },
+        data: { quantity: newQuantity }
+      });
+    }
   }
   if (intent === 'updateAccOnOrders') {
     const update = await prisma.accessoriesOnOrders.update({
       where: { id: formPayload.accOnOrderId },
       data: { status: formPayload.status }
     })
+    if (formPayload.status === 'Fulfilled') {
+      const accessory = await prisma.accessories.findUnique({
+        where: { id: formPayload.accId }
+      })
+      console.log(Number(formPayload.quantity), accessory?.quantity, 'updateacc')
+      const quantity = Number(formPayload.quantity)
+      const accQuantity = accessory.quantity
+      const subtract = accQuantity - quantity
+      const updateAcc = await prisma.accessories.update({
+        where: { id: formPayload.accId },
+        data: { quantity: parseInt(subtract) }
+      })
+    }
     return json({ update })
   }
   if (intent === 'pushSubtotal') {
@@ -1509,6 +1544,8 @@ export default function Purchase() {
                                 const formData = new FormData();
                                 formData.append("accOnOrderId", result.id);
                                 formData.append("status", 'Fulfilled');
+                                formData.append("accId", result.accessoryId);
+                                formData.append("quantity", result.quantity);
                                 formData.append("intent", 'updateAccOnOrders');
                                 submit(formData, { method: "post", });
                               }}

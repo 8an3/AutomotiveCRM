@@ -159,11 +159,40 @@ import {
 import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';
 import { format } from "date-fns"
-
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "~/components/ui/drawer"
 
 
 export default function Dashboard() {
-  const { order, user, tax, dealerImage, services, techs } = useLoaderData();
+  const { orderFirst, user, tax, dealerImage, services, techs } = useLoaderData();
+  const [order, setOrder] = useState(orderFirst)
+
+  const swrFetcher = (url) => fetch(url).then((r) => r.json());
+
+  const { data: dataFetch, userError } = useSWR(
+    `/dealer/service/loader/${order.workOrderId}`,
+    swrFetcher,
+    {
+      refreshInterval: 60000,
+      revalidateOnMount: true,
+      revalidateOnReconnect: true,
+    }
+  );
+
+  useEffect(() => {
+    if (dataFetch) {
+      console.log(dataFetch, "userFetch");
+      setOrder(dataFetch);
+    }
+  }, [dataFetch]);
 
   const [scannedCode, setScannedCode] = useState('')
   useEffect(() => {
@@ -269,6 +298,7 @@ export default function Dashboard() {
 
   let formRef = useRef();
   let fetcher = useFetcher();
+  let delTheAppointment = useFetcher();
   let workOrder = useFetcher();
   let ref = useRef();
   const navigate = useNavigate()
@@ -279,8 +309,8 @@ export default function Dashboard() {
   const [fore, setFore] = useState('#000000');
   const [size, setSize] = useState(100);
   const [discount, setDiscount] = useState(false)
-  const [discDollar, setDiscDollar] = useState(0.00)
-  const [discPer, setDiscPer] = useState(0.00)
+  const [discDollar, setDiscDollar] = useState(parseFloat(order.discDollar) > 0.00 ? parseFloat(order.discDollar) : 0.00)
+  const [discPer, setDiscPer] = useState(parseFloat(order.discPer) > 0.00 ? parseFloat(order.discPer) : 0.00)
   const [showPrev, setShowPrev] = useState(false)
   const [totalAccessoriesCost, setTotalAccessoriesCost] = useState(0.00);
   const [totalAmountPaid, setTotalAmountPaid] = useState(0.00);
@@ -296,6 +326,11 @@ export default function Dashboard() {
   let payment = useFetcher();
   let search = useFetcher();
   let product = useFetcher();
+  const [serviceHours, setServiceHours] = useState(0.00);
+  const [serviceHoursVar, setServiceHoursVar] = useState(0.00);
+  const [adjustedService, setAdjustedService] = useState(false);
+  let totalTime = 0.00
+  let totalHours = 0.00
 
   const orderById = (id) => {
     const filteredOrder = orders.find(order => order.workOrderId === id);
@@ -352,35 +387,66 @@ export default function Dashboard() {
       }, 0);
       setPartsSubTotal(partsSub.toFixed(2))
 
+      let serviceHoursTotal = 0.00;
+
       const serviceSub = order?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
-        const hours = serviceOnOrder.hr || serviceOnOrder.service.estHr || 0.00;
-
-        const subtotal = hours * tax.userLabour * serviceOnOrder.quantity;
-
+        const hours = serviceOnOrder.hr || serviceOnOrder.service.estHr;
+        const quantity = serviceOnOrder.quantity || 1; // Make sure quantity is correct
+        const subtotal = hours * tax.userLabour * quantity;
+        console.log('hours:', hours, 'quantity:', quantity, 'subtotal:', subtotal); // Log values here
         return total + subtotal;
       }, 0);
 
-      setServiceSubTotal(serviceSub.toFixed(2))
+      serviceHoursTotal = order?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
+        const hours = serviceOnOrder.hr ?? serviceOnOrder.service.estHr ?? 0;
+        const quantity = serviceOnOrder.quantity ?? 1;
+        return total + (hours * quantity);
+      }, 0);
 
-      const totalPreTax = partsSub + serviceSub;
+      setServiceHours(serviceHoursTotal);
+
+      const adjustedServiceSub = serviceHoursVar * tax.userLabour;
+
+      setServiceSubTotal(adjustedService ? adjustedServiceSub.toFixed(2) : serviceSub.toFixed(2));
+
+      const totalPreTax = parseFloat(partsSub) + parseFloat(serviceSub);
       setTotalPreTax(totalPreTax.toFixed(2));
+
+      console.log('partsSub:', partsSub, 'serviceSub:', serviceSub, 'totalPreTax:', totalPreTax);
 
       const total2 = ((parseFloat(partsSub + serviceSub) - parseFloat(discDollar)) * taxRate).toFixed(2);
       const total1 = (((parseFloat(partsSub + serviceSub) * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
-      const calculatedTotal = discDollar && discDollar > 0.00 ? total1 : total2;
+      const calculatedTotal = discPer > 0.00 ? total1 : total2;
 
-      setTotal(calculatedTotal);
+      setTotal(parseFloat(calculatedTotal));
+
       const totalAmountPaid2 = order.Payments.reduce((total, payment) => {
         return total + payment.amountPaid;
       }, 0);
-      if (totalAmountPaid2) {
-        setTotalAmountPaid(totalAmountPaid2)
+
+      if (totalAmountPaid2) { setTotalAmountPaid(totalAmountPaid2) }
+
+      if (order.WorkOrderClockEntries) {
+        totalTime = order.WorkOrderClockEntries.reduce((acc, entry) => {
+          if (entry.start && entry.end) {
+            const startTime = new Date(entry.start);
+            const endTime = new Date(entry.end);
+            const duration = (endTime - startTime) / (1000 * 60 * 60); // duration in hours
+            return acc + duration;
+          }
+          return acc;
+        }, 0);
       }
-      console.log(partsSubTotal, serviceSubTotal, partsSubTotal + serviceSubTotal, 'totals')
 
+      totalHours = serviceHoursTotal
+      console.log('Service Hours Total:', serviceHoursTotal);
+      console.log('Total Clocked Time:', totalTime);
+      order.ServicesOnWorkOrders?.forEach(serviceOnOrder => {
+        console.log('Service On Order:', serviceOnOrder);
+      });
+      console.log('Order Services:', order.ServicesOnWorkOrders);
     }
-  }, [order]);
-
+  }, [order, serviceHours, serviceHoursVar, adjustedService, discDollar, discPer]);
   let unitCard = [
     { name: 'year', label: 'Year', },
     { name: 'brand', label: 'Brand', },
@@ -524,11 +590,16 @@ export default function Dashboard() {
       )
     })}
   </ul>
-</div>
-<Separator className="my-4" /> */
+  </div>
+  <Separator className="my-4" /> */
 
   const newDate = new Date()
 
+  // customer editable text
+  let [edit, setEdit] = useState(false);
+  let inputRef = useRef<HTMLInputElement>(null);
+  let buttonRef = useRef<HTMLButtonElement>(null);
+  let buttonFetcher = useFetcher();
 
   return (
     <div>
@@ -832,14 +903,15 @@ export default function Dashboard() {
                         <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
                           {search.data && search.data.map((result, index) => {
                             return (
-                              <li key={index} className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]" onClick={() => {
-                                const formData = new FormData();
-                                formData.append("hr", result.estHr);
-                                formData.append("workOrderId", order.workOrderId);
-                                formData.append("serviceId", result.id);
-                                formData.append("intent", 'addServiceToWorkOrder');
-                                fetcher.submit(formData, { method: "post", });
-                              }}>
+                              <li key={index} className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]"
+                                onClick={() => {
+                                  const formData = new FormData();
+                                  formData.append("hr", result.estHr);
+                                  formData.append("workOrderId", order.workOrderId);
+                                  formData.append("serviceId", result.id);
+                                  formData.append("intent", 'addServiceToWorkOrder');
+                                  submit(formData, { method: "post", });
+                                }}>
                                 <div className="font-medium flex-col">
                                   <p className=' text-left'>{result.service}</p>
                                   <p className='text-muted-foreground text-left'>{result.description}</p>
@@ -1056,9 +1128,9 @@ export default function Dashboard() {
                               variant="outline"
                               onClick={() => {
                                 const formData = new FormData();
-                                formData.append("id", result.id);
+                                formData.append("id", result.workOrderId);
                                 formData.append("intent", 'deleteAppt');
-                                submit(formData, { method: "post" });
+                                delTheAppointment.submit(formData, { method: "post" });
                               }}
                               className=" h-[28px] w-[28px]  opacity-0 transition-opacity group-hover:opacity-100 "
                             >
@@ -1071,7 +1143,7 @@ export default function Dashboard() {
                                 <Button
                                   size="icon"
                                   variant="outline"
-                                  className="h-[28px] w-[28px] opacity-0transition-opacity group-hover:opacity-100 "
+                                  className="h-[28px] w-[28px] opacity-0 transition-opacity group-hover:opacity-100 "
                                 >
                                   <Wrench className="h-4 w-4" />
                                   <span className="sr-only">Edit</span>
@@ -1487,6 +1559,61 @@ export default function Dashboard() {
                     </div>
                   </AccordionContent>
                 </AccordionItem>
+                <AccordionItem value="item-2" className='border-border'>
+                  <AccordionTrigger>Work Order Clock Times</AccordionTrigger>
+                  <AccordionContent>
+                    <div className="max-h-[600px] h-auto overflow-y-auto">
+                      <div className="grid gap-3">
+                        <dl className="grid gap-3">
+                          <div className="flex items-center justify-between">
+                            <dt className="text-muted-foreground">Total Clocked Time</dt>
+                            <dd>{totalTime.toFixed(2)} hours</dd>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <dt className="text-muted-foreground">Original Time Quoted</dt>
+                            <dd>{totalHours.toFixed(2)} hours</dd>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <dt className="text-muted-foreground">Difference</dt>
+                            <dd>
+                              {totalTime > totalHours && (<p>Need to add {(totalTime - totalHours).toFixed(2)} to quote to cover costs.</p>)}
+                              {totalTime < totalHours && (<p>Over quoted the time needed by {(totalHours - totalTime).toFixed(2)}. User discretion whether to adjust.</p>)}
+                            </dd>
+                          </div>
+                        </dl>
+                        <p className='text-muted-foreground text-center'>Note: Total clocked time by the tech does not effect quote, if adjustments are needed the service writer will have to adjust before giving the final bill to the customer.</p>
+                      </div>
+                      <ul className="grid gap-2 mt-3">
+                        {order.WorkOrderClockEntries && order.WorkOrderClockEntries.map((result, index) => (
+                          <>
+                            <div key={index} className='mt-3' >
+                              <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">
+                                  Clocked-In
+                                </span>
+                                <span>{new Date(result.start).toLocaleDateString("en-US", options2)}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">
+                                  Clocked-Out
+                                </span>
+                                <span>{result.end ? (new Date(result.end).toLocaleDateString("en-US", options2)) : ('')}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">
+                                  Tech
+                                </span>
+                                <span>{result.username}</span>
+                              </li>
+                            </div>
+                          </>
+                        ))}
+                      </ul>
+
+
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
               </Accordion>
 
               <div className="grid gap-3 mt-3">
@@ -1575,25 +1702,16 @@ export default function Dashboard() {
                                 }}
                               >In Stock</ContextMenuCheckboxItem>
                               <ContextMenuCheckboxItem
-                                checked={result.status === 'On Order'}
+                                checked={result.status === 'Waiting On Parts'}
                                 onSelect={() => {
                                   const formData = new FormData();
                                   formData.append("id", result.id);
-                                  formData.append("status", 'On Order');
+                                  formData.append("status", 'Waiting On Parts');
                                   formData.append("intent", 'updateServiceOnOrders');
                                   submit(formData, { method: "post", });
                                 }}
-                              >On Order</ContextMenuCheckboxItem>
-                              <ContextMenuCheckboxItem
-                                checked={result.status === 'Completed'}
-                                onSelect={() => {
-                                  const formData = new FormData();
-                                  formData.append("id", result.id);
-                                  formData.append("status", 'Completed');
-                                  formData.append("intent", 'updateServiceOnOrders');
-                                  submit(formData, { method: "post", });
-                                }}
-                              >Completed</ContextMenuCheckboxItem>
+                              >Waiting On Parts</ContextMenuCheckboxItem>
+
                               <ContextMenuCheckboxItem
                                 checked={result.status === 'Back Order'}
                                 onSelect={() => {
@@ -1604,6 +1722,16 @@ export default function Dashboard() {
                                   submit(formData, { method: "post", });
                                 }}
                               >Back Order</ContextMenuCheckboxItem>
+                              <ContextMenuCheckboxItem
+                                checked={result.status === 'Completed'}
+                                onSelect={() => {
+                                  const formData = new FormData();
+                                  formData.append("id", result.id);
+                                  formData.append("status", 'Completed');
+                                  formData.append("intent", 'updateServiceOnOrders');
+                                  submit(formData, { method: "post", });
+                                }}
+                              >Completed</ContextMenuCheckboxItem>
                             </ContextMenuContent>
                           </ContextMenu>
                         </div>
@@ -1760,9 +1888,60 @@ export default function Dashboard() {
                   )}
                 </ul>
 
-
                 <Separator className="my-2" />
                 <ul className="grid gap-3">
+                  <li className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Total Hours</span>
+
+                    {edit ? (<>
+                      <Input
+                        defaultValue={adjustedService === true ? serviceHoursVar : serviceHours}
+                        ref={inputRef}
+
+                        onChange={(e) => {
+                          const hours = parseFloat(e.target.value) || 0.00;
+                          setServiceHoursVar(hours)
+                          setAdjustedService(hours !== 0.00)
+                          const formData = new FormData();
+                          formData.append("hours", String(hours));
+                          formData.append("userLabour", tax.userLabour);
+                          formData.append("workOrderId", order.workOrderId);
+                          formData.append("intent", 'updateWorkOrderHours');
+                          buttonFetcher.submit(formData, { method: "post" });
+                        }}
+                        name="hours"
+                        className=" border border-border rounded-lg  text-foreground bg-background w-[75px] text-right "
+                        onKeyDown={(event) => {
+                          if (event.key === "Escape") {
+                            flushSync(() => {
+                              setEdit(false);
+                            });
+                            buttonRef.current?.focus();
+                          }
+                        }}
+                      />
+                    </>) : (<>
+                      <button
+
+                        className='text-right text-foreground'
+                        ref={buttonRef}
+                        onClick={() => {
+                          flushSync(() => {
+                            setEdit(true);
+                          });
+                          inputRef.current?.select();
+                        }}
+                      >
+                        {<span>{adjustedService === true ? serviceHoursVar : serviceHours} / hrs</span> || <span className="text-foreground italic ">Edit / hrs</span>}
+                      </button>
+                    </>)}
+
+
+                  </li>
+                  <li className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Hourly Rate</span>
+                    <span>${tax.userLabour} / hr</span>
+                  </li>
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Service Subtotal</span>
                     <span>${serviceSubTotal}</span>
@@ -1775,6 +1954,12 @@ export default function Dashboard() {
                     <span className="text-muted-foreground">Subtotal</span>
                     <span>${totalPreTax}</span>
                   </li>
+                  {discount && (
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Discount</span>
+                      <span>{discDollar > 0.00 ? <p>${discDollar}</p> : <p>{discPer} %</p>}</span>
+                    </li>
+                  )}
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Tax</span>
                     <span>{tax.userTax}%</span>
@@ -1938,7 +2123,64 @@ export default function Dashboard() {
             </CardContent>
             <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3 border-border">
               <div className="text-xs text-muted-foreground">
-                Updated <time dateTime="2023-11-23">November 23, 2023</time>
+                <Drawer>
+                  <DrawerTrigger asChild>
+                    <button className='bg-muted/50 text-xs text-muted-foreground '>Other</button>
+                  </DrawerTrigger>
+                  <DrawerContent className="border-border">
+                    <div className="mx-auto w-full max-w-sm">
+                      <DrawerHeader>
+                        <DrawerTitle>Other inputs</DrawerTitle>
+                        <DrawerDescription></DrawerDescription>
+                      </DrawerHeader>
+                      <div className="p-4 pb-0">
+                        <div className="flex items-center justify-center space-x-2">
+                          <p>Discount Amount $</p>
+                          <Input
+                            name='discDollar'
+                            className='w-[75px]'
+                            defaultValue={String(discDollar)}
+
+                            onChange={(e) => {
+                              setDiscount(true)
+                              setDiscDollar(parseFloat(e.currentTarget.value))
+                              if (discDollar === 0.00) {
+                                setDiscount(false)
+                              }
+
+                            }} />
+                        </div>
+                        <div className="flex items-center justify-center space-x-2">
+                          <p>Discount Amount %</p>
+                          <Input
+                            name='discPer'
+                            className='w-[75px]'
+                            defaultValue={String(discPer)}
+                            onChange={(e) => {
+                              setDiscount(true)
+                              setDiscPer(parseFloat(e.currentTarget.value))
+                              if (discPer === 0.00) {
+                                setDiscount(false)
+                              }
+                            }} />
+                        </div>
+                      </div>
+                      <DrawerFooter>
+                        <Button onClick={() => {
+                          const formData = new FormData();
+                          formData.append("discDollar", discDollar);
+                          formData.append("discPer", discPer);
+                          formData.append("workOrderId", order.workOrderId);
+                          formData.append("intent", 'updatediscDollar');
+                          buttonFetcher.submit(formData, { method: "post" });
+                        }}>Submit</Button>
+                        <DrawerClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DrawerClose>
+                      </DrawerFooter>
+                    </div>
+                  </DrawerContent>
+                </Drawer>
               </div>
               <Pagination className="ml-auto mr-0 w-auto">
                 <PaginationContent>
@@ -1977,7 +2219,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const user = await GetUser(email);
   if (!user) { redirect("/login"); }
   const id = params.workOrderId
-  const order = await prisma.workOrder.findUnique({
+  const orderFirst = await prisma.workOrder.findUnique({
     where: { workOrderId: Number(id) },
     select: {
       workOrderId: true,
@@ -2351,7 +2593,16 @@ export async function loader({ request, params }: LoaderFunction) {
         }
       },
       // FinanceUnit
-      //  WorkOrderClockEntries
+      WorkOrderClockEntries: {
+        select: {
+          id: true,
+          start: true,
+          end: true,
+          userEmail: true,
+          username: true,
+          workOrderId: true,
+        }
+      },
       //  ServiceUnit
       WorkOrderApts: {
         select: {
@@ -2376,6 +2627,8 @@ export async function loader({ request, params }: LoaderFunction) {
       }
     },
   });
+
+
   const tax = await prisma.dealer.findUnique({
     where: { id: 1 },
     select: {
@@ -2401,7 +2654,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const techs = allUsers.filter(user =>
     user.role.name === 'Technician'
   );
-  return json({ order, user, tax, dealerImage, services, techs });
+  return json({ orderFirst, user, tax, dealerImage, services, techs });
 }
 
 
@@ -2414,9 +2667,32 @@ export async function action({ request, params }: ActionFunction) {
   const id = params.workOrderId
   console.log(formPayload, 'formpayload')
 
+  if (intent === "updateWorkOrderHours") {
+
+    const subtotal = formPayload.hours * formPayload.userLabour
+
+    const update = await prisma.workOrder.update({
+      where: { workOrderId: Number(formPayload.workOrderId) },
+      data: { totalLabour: subtotal, },
+    });
+
+    return json({ update });
+  }
+  if (intent === "updatediscDollar") {
+    const update = await prisma.workOrder.update({
+      where: { workOrderId: Number(formPayload.workOrderId) },
+      data: {
+        discDollar: parseFloat(discDollar) > 0.00 ? parseFloat(discDollar) : 0.00,
+        discPer: parseFloat(discPer) > 0.00 ? parseFloat(discPer) : 0.00,
+      },
+    });
+
+    return json({ update });
+  }
+
   if (intent === "deleteAppt") {
-    const update = await prisma.WorkOrderApts.delete({
-      where: { workOrderId: formPayload.id },
+    const update = await prisma.workOrderApts.delete({
+      where: { workOrderId: Number(formPayload.id) },
 
     });
     return json({ update })

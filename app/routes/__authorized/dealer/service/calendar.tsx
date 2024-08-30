@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { type LinksFunction, type LoaderFunction, type ActionFunction, json, redirect, } from '@remix-run/node'
-import { useLoaderData, Link, useNavigate, useSubmit, useFetcher, useSearchParams, Form } from '@remix-run/react'
+import { useLoaderData, Link, useNavigate, useSubmit, useFetcher, useSearchParams, Form, useNavigation } from '@remix-run/react'
 import { prisma } from "~/libs";
 import { Text, } from '@radix-ui/themes';
 import { UserPlus, Gauge, CalendarPlus, ChevronsLeft, ChevronsRightLeft, ChevronsRight } from 'lucide-react';
@@ -46,6 +46,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { ListFilter } from 'lucide-react'
+import useSWR from 'swr'
 
 const useScreenSize = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -392,7 +393,17 @@ export default function DnDResource() {
     )
   }
 
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
+  const dataFetcher = (url) => fetch(url).then(res => res.json());
+  const { data: swrData } = useSWR(isSubmitting ? `http://localhost:3000/dealer/service/calendar/reload` : null, dataFetcher, {})
 
+  useEffect(() => {
+    if (swrData) {
+      setMyEvents(swrData);
+      console.log('hitswr!! ')
+    }
+  }, [swrData]);
   const LargeScreenUI = () => {
     return (
       <Fragment>
@@ -913,7 +924,7 @@ export function EventInfoModal({ user, open, handleClose, currentEvent, techs }:
   const fetcher = useFetcher()
   const tech = data.tech ? data.tech : '';
   console.log(techs, 'dataeventinfdomodle');
-
+  const submit = useSubmit()
   return (
     <>
       <Dialog open={open} onOpenChange={handleClose}>
@@ -938,7 +949,7 @@ export function EventInfoModal({ user, open, handleClose, currentEvent, techs }:
                     formData.append("workOrderId", String(data.workOrderId));
                     formData.append("techEmail", value);
                     formData.append("intent", 'updateTechnician');
-                    fetcher.submit(formData, { method: "post" });
+                    submit(formData, { method: "post" });
                   }}
                 >
                   <SelectTrigger className="w-full bg-background text-foreground border border-border">

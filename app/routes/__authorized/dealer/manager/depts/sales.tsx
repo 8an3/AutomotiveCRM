@@ -77,6 +77,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip"
+import { DataFunctionArgs } from "@remix-run/node"
 
 const salesTeam = [
   {
@@ -133,399 +134,43 @@ const salesTeam = [
 export async function loader({ params, request }: DataFunctionArgs) {
   return null
 }
-export default function Dashboard() {
+export default function Accessories() {
   return (
-
-    <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
-      <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-          <Card
-            className="sm:col-span-2 border-border bg-background" x-chunk="dashboard-05-chunk-0"
-          >
-            <CardHeader className="pb-3">
-              <CardTitle>Your Orders</CardTitle>
-              <CardDescription className="max-w-lg text-balance leading-relaxed">
-                Introducing Our Dynamic Orders Dashboard for Seamless
-                Management and Insightful Analysis.
-              </CardDescription>
-            </CardHeader>
-            <CardFooter>
-              <Button>Create New Order</Button>
-            </CardFooter>
-          </Card>
-          <Card x-chunk="dashboard-05-chunk-1" className="border-border bg-background">
-            <CardHeader className="pb-2">
-              <CardDescription>This Week</CardDescription>
-              <CardTitle className="text-4xl">$1,329</CardTitle>
+    <div>
+      <Tabs defaultValue="Dashboard" className="w-full mx-3">
+        <TabsList>
+          <TabsTrigger value="Dashboard">Dashboard</TabsTrigger>
+          <TabsTrigger value="To Order">The Numbers</TabsTrigger>
+        </TabsList>
+        <TabsContent value="Dashboard">
+          <Card className='mx-3 w-full'>
+            <CardHeader>
+              <CardTitle>Overview of all sales being made in the last 7 days by who, when.</CardTitle>
+              <CardDescription>Card Description</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-xs text-muted-foreground">
-                +25% from last week
-              </div>
+              <p>Card Content</p>
             </CardContent>
             <CardFooter>
-              <Progress value={25} aria-label="25% increase" />
+              <p>Card Footer</p>
             </CardFooter>
           </Card>
-          <Card x-chunk="dashboard-05-chunk-2" className="border-border bg-background">
-            <CardHeader className="pb-2">
-              <CardDescription>This Month</CardDescription>
-              <CardTitle className="text-4xl">$5,329</CardTitle>
+        </TabsContent>
+        <TabsContent value="To Order">
+          <Card className='mx-3'>
+            <CardHeader>
+              <CardTitle>Who's falling behing on quotes, whos excelling</CardTitle>
+              <CardDescription>Card Description</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-xs text-muted-foreground">
-                +10% from last month
-              </div>
+              <p>Card Content</p>
             </CardContent>
             <CardFooter>
-              <Progress value={12} aria-label="12% increase" />
+              <p>Card Footer</p>
             </CardFooter>
           </Card>
-        </div>
-        <Tabs defaultValue="Active">
-          <div className="flex items-center">
-            <TabsList>
-              <TabsTrigger value="Active">Active</TabsTrigger>
-              <TabsTrigger value="Lost">Lost</TabsTrigger>
-              <TabsTrigger value="Sold">Year</TabsTrigger>
-            </TabsList>
-            <div className="ml-auto flex items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-7 gap-1 text-sm"
-                  >
-                    <ListFilter className="h-3.5 w-3.5" />
-                    <span className="sr-only sm:not-sr-only">Filter</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuCheckboxItem checked>
-                    Fulfilled
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>
-                    Declined
-                  </DropdownMenuCheckboxItem>
-                  <DropdownMenuCheckboxItem>
-                    Refunded
-                  </DropdownMenuCheckboxItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <Button
-                size="sm"
-                variant="outline"
-                className="h-7 gap-1 text-sm"
-              >
-                <File className="h-3.5 w-3.5" />
-                <span className="sr-only sm:not-sr-only">Export</span>
-              </Button>
-            </div>
-          </div>
-          <TabsContent value="Active">
-            <Card x-chunk="dashboard-05-chunk-3">
-              <CardHeader className="px-7">
-                <CardTitle>Orders</CardTitle>
-                <CardDescription>
-                  Recent orders from your store.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Customer</TableHead>
-                      <TableHead className="hidden sm:table-cell">
-                        Type
-                      </TableHead>
-                      <TableHead className="hidden sm:table-cell">
-                        Status
-                      </TableHead>
-                      <TableHead className="hidden md:table-cell">
-                        Date
-                      </TableHead>
-                      <TableHead className="text-right">Amount</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow className="bg-accent">
-                      <TableCell>
-                        <div className="font-medium">Liam Johnson</div>
-                        <div className="hidden text-sm text-muted-foreground md:inline">
-                          liam@example.com
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        Sale
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        <Badge className="text-xs" variant="secondary">
-                          Fulfilled
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2023-06-23
-                      </TableCell>
-                      <TableCell className="text-right">$250.00</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>
-                        <div className="font-medium">Olivia Smith</div>
-                        <div className="hidden text-sm text-muted-foreground md:inline">
-                          olivia@example.com
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        Refund
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        <Badge className="text-xs" variant="outline">
-                          Declined
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2023-06-24
-                      </TableCell>
-                      <TableCell className="text-right">$150.00</TableCell>
-                    </TableRow>
-                    {/* <TableRow>
-                    <TableCell>
-                      <div className="font-medium">Liam Johnson</div>
-                      <div className="hidden text-sm text-muted-foreground md:inline">
-                        liam@example.com
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden sm:table-cell">
-                      Sale
-                    </TableCell>
-                    <TableCell className="hidden sm:table-cell">
-                      <Badge className="text-xs" variant="secondary">
-                        Fulfilled
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      2023-06-23
-                    </TableCell>
-                    <TableCell className="text-right">$250.00</TableCell>
-                  </TableRow> */}
-                    <TableRow>
-                      <TableCell>
-                        <div className="font-medium">Noah Williams</div>
-                        <div className="hidden text-sm text-muted-foreground md:inline">
-                          noah@example.com
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        Subscription
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        <Badge className="text-xs" variant="secondary">
-                          Fulfilled
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2023-06-25
-                      </TableCell>
-                      <TableCell className="text-right">$350.00</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>
-                        <div className="font-medium">Emma Brown</div>
-                        <div className="hidden text-sm text-muted-foreground md:inline">
-                          emma@example.com
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        Sale
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        <Badge className="text-xs" variant="secondary">
-                          Fulfilled
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2023-06-26
-                      </TableCell>
-                      <TableCell className="text-right">$450.00</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>
-                        <div className="font-medium">Liam Johnson</div>
-                        <div className="hidden text-sm text-muted-foreground md:inline">
-                          liam@example.com
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        Sale
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        <Badge className="text-xs" variant="secondary">
-                          Fulfilled
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2023-06-23
-                      </TableCell>
-                      <TableCell className="text-right">$250.00</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>
-                        <div className="font-medium">Olivia Smith</div>
-                        <div className="hidden text-sm text-muted-foreground md:inline">
-                          olivia@example.com
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        Refund
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        <Badge className="text-xs" variant="outline">
-                          Declined
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2023-06-24
-                      </TableCell>
-                      <TableCell className="text-right">$150.00</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>
-                        <div className="font-medium">Emma Brown</div>
-                        <div className="hidden text-sm text-muted-foreground md:inline">
-                          emma@example.com
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        Sale
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        <Badge className="text-xs" variant="secondary">
-                          Fulfilled
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2023-06-26
-                      </TableCell>
-                      <TableCell className="text-right">$450.00</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
-      <div>
-
-        {salesTeam.map((sales) => {
-          const totalCustomers = sales.onGoingCust + sales.lost;
-          const totalSoldSales = sales.newSales + sales.usedSales;
-          const closingRatio = (totalSoldSales / totalCustomers) * 100;
-
-          return (
-            <div className="relative mt-3">
-              <Card className="overflow-hidden border-border" x-chunk="dashboard-05-chunk-4"  >
-                <CardHeader className="flex flex-row items-start bg-background">
-                  <div className="grid gap-0.5">
-                    <CardTitle className="group flex items-center gap-2 text-lg">
-                      Stats
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-6 text-sm">
-                  <div className="grid gap-3">
-                    <div className="font-semibold">Contacted</div>
-                    <ul className="grid gap-3">
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">
-                          <Phone color="#fdfcfc" />
-                        </span>
-                        <span>{sales.phone}</span>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">
-                          <Mail color="#fdfcfc" />
-                        </span>
-                        <span>{sales.email}</span>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <MessageCircle color="#fdfcfc" />
-                        <span>{sales.sms}</span>
-                      </li>
-                    </ul>
-                    <Separator className="my-2" />
-                    <div className="font-semibold">Sold</div>
-                    <ul className="grid gap-3">
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">New</span>
-                        <span>{sales.newSales}</span>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Used</span>
-                        <span>{sales.usedSales}</span>
-                      </li>
-                      <li className="flex items-center justify-between font-semibold">
-                        <span className="text-muted-foreground">Total</span>
-                        <span>{sales.newSales + sales.usedSales}</span>
-                      </li>
-                    </ul>
-                    <Separator className="my-2" />
-                    <div className="font-semibold">Customers</div>
-                    <ul className="grid gap-3">
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Currently Late</span>
-                        <span>{sales.customersLate}</span>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">On Going</span>
-                        <span>{sales.onGoingCust}</span>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Lost</span>
-                        <span>{sales.lost}</span>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">YTD Total</span>
-                        <span>{sales.onGoingCust + sales.lost}</span>
-                      </li>
-                      <li className="flex items-center justify-between font-semibold">
-                        <span className="text-muted-foreground">Closing Ratio</span>
-                        <span>{closingRatio.toFixed(2)}</span>
-                      </li>
-                    </ul>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3">
-                  <div className="text-xs text-muted-foreground">
-                    Updated <time dateTime="2023-11-23">November 23, 2023</time>
-                  </div>
-                  <Pagination className="ml-auto mr-0 w-auto">
-                    <PaginationContent>
-                      <PaginationItem>
-                        <Button size="icon" variant="outline" className="h-6 w-6">
-                          <ChevronLeft className="h-3.5 w-3.5" />
-                          <span className="sr-only">Previous Order</span>
-                        </Button>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <Button size="icon" variant="outline" className="h-6 w-6">
-                          <ChevronRight className="h-3.5 w-3.5" />
-                          <span className="sr-only">Next Order</span>
-                        </Button>
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </CardFooter>
-              </Card>
-              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{sales.name}</label>
-            </div>
-          );
-        })}
-
-      </div>
-    </main>
+        </TabsContent>
+      </Tabs>
+    </div>
   )
 }

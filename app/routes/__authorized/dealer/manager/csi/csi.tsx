@@ -151,7 +151,7 @@ function NewBoard() {
   let isCreating = navigation.formData?.get("intent") === "createBoard";
 
   return (
-    <Form method="post" className="p-8 max-w-md">
+    <Form method="post" className="">
       <input type="hidden" name="intent" value="createCsi" />
       <div className='flex items-center '>
         <div className="grid gap-3 mx-3 mb-3">

@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import { type LinksFunction, type LoaderFunction, type ActionFunction, json, redirect, } from '@remix-run/node'
-import { useLoaderData, Link, useNavigate, useSubmit, useFetcher, useSearchParams, Form } from '@remix-run/react'
+import { useLoaderData, Link, useNavigate, useSubmit, useFetcher, useSearchParams, Form, useNavigation } from '@remix-run/react'
 import { prisma } from "~/libs";
 import { Text, } from '@radix-ui/themes';
 import { UserPlus, Gauge, CalendarPlus, ChevronsLeft, ChevronsRightLeft, ChevronsRight } from 'lucide-react';
@@ -51,6 +51,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip"
+import useSWR from 'swr'
 
 const useScreenSize = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -71,8 +72,9 @@ const useScreenSize = () => {
 };
 
 export default function DnDResource() {
-  const { order, user, allServiceApts } = useLoaderData()
+  const { order, user, allServiceApts, techs } = useLoaderData()
   const isSmallScreen = useScreenSize();
+  const navigate = useNavigate()
 
   const [view, setView] = useState(Views.WEEK)
   const onView = useCallback((newView) => setView(newView), [setView])
@@ -87,7 +89,6 @@ export default function DnDResource() {
 
   const [myEvents, setMyEvents] = useState(formattedData)
   const localizer = dayjsLocalizer(dayjs)
-
   // min and max times
   const minTime = new Date();
   minTime.setHours(8, 0, 0);
@@ -117,9 +118,9 @@ export default function DnDResource() {
 
   function HandleSelectEvent(event) {
     const data = FetchData(event.id);
-    console.log(event.id, data, 'from fetch')
     setSelected(event);
-    setEventInfoModal(true)
+    navigate(`/dealer/service/technician/workOrder/${event.workOrderId}`)
+    // setEventInfoModal(true)
   }
 
   const closeSelectEvent = useCallback(() => {
@@ -273,14 +274,13 @@ export default function DnDResource() {
         const filtered = prev.filter((ev) => ev.id !== event.id)
         return [...filtered, { ...existing, start, end, allDay, }]
       })
-      console.log('move event')
+      console.log(event, 'move event')
       const formData = new FormData();
       formData.append("start", start);
       formData.append("end", end);
       formData.append("tech", event.resourceId);
       formData.append("id", event.id);
       formData.append("intent", 'moveEvent');
-      console.log(event, 'submitting')
       submit(formData, { method: "post" });
 
     },
@@ -318,11 +318,8 @@ export default function DnDResource() {
 
   async function FetchData(id) {
     const fetcher = url => fetch(url).then(r => r.json())
-    console.log(id, 'id')
     try {
       const { data, error } = useSWR(`http://localhost:3000/dealer/api/singleServiceAppt?apptId=${id}`, fetcher)
-
-      console.log(data, 'response')
       return json({ data })
     } catch (error) {
       console.error('Error fetching appointment data:', error);
@@ -330,10 +327,17 @@ export default function DnDResource() {
   };
 
 
-  // allServiceApts, techs, order, user, appointment
-  console.log(myEvents, 'allServiceApts')
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
+  const dataFetcher = (url) => fetch(url).then(res => res.json());
+  const { data: swrData } = useSWR(isSubmitting ? `http://localhost:3000/dealer/service/technician/reload/tech@email.com` : null, dataFetcher, {})
 
-
+  useEffect(() => {
+    if (swrData) {
+      setMyEvents(swrData);
+      console.log('hitswr!! ')
+    }
+  }, [swrData]);
 
   const LargeScreenUI = () => {
     return (
@@ -365,90 +369,45 @@ export default function DnDResource() {
                   </div>
                 </div>
                 <div className="flex w-[97%] justify-center overflow-clip">
-                  {showResources ? (
-                    <DragAndDropCalendar
-                      style={{
-                        width: `calc(100vw - 310px)`,
-                        height: "100vh",
-                        overflowX: "hidden",
-                        overflowY: "scroll",
-                        objectFit: "contain",
-                        overscrollBehavior: "contain",
-                        color: "white",
-                      }}
-                      selected={selected}
-                      defaultView={Views.DAY}
-                      events={myEvents}
-                      localizer={localizer}
-                      min={minTime}
-                      max={maxTime}
-                      date={date}
-                      onNavigate={onNavigate}
-                      onView={onView}
-                      view={view}
-                      resizable
-                      selectable
-                      components={{
-                        toolbar: CustomToolbar,
-                        event: EventInfo,
-                      }}
-                      onEventDrop={moveEvent}
-                      onEventResize={resizeEvent}
-                      onSelectEvent={(e) => HandleSelectEvent(e)}
-                      onSelectSlot={handleSelectSlot}
-                      eventPropGetter={eventPropGetter}
-                    />
-                  ) : (
-                    <DragAndDropCalendar
-                      style={{
-                        width: `calc(100vw - 310px)`,
-                        height: "100vh",
-                        overflowX: "hidden",
-                        overflowY: "scroll",
-                        objectFit: "contain",
-                        overscrollBehavior: "contain",
-                        color: "white",
-                      }}
-                      selected={selected}
-                      defaultView={Views.DAY}
-                      events={myEvents}
-                      step={15}
-                      showMultiDayTimes={true}
-                      localizer={localizer}
-                      min={minTime}
-                      max={maxTime}
-                      date={date}
-                      onNavigate={onNavigate}
-                      components={{
-                        toolbar: CustomToolbar,
-                        event: EventInfo,
-                      }}
-                      resizable
-                      selectable
-                      onEventDrop={moveEvent}
-                      onEventResize={resizeEvent}
-                      onSelectEvent={HandleSelectEvent}
-                      onSelectSlot={handleSelectSlot}
-                      eventPropGetter={eventPropGetter}
+                  <DragAndDropCalendar
+                    style={{
+                      width: `calc(100vw - 310px)`,
+                      height: "100vh",
+                      overflowX: "hidden",
+                      overflowY: "scroll",
+                      objectFit: "contain",
+                      overscrollBehavior: "contain",
+                      color: "white",
+                    }}
+                    selected={selected}
+                    defaultView={Views.DAY}
+                    events={myEvents}
+                    step={15}
+                    showMultiDayTimes={true}
+                    localizer={localizer}
+                    min={minTime}
+                    max={maxTime}
+                    date={date}
+                    onNavigate={onNavigate}
+                    components={{
+                      toolbar: CustomToolbar,
+                      event: EventInfo,
+                    }}
+                    resizable
+                    selectable
+                    onEventDrop={moveEvent}
+                    onEventResize={resizeEvent}
+                    onSelectEvent={HandleSelectEvent}
+                    onSelectSlot={handleSelectSlot}
+                    eventPropGetter={eventPropGetter}
 
-                    // onClick={() => setOpenDatepickerModal(true)}
-                    />
-                  )}
+                  // onClick={() => setOpenDatepickerModal(true)}
+                  />
 
                 </div>
               </div>
             </div>
-            {selected && (
-              <EventInfoModal
-                open={eventInfoModal}
-                handleClose={() => closeSelectEvent()}
-                onDeleteEvent={onDeleteEvent}
-                currentEvent={selected}
-                user={user}
-                onCompleteEvent={onCompleteEvent}
-                techs={techs}
-              />
-            )}
+
           </>
         </div>
       </Fragment>
@@ -524,6 +483,131 @@ export default function DnDResource() {
   )
 }
 
+
+export function EventInfoModal({ user, open, handleClose, currentEvent, techs }: IProps) {
+  const data = currentEvent
+  const fetcher = useFetcher()
+  const tech = data.tech ? data.tech : '';
+
+  return (
+    <>
+      <Dialog open={open} onOpenChange={handleClose}>
+        <DialogContent className="w-[95%] md:w-[475px] border-border">
+          <DialogHeader>
+            <DialogTitle>
+
+            </DialogTitle>
+            <DialogDescription>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3">
+            <div className="font-semibold">Appointment Details</div>
+            <ul className="grid gap-3">
+              <div className="relative mt-5">
+                <Select
+                  defaultValue={tech}
+                  name='tech'
+                  onValueChange={(value) => {
+                    const formData = new FormData();
+                    formData.append("aptId", data.id);
+                    formData.append("workOrderId", String(data.workOrderId));
+                    formData.append("techEmail", value);
+                    formData.append("intent", 'updateTechnician');
+                    fetcher.submit(formData, { method: "post" });
+                  }}
+                >
+                  <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                    <SelectValue defaultValue={tech} />
+                  </SelectTrigger>
+                  <SelectContent className='bg-background text-foreground border border-border'>
+                    <SelectGroup>
+                      <SelectLabel>Technicians</SelectLabel>
+                      {techs.map((user) => (
+                        <SelectItem key={user.email} value={user.email}>
+                          {user.username}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Assigned Tech</label>
+              </div>
+              <li className="flex items-center justify-between">
+                <span className="text-[#8a8a93]">Unit</span>
+                <span>{data.unit} </span>
+              </li>
+              <li className="flex items-center justify-between">
+                <span className="text-[#8a8a93]">Mileage</span>
+                <span> {data.mileage && (data.mileage)}</span>
+              </li>
+              <li className="flex items-center justify-between">
+                <span className="text-[#8a8a93]">VIN</span>
+                <span>{data.vin && (data.vin)}</span>
+              </li>
+              <li className="flex items-center justify-between">
+                <span className="text-[#8a8a93]">Tag</span>
+                <span>{data.tag && (data.tag)}</span>
+              </li>
+              <li className="flex items-center justify-between">
+                <span className="text-[#8a8a93]">Motor</span>
+                <span>{data.motor && (data.motor)}</span>
+              </li>
+              <li className="flex items-center justify-between">
+                <span className="text-[#8a8a93]">Color</span>
+                <span>{data.color && (data.color)}</span>
+              </li>
+              <li className="flex items-center justify-between">
+                <span className="text-[#8a8a93]">Writer</span>
+                <span>{data.writer}</span>
+              </li>
+              <li className="flex items-center justify-between">
+                <span className="text-[#8a8a93]">Location</span>
+                <span>{data.location && (data.location)}</span>
+              </li>
+            </ul>
+          </div>
+
+        </DialogContent>
+      </Dialog >
+    </>
+  )
+}
+
+const EventInfo = ({ event }) => {
+  const navigate = useNavigate()
+  return (
+    <>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            className='cursor-pointer py-3 px-4 m-2 rounded-[6px] hover:bg-accent hover:text-accent-foreground'
+            onClick={() => (navigate(`/dealer/service/technician/workOrder/${event.workOrderId}`))} >
+            <div className='flex-col gap-2'>
+              <p className='text-left mt-1'>{event.title}</p>
+              <p className='text-left mt-1'>Unit: {event.unit}</p>
+              <p className='text-left mt-1'>Tag: {event.tag}</p>
+              <p className='text-left mt-1'>VIN: {event.vin}</p>
+              <p className='text-left mt-1'>Color: {event.color}</p>
+              <p className='text-left mt-1'>Location: {event.location}</p>
+            </div>
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="right">
+          <div className='flex-col gap-2'>
+            <p className='text-left mt-1'>{event.title}</p>
+            <p className='text-left mt-1'>Unit: {event.unit}</p>
+            <p className='text-left mt-1'>Tag: {event.tag}</p>
+            <p className='text-left mt-1'>VIN: {event.vin}</p>
+            <p className='text-left mt-1'>Color: {event.color}</p>
+            <p className='text-left mt-1'>Location: {event.location}</p>
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    </>
+  );
+};
+
+
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/favicons/calendar.svg' },
   { rel: "stylesheet", href: styles1 },
@@ -583,6 +667,7 @@ export async function loader({ request, params }: LoaderFunction) {
     select: {
       id: true,
       tech: true,
+      techEmail: true,
       writer: true,
       start: true,
       end: true,
@@ -627,6 +712,8 @@ export async function loader({ request, params }: LoaderFunction) {
           ServiceUnitId: true,
           financeId: true,
           clientfileId: true,
+          note: true,
+          closedAt: true,
           createdAt: true,
           updatedAt: true,
           Clientfile: {
@@ -634,7 +721,6 @@ export async function loader({ request, params }: LoaderFunction) {
               id: true,
               createdAt: true,
               updatedAt: true,
-              financeId: true,
               userId: true,
               firstName: true,
               lastName: true,
@@ -648,15 +734,29 @@ export async function loader({ request, params }: LoaderFunction) {
               dl: true,
               typeOfContact: true,
               timeToContact: true,
-              conversationId: true,
             }
           }
         }
       }
     }
   })
-
-  return json({ user, allServiceApts })
+  const allUsers = await prisma.user.findMany({
+    select: {
+      name: true,
+      username: true,
+      email: true,
+      profileId: true,
+      phone: true,
+      dept: true,
+      omvicNumber: true,
+      positions: true,
+      role: true,
+    }
+  });
+  const techs = allUsers.filter(user =>
+    user.role.name === 'Technician'
+  );
+  return json({ user, allServiceApts, techs })
 }
 
 dayjs.extend(timezone)
@@ -880,126 +980,3 @@ interface IProps {
   techs: any
 }
 
-export function EventInfoModal({ user, open, handleClose, currentEvent, techs }: IProps) {
-  const data = currentEvent
-  const fetcher = useFetcher()
-  const tech = data.tech ? data.tech : '';
-  console.log(techs, 'dataeventinfdomodle');
-
-  return (
-    <>
-      <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent className="w-[95%] md:w-[475px] border-border">
-          <DialogHeader>
-            <DialogTitle>
-
-            </DialogTitle>
-            <DialogDescription>
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-3">
-            <div className="font-semibold">Appointment Details</div>
-            <ul className="grid gap-3">
-              <div className="relative mt-5">
-                <Select
-                  defaultValue={tech}
-                  name='tech'
-                  onValueChange={(value) => {
-                    const formData = new FormData();
-                    formData.append("aptId", data.id);
-                    formData.append("workOrderId", String(data.workOrderId));
-                    formData.append("techEmail", value);
-                    formData.append("intent", 'updateTechnician');
-                    fetcher.submit(formData, { method: "post" });
-                  }}
-                >
-                  <SelectTrigger className="w-full bg-background text-foreground border border-border">
-                    <SelectValue defaultValue={tech} />
-                  </SelectTrigger>
-                  <SelectContent className='bg-background text-foreground border border-border'>
-                    <SelectGroup>
-                      <SelectLabel>Technicians</SelectLabel>
-                      {techs.map((user) => (
-                        <SelectItem key={user.email} value={user.email}>
-                          {user.username}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Assigned Tech</label>
-              </div>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Unit</span>
-                <span>{data.unit} </span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Mileage</span>
-                <span> {data.mileage && (data.mileage)}</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">VIN</span>
-                <span>{data.vin && (data.vin)}</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Tag</span>
-                <span>{data.tag && (data.tag)}</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Motor</span>
-                <span>{data.motor && (data.motor)}</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Color</span>
-                <span>{data.color && (data.color)}</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Writer</span>
-                <span>{data.writer}</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Location</span>
-                <span>{data.location && (data.location)}</span>
-              </li>
-            </ul>
-          </div>
-
-        </DialogContent>
-      </Dialog >
-    </>
-  )
-}
-
-const EventInfo = ({ event }) => {
-  const navigate = useNavigate()
-  return (
-    <>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <button
-            className='cursor-pointer py-3 px-4 m-2 rounded-[6px] hover:bg-accent hover:text-accent-foreground'
-            onClick={() => (navigate(`/dealer/service/technician/workOrder/${event.workOrderId}`))} >
-            <div className='flex-col gap-2'>
-              <p className='text-left mt-1'>{event.title}</p>
-              <p className='text-left mt-1'>Unit: {event.unit}</p>
-              <p className='text-left mt-1'>Tag: {event.tag}</p>
-              <p className='text-left mt-1'>VIN: {event.vin}</p>
-              <p className='text-left mt-1'>Color: {event.color}</p>
-              <p className='text-left mt-1'>Location: {event.location}</p>
-            </div>
-          </button>
-        </TooltipTrigger>
-        <TooltipContent side="right">
-          <div className='flex-col gap-2'>
-            <p className='text-left mt-1'>{event.title}</p>
-            <p className='text-left mt-1'>Unit: {event.unit}</p>
-            <p className='text-left mt-1'>Tag: {event.tag}</p>
-            <p className='text-left mt-1'>VIN: {event.vin}</p>
-            <p className='text-left mt-1'>Color: {event.color}</p>
-            <p className='text-left mt-1'>Location: {event.location}</p>
-          </div>
-        </TooltipContent>
-      </Tooltip>
-    </>
-  );
-};

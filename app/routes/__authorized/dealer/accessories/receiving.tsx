@@ -283,6 +283,16 @@ export async function action({ request, params }: LoaderFunction) {
     console.log(update, 'update')
     return json({ update })
   }
+  if (intent === 'updateProductCost') {
+    const update = await prisma.accessories.update({
+      where: { id: formData.id },
+      data: {
+        [formPayload.colName]: parseFloat(formPayload.name),
+      }
+    })
+    console.log(update, 'update')
+    return json({ update })
+  }
 
   const hasAdminPosition = user?.positions.some(position => position.position === 'Administrator' || position.position === 'Manager');
 
@@ -925,7 +935,7 @@ export default function Purchase() {
                                 buttonLabel={`Edit quantity`}
                                 inputLabel={`Edit quantity`}
                               >
-                                <input type="hidden" name="intent" value='updateProduct' />
+                                <input type="hidden" name="intent" value='updateProductCost' />
                                 <input type="hidden" name="id" value={result.id} />
                                 <input type="hidden" name="colName" value='quantity' />
                               </EditableText>

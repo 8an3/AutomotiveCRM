@@ -19,7 +19,7 @@ export default function Accessories() {
         <TabsContent value="Dashboard">
           <Card className='mx-3 w-full'>
             <CardHeader>
-              <CardTitle>Set Minimum Inventory Levels For Auto Ordering Shop Supplies</CardTitle>
+              <CardTitle>Overview of all work being completed today by who, when.</CardTitle>
               <CardDescription>Card Description</CardDescription>
             </CardHeader>
             <CardContent>

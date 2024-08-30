@@ -6304,12 +6304,24 @@ export async function Board() {
 
   // roadmap, control panel and board in dev mode
   const completed = [
+    { board: "dev", column: "service", item: "service writer dash" },
+    { board: "dev", column: "service", item: "tech dash" },
+    { board: "dev", column: "accessories", item: "acc dash" },
+    { board: "dev", column: "parts", item: "parts specfic page to print label, make changes etc, have search table that switch from table to part view using use state like the one in newleads" },
+    { board: "dev", column: "MANAGER", item: "have all managers stuff within managers so dashboard would have sales, acc, parts, and service" },
+    { board: "dev", column: "admin", item: "for making admin dash, go custom try to replicate sales dash but go all out... here you can even do context menu's aand everything, tab it by clientfile, finance, acc order, workorder, sales and in sales quickly sort by sales person by month user filters like u used in receivng" },
+
+    { board: "dev", column: "GET DONE NOW", item: "put swr places it needs to be, part, unit, workorder, like the way you did on sales dashbaord" },
+    { board: "dev", column: "parts", item: "parts dash" },
+    { board: "dev", column: "parts", item: "shpping and receiving dash" },
+    { board: "dev", column: "service", item: "tech should just be aqble to look at his agenda and know what hes doing for the day, he should have access to all the information he needs from his terminal without having to go find anyone and bug them about it and no more paperwork" },
     { board: "dev", column: "GET DONE NOW", item: "put in a room for admin for people to leave notes for the admin team" },
     { board: "dev", column: "GET DONE NOW", item: "fetcher on technician update for workorder appt in caleddnar modal" },
     { board: "dev", column: "GET DONE NOW", item: "notes in client file fix" },
     { board: "dev", column: "GET DONE NOW", item: "in clientfile under service tab create back button to see the list of workorders again" },
     { board: "dev", column: "GET DONE NOW", item: "workorder/workorderid add  appts tab where you can see select and edit appts, maybe add?" },
     { board: "dev", column: "GET DONE NOW", item: "workorder/workorderid when adding part pull part status before saving" },
+    { board: "dev", column: "GET DONE NOW", item: "aprts and acc -1 part when sold at parts/acc counters or when parts fulfills an order for service or sales " },
 
     { board: "dev", column: "GET DONE NOW", item: "end of day reports, choose date so you can print any day" },
     { board: "dev", column: "ISSUE", item: "accessories/parts differiantiati between parts and acc by sellingDept on dashboard" },
@@ -6625,9 +6637,8 @@ export async function Board() {
   ]
   const getDoneNow = [
     { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
-    { board: "dev", column: "GET DONE NOW", item: "put swr places it needs to be, part, unit, workorder, like the way you did on sales dashbaord" },
 
-    { board: "dev", column: "GET DONE NOW", item: "saving doc templates, see if you can save big json strings in database- this produces a problem of linking the database data to the end points on the persons template you either have to input each manually or have a legend where they click the data point they want and it copies the actual database value and they paste it into the value on the template" },
+    { board: "dev", column: "GET DONE NOW", item: "saving doc templates, see if you can save big json strings in database - make template master sheets designated for specific purposes that way the values used are for that specific type of document with a legend on the side incase they delete something they should where they click and it copies the value it needs" },
 
     { board: "dev", column: "GET DONE NOW", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase in managers dash" },
 
@@ -6639,11 +6650,14 @@ export async function Board() {
     { board: "dev", column: "ISSUE", item: "end of day report, sales people arent printing out" },
     { board: "dev", column: "ISSUE", item: "need winter storage dash for service / winter storage long term" },
     { board: "dev", column: "ISSUE", item: "user docs instead of having a doc section have button where it brings them to utube video to teach them about page" },
+    { board: "dev", column: "accessories", item: "dealer/accessories/newOrder/cm06lhi4u0001lb03xvaq4gwu print receipt not working in prod" },
     { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
   ]
   const WIP = [
     { board: "dev", column: "WIP", item: "have your own csi reporting for the dealer that can be sent to customers JUST NEED TO MAKE MOCK EMAIL FOR IT" },
     { board: "dev", column: "WIP", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
+    { board: "dev", column: "INFASTRUCTURE", item: "cell phone site versions for product ordering, unit inventory intake for service writers/managers to quickly take in unit orders, service quoting, search for products, search for units, orders so employees can work on them on the go, in the back getting items or on with customers on floor and as soon they are ready to buy they can just hit print receipt and collect the money instead of waiting for a till if there is none" },
+
     { board: "dev", column: "WIP", item: "mass email/sms - wip" },
     { board: "dev", column: "WIP", item: "clientfile/financeid cc user for notes" },
     { board: "dev", column: "WIP", item: "https://developers.klaviyo.com/en/reference/get_campaigns" },
@@ -6663,13 +6677,23 @@ export async function Board() {
     { board: "dev", column: "BACKBURNER", item: "payment processor for purchases?" },
     { board: "dev", column: "BACKBURNER", item: "have it populate api keys so managers can hand them out" },
     { board: "dev", column: "BACKBURNER", item: "cross platform ad manager, post it once here and push it to different providors" },
+    { board: "dev", column: "BACKBURNER", item: "email / sms campaigns" },
+    { board: "dev", column: "BACKBURNER", item: "fb msgr integration" },
   ]
   const ideas = [
     { board: "dev", column: "IDEAS", item: "service calendar - select mechanic and it only shows that mechanics appts" },
     { board: "dev", column: "IDEAS", item: "save form to local storage, never loose data for a internet hiccup or outage" },
     { board: "dev", column: "IDEAS", item: "have blue book values on quote section" },
     { board: "dev", column: "IDEAS", item: "service dash - tab where it shows customers who havent had a service in 6 months" },
+    { board: "dev", column: "dash", item: "dynamic dashboard widgets" },
     { board: "dev", column: "IDEAS", item: "idea for a chart current contact time, 1 day 7 days 14 days 30 days 60 days 90 days" },
+    { board: "dev", column: "PAID FEATURE - ai", item: "Ai assistant to book apointments, complete and etc like gowrench or just a work flow to customers to guide themselves" },
+    { board: "dev", column: "PAID FEATURE - ai", item: "Ai assistant to give hints on what to do next like a reminder" },
+    { board: "dev", column: 'PAID FEATURE - ai', item: 'have ai take in last 5 emails with customer and suggest your next communication/script - not done yet but easy enough to complete in components folder' },
+    { board: "dev", column: "PAID FEATURE - ai", item: "Predictive Customer Behavior Modeling, Utilize advanced machine learning models to predict future customer behaviors and preferences based on historical data. ie percentages on how liuekly the customer can be closed if asked at that time" },
+    { board: "dev", column: "PAID FEATURE - ai", item: "predictive analysis of sales trends" },
+    { board: "dev", column: "PAID FEATURE - ai", item: "customter analysis, retention, customer $ worth, visits, and more" },
+
   ]
   const sales = [
     { board: "dev", column: "SALES", item: "make a bill of sale where it prints the items off of acc and parts orders - KIND OF ALREADY DONE BY PUSHING ACC TOTAL TO BOS BUT DOES NOT ITEMIZE ITEMS" },
@@ -6687,9 +6711,6 @@ export async function Board() {
     { board: "dev", column: "AUTOMATION", item: "customer 2 months after pick up to make sure everything is still good" },
   ]
   const service = [
-    { board: "dev", column: "service", item: "tech should just be aqble to look at his agenda and know what hes doing for the day, he should have access to all the information he needs from his terminal without having to go find anyone and bug them about it and no more paperwork" },
-    { board: "dev", column: "service", item: "service writer dash" },
-    { board: "dev", column: "service", item: "tech dash" },
     { board: "dev", column: "service", item: "scan incoming crates and add them into inventory or something, maybe a inbox for the admin to convert them to inventory" },
   ]
   const docs = [
@@ -6710,48 +6731,34 @@ export async function Board() {
     { board: "dev", column: "quote", item: "set up more parts pages - started - Manitou done - switch started" },
   ]
   const parts = [
-    { board: "dev", column: "parts", item: "parts dash" },
-    { board: "dev", column: "parts", item: "shpping and receiving dash" },
-    { board: "dev", column: "parts", item: "parts specfic page to print label, make changes etc, have search table that switch from table to part view using use state like the one in newleads" },
+
   ]
   const accessories = [
-    { board: "dev", column: "accessories", item: "acc dash" },
-    { board: "dev", column: "accessories", item: "dealer/accessories/newOrder/cm06lhi4u0001lb03xvaq4gwu print receipt not working in prod" },
+
   ]
   const manager = [
-    { board: "dev", column: "MANAGER", item: "have all managers stuff within managers so dashboard would have sales, acc, parts, and service" },
     { board: "dev", column: "MANAGER", item: "manager / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
   ]
   const admin = [
     { board: "dev", column: "admin", item: "have it populate api keys so managers can hand them out" },
-    { board: "dev", column: "admin", item: "for making admin dash, go custom try to replicate sales dash but go all out... here you can even do context menu's aand everything, tab it by clientfile, finance, acc order, workorder, sales and in sales quickly sort by sales person by month user filters like u used in receivng" },
   ]
   const dealerOnboarding = [
     { board: "dev", column: "DEALER ONBOARDING", item: "free simple install with insructions, fee for total install - for dealer that already have an it team it would save them money" },
   ]
   const infastructure = [
     { board: "dev", column: "INFASTRUCTURE", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try - this could also be - set up demo site where, sign in is just inputing the email like technician@email.com and theyre logged in as the tech, or service writer and etc" },
-    { board: "dev", column: "INFASTRUCTURE", item: "cell phone site versions for product ordering, unit inventory intake for service writers/managers to quickly take in unit orders, service quoting, search for products, search for units, orders so employees can work on them on the go, in the back getting items or on with customers on floor and as soon they are ready to buy they can just hit print receipt and collect the money instead of waiting for a till if there is none" },
     { board: "dev", column: "INFASTRUCTURE", item: "have a second non-cloud option, either as a rack for a server or tower for a non tech orientated dealer to be hosted on site but would need a license key that needs a new token every 30 days/6 months/12 months to operate based on payment plan, hardware to be paid upfront before build, payments start once activated at dealer" },
   ]
   const dash = [
-    { board: "dev", column: "dash", item: "dynamic dashboard widgets" },
   ]
   const communications = [
-    { board: "dev", column: "communications", item: "email / sms campaigns" },
-    { board: "dev", column: "communications", item: "fb msgr integration" },
 
   ]
   const paidfeature = [
-    { board: "dev", column: "PAID FEATURE - ai", item: "predictive analysis of sales trends" },
-    { board: "dev", column: "PAID FEATURE - ai", item: "customter analysis, retention, customer $ worth, visits, and more" },
-    { board: "dev", column: "PAID FEATURE - ai", item: "Predictive Customer Behavior Modeling, Utilize advanced machine learning models to predict future customer behaviors and preferences based on historical data. ie percentages on how liuekly the customer can be closed if asked at that time" },
     { board: "dev", column: "PAID FEATURE - ai", item: "*** currently working - need to attach to components and find a way to turn on or off pending payment by customer ***" },
     { board: "dev", column: "PAID FEATURE - ai", item: "speech to text for quicker input - done in components folder" },
     { board: "dev", column: "PAID FEATURE - ai", item: "AI writing partner for emails, templates and scripts - done in components folder" },
-    { board: "dev", column: 'PAID FEATURE - ai', item: 'have ai take in last 5 emails with customer and suggest your next communication/script - not done yet but easy enough to complete in components folder' },
     { board: "dev", column: 'PAID FEATURE - ai', item: 'vercel has a nice write up on this to do in their platform - ai - wip - https://github.com/steven-tey/chathn/blob/main/app/api/chat/route.ts' },
-    { board: "dev", column: "PAID FEATURE - ai", item: "Ai assistant to book apointments, complete and etc like gowrench or just a work flow to customers to guide themselves" },
   ]
   const roadMapItems = [
     ...getDoneNow,
