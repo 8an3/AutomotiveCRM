@@ -10,6 +10,8 @@ export async function loader({ request, params }: LoaderFunction) {
     where: { userEmail: userEmail },
     select: {
       id: true,
+      createdAt: true,
+      updatedAt: true,
       title: true,
       content: true,
       dismiss: true,
@@ -20,7 +22,10 @@ export async function loader({ request, params }: LoaderFunction) {
       to: true,
       from: true,
       userEmail: true,
+      customerName: true,
       read: true,
+
+      //  User
     },
   });
   return notifications;

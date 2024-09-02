@@ -51,7 +51,7 @@ export function DealerWelcomeFirst() {
                 <Row>
                   <Column className="flex">
                     <Text className="text-black text-[14px] leading-[24px]">
-                      Before we can set you up, we need some basic information to get your dedicated server up and running. Once completed, we will get your site live and send you an email as soon as it's done, along with all the key pieces of information you need to start using the application.
+                      Before we can set you up, we need some basic information to get your dedicated server up and running. Once completed, we will get your site up and running and send you an email as soon as it's done. Including all the key pieces of information you need to start using the application from day one.
                     </Text>
                   </Column>
                 </Row>

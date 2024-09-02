@@ -8,6 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  Separator,
 } from "~/components/ui";
 import { Form, useActionData, useLoaderData, useNavigation } from "@remix-run/react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/components/ui/card"
@@ -1400,7 +1401,8 @@ export default function Shight() {
       unique.push(mail.subCat);
     }
     return unique;
-  }, [])); function handleEmailClick(category) {
+  }, []));
+  function handleEmailClick(category) {
     setSelectedCategory(category);
     const sameCategoryMails = templates.filter(item => item.category === category);
     const uniqueSubcategories = sameCategoryMails.reduce((unique, item) => {
@@ -1560,663 +1562,682 @@ export default function Shight() {
   }
   const contentNewTemplate = ''
   const [editTemplate, setEditTemplate] = useState(false)
+
+  //const [testcategory, setTestCategory] = useState()
+
+
+  function SidebarNav({ className, items, ...props }) {
+    const [category, setCategory] = useState()
+    const [subCategory, setSubCategory] = useState()
+
+    const uniqueCategories = Array.from(new Set(items.map(item => item.category)));
+
+    const firstObstacle = (uniqueCategory) => {
+      //setCategory(category === uniqueCategory ? null : uniqueCategory);
+      // setTestCategory(uniqueCategories === category ? '' : uniqueCategory);
+
+      setCategory(uniqueCategory);
+      //setTestCategory(uniqueCategory);
+
+    }
+
+    return (
+      <nav className={cn("flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1 h-auto max-h-[500px] overflow-y-auto", className)} {...props}>
+        {uniqueCategories.map((uniqueCategory) => (
+          <div key={uniqueCategory} >
+            <Button
+              variant='ghost'
+              onClick={() => {
+                firstObstacle(uniqueCategory)
+              }}
+              className={cn(
+                category === uniqueCategory
+                  ? "bg-[#232324] hover:bg-muted/50 w-[90%] text-foreground"
+                  : "hover:bg-muted/50 w-[90%] hover:text-foreground",
+                "justify-start text-muted-foreground"
+              )}
+            >
+              {uniqueCategory}
+            </Button>
+            {category === uniqueCategory && (
+              <div>
+                {items
+                  .filter((subItem) => subItem.category === uniqueCategory)
+                  .map((subItem) => (
+                    <Button
+                      variant='ghost'
+                      key={subItem.subCat}
+                      onClick={() => {
+                        setSubCategory(subItem.subCat);
+                        const getMail = scripts.find((mail) => mail.subCat === subCategory)
+                        setSelectedRecord(getMail);
+                        setSelectedScript(true)
+
+                        console.log(selectedRecord, 'selectedRecord')
+                      }}
+                      className={cn(
+                        "ml-4 hover:bg-muted/50 w-[90%] hover:text-foreground",
+                        "justify-start text-muted-foreground"
+                      )}
+                    >
+                      {subItem.subCat}
+                    </Button>
+                  ))}
+              </div>
+            )}
+          </div>
+        ))
+        }
+      </nav >
+    );
+  }
+
+
   return (
     <>
-
-      <div className=" mx-auto flex h-[80vh] text-foreground  ">
-        <Card className={` mx-2 transition delay-300 duration-1000  ease-in-out ${selectedCategorySize ? 'grow' : 'w-[15%]'} `}        >
-          <div className='flex justify-between items-center mt-5 mx-6 mb-5'>
-            <p>Category</p>
-            <Dialog  >
-              <DialogTrigger asChild>
-                <Button size="sm" variant="outline" className="h-8 gap-1 ml-auto">
-                  Add Template
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="gap-0 p-0 outline-none border-border text-foreground   max-h-[445px] h-[445px] w-full md:w-[600px] md:max-w-[600px] mx-3">
-                <div className='grid grid-cols-1 my-8 mx-auto w-full overflow-y-auto' >
-                  <EditorTiptapHookNewTemplates user={user} content={contentNewTemplate} />
-                </div>
-              </DialogContent>
-            </Dialog>
+      <div className='flex' >
+        <Separator orientation="vertical" />
+        <div className="hidden space-y-6 p-10 pb-16 md:block">
+          <div className="space-y-0.5">
+            <h2 className="text-xl tracking-tight">Script Builder</h2>
+            <p className="text-muted-foreground">
+              Hone your craft.
+            </p>
           </div>
+          <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+            <aside className="-mx-4 lg:w-[120px]">
+              <SidebarNav items={templates} />
+            </aside>
+            <div className="flex-1 lg:max-w-2xl">
 
-          {selectedCategorySize && (
-            <>
-              <CardContent className="space-y-2 ">
-                <div className="space-y-1  h-auto max-h-[60vh] overflow-y-auto overflow-clip ">
-                  {templates.reduce((unique, mail) => {
-                    if (!unique.some(item => item.category === mail.category)) {
-                      unique.push(mail);
-                    }
-                    return unique;
-                  }, []).map((mail, index) => (
-                    <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary" onClick={() => {
-                      handleSubcategoryClick();
-                      handleEmailClick(mail.category)
-                    }}>
-                      <div className="m-2 flex items-center justify-between">
-                        <p className="text-lg font-bold text-[#fff]">{mail.category}</p>
-                      </div>
-                    </div>
-                  ))}
-
-                </div>
-              </CardContent>
-              <CardFooter>
-                <p>Your ability to close increases with the amount of tools at your disposal. A mechanic without a tire iron wouldnt be able to change a tire. So why dont more sales people take better care of their scripts, closes, and such?</p>
-              </CardFooter>
-            </>
-          )}
-        </Card >
-
-        <Card
-          className={`mx-2 transition delay-300 duration-1000  ease-in-out ${selectedSubcategory ? 'grow' : 'w-[15%]'} `}
-        >
-          <CardHeader onClick={handleSubcategoryClick} className='cursor-pointer'>
-            <CardTitle>Sub-category</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {selectedSubcategory && (
-              <div className='h-auto max-h-[70vh] overflow-y-auto'>
-                <div className=" space-y-1  ">
-                  {subcategories.map((subCat, index) => (
-                    <div
-                      key={index}
-                      className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary hover:text-primary active:border-primary"
-                      onClick={() => {
-                        handleSubCatLisstClick(templates.find((mail) => mail.subCat === subCat));
-                        handleScriptClick();
-                      }}
-                    >
-                      <div className="m-2 flex items-center justify-between">
-                        <p className="text-lg font-bold text-[#fff]">{subCat}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-
-        <Card className={`mx-2  transition delay-300 duration-1000 ease-in-out ${selectedScript ? 'grow' : 'w-[15%]'} `}        >
-          <CardHeader onClick={handleScriptClick} className='cursor-pointer'>
-            <CardTitle>Script</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 h-auto max-h-[70vh] overflow-y-auto">
-            {selectedScript && (
-              <div className="">
-                {selectedRecord && (
-                  <div className="">
-                    <div className="m-2 mx-auto w-[95%]   hover:border-primary  hover:text-primary active:border-primary">
-                      <div className="m-2  items-center justify-between p-2 text-foreground">
-                        <p className='text-[20px]'>{selectedRecord.category}: {selectedRecord.subCat}</p>
-                        <div className='flex justify-between text-[16px]  text-[#fff]'>
-                          <p className='text-[20px]'>{selectedRecord.subject}</p>
-                        </div>
-                        <p className='mt-5'>{selectedRecord.body}</p>
-                        <div className='mt-5 flex  items-center justify-between text-[#fff]'>
-                          <div className='flex' >
-                            <Button variant='outline' className="cursor-pointer bg-transparent text-foreground  hover:border-primary hover:bg-transparent hover:text-primary" onClick={() => copyText(selectedRecord.body)} >
-                              {copiedText !== selectedRecord.body && <Copy strokeWidth={1.5} className="text-lg hover:text-primary" />}
-                              {copiedText === selectedRecord.body && <FaCheck strokeWidth={1.5} className="text-lg hover:text-primary" />}
-                            </Button>
-                          </div>
-                          <div className='flex' >
-                            <ButtonLoading
-                              size="sm"
-                              type='submit'
-                              isSubmitting={isSubmitting}
-                              onClick={() => {
-                                setEditTemplate(true)
-                              }}
-                              loadingText="Loading..."
-                              className="w-auto mr-3 cursor-pointer border-white bg-primary text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
-                            >
-                              Edit Template
-                            </ButtonLoading>
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button variant="outline"
-                                  className="w-auto cursor-pointer border border-border bg-primary text-foreground hover:bg-transparent hover:text-white"
-                                  size="sm"> Add To Template Dropdowns</Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    This will add this template to your dropdowns.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <div className='flex items-center justify-between mx-3' >
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <Form method='post'>
-                                    <input type='hidden' name='body' value={selectedRecord.body} />
-                                    <input type='hidden' name='category' value={selectedRecord.category} />
-                                    <input type='hidden' name='userEmail' value={user.email} />
-                                    <input type='hidden' name='subject' value={selectedRecord.subject} />
-                                    <AlertDialogCancel className='border border-transparent'>
-                                      <ButtonLoading
-                                        size="sm"
-                                        name='intent'
-                                        value='addToDropdown'
-                                        type='submit'
-                                        isSubmitting={isSubmitting}
-                                        onClick={() => {
-                                          toast.message('Helping you become the hulk of sales...')
-                                        }}
-                                        loadingText="Loading..."
-                                        className="w-auto cursor-pointer border border-border bg-primary text-foreground hover:bg-transparent hover:text-white"
-                                      >
-                                        Add
-                                      </ButtonLoading>
-                                    </AlertDialogCancel>
-                                  </Form>
+              {selectedScript && selectedRecord && (
+                <div className={`mx-2  transition delay-300 duration-1000 ease-in-out `}        >
+                  {selectedScript && (
+                    <div className="h-auto max-h-[600px] overflow-y-auto">
+                      {selectedRecord && (
+                        <div className="">
+                          <div className="m-2 mx-auto w-[95%]   hover:border-primary  hover:text-primary active:border-primary">
+                            <div className="m-2  items-center justify-between p-2 text-foreground">
+                              <p className='text-[20px]'>{selectedRecord.category} {selectedRecord.subCat}</p>
+                              <div className='flex justify-between text-[16px]  text-[#fff]'>
+                                <p className='text-[16px] text-muted-foreground'>{selectedRecord.subCat}</p>
+                              </div>
+                              <div className='group flex items-center' >
+                                <p className='mt-5'>{selectedRecord.body}</p>
+                                <div className='flex' >
+                                  <Button variant='ghost' size='icon' className="cursor-pointer  opacity-0 transition-opacity group-hover:opacity-100" onClick={() => copyText(selectedRecord.body)} >
+                                    {copiedText !== selectedRecord.body && <Copy className=" hover:text-primary" />}
+                                    {copiedText === selectedRecord.body && <FaCheck className="hover:text-primary" />}
+                                  </Button>
                                 </div>
-                              </AlertDialogContent>
-                            </AlertDialog>
+
+                              </div>
+                              <div className='flex mt-4' >
+                                <ButtonLoading
+                                  size="sm"
+                                  variant='ghost'
+                                  type='submit'
+                                  isSubmitting={isSubmitting}
+                                  onClick={() => {
+                                    setEditTemplate(true)
+                                  }}
+                                  loadingText="Loading..."
+                                  className="w-auto mr-3 cursor-pointer border-white bg-primary text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
+                                >
+                                  Edit Template
+                                </ButtonLoading>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button variant="ghost"
+                                      className="w-auto cursor-pointer border border-border bg-primary text-foreground hover:bg-transparent hover:text-white"
+                                      size="sm"> Add To Template Dropdowns</Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        This will add this template to your dropdowns.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <div className='flex items-center justify-between mx-3' >
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <Form method='post'>
+                                        <input type='hidden' name='body' value={selectedRecord.body} />
+                                        <input type='hidden' name='category' value={selectedRecord.category} />
+                                        <input type='hidden' name='userEmail' value={user.email} />
+                                        <input type='hidden' name='subject' value={selectedRecord.subject} />
+                                        <AlertDialogCancel className='border border-transparent'>
+                                          <ButtonLoading
+                                            size="sm"
+                                            name='intent'
+                                            value='addToDropdown'
+                                            type='submit'
+                                            isSubmitting={isSubmitting}
+                                            onClick={() => {
+                                              toast.message('Helping you become the hulk of sales...')
+                                            }}
+                                            loadingText="Loading..."
+                                            className="w-auto cursor-pointer border border-border bg-primary text-foreground hover:bg-transparent hover:text-white"
+                                          >
+                                            Add
+                                          </ButtonLoading>
+                                        </AlertDialogCancel>
+                                      </Form>
+                                    </div>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      )}
                     </div>
-                  </div>
-                )}
-              </div>
-            )}
-            {editTemplate === true && (
-              <>
-                <div className="p-1">
-                  <Form method='post' action='/dealer/user/dashboard/templates'>
-                    <div className="mr-auto px-2   mt-auto grid grid-cols-1">
-                      <div className="grid gap-3 mx-3 mb-3">
-                        <div className="relative mt-3">
-                          <Input
-                            name='category'
-                            type="text"
-                            className="w-full bg-background border-border "
-                            defaultValue={selectedRecord.category}
-                          />
-                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Category</label>
-                        </div>
-                        <div className="relative mt-3">
-                          <Input
-                            name='subCat'
-                            type="text"
-                            className="w-full bg-background border-border "
-                            defaultValue={selectedRecord.subCat}
-                          />
-                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Sub-category</label>
-                        </div>
-                        <div className="relative mt-3">
-                          <Input
-                            name='subject'
-                            type="text"
-                            className="w-full bg-background border-border "
-                            defaultValue={selectedRecord.subject}
-                          />
-                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Subject</label>
-                        </div>
-                      </div>
-
-                      <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="item-1">
-                          <AccordionTrigger>Formatting Options</AccordionTrigger>
-                          <AccordionContent>
-                            <div
-                              className={cn(
-                                "z-10 mb-1 w-[99%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
-                                "bg-background text-foreground transition-all justify-center",
-                                // "sm:sticky sm:top-[80px]",
-                              )}
-                            >
-                              <button
-                                onClick={() => editor.chain().focus().toggleBold().run()}
-                                className={editor.isActive("bold") ? buttonActive : buttonInactive}
-                              >
-                                <FaBold className="text-xl hover:text-primary" />
-                              </button>
-                              <button
-                                onClick={() => editor.chain().focus().toggleItalic().run()}
-                                className={editor.isActive("italic") ? buttonActive : buttonInactive}
-                              >
-                                <FaItalic className="text-xl hover:text-primary" />
-                              </button>
-                              <button
-                                onClick={() => editor.chain().focus().toggleStrike().run()}
-                                className={editor.isActive("strike") ? buttonActive : buttonInactive}
-                              >
-                                <FaStrikethrough className="text-xl hover:text-primary" />
-                              </button>
-
-                              <Minus color="#09090b" strokeWidth={1.5} />
-                              <button
-                                onClick={handleSetLink}
-                                className={editor.isActive("link") ? buttonActive : buttonInactive}
-                              >
-                                <FaLink className="text-xl hover:text-primary" />
-                              </button>
-                              <button
-                                onClick={() => editor.chain().focus().unsetLink().run()}
-                                disabled={!editor.isActive("link")}
-                                className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
-                              >
-                                <FaUnlink className="text-xl hover:text-primary" />
-                              </button>
-                              <Minus color="#000" strokeWidth={1.5} />
-                              <button
-                                onClick={() => editor.chain().focus().toggleBlockquote().run()}
-                                className={editor.isActive('blockquote') ? buttonActive : buttonInactive}
-                              >
-                                <FaQuoteLeft className="text-xl hover:text-primary" />
-                              </button>
-                              <button
-                                onClick={() => editor.chain().focus().toggleCode().run()}
-                                className={editor.isActive('code') ? buttonActive : buttonInactive}
-                                disabled={!editor.can().chain().focus().toggleCode().run()}
-                              >
-                                <FaFileCode className="text-xl hover:text-primary" />
-                              </button>
-                              <button
-                                onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-                                className={editor.isActive('codeBlock') ? buttonActive : buttonInactive}
-                              >
-                                <BiCodeBlock className="text-xl hover:text-primary" />
-                              </button>
-                              <button
-                                onClick={() => editor.chain().focus().toggleBulletList().run()}
-                                className={editor.isActive('bulletList') ? buttonActive : buttonInactive}
-                              >
-                                <FaList className="text-xl hover:text-primary" />
-                              </button>
-                              <button
-                                onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                                className={editor.isActive('orderedList') ? buttonActive : buttonInactive}
-                              >
-                                <FaListOl className="text-xl hover:text-primary" />
-                              </button>
-
-                              <Minus color="#000" strokeWidth={1.5} />
-                              <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-                                <MdHorizontalRule className="text-xl hover:text-primary" />
-                              </button>
-                              <button onClick={() => editor.chain().focus().setHardBreak().run()}>
-                                <IoMdReturnLeft className="text-xl hover:text-primary" />
-                              </button>
-                              <Minus color="#000" strokeWidth={1.5} />
-                              <button
-                                onClick={() => editor.chain().focus().undo().run()}
-                                disabled={!editor.can().chain().focus().undo().run()}
-                              >
-                                <FaUndo className="text-xl hover:text-primary" />
-                              </button>
-                              <button
-                                onClick={() => editor.chain().focus().redo().run()}
-                                disabled={!editor.can().chain().focus().redo().run()}
-                              >
-                                <FaRedo className="text-xl hover:text-primary" />
-                              </button>
-                              <Minus color="#000" strokeWidth={1.5} />
-                              <button onClick={() => editor.chain().focus().setTextAlign('left').run()}
-                                className={editor.isActive({ textAlign: 'left' }) ? buttonActive : buttonInactive}
-                              >
-                                <FaAlignLeft className="text-xl hover:text-primary" />
-                              </button>
-                              <button
-                                onClick={() => editor.chain().focus().setTextAlign('center').run()}
-                                className={editor.isActive({ textAlign: 'center' }) ? buttonActive : buttonInactive}
-                              >
-                                <FaAlignCenter className="text-xl hover:text-primary" />
-                              </button>
-                              <button
-                                onClick={() => editor.chain().focus().setTextAlign('right').run()}
-                                className={editor.isActive({ textAlign: 'right' }) ? buttonActive : buttonInactive}
-                              >
-                                <FaAlignRight className="text-xl hover:text-primary" />
-                              </button>
-                              <button
-                                onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-                                className={editor.isActive({ textAlign: 'justify' }) ? buttonActive : buttonInactive}
-                              >
-                                <FaAlignJustify className="text-xl hover:text-primary" />
-                              </button>
-                              <Minus color="#000" strokeWidth={1.5} />
-                              <button
-                                onClick={() => editor.chain().focus().toggleHighlight().run()}
-                                className={editor.isActive('highlight') ? buttonActive : buttonInactive}
-                              >
-                                <FaHighlighter className="text-xl hover:text-primary" />
-                              </button>
-                              <input
-                                type="color"
-                                onInput={event => editor.chain().focus().setColor(event.target.value).run()}
-                                value={editor.getAttributes('textStyle').color}
-                                data-testid="setColor"
-                              />
-                              <button
-                                onClick={() => editor.chain().focus().unsetColor().run()}
-                                className={editor.isActive('highlight') ? buttonActive : buttonInactive}
-                              >
-                                <FaEraser className="text-xl hover:text-primary" />
-                              </button>
-                              <Minus color="#000" strokeWidth={1.5} />
-                              <button
-                                onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                                className={editor.isActive('heading', { level: 1 }) ? buttonActive : buttonInactive}
-                              >
-                                <Heading1 strokeWidth={1.5} className="text-xl hover:text-primary" />
-                              </button>
-                              <button
-                                onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                                className={editor.isActive('heading', { level: 2 }) ? buttonActive : buttonInactive}
-
-                              >
-                                <Heading2 strokeWidth={1.5} className="text-xl hover:text-primary" />
-                              </button>
-                              <button
-                                onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                                className={editor.isActive('heading', { level: 3 }) ? buttonActive : buttonInactive}
-
-                              >
-                                <Heading3 strokeWidth={1.5} className="text-xl hover:text-primary" />
-                              </button>
+                  )}
+                </div>
+              )}
+              {editTemplate === true && (
+                <>
+                  <Card className='bg-background border-border'>
+                    <CardHeader>
+                      <CardTitle>Template Editor</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="p-1">
+                        <Form method='post' action='/dealer/user/dashboard/templates'>
+                          <div className="mr-auto px-2   mt-auto grid grid-cols-1">
+                            <div className="grid gap-3 mx-3 mb-3">
+                              <div className="relative mt-3">
+                                <Input
+                                  name='category'
+                                  type="text"
+                                  className="w-full bg-background border-border "
+                                  defaultValue={selectedRecord.category}
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Category</label>
+                              </div>
+                              <div className="relative mt-3">
+                                <Input
+                                  name='subCat'
+                                  type="text"
+                                  className="w-full bg-background border-border "
+                                  defaultValue={selectedRecord.subCat}
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Sub-category</label>
+                              </div>
+                              <div className="relative mt-3">
+                                <Input
+                                  name='subject'
+                                  type="text"
+                                  className="w-full bg-background border-border "
+                                  defaultValue={selectedRecord.subject}
+                                />
+                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Subject</label>
+                              </div>
                             </div>
-                            <div>
-                              <BubbleMenu
-                                editor={editor}
-                                tippyOptions={{ duration: 100 }}
-                                className={cn(
-                                  "flex items-center gap-1 rounded-md p-1 bg-white",
-                                  "  text-black shadow dark:bg-background0",
-                                )}
-                              >
-                                <button
 
-                                  type="button"
-                                  onClick={() => editor.chain().focus().toggleBold().run()}
-                                  className={editor.isActive("bold") ? buttonActive : buttonInactive}
-                                >
-                                  <FaBold className="text-xl hover:text-primary" />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => editor.chain().focus().toggleItalic().run()}
-                                  className={editor.isActive("italic") ? buttonActive : buttonInactive}
-                                >
-                                  <FaItalic className="text-xl hover:text-primary" />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => editor.chain().focus().toggleStrike().run()}
-                                  className={editor.isActive("strike") ? buttonActive : buttonInactive}
-                                >
-                                  <FaStrikethrough className="text-xl hover:text-primary" />
-                                </button>
+                            <Accordion type="single" collapsible className="w-full">
+                              <AccordionItem value="item-1">
+                                <AccordionTrigger>Formatting Options</AccordionTrigger>
+                                <AccordionContent>
+                                  <div
+                                    className={cn(
+                                      "z-10 mb-1 w-[99%] mt-1 flex flex-wrap max-auto items-center gap-1 rounded-md p-1  mx-auto",
+                                      "bg-background text-foreground transition-all justify-center",
+                                      // "sm:sticky sm:top-[80px]",
+                                    )}
+                                  >
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleBold().run()}
+                                      className={editor.isActive("bold") ? buttonActive : buttonInactive}
+                                    >
+                                      <FaBold className="text-xl hover:text-primary" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleItalic().run()}
+                                      className={editor.isActive("italic") ? buttonActive : buttonInactive}
+                                    >
+                                      <FaItalic className="text-xl hover:text-primary" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleStrike().run()}
+                                      className={editor.isActive("strike") ? buttonActive : buttonInactive}
+                                    >
+                                      <FaStrikethrough className="text-xl hover:text-primary" />
+                                    </button>
 
-                                <Minus color="#09090b" strokeWidth={1.5} />
-                                <button
-                                  type="button"
-                                  onClick={handleSetLink}
-                                  className={editor.isActive("link") ? buttonActive : buttonInactive}
-                                >
-                                  <FaLink className="text-xl hover:text-primary" />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => editor.chain().focus().unsetLink().run()}
-                                  disabled={!editor.isActive("link")}
-                                  className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
-                                >
-                                  <FaUnlink className="text-xl hover:text-primary" />
-                                </button>
-                                <Minus color="#000" strokeWidth={1.5} />
-                                <button
-                                  onClick={() => editor.chain().focus().toggleBlockquote().run()}
-                                  className={editor.isActive('blockquote') ? buttonActive : buttonInactive}
-                                >
-                                  <FaQuoteLeft className="text-xl hover:text-primary" />
-                                </button>
-                                <button
-                                  onClick={() => editor.chain().focus().toggleCode().run()}
-                                  className={editor.isActive('code') ? buttonActive : buttonInactive}
-                                  disabled={!editor.can().chain().focus().toggleCode().run()}
-                                >
-                                  <FaFileCode className="text-xl hover:text-primary" />
-                                </button>
-                                <button
-                                  onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-                                  className={editor.isActive('codeBlock') ? buttonActive : buttonInactive}
-                                >
-                                  <BiCodeBlock className="text-xl hover:text-primary" />
-                                </button>
-                                <button
-                                  onClick={() => editor.chain().focus().toggleBulletList().run()}
-                                  className={editor.isActive('bulletList') ? buttonActive : buttonInactive}
-                                >
-                                  <FaList className="text-xl hover:text-primary" />
-                                </button>
-                                <button
-                                  onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                                  className={editor.isActive('orderedList') ? buttonActive : buttonInactive}
-                                >
-                                  <FaListOl className="text-xl hover:text-primary" />
-                                </button>
+                                    <Minus color="#09090b" strokeWidth={1.5} />
+                                    <button
+                                      onClick={handleSetLink}
+                                      className={editor.isActive("link") ? buttonActive : buttonInactive}
+                                    >
+                                      <FaLink className="text-xl hover:text-primary" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().unsetLink().run()}
+                                      disabled={!editor.isActive("link")}
+                                      className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
+                                    >
+                                      <FaUnlink className="text-xl hover:text-primary" />
+                                    </button>
+                                    <Minus color="#000" strokeWidth={1.5} />
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                                      className={editor.isActive('blockquote') ? buttonActive : buttonInactive}
+                                    >
+                                      <FaQuoteLeft className="text-xl hover:text-primary" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleCode().run()}
+                                      className={editor.isActive('code') ? buttonActive : buttonInactive}
+                                      disabled={!editor.can().chain().focus().toggleCode().run()}
+                                    >
+                                      <FaFileCode className="text-xl hover:text-primary" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                                      className={editor.isActive('codeBlock') ? buttonActive : buttonInactive}
+                                    >
+                                      <BiCodeBlock className="text-xl hover:text-primary" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleBulletList().run()}
+                                      className={editor.isActive('bulletList') ? buttonActive : buttonInactive}
+                                    >
+                                      <FaList className="text-xl hover:text-primary" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                                      className={editor.isActive('orderedList') ? buttonActive : buttonInactive}
+                                    >
+                                      <FaListOl className="text-xl hover:text-primary" />
+                                    </button>
 
-                                <Minus color="#000" strokeWidth={1.5} />
-                                <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
-                                  <MdHorizontalRule className="text-xl hover:text-primary" />
-                                </button>
-                                <button onClick={() => editor.chain().focus().setHardBreak().run()}>
-                                  <IoMdReturnLeft className="text-xl hover:text-primary" />
-                                </button>
-                                <Minus color="#000" strokeWidth={1.5} />
-                                <button
-                                  onClick={() => editor.chain().focus().undo().run()}
-                                  disabled={!editor.can().chain().focus().undo().run()}
-                                >
-                                  <FaUndo className="text-xl hover:text-primary" />
-                                </button>
-                                <button
-                                  onClick={() => editor.chain().focus().redo().run()}
-                                  disabled={!editor.can().chain().focus().redo().run()}
-                                >
-                                  <FaRedo className="text-xl hover:text-primary" />
-                                </button>
-                                <Minus color="#000" strokeWidth={1.5} />
-                                <button onClick={() => editor.chain().focus().setTextAlign('left').run()}
-                                  className={editor.isActive({ textAlign: 'left' }) ? buttonActive : buttonInactive}
-                                >
-                                  <FaAlignLeft className="text-xl hover:text-primary" />
-                                </button>
-                                <button
-                                  onClick={() => editor.chain().focus().setTextAlign('center').run()}
-                                  className={editor.isActive({ textAlign: 'center' }) ? buttonActive : buttonInactive}
-                                >
-                                  <FaAlignCenter className="text-xl hover:text-primary" />
-                                </button>
-                                <button
-                                  onClick={() => editor.chain().focus().setTextAlign('right').run()}
-                                  className={editor.isActive({ textAlign: 'right' }) ? buttonActive : buttonInactive}
-                                >
-                                  <FaAlignRight className="text-xl hover:text-primary" />
-                                </button>
-                                <button
-                                  onClick={() => editor.chain().focus().setTextAlign('justify').run()}
-                                  className={editor.isActive({ textAlign: 'justify' }) ? buttonActive : buttonInactive}
-                                >
-                                  <FaAlignJustify className="text-xl hover:text-primary" />
-                                </button>
-                                <Minus color="#000" strokeWidth={1.5} />
-                                <button onClick={() => editor.chain().focus().toggleHighlight().run()} className={editor.isActive('highlight') ? 'is-active' : ''}>
-                                  <FaHighlighter className="text-xl hover:text-primary" />
-                                </button>
-                                <Minus color="#000" strokeWidth={1.5} />
-                                <button
-                                  onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                                  className={editor.isActive('heading', { level: 1 }) ? buttonActive : buttonInactive}
-                                >
-                                  <Heading1 strokeWidth={1.5} className="text-xl hover:text-primary" />
-                                </button>
-                                <button
-                                  onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                                  className={editor.isActive('heading', { level: 2 }) ? buttonActive : buttonInactive}
+                                    <Minus color="#000" strokeWidth={1.5} />
+                                    <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+                                      <MdHorizontalRule className="text-xl hover:text-primary" />
+                                    </button>
+                                    <button onClick={() => editor.chain().focus().setHardBreak().run()}>
+                                      <IoMdReturnLeft className="text-xl hover:text-primary" />
+                                    </button>
+                                    <Minus color="#000" strokeWidth={1.5} />
+                                    <button
+                                      onClick={() => editor.chain().focus().undo().run()}
+                                      disabled={!editor.can().chain().focus().undo().run()}
+                                    >
+                                      <FaUndo className="text-xl hover:text-primary" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().redo().run()}
+                                      disabled={!editor.can().chain().focus().redo().run()}
+                                    >
+                                      <FaRedo className="text-xl hover:text-primary" />
+                                    </button>
+                                    <Minus color="#000" strokeWidth={1.5} />
+                                    <button onClick={() => editor.chain().focus().setTextAlign('left').run()}
+                                      className={editor.isActive({ textAlign: 'left' }) ? buttonActive : buttonInactive}
+                                    >
+                                      <FaAlignLeft className="text-xl hover:text-primary" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().setTextAlign('center').run()}
+                                      className={editor.isActive({ textAlign: 'center' }) ? buttonActive : buttonInactive}
+                                    >
+                                      <FaAlignCenter className="text-xl hover:text-primary" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().setTextAlign('right').run()}
+                                      className={editor.isActive({ textAlign: 'right' }) ? buttonActive : buttonInactive}
+                                    >
+                                      <FaAlignRight className="text-xl hover:text-primary" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+                                      className={editor.isActive({ textAlign: 'justify' }) ? buttonActive : buttonInactive}
+                                    >
+                                      <FaAlignJustify className="text-xl hover:text-primary" />
+                                    </button>
+                                    <Minus color="#000" strokeWidth={1.5} />
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleHighlight().run()}
+                                      className={editor.isActive('highlight') ? buttonActive : buttonInactive}
+                                    >
+                                      <FaHighlighter className="text-xl hover:text-primary" />
+                                    </button>
+                                    <input
+                                      type="color"
+                                      onInput={event => editor.chain().focus().setColor(event.target.value).run()}
+                                      value={editor.getAttributes('textStyle').color}
+                                      data-testid="setColor"
+                                    />
+                                    <button
+                                      onClick={() => editor.chain().focus().unsetColor().run()}
+                                      className={editor.isActive('highlight') ? buttonActive : buttonInactive}
+                                    >
+                                      <FaEraser className="text-xl hover:text-primary" />
+                                    </button>
+                                    <Minus color="#000" strokeWidth={1.5} />
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                                      className={editor.isActive('heading', { level: 1 }) ? buttonActive : buttonInactive}
+                                    >
+                                      <Heading1 strokeWidth={1.5} className="text-xl hover:text-primary" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                                      className={editor.isActive('heading', { level: 2 }) ? buttonActive : buttonInactive}
 
-                                >
-                                  <Heading2 strokeWidth={1.5} className="text-xl hover:text-primary" />
-                                </button>
-                                <button
-                                  onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                                  className={editor.isActive('heading', { level: 3 }) ? buttonActive : buttonInactive}
+                                    >
+                                      <Heading2 strokeWidth={1.5} className="text-xl hover:text-primary" />
+                                    </button>
+                                    <button
+                                      onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                                      className={editor.isActive('heading', { level: 3 }) ? buttonActive : buttonInactive}
 
-                                >
-                                  <Heading3 strokeWidth={1.5} className="text-xl hover:text-primary" />
-                                </button>
+                                    >
+                                      <Heading3 strokeWidth={1.5} className="text-xl hover:text-primary" />
+                                    </button>
+                                  </div>
+                                  <div>
+                                    <BubbleMenu
+                                      editor={editor}
+                                      tippyOptions={{ duration: 100 }}
+                                      className={cn(
+                                        "flex items-center gap-1 rounded-md p-1 bg-white",
+                                        "  text-black shadow dark:bg-background0",
+                                      )}
+                                    >
+                                      <button
 
-                              </BubbleMenu>
+                                        type="button"
+                                        onClick={() => editor.chain().focus().toggleBold().run()}
+                                        className={editor.isActive("bold") ? buttonActive : buttonInactive}
+                                      >
+                                        <FaBold className="text-xl hover:text-primary" />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => editor.chain().focus().toggleItalic().run()}
+                                        className={editor.isActive("italic") ? buttonActive : buttonInactive}
+                                      >
+                                        <FaItalic className="text-xl hover:text-primary" />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => editor.chain().focus().toggleStrike().run()}
+                                        className={editor.isActive("strike") ? buttonActive : buttonInactive}
+                                      >
+                                        <FaStrikethrough className="text-xl hover:text-primary" />
+                                      </button>
+
+                                      <Minus color="#09090b" strokeWidth={1.5} />
+                                      <button
+                                        type="button"
+                                        onClick={handleSetLink}
+                                        className={editor.isActive("link") ? buttonActive : buttonInactive}
+                                      >
+                                        <FaLink className="text-xl hover:text-primary" />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => editor.chain().focus().unsetLink().run()}
+                                        disabled={!editor.isActive("link")}
+                                        className={!editor.isActive("link") ? cn(buttonInactive, "opacity-25") : buttonInactive}
+                                      >
+                                        <FaUnlink className="text-xl hover:text-primary" />
+                                      </button>
+                                      <Minus color="#000" strokeWidth={1.5} />
+                                      <button
+                                        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                                        className={editor.isActive('blockquote') ? buttonActive : buttonInactive}
+                                      >
+                                        <FaQuoteLeft className="text-xl hover:text-primary" />
+                                      </button>
+                                      <button
+                                        onClick={() => editor.chain().focus().toggleCode().run()}
+                                        className={editor.isActive('code') ? buttonActive : buttonInactive}
+                                        disabled={!editor.can().chain().focus().toggleCode().run()}
+                                      >
+                                        <FaFileCode className="text-xl hover:text-primary" />
+                                      </button>
+                                      <button
+                                        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                                        className={editor.isActive('codeBlock') ? buttonActive : buttonInactive}
+                                      >
+                                        <BiCodeBlock className="text-xl hover:text-primary" />
+                                      </button>
+                                      <button
+                                        onClick={() => editor.chain().focus().toggleBulletList().run()}
+                                        className={editor.isActive('bulletList') ? buttonActive : buttonInactive}
+                                      >
+                                        <FaList className="text-xl hover:text-primary" />
+                                      </button>
+                                      <button
+                                        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                                        className={editor.isActive('orderedList') ? buttonActive : buttonInactive}
+                                      >
+                                        <FaListOl className="text-xl hover:text-primary" />
+                                      </button>
+
+                                      <Minus color="#000" strokeWidth={1.5} />
+                                      <button onClick={() => editor.chain().focus().setHorizontalRule().run()}>
+                                        <MdHorizontalRule className="text-xl hover:text-primary" />
+                                      </button>
+                                      <button onClick={() => editor.chain().focus().setHardBreak().run()}>
+                                        <IoMdReturnLeft className="text-xl hover:text-primary" />
+                                      </button>
+                                      <Minus color="#000" strokeWidth={1.5} />
+                                      <button
+                                        onClick={() => editor.chain().focus().undo().run()}
+                                        disabled={!editor.can().chain().focus().undo().run()}
+                                      >
+                                        <FaUndo className="text-xl hover:text-primary" />
+                                      </button>
+                                      <button
+                                        onClick={() => editor.chain().focus().redo().run()}
+                                        disabled={!editor.can().chain().focus().redo().run()}
+                                      >
+                                        <FaRedo className="text-xl hover:text-primary" />
+                                      </button>
+                                      <Minus color="#000" strokeWidth={1.5} />
+                                      <button onClick={() => editor.chain().focus().setTextAlign('left').run()}
+                                        className={editor.isActive({ textAlign: 'left' }) ? buttonActive : buttonInactive}
+                                      >
+                                        <FaAlignLeft className="text-xl hover:text-primary" />
+                                      </button>
+                                      <button
+                                        onClick={() => editor.chain().focus().setTextAlign('center').run()}
+                                        className={editor.isActive({ textAlign: 'center' }) ? buttonActive : buttonInactive}
+                                      >
+                                        <FaAlignCenter className="text-xl hover:text-primary" />
+                                      </button>
+                                      <button
+                                        onClick={() => editor.chain().focus().setTextAlign('right').run()}
+                                        className={editor.isActive({ textAlign: 'right' }) ? buttonActive : buttonInactive}
+                                      >
+                                        <FaAlignRight className="text-xl hover:text-primary" />
+                                      </button>
+                                      <button
+                                        onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+                                        className={editor.isActive({ textAlign: 'justify' }) ? buttonActive : buttonInactive}
+                                      >
+                                        <FaAlignJustify className="text-xl hover:text-primary" />
+                                      </button>
+                                      <Minus color="#000" strokeWidth={1.5} />
+                                      <button onClick={() => editor.chain().focus().toggleHighlight().run()} className={editor.isActive('highlight') ? 'is-active' : ''}>
+                                        <FaHighlighter className="text-xl hover:text-primary" />
+                                      </button>
+                                      <Minus color="#000" strokeWidth={1.5} />
+                                      <button
+                                        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                                        className={editor.isActive('heading', { level: 1 }) ? buttonActive : buttonInactive}
+                                      >
+                                        <Heading1 strokeWidth={1.5} className="text-xl hover:text-primary" />
+                                      </button>
+                                      <button
+                                        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                                        className={editor.isActive('heading', { level: 2 }) ? buttonActive : buttonInactive}
+
+                                      >
+                                        <Heading2 strokeWidth={1.5} className="text-xl hover:text-primary" />
+                                      </button>
+                                      <button
+                                        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                                        className={editor.isActive('heading', { level: 3 }) ? buttonActive : buttonInactive}
+
+                                      >
+                                        <Heading3 strokeWidth={1.5} className="text-xl hover:text-primary" />
+                                      </button>
+
+                                    </BubbleMenu>
+                                  </div>
+                                </AccordionContent>
+                              </AccordionItem>
+                              <AccordionItem value="item-2">
+                                <AccordionTrigger>Inserting Options</AccordionTrigger>
+                                <AccordionContent>
+                                  <div className='flex mx-auto overflow-x-auto' >
+                                    <HoverCard>
+                                      <HoverCardTrigger asChild>
+                                        <Button
+                                          className='mx-2'
+                                          variant="link" >
+                                          Client
+                                        </Button>
+                                      </HoverCardTrigger>
+                                      <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
+                                        <div className=''>
+                                          <ClientAttributes items={clientAtr} />
+                                        </div>
+                                      </HoverCardContent>
+                                    </HoverCard>
+                                    <HoverCard>
+                                      <HoverCardTrigger asChild>
+                                        <Button
+                                          className='mx-2'
+                                          variant="link" >
+                                          Wanted Veh.
+                                        </Button>
+                                      </HoverCardTrigger>
+                                      <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
+                                        <div className=''>
+                                          <ClientAttributes items={wantedVehAttr} />
+                                        </div>
+                                      </HoverCardContent>
+                                    </HoverCard>
+                                    <HoverCard>
+                                      <HoverCardTrigger asChild>
+                                        <Button
+                                          className='mx-2'
+                                          variant="link" >
+                                          Trade Veh
+                                        </Button>
+                                      </HoverCardTrigger>
+                                      <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
+                                        <div className=''>
+                                          <ClientAttributes items={tradeVehAttr} />
+                                        </div>
+                                      </HoverCardContent>
+                                    </HoverCard>
+                                    <HoverCard>
+                                      <HoverCardTrigger asChild>
+                                        <Button
+                                          className='mx-2'
+                                          variant="link" >
+                                          Sales Person
+                                        </Button>
+                                      </HoverCardTrigger>
+                                      <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
+                                        <div className=''>
+                                          <ClientAttributes items={salesPersonAttr} />
+                                        </div>
+                                      </HoverCardContent>
+                                    </HoverCard>
+                                    <HoverCard>
+                                      <HoverCardTrigger asChild>
+                                        <Button
+                                          className='mx-2'
+                                          variant="link" >
+                                          F & I
+                                        </Button>
+                                      </HoverCardTrigger>
+                                      <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
+                                        <div className=''>
+                                          <ClientAttributes items={FandIAttr} />
+                                        </div>
+                                      </HoverCardContent>
+                                    </HoverCard>
+                                    <HoverCard>
+                                      <HoverCardTrigger asChild>
+                                        <Button
+                                          className='mx-2'
+                                          variant="link" >
+                                          Dealer Info
+                                        </Button>
+                                      </HoverCardTrigger>
+                                      <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
+                                        <div className=''>
+                                          <ClientAttributes items={dealerInfo} />
+                                        </div>
+                                      </HoverCardContent>
+                                    </HoverCard>
+                                    <HoverCard>
+                                      <HoverCardTrigger asChild>
+                                        <Button
+                                          className='mx-2'
+                                          variant="link" >
+                                          Finance Info
+                                        </Button>
+                                      </HoverCardTrigger>
+                                      <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
+                                        <ClientAttributes items={financeInfo} />
+                                      </HoverCardContent>
+                                    </HoverCard>
+                                  </div>
+                                </AccordionContent>
+                              </AccordionItem>
+
+                            </Accordion>
+
+                            <br />
+                            <EditorContent editor={editor} className="mt-1 p-3 mb-2  cursor-text text-foreground bg-background mx-auto w-[95%] rounded-md" />
+                            <br />
+                            <input type='hidden' defaultValue={user?.email} name='userEmail' />
+                            <input type='hidden' defaultValue={text} name='body' />
+                            <input type='hidden' defaultValue={selectedRecord.id} name='id' />
+                            <div className='flex justify-between w-[98%]'>
+                              <div>
+                              </div>
+                              <Button
+                                onClick={() => {
+                                  //  SaveDraft();
+                                  toast.success(`Template saved!`)
+                                }}
+                                type='submit'
+                                value='updateTemplate'
+                                name='intent'
+                                size='sm'
+                                className={`border-border text-foreground bg-primary rounded-lg ml-2 cursor-pointer rounded border  p-3 text-center text-xs font-bold uppercase   shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}>
+                                Save Template
+                              </Button>
+
                             </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="item-2">
-                          <AccordionTrigger>Inserting Options</AccordionTrigger>
-                          <AccordionContent>
-                            <div className='flex mx-auto overflow-x-auto' >
-                              <HoverCard>
-                                <HoverCardTrigger asChild>
-                                  <Button
-                                    className='mx-2'
-                                    variant="link" >
-                                    Client
-                                  </Button>
-                                </HoverCardTrigger>
-                                <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
-                                  <div className=''>
-                                    <ClientAttributes items={clientAtr} />
-                                  </div>
-                                </HoverCardContent>
-                              </HoverCard>
-                              <HoverCard>
-                                <HoverCardTrigger asChild>
-                                  <Button
-                                    className='mx-2'
-                                    variant="link" >
-                                    Wanted Veh.
-                                  </Button>
-                                </HoverCardTrigger>
-                                <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
-                                  <div className=''>
-                                    <ClientAttributes items={wantedVehAttr} />
-                                  </div>
-                                </HoverCardContent>
-                              </HoverCard>
-                              <HoverCard>
-                                <HoverCardTrigger asChild>
-                                  <Button
-                                    className='mx-2'
-                                    variant="link" >
-                                    Trade Veh
-                                  </Button>
-                                </HoverCardTrigger>
-                                <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
-                                  <div className=''>
-                                    <ClientAttributes items={tradeVehAttr} />
-                                  </div>
-                                </HoverCardContent>
-                              </HoverCard>
-                              <HoverCard>
-                                <HoverCardTrigger asChild>
-                                  <Button
-                                    className='mx-2'
-                                    variant="link" >
-                                    Sales Person
-                                  </Button>
-                                </HoverCardTrigger>
-                                <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
-                                  <div className=''>
-                                    <ClientAttributes items={salesPersonAttr} />
-                                  </div>
-                                </HoverCardContent>
-                              </HoverCard>
-                              <HoverCard>
-                                <HoverCardTrigger asChild>
-                                  <Button
-                                    className='mx-2'
-                                    variant="link" >
-                                    F & I
-                                  </Button>
-                                </HoverCardTrigger>
-                                <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
-                                  <div className=''>
-                                    <ClientAttributes items={FandIAttr} />
-                                  </div>
-                                </HoverCardContent>
-                              </HoverCard>
-                              <HoverCard>
-                                <HoverCardTrigger asChild>
-                                  <Button
-                                    className='mx-2'
-                                    variant="link" >
-                                    Dealer Info
-                                  </Button>
-                                </HoverCardTrigger>
-                                <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
-                                  <div className=''>
-                                    <ClientAttributes items={dealerInfo} />
-                                  </div>
-                                </HoverCardContent>
-                              </HoverCard>
-                              <HoverCard>
-                                <HoverCardTrigger asChild>
-                                  <Button
-                                    className='mx-2'
-                                    variant="link" >
-                                    Finance Info
-                                  </Button>
-                                </HoverCardTrigger>
-                                <HoverCardContent className="w-80 max-h-[350px] h-auto  overflow-y-scroll bg-background border border-border">
-                                  <ClientAttributes items={financeInfo} />
-                                </HoverCardContent>
-                              </HoverCard>
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
+                            <br />
+                          </div >
+                        </Form>
+                      </div >
+                    </CardContent>
+                    <CardFooter>
 
-                      </Accordion>
-
-                      <br />
-                      <EditorContent editor={editor} className="mt-1 p-3 mb-2  cursor-text text-foreground bg-background mx-auto w-[95%] rounded-md" />
-                      <br />
-                      <input type='hidden' defaultValue={user?.email} name='userEmail' />
-                      <input type='hidden' defaultValue={text} name='body' />
-                      <input type='hidden' defaultValue={selectedRecord.id} name='id' />
-                      <div className='flex justify-between w-[98%]'>
-                        <div>
-                        </div>
-                        <Button
-                          onClick={() => {
-                            //  SaveDraft();
-                            toast.success(`Template saved!`)
-                          }}
-                          type='submit'
-                          value='updateTemplate'
-                          name='intent'
-                          size='sm'
-                          className={`border-border text-foreground bg-primary rounded-lg ml-2 cursor-pointer rounded border  p-3 text-center text-xs font-bold uppercase   shadow outline-none transition-all duration-150 ease-linear hover:bg-transparent bg-transparent hover:text-primary hover:shadow-md focus:outline-none `}>
-                          Save Template
-                        </Button>
-
-                      </div>
-                      <br />
-                    </div >
-                  </Form>
-                </div >
-
-
-              </>
-            )}
-          </CardContent>
-        </Card>
-      </div >
+                    </CardFooter>
+                  </Card>
+                  <p className='text-muted-foreground mt-4'>Your ability to close increases with the amount of tools at your disposal. A mechanic without a tire iron wouldnt be able to change a tire. So why dont more sales people take better care of their scripts, closes, and such?</p>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   )
 }

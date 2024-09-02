@@ -570,6 +570,38 @@ model AnswerData {
 // -----------------------------------------------------------------------------
 //--------------------accessories
 //--------------------parts
+model DSALeads {
+  id                   String   @id @default(cuid())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  dealerName           String?
+  dealerAddress        String?
+  dealerCity           String?
+  dealerProv           String?
+  dealerPostal         String?
+  dealerPhone          String?
+  ownerName            String?
+  ownerEmail           String?
+  ownerPhone           String?
+  adminName            String?
+  adminEmail           String?
+  adminPhone           String?
+  dealerEtransferEmail String?
+
+  generatedFrom String?
+
+  message String?
+
+  infoBeforePurchase Boolean?
+  justlooking        Boolean?
+  demoBeforePurchase Boolean?
+  seekingAppointment Boolean?
+
+  timeToPurchase String?
+
+  triedDemo Boolean?
+  purchased Boolean?
+}
 
 // ----------------------------------------------------------------------------
 // -------------------------------dealer-----------------------------------------
@@ -717,28 +749,6 @@ model DemoTime {
 // ----------------------------------------------------------------------------
 // -------------------------------sales-----------------------------------------
 // -----------------------------------------------------------------------------
-model DailyPDF {
-  id                     String   @id @default(cuid())
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
-  userEmail              String?  @unique
-  todaysGoalGuest        String?
-  todaysActualGuest      String?
-  differenceGuest        String?
-  monthsGoalGuest        String?
-  todaysGoalTestDrives   String?
-  todaysActualTestDrives String?
-  differenceTestDrives   String?
-  monthsGoalTestDrives   String?
-  todaysGoalWriteUps     String?
-  todaysActualWriteUps   String?
-  differenceWriteUps     String?
-  monthsGoalWriteUps     String?
-  todaysGoalDeliveries   String?
-  todaysActualDeliveries String?
-  differenceDeliveries   String?
-  monthsGoalDeliveries   String?
-}
 
 model SalespersonSched {
   id               String    @id @default(cuid())
@@ -1511,11 +1521,11 @@ model Finance {
   loanMaturity             String?
   quoted                   String?
   // calls
-  InPerson                 Int?     @default(0)
-  Phone                    Int?     @default(0)
-  SMS                      Int?     @default(0)
-  Email                    Int?     @default(0)
-  Other                    Int?     @default(0)
+  InPerson                 Int?                 @default(0)
+  Phone                    Int?                 @default(0)
+  SMS                      Int?                 @default(0)
+  Email                    Int?                 @default(0)
+  Other                    Int?                 @default(0)
   //------already moved
   // wanted unit
   paintPrem                String?
@@ -1551,12 +1561,14 @@ model Finance {
   tradeLocation            String?
   lien                     String?
   // other
-  id                       String   @id @default(cuid())
-  activixId                String?  @unique
+  id                       String               @id @default(cuid())
+  activixId                String?              @unique
   theRealActId             String?
-  createdAt                DateTime @default(now())
-  updatedAt                DateTime @updatedAt
+  createdAt                DateTime             @default(now())
+  updatedAt                DateTime             @updatedAt
   clientfileId             String?
+  inventoryMotorcycleId    String?
+  InventoryMotorcycle      InventoryMotorcycle?
 
   financeStorage      FinanceStorage[]      @relation("finance")
   clientApts          ClientApts[]          @relation("finance")
@@ -1722,7 +1734,14 @@ model InventoryMotorcycle {
   insuranceStartDate String? //
   insuranceEndDate   String? //
   sold               Boolean? @default(false) //
-  financeId          String?
+
+  // need to ad
+  freight Float?
+
+  financeId String?  @unique
+  Finance   Finance? @relation(fields: [financeId], references: [id], onDelete: Cascade)
+
+  @@index([financeId])
 }
 
 // for styling the workorder have a timeline on the left hand side for the unit and all its workorders with a title and show description that you can click on so its easy to find work orders and you dont have to go through each one on the right it would be make a new workorde rand everything you need to do that it will be the same styling for the unit page for the work order / unit info side have a tab that have the cuistomer info on the second tab wherre you can assign a customer
@@ -1778,21 +1797,6 @@ model WorkOrder {
   @@index([ServiceUnitId])
 }
 
-model WorkOrderClockEntry {
-  id          Int       @id @default(autoincrement())
-  start       DateTime
-  end         DateTime?
-  userEmail   String
-  username    String
-  workOrderId Int
-
-  WorkOrder WorkOrder @relation(fields: [workOrderId], references: [workOrderId], onDelete: Cascade)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  @@index([workOrderId])
-}
-
 model WorkOrderApts {
   id          String     @id @default(cuid())
   tech        String?
@@ -1801,7 +1805,7 @@ model WorkOrderApts {
   start       String?
   end         String?
   title       String?
-  workOrderId Int?       @unique
+  workOrderId Int?
   completed   Boolean?
   resourceId  String?
   unit        String?
@@ -1815,6 +1819,21 @@ model WorkOrderApts {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([workOrderId])
+}
+
+model WorkOrderClockEntry {
+  id          Int       @id @default(autoincrement())
+  start       DateTime
+  end         DateTime?
+  userEmail   String
+  username    String
+  workOrderId Int
+
+  WorkOrder WorkOrder @relation(fields: [workOrderId], references: [workOrderId], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@index([workOrderId])
 }

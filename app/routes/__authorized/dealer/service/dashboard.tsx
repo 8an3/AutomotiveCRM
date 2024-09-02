@@ -284,7 +284,8 @@ export default function Dashboard() {
   const inputLength = input.trim().length
   let payment = useFetcher();
   let fetcher = useFetcher();
-  let workOrder = useFetcher();
+  let searchWorkOrder = useFetcher();
+  let submitWorkOrder = useFetcher();
   let status = useFetcher();
 
   const showPrevOrderById = (id) => {
@@ -562,6 +563,13 @@ export default function Dashboard() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={() => {
+                        const result = orders.filter((result) => result.status === 'Scheduled For Delivery')
+                        setList(result)
+                      }}>
+                      Scheduled For Delivery
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => {
                         const result = orders.filter((result) => result.status === 'Closed')
                         setList(result)
                       }}>
@@ -576,7 +584,7 @@ export default function Dashboard() {
                 <CardHeader className="px-7">
                   <CardTitle>Orders</CardTitle>
                   <CardDescription>
-                    <workOrder.Form
+                    <searchWorkOrder.Form
                       method="get"
                       action="/dealer/service/workOrder/searchAll"
                     >
@@ -588,14 +596,14 @@ export default function Dashboard() {
                           name="q"
                           onChange={(e) => {
                             //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
-                            workOrder.submit(e.currentTarget.form);
+                            submitWorkOrder.submit(e.currentTarget.form);
                           }}
                           autoFocus
                           placeholder="Search..."
                           className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
                         />
                       </div>
-                    </workOrder.Form>
+                    </searchWorkOrder.Form>
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -629,8 +637,8 @@ export default function Dashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {workOrder.data ?
-                        workOrder.data.map((result, index) => (
+                      {searchWorkOrder.data ?
+                        searchWorkOrder.data.map((result, index) => (
                           <TableRow key={index} className="hover:bg-accent border-border">
                             <TableCell>
                               <div className="font-medium">
@@ -930,7 +938,7 @@ export default function Dashboard() {
                 <CardHeader className="px-7">
                   <CardTitle>Orders</CardTitle>
                   <CardDescription>
-                    <workOrder.Form
+                    <submitWorkOrder.Form
                       method="get"
                       action="/dealer/service/workOrder/searchSales"
                     >
@@ -942,14 +950,14 @@ export default function Dashboard() {
                           name="q"
                           onChange={(e) => {
                             //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
-                            workOrder.submit(e.currentTarget.form);
+                            submitWorkOrder.submit(e.currentTarget.form);
                           }}
                           autoFocus
                           placeholder="Search..."
                           className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
                         />
                       </div>
-                    </workOrder.Form>
+                    </submitWorkOrder.Form>
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -983,8 +991,8 @@ export default function Dashboard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {workOrder.data ?
-                        workOrder.data.map((result, index) => (
+                      {submitWorkOrder.data ?
+                        submitWorkOrder.data.map((result, index) => (
                           <TableRow key={index} className="hover:bg-accent border-border">
                             <TableCell>
                               <div className="font-medium">
@@ -1177,6 +1185,8 @@ export default function Dashboard() {
                               <SelectItem value="Waiter">Waiter</SelectItem>
                               <SelectItem value="In Works">In Works</SelectItem>
                               <SelectItem value="Work Completed">Work Completed</SelectItem>
+                              <SelectItem value="Scheduled For Delivery">Scheduled For Delivery</SelectItem>
+
                             </SelectGroup>
                           </SelectContent>
                         </Select>

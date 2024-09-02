@@ -10,32 +10,23 @@ import { useLoaderData, Link, useNavigate, useSubmit, useFetcher, useSearchParam
 import { getAllFinanceAptsForCalendar, } from '~/utils/financeAppts/get.server';
 import { prisma } from "~/libs";
 import { Text, } from '@radix-ui/themes';
-import { UserPlus, Gauge, CalendarPlus, ChevronsLeft, ChevronsRightLeft, ChevronsRight } from 'lucide-react';
+import { UserPlus, Gauge, CalendarPlus, ChevronsLeft, Banknote, Phone, CalendarCheck, ChevronsRight, Truck } from 'lucide-react';
 import EventInfo from "~/components/dashboard/calendar/EventInfo"
 import EventInfoModal from "~/components/dashboard/calendar/EventInfoModal"
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import clsx from 'clsx'
 import AddCustomerModal from '~/components/dashboard/calendar/addCustomerModal'
 import { AddAppt } from '~/components/dashboard/calendar/addAppt';
-import { SearchCustomerModal } from '~/components/dashboard/calendar/searchCustomerModal'
 import { GetUser } from "~/utils/loader.server";
 import { getSession, commitSession } from '~/sessions/auth-session.server';
-import storeHoursCss from "~/styles/storeHours.css";
 import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import rbc from "~/styles/rbc.css";
 import { Button, buttonVariants, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Popover, PopoverTrigger, PopoverContent, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, Input, } from "~/components";
 import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';
-import { cn } from "~/components/ui/utils"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "~/components/ui/accordion"
 import base from "~/styles/base.css";
-import useSWR, { SWRConfig } from 'swr'
+import useSWR from 'swr'
 
 const useScreenSize = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -323,6 +314,18 @@ export default function DnDResource() {
     setShowResources(prevState => !prevState);
   };
 
+  const [selectedResource, setSelectedResource] = useState(0);
+
+  const handleResourceChange = (value) => {
+    setSelectedResource(Number(value));
+
+  };
+
+  const filteredEvents = selectedResource === 0
+    ? myEvents
+    : myEvents.filter(event => event.resourceId === selectedResource);
+
+
   const CustomToolbar = ({
     label,
     localizer: { messages },
@@ -341,16 +344,8 @@ export default function DnDResource() {
             onView={onView}
           />
         </span>
-
         <span className="rbc-toolbar-label">{label}</span>
         <span className="ml-auto justify-end mr-5">
-          <Button
-            onClick={toggleView}
-            className='mr-3'
-          >
-            Toggle Resource View
-          </Button>
-
 
         </span>
         <span className="ml-auto justify-end">
@@ -473,13 +468,34 @@ export default function DnDResource() {
       style: newStyle
     };
   };
+  // addd icons
 
+  const getResourceId = (resource) => resource.resourceId;
+
+  const resourceTitle = (resource) => {
+    return (
+      <div className='h-[50px] justify-center items-center flex mt-[25px] '>
+
+        {resource.resourceTitle === 'Sales Calls' ? (
+          <Phone />
+        ) : resource.resourceTitle === 'Sales Appointments' ? (
+          <CalendarCheck />
+        ) : resource.resourceTitle === 'Deliveries' ? (
+          <Truck />
+        ) : resource.resourceTitle === 'F & I' ? (
+          <Banknote />
+        ) : null}
+        <p className='text-foreground text-center text-3xl my-auto ml-3'>{resource.resourceTitle}</p>
+      </div>
+    )
+
+  }
   const LargeScreenUI = () => {
     return (
       <div className="large-screen-ui">
         <>
           <div className="h-[75px]  w-auto  border-b border-border bg-background text-foreground">
-            <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Calendar</h2>
+            <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Sales Calendar</h2>
             <p className="text-muted-foreground   ml-[105px]  ">
             </p>
           </div>
@@ -506,91 +522,33 @@ export default function DnDResource() {
 
                   <div className='mt-5 grow justify-center'>
                     <div className=' grid grid-cols-1 ' >
-                      <Accordion type="single" collapsible className="w-[240px] text-foreground mx-auto">
-                        <AccordionItem value="item-1">
-                          <AccordionTrigger>Calendars</AccordionTrigger>
-                          <AccordionContent>
-                            <Button variant='ghost'
-                              onClick={() => (
-                                setCalendarLabel('Sales')
-                              )}
-                              className={cn(
-                                buttonVariants({ variant: "ghost" }),
-                                calendarLabel === 'Sales'
-                                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                                  : "hover:bg-muted/50  w-[90%]  ",
-                                "justify-start w-[90%] "
-                              )} >
-                              Sales
-                            </Button>
-                            <Button variant='ghost'
-                              onClick={() => (
-                                setCalendarLabel('Finance')
-                              )}
-                              className={cn(
-                                buttonVariants({ variant: "ghost" }),
-                                calendarLabel === 'Finance'
-                                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                                  : "hover:bg-muted/50  w-[90%]  ",
-                                "justify-start w-[90%] "
-                              )} >
-                              Finance
-                            </Button>
-                            <Button variant='ghost'
-                              onClick={() => (
-                                setCalendarLabel('Drivers Schedule')
-                              )}
-                              className={cn(
-                                buttonVariants({ variant: "ghost" }),
-                                calendarLabel === 'Drivers Schedule'
-                                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                                  : "hover:bg-muted/50  w-[90%]  ",
-                                "justify-start w-[90%] "
-                              )} >
-                              Drivers Schedule
-                            </Button>
-                            <Button variant='ghost'
-                              onClick={() => (
-                                setCalendarLabel('Service')
-                              )}
-                              className={cn(
-                                buttonVariants({ variant: "ghost" }),
-                                calendarLabel === 'Service'
-                                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                                  : "hover:bg-muted/50  w-[90%]  ",
-                                "justify-start w-[90%] "
-                              )} >
-                              Service
-                            </Button>
-                            <Button variant='ghost'
-                              onClick={() => (
-                                setCalendarLabel('Accessories')
-                              )}
-                              className={cn(
-                                buttonVariants({ variant: "ghost" }),
-                                calendarLabel === 'Accessories'
-                                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                                  : "hover:bg-muted/50  w-[90%]  ",
-                                "justify-start w-[90%] "
-                              )} >
-                              Accessories
-                            </Button>
-                            <Button variant='ghost'
-                              onClick={() => (
-                                setCalendarLabel('Parts')
-                              )}
-                              className={cn(
-                                buttonVariants({ variant: "ghost" }),
-                                calendarLabel === 'Parts'
-                                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]   "
-                                  : "hover:bg-muted/50  w-[90%]  ",
-                                "justify-start w-[90%] "
-                              )} >
-                              Parts
-                            </Button>
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
+                      <div>
+                        <Select
+                          value={String(selectedResource)}
+                          onValueChange={(value) => {
+                            handleResourceChange(value)
+                            if (value === '0') {
+                              setShowResources(true)
+                            } else {
+                              setShowResources(false)
+                            }
+                          }}
+                        >
+                          <SelectTrigger className="w-[240px]  mx-auto">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className='bg-background border-border'>
+                            <SelectGroup>
+                              <SelectLabel>Calendar Views</SelectLabel>
+                              <SelectItem className='cursor-pointer' value="0">All Calendar Views</SelectItem>
+                              <SelectItem className="cursor-pointer" value="1">Sales Calls</SelectItem>
+                              <SelectItem className="cursor-pointer" value="2">Sales Appointments</SelectItem>
+                              <SelectItem className="cursor-pointer" value="3">Deliveries</SelectItem>
+                              <SelectItem className="cursor-pointer" value="4">F & I</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
                       <Button
                         variant='outline'
                         className=' px-4 mx-auto mt-3 text-foreground cursor-pointer hover:text-primary justify-center items-center border-border hover:border-primary  bg-transparent hover:bg-transparent w-[240px] '
@@ -634,6 +592,11 @@ export default function DnDResource() {
               <div className="flex w-[97%] justify-center overflow-clip">
                 {showResources ? (
                   <DragAndDropCalendar
+
+                    resources={resourceMap}
+                    resourceIdAccessor={getResourceId}
+                    resourceTitleAccessor={resourceTitle}
+
                     style={{
                       width: `calc(100vw - 310px)`,
                       height: "100vh",
@@ -645,7 +608,7 @@ export default function DnDResource() {
                     }}
                     selected={selected}
                     defaultView={Views.DAY}
-                    events={myEvents}
+                    events={filteredEvents}
                     localizer={localizer}
                     min={minTime}
                     max={maxTime}
@@ -663,9 +626,6 @@ export default function DnDResource() {
                     onEventResize={resizeEvent}
                     onSelectEvent={(e) => HandleSelectEvent(e)}
                     onSelectSlot={handleSelectSlot}
-                    resourceIdAccessor="resourceId"
-                    resources={resourceMap}
-                    resourceTitleAccessor="resourceTitle"
                     eventPropGetter={eventPropGetter}
                   />
                 ) : (
@@ -681,7 +641,7 @@ export default function DnDResource() {
                     }}
                     selected={selected}
                     defaultView={Views.DAY}
-                    events={myEvents}
+                    events={filteredEvents}
                     step={15}
                     showMultiDayTimes={true}
                     localizer={localizer}

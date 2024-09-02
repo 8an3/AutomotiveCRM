@@ -1440,7 +1440,8 @@ export async function loader({ request, params }: LoaderFunction) {
     }
   });
   const techs = allUsers.filter(user =>
-    user.role.name === 'Technician'
+    user.role.name === 'Technician' ||
+    user.role.name === 'Delivery Driver'
   );
   // console.log(order)
   return json({ order, user, allServiceApts, techs, appointment })

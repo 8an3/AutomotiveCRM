@@ -9,6 +9,7 @@ import Salestracker from '~/images/salestracker.png'
 import Features from '~/images/features.png'
 import Dealerfees from '~/images/dealerfees.png'
 import harleyDavidson from '~/logos/hd.png'
+import kawasaki from '~/overviewUtils/images/kawa.png'
 import activix from '~/logos/activix.svg'
 import {
   Accordion,
@@ -221,12 +222,17 @@ function NewHeader() {
             Experience crystal-clear and effortlessly legible displays of weekly, bi-weekly, and monthly payment options, all while receiving a detailed breakdown of every dollar involved in the deal.
           </p>
           <p className="mt-6 text-lg leading-8 text-foreground">
-            Along with numerous other processes to save not only your sales staff time during the sales process, but save time for each and everyone of your employees. Make it easier to get the job done with more efficiency. Check out our breakdown here.
+            Along with numerous other processes to save not only your sales staff time during the sales process, but save time for each and everyone of your employees. Make it easier to get the job done with more efficiency. Start you subscription today or request a free demo to see what your missing out on.
           </p>
           <div className='flex justify-center'>
-            <Link to='/demo/dashboard' >
+            <Link to='/testDrive' >
               <Button size='sm' className='mx-auto bg-primary text-foreground  mt-3'>
-                Continue
+                Request Demo
+              </Button>
+            </Link>
+            <Link to='/subscribe' >
+              <Button size='sm' className='mx-auto bg-primary text-foreground  mt-3'>
+                Subscribe
               </Button>
             </Link>
           </div>
@@ -372,122 +378,124 @@ export function Feature1() {
 export function DealerPrice() {
   return (
     <>
-      <a
-        href="https://buy.stripe.com/eVa01v0aLfDP4WkfZ0"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-2 lg:ml-2 lg:mt-0"
-      >
-        <fieldset className="mx-auto grid h-auto max-h-[600px] overflow-y-auto w-[400px] cursor-pointer rounded-lg border border-border p-4 hover:border-primary ">
-          <legend className="-ml-1 px-1 text-lg font-medium text-foreground">
-            Dealer
-          </legend>
-          <br className="my-1" />
-          <div className="mx-auto flex w-[70%] justify-center">
-            <ul className="mx-auto mt-2 grid gap-3 text-sm">
-              {dealerFeatures.map((feature, index) => (
-                <li
-                  key={index}
-                  className="flex items-center justify-between"
-                >
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className="cursor-pointer text-left text-foreground">
-                        {feature.name}
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent className='w-[200px] bg-background border-border'>
-                      <p>{feature.description}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <span>
-                    <FaCheck
-                      strokeWidth={1.5}
-                      className="ml-2 text-lg text-[#22ff40]"
-                    />
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="items-end">
-            <hr className="w-[90%] text-center text-foreground mt-5" />
-            <h4 className="text-foreground mt-5 text-center">
-              Subscribe Now for Just $449.95 Per Month.
-            </h4>
-            <div className="flex justify-center">
+
+      <fieldset className="mx-auto grid h-auto max-h-[600px] overflow-y-auto w-[400px] rounded-lg border border-border p-4 ">
+        <legend className="-ml-1 px-1 text-lg font-medium text-foreground">
+          Dealer
+        </legend>
+        <br className="my-1" />
+        <div className="mx-auto flex w-[70%] justify-center">
+          <ul className="mx-auto mt-2 grid gap-3 text-sm">
+            {dealerFeatures.map((feature, index) => (
+              <li
+                key={index}
+                className="flex items-center justify-between"
+              >
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="cursor-pointer text-left text-foreground">
+                      {feature.name}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent className='w-[200px] bg-background border-border'>
+                    <p>{feature.description}</p>
+                  </TooltipContent>
+                </Tooltip>
+                <span>
+                  <FaCheck
+                    strokeWidth={1.5}
+                    className="ml-2 text-lg text-[#22ff40]"
+                  />
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="items-end">
+          <Separator className="w-[90%] text-center text-border bg-border mt-5 mx-auto" />
+          <h4 className="text-foreground mt-5 text-center">
+            Subscribe Now for Just $449.95 Per Month.
+          </h4>
+          <div className="flex justify-center">
+            <a
+              href="https://buy.stripe.com/eVa01v0aLfDP4WkfZ0"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 lg:ml-2 lg:mt-0"
+            >
               <Button
                 size="sm"
                 className="mx-auto mt-3 rounded-md bg-primary p-2 text-foreground"
               >
                 Continue
               </Button>
-            </div>
+            </a>
           </div>
-          <div className='mt-[35px]'>
-            <p>Still unsure? Click
-              <NavLink to='/testDrive'>
-                Here
-              </NavLink></p>
-          </div>
-        </fieldset>
-      </a>
+        </div>
+        <div className='mt-[35px] flex items-center'>
+          <p className='text-muted-foreground mr-2'>Still unsure? Click</p>
+          <NavLink to='/testDrive' className='text-muted-foreground '>
+            Here...
+          </NavLink>
+        </div>
+      </fieldset>
     </>
   )
 }
 export function SalespersonPrice() {
   return (
     <>
-      <a
-        href="https://buy.stripe.com/bIYaG9f5Fbnz74s5kn"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="lg:mr-2"
-      >
-        <fieldset className="mx-auto grid h-auto max-h-[600px] overflow-y-auto w-[400px] cursor-pointer rounded-lg border border-border p-4 hover:border-primary ">
-          <legend className="-ml-1 px-1 text-lg font-medium text-foreground">
-            Sales People
-          </legend>
-          <div className="mx-auto flex w-[60%] justify-center">
-            <ul className="mx-auto mt-2 grid gap-3 text-sm">
-              {salesFeatures.map((feature, index) => (
-                <li key={index} className="flex items-center justify-between">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className="text-foreground text-left cursor-pointer">
-                        {feature.name}
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{feature.description}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <span>
-                    <FaCheck
-                      strokeWidth={1.5}
-                      className="ml-2 text-lg text-[#22ff40]"
-                    />
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="items-end">
-            <hr className="mt-5 w-[90%] text-center text-foreground" />
-            <h4 className="mt-5 text-foreground">
-              Subscribe Now for Just $49.95 Per Month.
-            </h4>
-            <div className="flex justify-center">
+      <fieldset className="mx-auto grid h-auto max-h-[600px] overflow-y-auto w-[400px]  rounded-lg border border-border p-4 lg:mr-2 ">
+        <legend className="-ml-1 px-1 text-lg font-medium text-foreground">
+          Sales People
+        </legend>
+        <div className="mx-auto flex w-[60%] justify-center">
+          <ul className="mx-auto mt-2 grid gap-3 text-sm">
+            {salesFeatures.map((feature, index) => (
+              <li key={index} className="flex items-center justify-between">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="text-foreground text-left cursor-pointer">
+                      {feature.name}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent className='bg-background border-border text-foreground'>
+                    <p>{feature.description}</p>
+                  </TooltipContent>
+                </Tooltip>
+                <span>
+                  <FaCheck
+                    strokeWidth={1.5}
+                    className="ml-2 text-lg text-[#22ff40]"
+                  />
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="items-end">
+          <Separator className="mt-5 w-[90%] text-center text-border mx-auto border-border bg-border" />
+          <h4 className="mt-5 text-foreground">
+            Subscribe Now for Just $49.95 Per Month.
+          </h4>
+          <div className="flex justify-center">
+            <a
+              href="https://buy.stripe.com/bIYaG9f5Fbnz74s5kn"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="lg:mr-2"
+            >
               <Button
                 size="sm"
                 className="mx-auto mt-3 rounded-md bg-primary p-2 text-foreground"
               >
                 Continue
               </Button>
-            </div>
+            </a>
+
           </div>
-        </fieldset>
-      </a>
+        </div>
+      </fieldset>
     </>
   )
 }
@@ -586,7 +594,7 @@ export const logos = [
     alt: 'Triumph',
   },
   {
-    src: "",
+    src: kawasaki,
     alt: 'Kawasaki',
   },
   {
@@ -609,7 +617,8 @@ export function Brands() {
     <div className='mx-5'>
       <div className="text-foreground  md:w-1/2 mt-[25px] mx-auto">
         <fieldset className="grid gap-6 rounded-lg border p-4 mx-auto h-[850x] w-[550px]  border-border cursor-pointer bg-white " >
-          <legend className="-ml-1 -top-4 px-1 text-lg font-medium text-black">Brands</legend>
+          <legend className="-ml-1 -top-5 px-1 text-lg font-medium text-black"></legend>
+          <p className='text-2xl text-center text-black'>Brands</p>
           <div className='flex flex-wrap justify-center gap-8  py-4'>
 
             <TooltipProvider>
@@ -648,29 +657,36 @@ export function FAQ() {
             Aside from setting up your employees, virtually none. The server and database will be hosted off site that we will set up for you. Once up and you will have full access to your new crm to start taking advantage of it. If you would like your line-up included for the quoting capabilities, we just require your dealer binder, if it's a brand we already do not have. If your not technically savvy or do not have a tech dept of some kind, we can set everything up for you, even your employee accounts. If you would like to take it a step farther and include parts, accessories and such for your sales team to help increase sales while they sell their units, let us know and we can discuss it.
           </p>
           <Separator className="my-4 border-border w-[95%] mx-auto" />
-          <div className="font-semibold">You don't have as big as a customer base using this crm in comparison to other brand names, how can I trust it will do the job?</div>
+          <div className="font-semibold">
+            You don't have as big as a customer base using this crm in comparison to other brand names, how can I trust it will do the job?
+          </div>
           <p className='px-[8px]   text-left text-sm   text-foreground '>
             You think yours is actually doing the job? 9.5 people out of 10 reading this... unfortunately your crm is costing you a lot of money. Exponentially more, than you could even imagine. You will throw away more money by not completely switching in salary costs alone, then trying and failing.
           </p>
           <p className='px-[8px]   text-left text-sm   text-foreground '>
             Don't take my word for it, do the math.
           </p>
-          <p className='px-[8px]   text-left text-sm   text-foreground '>I have. I almost went crazy when I started to dig deep into this. For example, I thought I couldn't do math at one point... because theres no way I waste that much time every year... it's not possible. Doing the same math, having different people check it without telling them what it's for. Running my math through ai to see if I made a mistake. Even googling my math to make sure I hadn't made any errors. Like spending days on end in my free time... on the simplest of math problems because I could not understand how I could waste that much time every day, month or year. I push myself to be the best, it made no sense. Nope, everything checked out and it needed to change, fast.
+          <p className='px-[8px]   text-left text-sm   text-foreground '>
+            I have. I almost went crazy when I started to dig deep into this. For example, I thought I couldn't do math at one point... because theres no way I waste that much time every year... it's not possible. Doing the same math, having different people check it without telling them what it's for. Running my math through ai to see if I made a mistake. Even googling my math to make sure I hadn't made any errors. Like spending days on end in my free time... on the simplest of math problems because I could not understand how I could waste that much time every day, month or year. I push myself to be the best, it made no sense. Nope, everything checked out and it needed to change, fast.
           </p>
-          <p className='px-[8px]   text-left text-sm   text-foreground '>Measure each and every single process, but you can't get mad at your employees/colleagues due to the results you come to. It's not their fault, no matter how much you try to justify it. And be honest with the numbers, by cheating the numbers and making them smaller then they should. The only person that would harm, is you. Yes, I know sales people can cheat systems as can any employee in any position can, but they cant keep it up long term in a way that would benefit them for more than a 2 week period. Same as any role in the dealer, the job is the job. There's almost no way to change that. The work needs to be done, properly. I've been a sales manager for years, sales person for years, assistant gm for years, gm for years, sales coach, etc. There's no way to get out of the things needed to get the job done. I've tried and lets be honest you probably have too.
+          <p className='px-[8px]   text-left text-sm   text-foreground '>
+            Measure each and every single process, but you can't get mad at your employees/colleagues due to the results you come to. It's not their fault, no matter how much you try to justify it. And be honest with the numbers, by cheating the numbers and making them smaller then they should. The only person that would harm, is you. Yes, I know sales people can cheat systems as can any employee in any position can, but they cant keep it up long term in a way that would benefit them for more than a 2 week period. Same as any role in the dealer, the job is the job. There's almost no way to change that. The work needs to be done, properly. I've been a sales manager for years, sales person for years, assistant gm for years, gm for years, sales coach, etc. There's no way to get out of the things needed to get the job done. I've tried and lets be honest you probably have too.
           </p>
-          <p className='px-[8px]   text-left text-sm   text-foreground '>How people go about the sales process can be different yes, but when you chip away the differences of how one person does it to the next. The fundamentals are still there, if they're successful. And it's the same for every role in the dealer.
+          <p className='px-[8px]   text-left text-sm   text-foreground '>
+            How people go about the sales process can be different yes, but when you chip away the differences of how one person does it to the next. The fundamentals are still there, if they're successful. And it's the same for every role in the dealer.
           </p>
-          <p className='px-[8px]   text-left text-sm   text-foreground '>So... we just make their job easier. That's the secret. So easy, that they wouldn't even know they're being more effecient. Wouldn't even cross their mind, they would just be so relieved not to have to deal with the hell the other crm put them through whenever they needed to do something. These aren't my words either.
+          <p className='px-[8px]   text-left text-sm   text-foreground '>
+            So... we just make their job easier. That's the secret. So easy, that they wouldn't even know they're being more effecient. Wouldn't even cross their mind, they would just be so relieved not to have to deal with the hell the other crm put them through whenever they needed to do something. These aren't my words either.
           </p>
-          <p className='px-[8px]   text-left text-sm   text-foreground '> Word of caution though before you do the math. Be ready. Be ready to not only be blown away by not only the amount of time wasted, but also the amount of profits. But be ready to get angry. The numbers get big, fast. I know how much it takes to earn every dollar in a business/dealer. To the average person 100k wasted in a, what would seem like a big business/dealer to the average person, might seem too insignificant to even bother worrying about it. But I know how much it takes to make 100k in profits and what it can be used for, but you only just measured one role or a portion of one before you start to realize... what about the others or the scaling problem because you have 10 people doing that one job? ... Fuck. So that small 100k just turned into a million or more in profit that could have been kept in the company, maybe? Maybe you wanted to expand? Hire more staff? Offer bigger salaries to help employee retention? Which in turn cuts down a lot of other costs. It's kind of hard when you didn't even know this money was there to begin with.
+          <p className='px-[8px]   text-left text-sm   text-foreground '>
+            Word of caution though before you do the math. Be ready. Be ready to not only be blown away by not only the amount of time wasted, but also the amount of profits. But be ready to get angry. The numbers get big, fast. I know how much it takes to earn every dollar in a business/dealer. To the average person 100k wasted in a, what would seem like a big business/dealer to the average person, might seem too insignificant to even bother worrying about it. But I know how much it takes to make 100k in profits and what it can be used for, but you only just measured one role or a portion of one before you start to realize... what about the others or the scaling problem because you have 10 people doing that one job? ... Fuck. So that small 100k just turned into a million or more in profit that could have been kept in the company, maybe? Maybe you wanted to expand? Hire more staff? Offer bigger salaries to help employee retention? Which in turn cuts down a lot of other costs. It's kind of hard when you didn't even know this money was there to begin with.
 
           </p>
 
           <Separator className="my-4 border-border w-[95%] mx-auto" />
           <div className="font-semibold">How secure will it be / how fast will it be?</div>
           <p className='px-[8px] pt-[5px] text-left text-sm  text-foreground '>
-            Each dealer will have their own database and server. That way if one dealer is compromised, none of the other dealers would have to suffer due to their security event. This also helps the overall speed of each dealers server because they are not hosted all on the same server. During peak times, say for example at 9 am when every dealer opens, dealers won't effect eachother and slow down the service by everyone logging in at once, instead each will have fast loading times in comparison to competing.
+            Each dealer will have their own database and server. That way if one dealer is compromised, none of the other dealers would have to suffer due to their security event. This same reason also helps the overall speed of each dealers CRM because no two dealers share the same resources. During peak times, say for example at 9 am when every dealer opens, instead of a bottle neck of traffic slowing you down when logging in or even worse not letting you because everyone is logging in at once, instead each will have fast loading times as if you had your very own custom crm solution.
           </p>
           <Separator className="my-4 border-border w-[95%] mx-auto" />
           <div className="font-semibold">Can you actually quote a price in 60 seconds?</div>
@@ -685,12 +701,12 @@ export function FAQ() {
           <Separator className="my-4 border-border w-[95%] mx-auto" />
           <div className="font-semibold">Q: Does it just produce prices?</div>
           <p className='px-[8px]    text-left text-sm   text-foreground '>
-            A: No, our application goes far beyond simply generating prices, now. It not only enhances your entire sales process up to the point where it seamlessly integrates with your CRM, if you choose to keep the one you currently have. It also stream lines each and every employees day to day work duties. Here's how it improves your workflow:   Clear and Comprehensive Explanation: Our application excels at explaining vehicle options, prices, and associated fees in a way that's easy to understand. This clarity benefits all customers, including those who might find complex information confusing. You can confidently present pricing without interruptions or hesitation from customers, leading to a smoother sales experience.  Control and Professionalism: Having a tool that provides such control over the sales process elevates your sales game. You won't experience interruptions due to customers struggling to grasp the information. You can maintain a professional and uninterrupted dialogue, making your interactions more efficient and productive.  Streamlined Access to Information: Our application offers features that simplify the process even further. Need to access a spec sheet from the manufacturer's site? Instead of navigating multiple pages, it's just one click away. If a customer is interested in a color that's not in stock, you can quickly show them the model page on the manufacturer's site.   Efficient Communication: In cases where a customer has left without making a purchase, our application provides pre-made templates that can be customized or used as-is. These templates include a variety of email breakdowns tailored to different types of customers. Whether they need payment details or a comprehensive list of options, you can send the information with a single click, saving you valuable time.  In essence, our application is designed to optimize your entire sales process, making it more efficient, professional, and customer-friendly from start to finish.
+            A: Not anymore, our application goes far beyond simply generating prices now. It not only enhances your entire sales process up to the point where it seamlessly integrates with your CRM, if you choose to keep the one you currently have. It also stream lines each and every employees day to day work duties. Here's how it improves your workflow:   Clear and Comprehensive Explanation: Our application excels at explaining vehicle options, prices, and associated fees in a way that's easy to understand. This clarity benefits all customers, including those who might find complex information confusing. You can confidently present pricing without interruptions or hesitation from customers, leading to a smoother sales experience.  Control and Professionalism: Having a tool that provides such control over the sales process elevates your sales game. You won't experience interruptions due to customers struggling to grasp the information. You can maintain a professional and uninterrupted dialogue, making your interactions more efficient and productive.  Streamlined Access to Information: Our application offers features that simplify the process even further. Need to access a spec sheet from the manufacturer's site? Instead of navigating multiple pages, it's just one click away. If a customer is interested in a color that's not in stock, you can quickly show them the model page on the manufacturer's site.   Efficient Communication: In cases where a customer has left without making a purchase, our application provides pre-made templates that can be customized or used as-is. These templates include a variety of email breakdowns tailored to different types of customers. Whether they need payment details or a comprehensive list of options, you can send the information with a single click, saving you valuable time.  In essence, our application is designed to optimize your entire sales process, making it more efficient, professional, and customer-friendly from start to finish.
           </p>
           <Separator className="my-4 border-border w-[95%] mx-auto" />
           <div className="font-semibold">Q: Will it really help my sales out?</div>
           <p className='px-[8px]   text-left text-sm   text-foreground '>
-            A: Absolutely, we guarantee it will make a significant difference in your sales process. In the automotive industry, it's surprising how few products genuinely assist salespeople beyond enhancing their skills and salesmanship. Most tech solutions either extend the sales process or add more complexity. However, our application is a game-changer because it complements your existing sales process and skills, simplifying the entire journey.   Here's how it can truly benefit you and your team:  Streamlined Process: By simplifying your workflow, it allows you to focus 100% of your mental energy on closing the sale. You can engage with customers with confidence, fewer headaches, and access to crucial information. For example, if a customer wants to compare the prices of different options, you can provide this information instantly, eliminating unnecessary stress.  Increased Confidence: Confidence is key in sales, and our application empowers you to navigate your interactions with customers more confidently. You'll have the tools at your disposal to provide information quickly and accurately, which builds trust and credibility with potential buyers.  Information Accessibility: In a world where information is readily available online, it's essential to equip salespeople with the tools they need to meet customer expectations. Our application gives you instant access to the information customers seek, eliminating the need for customers to search elsewhere for the details they want.  Customer-Centric Approach: By arming yourself with a tool that provides information efficiently and effectively, you can take a more customer-centric approach to sales. It's about giving customers what they need when they need it, which can lead to higher customer satisfaction and conversion rates.  In summary, our application is designed to make your job easier and more productive by simplifying your sales process and giving you the tools to provide customers with the information they desire. It's a win-win situation that benefits both sales professionals and customers, ultimately driving more sales and increasing overall satisfaction.
+            A: Absolutely, we guarantee it will make a significant difference in your sales process. In the automotive industry, it's surprising how few products genuinely assist salespeople or any other role in the dealer beyond enhancing their skills and salesmanship. Most tech solutions either extend the sales process or add more complexity. However, our application is a game-changer because it complements your existing sales process and skills, simplifying the entire journey.   Here's how it can truly benefit you and your team:  Streamlined Process: By simplifying your workflow, it allows you to focus 100% of your mental energy on closing the sale. You can engage with customers with confidence, fewer headaches, and access to crucial information. For example, if a customer wants to compare the prices of different options, you can provide this information instantly, eliminating unnecessary stress.  Increased Confidence: Confidence is key in sales, and our application empowers you to navigate your interactions with customers more confidently. You'll have the tools at your disposal to provide information quickly and accurately, which builds trust and credibility with potential buyers.  Information Accessibility: In a world where information is readily available online, it's essential to equip salespeople with the tools they need to meet customer expectations. Our application gives you instant access to the information customers seek, eliminating the need for customers to search elsewhere for the details they want.  Customer-Centric Approach: By arming yourself with a tool that provides information efficiently and effectively, you can take a more customer-centric approach to sales. It's about giving customers what they need when they need it, which can lead to higher customer satisfaction and conversion rates.  In summary, our application is designed to make your job easier and more productive by simplifying your sales process and giving you the tools to provide customers with the information they desire. It's a win-win situation that benefits both sales professionals and customers, ultimately driving more sales and increasing overall satisfaction.
           </p>
           <Separator className="my-4 border-border w-[95%] mx-auto" />
           <div className="font-semibold">I don't think my gm would let me use this.</div>
@@ -714,7 +730,7 @@ export function FAQ() {
             <li>
               We can continue but will end it here...
             </li>
-            Ultimately, it's important to present the application as a solution that benefits the dealership as a whole, from sales and finance to management and customer satisfaction. Showing the potential advantages and offering a trial period can help address any initial concerns and make a strong case for its adoption.
+            Ultimately, it's important to present the application as a solution that benefits the dealership as a whole, from sales and finance to management and customer satisfaction. Showing the potential advantages and offering a trial period can help address any initial concerns and make a strong case for its adoption. But to be honest, your probably going to get a no which is why it's made the way it is. When our crm is connected with another, its as if you threw a new coat of paint on, underneath the paint it does the same thing when interacting with the other crm, but with a turbo and supercharger installed. So you get all the benefits of a improved crm, but don't actually have to use the one you have been provided. Another way of looking at it is, its a new skin with better features and the connected crm wouldn't even be able to tell the difference. If we don't currently work with your crm, let us know and we'll get it hooked up. The only issue we have run into so far, one company just didn't have enough employees to deal with the workflow. All the work was done on our end to hook it up but took more than 6 months to finnaly get it all done. If this outlier of a situation happens to you, we'll refund your subscription, and let you know when its completed so you can come back with no issues or hassles. It only takes a day for us to complete the work needed so its no big deal.
           </p>
           <Separator className="my-4 border-border w-[95%] mx-auto" />
           <div className="font-semibold">How can this help other roles in the dealer?</div>

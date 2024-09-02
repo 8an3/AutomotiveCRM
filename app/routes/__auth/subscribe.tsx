@@ -20,6 +20,7 @@ import {
     useLoaderData,
     useMatches,
     useSubmit,
+    NavLink,
 } from "@remix-run/react";
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { toast } from "sonner";
@@ -54,7 +55,7 @@ export const meta: MetaFunction = ({ data }) => {
 
 export default function Subscribe() {
     const navigation = useNavigation();
-    const isSubmitting = navigation.state === "submitting";
+    const isSubmitting = navigation.state === "loading";
     const [sales, setSales] = useState(false);
     const [dealer, setDealer] = useState(false);
 
@@ -126,14 +127,14 @@ export default function Subscribe() {
                                                 </fieldset>
                                             )}
                                         </div>
-                                        <fieldset className="mx-auto grid h-[150px] w-[350px] cursor-pointer gap-6 rounded-lg border border-white p-4 hover:border-primary">
+                                        <fieldset className="mx-auto grid h-[150px] w-[350px]  gap-6 rounded-lg border border-border p-4 ">
                                             <legend className="-ml-1 px-1 text-lg font-medium text-myColor-200">
                                                 Once subscribed....
                                             </legend>
-                                            <p className="scriptcardText mt-6 text-sm text-[#fff]">
-                                                You may continue inside.
+                                            <p className="scriptcardText mt-6 text-sm text-foreground">
+                                                You may continue whenever your ready.
                                             </p>
-                                            <Link to="/checksubscription">
+                                            <NavLink to="/checksubscription">
                                                 <ButtonLoading
                                                     onClick={() =>
                                                         toast.success("Thank you for your business!")
@@ -144,11 +145,11 @@ export default function Subscribe() {
                                                     type="submit"
                                                     isSubmitting={isSubmitting}
                                                     loadingText="Checking Subscription..."
-                                                    className="ml-auto mt-5 w-auto cursor-pointer border-[#fff] text-[#fff] hover:text-primary"
+                                                    className="ml-auto mt-5 w-auto cursor-pointer border-border text-foreground hover:text-primary"
                                                 >
                                                     Continue
                                                 </ButtonLoading>
-                                            </Link>
+                                            </NavLink>
                                         </fieldset>
                                     </div>
                                 </div>

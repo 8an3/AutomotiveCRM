@@ -28,6 +28,10 @@ export async function getClientFileById(clientfileId) {
       where: { id: clientfileId },
       select: {
         id: true,
+        createdAt: true,
+        updatedAt: true,
+        financeId: true,
+        userId: true,
         firstName: true,
         lastName: true,
         name: true,
@@ -42,6 +46,9 @@ export async function getClientFileById(clientfileId) {
         timeToContact: true,
         conversationId: true,
         billingAddress: true,
+
+        // WorkOrder
+        //  ServiceUnit
         AccOrder: {
           select: {
             id: true,
@@ -308,8 +315,7 @@ export async function getClientFileById(clientfileId) {
             createdAt: true,
             updatedAt: true,
             clientfileId: true,
-
-            /// bmwMotoOptions: {          select: {          }        },
+            inventoryMotorcycleId: true,
             financeStorage: {
               select: {
                 id: true,
@@ -353,12 +359,8 @@ export async function getClientFileById(clientfileId) {
                 isPublished: true,
               }
             },
-            //  finManOptions: { select: {  } },
-            //   uCDAForm: { select: {} },
-            // FinCanOptions: { select: {} },
             //  Comm: { select: {} },
             //  FinanceDeptProducts: { select: {} },
-            // FinanceTradeUnit: { select: {} },
             FinanceUnit: {
               select: {
                 paintPrem: true,
@@ -482,6 +484,7 @@ export async function getClientFileById(clientfileId) {
                 },
               }
             },
+            // FinanceTradeUnit: { select: {} },
             AccOrders: {
               select: {
                 id: true,
@@ -568,6 +571,7 @@ export async function getClientFileById(clientfileId) {
                 }
               }
             },
+            //  WorkOrders: { select: {  } },
             Payments: {
               select: {
                 id: true,
@@ -583,6 +587,10 @@ export async function getClientFileById(clientfileId) {
                 workOrderId: true,
               }
             }
+            //  finManOptions: { select: {  } },
+            /// bmwMotoOptions: {select: { } },
+            //   uCDAForm: { select: {} },
+            // FinCanOptions: { select: {} },
           },
         }
       },

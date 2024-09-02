@@ -67,7 +67,6 @@ export async function loader({ request, params }: LoaderFunction) {
         deFees = await prisma.dealer.findUnique({ where: { userEmail: email } });
       }
 
-      const dataPDF = await getDailyPDF(email)
       const statsData = await prisma.finance.findMany({
         where: { userEmail: { equals: email, }, },
       });
@@ -95,7 +94,7 @@ export async function loader({ request, params }: LoaderFunction) {
       let financeProducts = await getHomeData();
       let boards = await getHomeData();
 
-      return ({ user, deFees, dataPDF, statsData, comsRecords, getNewLook, automations, financeProducts, boards })
+      return ({ user, deFees, statsData, comsRecords, getNewLook, automations, financeProducts, boards })
     } else {
       return redirect('/subscribe');
     }
@@ -345,7 +344,7 @@ export function StatsTable({ statsData, comsRecords }) {
 }
 
 
-function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook, automations }) {
+function ProfileForm({ user, deFees, statsData, comsRecords, getNewLook, automations }) {
   let finance = ''
   let data = ''
   const fetcher = useFetcher()
@@ -356,6 +355,9 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
   let omvicNumber
   let dealerAddress
   let dealerProv
+
+  const [dealerCity, dealerProvince, dealerPostal] = deFees.dealerProv.split(',').map(part => part.trim());
+
 
   if (deFees && deFees.dealerPhone) {
     dealerPhone = deFees.dealerPhone || ''
@@ -373,12 +375,10 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
     console.error('The object or dealerAddress property is undefined.');
   }
   if (deFees && deFees.dealerProv) {
-    dealerProv = deFees.dealerProv || ''
+    dealerProv = dealerProvince || deFees.dealerProv
   } else {
     console.error('The object or dealerProv property is undefined.');
   }
-  const [dealerCity, dealerProvince, dealerPostal] = dealerProv.split(',').map(part => part.trim());
-
   const [open, setOpen] = React.useState(false);
   const eventDateRef = React.useRef(new Date());
   const timerRef = React.useRef(0);
@@ -454,6 +454,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
     }));
   };
   const { boards } = useLoaderData()
+  // md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]
   return (
     <Tabs defaultValue="account" className="w-[80%] ml-5 mr-auto" >
       <TabsList className="rounded-md ">
@@ -465,7 +466,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
         <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-3 flex-col gap-4  p-4 md:gap-8 md:p-10">
           <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
             <div className="grid gap-6">
-              <Card x-chunk="dashboard-04-chunk-1">
+              <Card x-chunk="dashboard-04-chunk-1" className="bg-background">
                 <Form method="post" className="">
                   <CardHeader>
                     <CardTitle>  DEALER FEES</CardTitle>
@@ -566,84 +567,290 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
           </div>
         </main>
       </TabsContent>
-      <TabsContent value="account" className='rounded-md  grid grid-cols-2'>
-        <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4  p-4 md:gap-8 md:p-10">
-          <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
-            <div className="grid gap-6">
-              <Card x-chunk="dashboard-04-chunk-1">
-                <Form method="post" className="">
+      <TabsContent value="account" className=''>
+        <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-3 flex-col gap-4  p-4 md:gap-8 md:p-10">
+          <div className="mx-auto  w-full max-w-[90%] items-start gap-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className='grid'>
+                <Card x-chunk="dashboard-04-chunk-1" className="bg-background">
+                  <Form method="post" className="">
+                    <CardHeader>
+                      <CardTitle> EDIT ACCOUNT</CardTitle>
+                      <CardDescription>
+                        Name, Phone # and email will show up in emails sent to customers.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 gap-2">
+                        <div className="relative mt-4">
+                          <Input
+                            defaultValue={name}
+                            name="name"
+                            className="border-border bg-background "
+                          />
+                          {errors?.userLicensing ? (
+                            <em className="text-[#ff0202]">{errors.userLicensing}</em>
+                          ) : null}
+                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
+                        </div>
+                        <div className="relative mt-4">
+                          <Input
+                            defaultValue={phone}
+                            name="phone"
+                            className="border-border bg-background "
+                          />
+                          {errors?.userLicensing ? (
+                            <em className="text-[#ff0202]">{errors.userLicensing}</em>
+                          ) : null}
+                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
+                        </div>
+                        <div className="relative mt-4">
+                          <Input
+                            defaultValue={user.email}
+                            name="userEmail"
+                            className="border-border bg-background "
+                          />
+                          {errors?.userTax ? (
+                            <em className="text-[#ff0202]">{errors.userTax}</em>
+                          ) : null}
+                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+                        </div>
+                        <div className="relative mt-4">
+                          <Input
+                            defaultValue={user.username}
+                            name="username"
+                            className="border-border bg-background "
+                          />
+                          {errors?.userLabour ? (
+                            <em className="text-[#ff0202]">{errors.userLabour}</em>
+                          ) : null}
+                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Full Name</label>
+                        </div>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="px-6 py-4">
+                      <ButtonLoading
+                        size="sm"
+                        className="mr-auto cursor-pointer mb-5 mt-5 bg-primary"
+                        type="submit"
+                        name='intent'
+                        value='updateFees'
+                        isSubmitting={isSubmitting}
+                        onClick={() => toast.success(`Update complete.`)}
+                        loadingText="Updating information..."
+                      >
+                        Update
+                      </ButtonLoading>
+                    </CardFooter>
+                  </Form>
+                </Card>
+                <Card x-chunk="dashboard-04-chunk-2" className="bg-background mt-6">
                   <CardHeader>
-                    <CardTitle> EDIT ACCOUNT</CardTitle>
+                    <CardTitle> ACCOUNT FUNCTIONS</CardTitle>
                     <CardDescription>
-                      Name, Phone # and email will show up in emails sent to customers.
+                      The directory within your project, in which your plugins are
+                      located.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 gap-2">
-                      <div className="relative mt-4">
-                        <Input
-                          defaultValue={name}
-                          name="name"
-                          className="border-border bg-background "
-                        />
-                        {errors?.userLicensing ? (
-                          <em className="text-[#ff0202]">{errors.userLicensing}</em>
-                        ) : null}
-                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
-                      </div>
-                      <div className="relative mt-4">
-                        <Input
-                          defaultValue={phone}
-                          name="phone"
-                          className="border-border bg-background "
-                        />
-                        {errors?.userLicensing ? (
-                          <em className="text-[#ff0202]">{errors.userLicensing}</em>
-                        ) : null}
-                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
-                      </div>
-                      <div className="relative mt-4">
-                        <Input
-                          defaultValue={user.email}
-                          name="userEmail"
-                          className="border-border bg-background "
-                        />
-                        {errors?.userTax ? (
-                          <em className="text-[#ff0202]">{errors.userTax}</em>
-                        ) : null}
-                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
-                      </div>
-                      <div className="relative mt-4">
-                        <Input
-                          defaultValue={user.username}
-                          name="username"
-                          className="border-border bg-background "
-                        />
-                        {errors?.userLabour ? (
-                          <em className="text-[#ff0202]">{errors.userLabour}</em>
-                        ) : null}
-                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Full Name</label>
-                      </div>
+                    <div className='flex '>
+                      <Drawer>
+                        <DrawerTrigger asChild>
+                          <Button
+                            size='sm'
+                            className="w-auto cursor-pointer mr-3  bg-primary text-foreground"
+                          >
+                            Downloads
+                          </Button>
+                        </DrawerTrigger>
+                        <DrawerContent className='border-border'>
+                          <div className="mx-auto w-full max-w-sm">
+                            <DrawerHeader>
+                              <DrawerTitle>Downloads</DrawerTitle>
+                              <DrawerDescription>Download your data whenever you need it.</DrawerDescription>
+                            </DrawerHeader>
+                            <div className='grid grid-cols-1 '>
+                              <div className='flex justify-between items-center'>
+                                <p>Templates/Scripts</p>
+                                <a href={`/dealer/user/download/templates`} target='_blank'>
+                                  <Button
+                                    type="submit"
+                                    size="icon"
+                                    onClick={() => {
+                                      toast.success(`Downloading data....`)
+                                    }}
+                                    className='bg-primary ml-auto '>
+                                    <DownloadIcon className="h-4 w-4" />
+                                    <span className="sr-only">Download</span>
+                                  </Button>
+                                </a>
+                              </div>
+
+                            </div>
+                            <DrawerFooter>
+                              <DrawerClose asChild>
+                                <Button variant="outline">Cancel</Button>
+                              </DrawerClose>
+                            </DrawerFooter>
+                          </div>
+                        </DrawerContent>
+                      </Drawer>
+                      <Drawer>
+                        <DrawerTrigger asChild>
+                          <Button
+                            size='sm'
+                            className="w-auto cursor-pointer mr-3 text-foreground bg-primary"
+                          >
+                            Integration Settings
+                          </Button>
+                        </DrawerTrigger>
+                        <DrawerContent className='border-border'>
+                          <div className="mx-auto w-full max-w-sm">
+                            <DrawerHeader>
+                              <DrawerTitle>Integration Settings</DrawerTitle>
+                              <DrawerDescription> Will unlock featues and functions that will only benefit users who currently use other CRMs. Essentially replacing your current crm dashboard and processes, think of it as a new "skin" for your dashboard to deal with your day to day activities and customers. If you do not see your CRM here let us know and we will integrate with them.</DrawerDescription>
+                            </DrawerHeader>
+                            <Form method="post" className="w-[95%]">
+
+                              <ul className="grid gap-3 text-sm mt-3">
+                                <li className="flex items-center justify-between">
+                                  <span className="text-muted-foreground">
+                                    Activix
+                                  </span>
+                                  <span>
+                                    <input
+                                      className='scale-150 p-3'
+                                      type='checkbox'
+                                      id='necessary'
+                                      name='activixActivated'
+                                      checked={activixActivated}
+                                      onChange={handleCheckboxChange}
+                                    />
+                                  </span>
+                                  <input type='hidden' name='activixActivated' value={activixActivated ? 'yes' : 'no'} />
+                                </li>
+                              </ul>
+
+                              {user.activixActivated === 'yes' && (
+                                <div className="flex flex-col ">
+                                  <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
+                                  <div className="font-semibold ">Activx</div>
+                                  <div className="relative mt-3">
+                                    <Input
+                                      className="border-border bg-background  "
+                                      type="email"
+                                      name="activixEmail"
+                                      defaultValue={user.activixEmail}
+                                    />
+                                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Activix Email</label>
+                                  </div>
+                                  <div className="relative mt-3">
+                                    <Input
+                                      className="border-border bg-background  "
+                                      type="email"
+                                      name="activixEmail"
+                                      defaultValue={user.activixEmail}
+                                    />
+                                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Account Id</label>
+                                  </div>
+                                </div>
+                              )}
+                              <Input type='hidden' name="email" defaultValue={user.email} />
+                              <Input type='hidden' name="userEmail" defaultValue={user.email} />
+                              <div className='flex justify-between items-center mt-5 mb-5' >
+                                <DrawerClose asChild>
+                                  <Button variant="outline">Cancel</Button>
+                                </DrawerClose>
+                                <ButtonLoading
+                                  size="sm"
+                                  className="w-auto cursor-pointer  bg-primary"
+                                  type="submit"
+                                  name='intent'
+                                  value='activixActivated'
+                                  isSubmitting={isSubmitting}
+                                  onClick={() => toast.success(`Update complete.`)}
+                                  loadingText="Updating information..."
+                                >
+                                  Update
+                                </ButtonLoading>
+
+                              </div>
+
+                            </Form>
+
+                          </div>
+                        </DrawerContent>
+                      </Drawer>
+                      <Drawer>
+                        <DrawerTrigger asChild>
+                          <Button
+                            size='sm'
+                            className="w-auto cursor-pointer  text-foreground mr-3 bg-primary"
+                          >
+                            Appearance
+                          </Button>
+                        </DrawerTrigger>
+                        <DrawerContent className='border-border'>
+                          <div className="mx-auto w-full max-w-sm">
+                            <DrawerHeader>
+                              <DrawerTitle>New Quote and Overview Appearance</DrawerTitle>
+                              <DrawerDescription> Changes the look of the quote and overview pages.</DrawerDescription>
+                            </DrawerHeader>
+                            <Form method="post" className="">
+
+                              <Input type='hidden' name="userEmail" defaultValue={user.email} />
+
+                              <ul className="grid gap-3 text-sm mt-3">
+                                <li className="flex items-center justify-between">
+                                  <span className="text-muted-foreground">
+                                    Change looks?
+                                  </span>
+                                  <IndeterminateCheckbox
+                                    className='  border-[#ff0202]'
+                                    id='necessary'
+                                    name='newLook'
+                                    checked={newLook === 'on'}
+                                    onChange={() => {
+                                      if (newLook === 'off') {
+                                        setNewLook('on')
+                                      } else {
+                                        setNewLook('off')
+                                      }
+                                    }}
+                                  />
+                                </li>
+                              </ul>
+                              <div className='flex justify-between items-center mt-5 mb-5' >
+                                <DrawerClose asChild>
+                                  <Button variant="outline">Cancel</Button>
+                                </DrawerClose>
+                                <ButtonLoading
+                                  size="sm"
+                                  className="w-auto cursor-pointer mb-5 mt-5 bg-primary"
+                                  type="submit"
+                                  name='intent'
+                                  value='appearance'
+                                  isSubmitting={isSubmitting}
+                                  onClick={() => {
+                                    toast.success(`Update complete.`)
+                                  }}
+                                  loadingText="Updating information..."
+                                >
+                                  Update
+                                </ButtonLoading>
+                              </div>
+                            </Form>
+                          </div>
+                        </DrawerContent>
+                      </Drawer>
                     </div>
                   </CardContent>
-                  <CardFooter className="border-t border-border px-6 py-4">
-                    <ButtonLoading
-                      size="sm"
-                      className="w-[250px] mr-auto cursor-pointer mb-5 mt-5 bg-primary"
-                      type="submit"
-                      name='intent'
-                      value='updateFees'
-                      isSubmitting={isSubmitting}
-                      onClick={() => toast.success(`Update complete.`)}
-                      loadingText="Updating information..."
-                    >
-                      Update
-                    </ButtonLoading>
-                  </CardFooter>
-                </Form>
-              </Card>
+                  <CardFooter className="">
 
-              <Card x-chunk="dashboard-04-chunk-2">
+                  </CardFooter>
+                </Card>
+              </div>
+              <Card x-chunk="dashboard-04-chunk-2" className="bg-background">
                 <Form method="post" className="">
                   <CardHeader>
                     <CardTitle> Dealer Information </CardTitle>
@@ -655,13 +862,11 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
                     <div className="grid grid-cols-1 gap-2">
                       <div className="relative mt-4">
                         <Input
-                          defaultValue={deFees?.dealer}
-                          name="dealer"
+                          defaultValue={deFees?.dealerName}
+                          name="dealerName"
                           className="border-border bg-background "
                         />
-                        {errors?.userLabour ? (
-                          <em className="text-[#ff0202]">{errors.userLabour}</em>
-                        ) : null}
+
                         <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
                       </div>
                       <div className="relative mt-4">
@@ -734,10 +939,10 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
                       <Input type='hidden' defaultValue={user.email} name="email" />
                     </div>
                   </CardContent>
-                  <CardFooter className="border-t  border-border px-6 py-4">
+                  <CardFooter className="px-6 py-4">
                     <ButtonLoading
                       size="sm"
-                      className="w-[250px] mr-auto cursor-pointer mb-5 mt-5 bg-primary"
+                      className="mr-auto cursor-pointer mb-5 mt-5 bg-primary"
                       type="submit"
                       name='intent'
                       value='updateFees'
@@ -748,213 +953,8 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
                       Update
                     </ButtonLoading>
                   </CardFooter>
+
                 </Form>
-              </Card>
-
-              <Card x-chunk="dashboard-04-chunk-2">
-                <CardHeader>
-                  <CardTitle> ACCOUNT FUNCTIONS</CardTitle>
-                  <CardDescription>
-                    The directory within your project, in which your plugins are
-                    located.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className='flex '>
-                    <Drawer>
-                      <DrawerTrigger asChild>
-                        <Button
-                          size='sm'
-                          className="w-auto cursor-pointer mr-3  bg-primary text-foreground"
-                        >
-                          Downloads
-                        </Button>
-                      </DrawerTrigger>
-                      <DrawerContent className='border-border'>
-                        <div className="mx-auto w-full max-w-sm">
-                          <DrawerHeader>
-                            <DrawerTitle>Downloads</DrawerTitle>
-                            <DrawerDescription>Download your data whenever you need it.</DrawerDescription>
-                          </DrawerHeader>
-                          <div className='grid grid-cols-1 '>
-                            <div className='flex justify-between items-center'>
-                              <p>Templates/Scripts</p>
-                              <a href={`/dealer/user/download/templates`} target='_blank'>
-                                <Button
-                                  type="submit"
-                                  size="icon"
-                                  onClick={() => {
-                                    toast.success(`Downloading data....`)
-                                  }}
-                                  className='bg-primary ml-auto '>
-                                  <DownloadIcon className="h-4 w-4" />
-                                  <span className="sr-only">Download</span>
-                                </Button>
-                              </a>
-                            </div>
-
-                          </div>
-                          <DrawerFooter>
-                            <DrawerClose asChild>
-                              <Button variant="outline">Cancel</Button>
-                            </DrawerClose>
-                          </DrawerFooter>
-                        </div>
-                      </DrawerContent>
-                    </Drawer>
-                    <Drawer>
-                      <DrawerTrigger asChild>
-                        <Button
-                          size='sm'
-                          className="w-auto cursor-pointer mr-3 text-foreground bg-primary"
-                        >
-                          Integration Settings
-                        </Button>
-                      </DrawerTrigger>
-                      <DrawerContent className='border-border'>
-                        <div className="mx-auto w-full max-w-sm">
-                          <DrawerHeader>
-                            <DrawerTitle>Integration Settings</DrawerTitle>
-                            <DrawerDescription> Will unlock featues and functions that will only benefit users who currently use other CRMs. Essentially replacing your current crm dashboard and processes, think of it as a new "skin" for your dashboard to deal with your day to day activities and customers. If you do not see your CRM here let us know and we will integrate with them.</DrawerDescription>
-                          </DrawerHeader>
-                          <Form method="post" className="w-[95%]">
-
-                            <ul className="grid gap-3 text-sm mt-3">
-                              <li className="flex items-center justify-between">
-                                <span className="text-muted-foreground">
-                                  Activix
-                                </span>
-                                <span>
-                                  <input
-                                    className='scale-150 p-3'
-                                    type='checkbox'
-                                    id='necessary'
-                                    name='activixActivated'
-                                    checked={activixActivated}
-                                    onChange={handleCheckboxChange}
-                                  />
-                                </span>
-                                <input type='hidden' name='activixActivated' value={activixActivated ? 'yes' : 'no'} />
-                              </li>
-                            </ul>
-
-                            {user.activixActivated === 'yes' && (
-                              <div className="flex flex-col ">
-                                <hr className="my-4 text-muted-foreground w-[95%] mx-auto" />
-                                <div className="font-semibold ">Activx</div>
-                                <div className="relative mt-3">
-                                  <Input
-                                    className="border-border bg-background  "
-                                    type="email"
-                                    name="activixEmail"
-                                    defaultValue={user.activixEmail}
-                                  />
-                                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Activix Email</label>
-                                </div>
-                                <div className="relative mt-3">
-                                  <Input
-                                    className="border-border bg-background  "
-                                    type="email"
-                                    name="activixEmail"
-                                    defaultValue={user.activixEmail}
-                                  />
-                                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Account Id</label>
-                                </div>
-                              </div>
-                            )}
-                            <Input type='hidden' name="email" defaultValue={user.email} />
-                            <Input type='hidden' name="userEmail" defaultValue={user.email} />
-                            <div className='flex justify-between items-center mt-5 mb-5' >
-                              <DrawerClose asChild>
-                                <Button variant="outline">Cancel</Button>
-                              </DrawerClose>
-                              <ButtonLoading
-                                size="sm"
-                                className="w-auto cursor-pointer  bg-primary"
-                                type="submit"
-                                name='intent'
-                                value='activixActivated'
-                                isSubmitting={isSubmitting}
-                                onClick={() => toast.success(`Update complete.`)}
-                                loadingText="Updating information..."
-                              >
-                                Update
-                              </ButtonLoading>
-
-                            </div>
-
-                          </Form>
-
-                        </div>
-                      </DrawerContent>
-                    </Drawer>
-                    <Drawer>
-                      <DrawerTrigger asChild>
-                        <Button
-                          size='sm'
-                          className="w-auto cursor-pointer  text-foreground mr-3 bg-primary"
-                        >
-                          Appearance
-                        </Button>
-                      </DrawerTrigger>
-                      <DrawerContent className='border-border'>
-                        <div className="mx-auto w-full max-w-sm">
-                          <DrawerHeader>
-                            <DrawerTitle>New Quote and Overview Appearance</DrawerTitle>
-                            <DrawerDescription> Changes the look of the quote and overview pages.</DrawerDescription>
-                          </DrawerHeader>
-                          <Form method="post" className="">
-
-                            <Input type='hidden' name="userEmail" defaultValue={user.email} />
-
-                            <ul className="grid gap-3 text-sm mt-3">
-                              <li className="flex items-center justify-between">
-                                <span className="text-muted-foreground">
-                                  Change looks?
-                                </span>
-                                <IndeterminateCheckbox
-                                  className='  border-[#ff0202]'
-                                  id='necessary'
-                                  name='newLook'
-                                  checked={newLook === 'on'}
-                                  onChange={() => {
-                                    if (newLook === 'off') {
-                                      setNewLook('on')
-                                    } else {
-                                      setNewLook('off')
-                                    }
-                                  }}
-                                />
-                              </li>
-                            </ul>
-                            <div className='flex justify-between items-center mt-5 mb-5' >
-                              <DrawerClose asChild>
-                                <Button variant="outline">Cancel</Button>
-                              </DrawerClose>
-                              <ButtonLoading
-                                size="sm"
-                                className="w-auto cursor-pointer mb-5 mt-5 bg-primary"
-                                type="submit"
-                                name='intent'
-                                value='appearance'
-                                isSubmitting={isSubmitting}
-                                onClick={() => {
-                                  toast.success(`Update complete.`)
-                                }}
-                                loadingText="Updating information..."
-                              >
-                                Update
-                              </ButtonLoading>
-                            </div>
-                          </Form>
-                        </div>
-                      </DrawerContent>
-                    </Drawer>
-                  </div>
-                </CardContent>
-                <CardFooter className="border-t px-6 py-4  border-border">
-
-                </CardFooter>
               </Card>
             </div>
           </div>
@@ -965,7 +965,7 @@ function ProfileForm({ user, deFees, dataPDF, statsData, comsRecords, getNewLook
         <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4  p-4 md:gap-8 md:p-10">
           <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
             <div className="grid gap-6">
-              <Card x-chunk="dashboard-04-chunk-1">
+              <Card x-chunk="dashboard-04-chunk-1" className="bg-background">
                 <Form method='post' >
                   <CardHeader>
                     <CardTitle>   Automations</CardTitle>
@@ -1306,7 +1306,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Mainbody() {
-  const { user, deFees, dataPDF, statsData, comsRecords, getNewLook, automations } = useLoaderData()
+  const { user, deFees, statsData, comsRecords, getNewLook, automations } = useLoaderData()
   const userIsAllowed = getUserIsAllowed(user, ["ADMIN"]);
   console.log(userIsAllowed, user, user.role); // Expected output: true
   return (
@@ -1314,7 +1314,7 @@ export default function Mainbody() {
       <div className="flex h-[100%] w-[98vw] left-0">
 
         <div className='w-[98%]'>
-          <ProfileForm user={user} deFees={deFees} dataPDF={dataPDF} statsData={statsData} comsRecords={comsRecords} getNewLook={getNewLook} automations={automations} />
+          <ProfileForm user={user} deFees={deFees} statsData={statsData} comsRecords={comsRecords} getNewLook={getNewLook} automations={automations} />
         </div>
       </div>
     </>

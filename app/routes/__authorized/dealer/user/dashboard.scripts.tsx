@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, } from 'react';
-import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger, TextArea } from "~/components/ui";
+import { Badge, Button, Input, Label, Select, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectTrigger, SelectValue, Tabs, TabsContent, TabsList, TabsTrigger, TextArea, Separator, buttonVariants } from "~/components/ui";
 import { Form, Link, useActionData, useLoaderData, useNavigation, } from "@remix-run/react";
 import {
   Card,
@@ -19,6 +19,7 @@ import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import { type ActionFunction, defer } from '@remix-run/node';
 import { prisma } from '~/libs';
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area"
+import { cn } from '~/components/ui/utils';
 
 export const meta = () => {
   return [
@@ -92,7 +93,8 @@ export default function Shight() {
       unique.push(mail.subCat);
     }
     return unique;
-  }, [])); function handleEmailClick(category) {
+  }, []));
+  function handleEmailClick(category) {
     setSelectedCategory(category);
     const sameCategoryMails = scripts.filter(item => item.category === category);
     const uniqueSubcategories = sameCategoryMails.reduce((unique, item) => {
@@ -113,17 +115,6 @@ export default function Shight() {
   const [selectedSubcategory, setSelectedSubcategory] = useState(false);
   const [selectedScript, setSelectedScript] = useState(false);
 
-  const handleCategoryClick = () => {
-    setSelectedCategorySize(true);
-    setSelectedSubcategory(false);
-    setSelectedScript(false);
-  };
-
-  const handleSubcategoryClick = () => {
-    setSelectedCategorySize(false);
-    setSelectedSubcategory(true);
-    setSelectedScript(false);
-  };
 
   const handleScriptClick = () => {
     setSelectedCategorySize(false);
@@ -217,6 +208,68 @@ export default function Shight() {
       </div >
     );
   };
+
+
+  function SidebarNav({ className, items, ...props }) {
+    const [category, setCategory] = useState()
+    const [subCategory, setSubCategory] = useState()
+
+    const uniqueCategories = Array.from(new Set(items.map(item => item.category)));
+
+
+    return (
+      <nav className={cn("flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1 h-auto max-h-[500px] overflow-y-auto", className)} {...props}>
+        {uniqueCategories.map((uniqueCategory) => (
+          <div key={uniqueCategory} >
+            <Button
+              variant='ghost'
+              onClick={() => {
+                //setCategory(category === uniqueCategory ? null : uniqueCategory);
+                setCategory(uniqueCategory);
+              }}
+              className={cn(
+                category === uniqueCategory
+                  ? "bg-[#232324] hover:bg-muted/50 w-[90%] text-foreground"
+                  : "hover:bg-muted/50 w-[90%] hover:text-foreground",
+                "justify-start text-muted-foreground"
+              )}
+            >
+              {uniqueCategory}
+            </Button>
+            {category === uniqueCategory && (
+              <div>
+                {items
+                  .filter((subItem) => subItem.category === uniqueCategory)
+                  .map((subItem) => (
+                    <Button
+                      variant='ghost'
+                      key={subItem.subCat}
+                      onClick={() => {
+                        setSubCategory(subItem.subCat);
+                        const getMail = scripts.find((mail) => mail.subCat === subCategory)
+                        console.log(getMail, subCategory, category, subItem, 'in subitem')
+                        setSelectedRecord(getMail);
+                        setSelectedScript(true)
+                        console.log(selectedRecord, 'selectedRecord')
+                      }}
+                      className={cn(
+                        "ml-4 hover:bg-muted/50 w-[90%] hover:text-foreground",
+                        "justify-start text-muted-foreground"
+                      )}
+                    >
+                      {subItem.subCat}
+                    </Button>
+                  ))}
+              </div>
+            )}
+          </div>
+        ))
+        }
+      </nav >
+    );
+  }
+
+
   return (
     <>
       <Tabs defaultValue="account" className="w-[90%]">
@@ -225,131 +278,86 @@ export default function Shight() {
           <TabsTrigger value="password">Teleprompter</TabsTrigger>
         </TabsList>
         <TabsContent value="account">
-          <div className=" mx-auto flex h-[70vh] text-foreground  ">
-            <Card className={` mx-2 transition delay-300 duration-1000  ease-in-out ${selectedCategorySize ? 'grow' : 'w-[15%]'} `}        >
-              <CardHeader onClick={handleCategoryClick} className='cursor-pointer'>
-                <CardTitle>Category</CardTitle>
-              </CardHeader>
-              {selectedCategorySize && (
-                <>
-                  <CardContent className="space-y-2 ">
-                    <div className="h-auto max-h-[700px] space-y-1 overflow-y-auto  ">
-                      {scripts.reduce((unique, mail) => {
-                        if (!unique.some(item => item.category === mail.category)) {
-                          unique.push(mail);
-                        }
-                        return unique;
-                      }, []).map((mail, index) => (
-                        <div key={index} className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary  hover:text-primary active:border-primary" onClick={() => {
-                          handleSubcategoryClick();
-                          handleEmailClick(mail.category)
-                        }}>
-                          <div className="m-2 flex items-center justify-between">
-                            <p className="text-lg font-bold text-[#fff]">{mail.category}</p>
-                          </div>
-                        </div>
-                      ))}
+          <div className="hidden space-y-6 p-10 pb-16 md:block">
+            <div className="space-y-0.5">
+              <h2 className="text-xl tracking-tight">Scripts</h2>
+              <p className="text-muted-foreground">
+                A sales person tool chest.
+              </p>
+            </div>
+            <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+              <aside className="-mx-4 lg:w-1/5">
+                <SidebarNav items={scripts} />
+              </aside>
+              <div className="flex-1 lg:max-w-2xl">
 
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <p>Your ability to close increases with the amount of tools at your disposal. A mechanic without a tire iron wouldnt be able to change a tire. So why dont more sales people take better care of their scripts, closes, and such?</p>
-                  </CardFooter>
-                </>
-              )}
-            </Card>
+                {selectedScript && selectedRecord && (
+                  <Card className={`mx-2  transition delay-300 duration-1000 ease-in-out bg-background`}        >
+                    <CardContent className="space-y-2 ">
+                      {selectedScript && (
+                        <div className="h-auto max-h-[600px] overflow-y-auto">
+                          {selectedRecord && (
+                            <div className="">
+                              <div className="m-2 mx-auto w-[95%]   hover:border-primary  hover:text-primary active:border-primary">
+                                <div className="m-2  items-center justify-between p-2 text-foreground">
+                                  <p className='text-[20px]'>{selectedRecord.category} </p>
+                                  <div className='flex   text-muted-foreground'>
+                                    <p className='text-[16px]'>{selectedRecord.subCat}</p>
+                                  </div>
+                                  <div className='group flex items-center' >
+                                    <p className='mt-5'>{selectedRecord.content}</p>
+                                    <div className='flex' >
+                                      <Button variant='ghost' size='icon' className="cursor-pointer  opacity-0 transition-opacity group-hover:opacity-100" onClick={() => copyText(selectedRecord.content)} >
+                                        {copiedText !== selectedRecord.content && <Copy className=" hover:text-primary" />}
+                                        {copiedText === selectedRecord.content && <FaCheck className="hover:text-primary" />}
+                                      </Button>
+                                    </div>
+                                  </div>
 
-            <Card
-              className={`mx-2 transition delay-300 duration-1000  ease-in-out ${selectedSubcategory ? 'grow' : 'w-[15%]'} `}
-            >
-              <CardHeader onClick={handleSubcategoryClick} className='cursor-pointer'>
-                <CardTitle>Sub-category</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                {selectedSubcategory && (
-                  <div className='h-auto max-h-[70vh] overflow-y-auto'>
-                    <div className=" space-y-1  ">
-                      {subcategories.map((subCat, index) => (
-                        <div
-                          key={index}
-                          className="m-2 mx-auto w-[95%] cursor-pointer rounded-md border border-[#ffffff4d] hover:border-primary hover:text-primary active:border-primary"
-                          onClick={() => {
-                            handleSubCatLisstClick(scripts.find((mail) => mail.subCat === subCat));
-                            handleScriptClick();
-                          }}
-                        >
-                          <div className="m-2 flex items-center justify-between">
-                            <p className="text-lg font-bold text-[#fff]">{subCat}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                                  <div className='mt-5 flex  items-center justify-between text-[#fff]'>
 
-
-            <Card className={`mx-2  transition delay-300 duration-1000 ease-in-out ${selectedScript ? 'grow' : 'w-[15%]'} `}        >
-              <CardHeader onClick={handleScriptClick} className='cursor-pointer'>
-                <CardTitle>Script</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-2 ">
-                {selectedScript && (
-                  <div className="h-auto max-h-[70vh] overflow-y-auto">
-                    {selectedRecord && (
-                      <div className="">
-                        <div className="m-2 mx-auto w-[95%]   hover:border-primary  hover:text-primary active:border-primary">
-                          <div className="m-2  items-center justify-between p-2 text-foreground">
-                            <p className='text-[20px]'>{selectedRecord.category}: {selectedRecord.subCat}</p>
-                            <div className='flex justify-between text-[16px]  text-[#fff]'>
-                              <p className='text-[20px]'>{selectedRecord.name}</p>
-                            </div>
-                            <p className='mt-5'>{selectedRecord.content}</p>
-                            <div className='mt-5 flex  items-center justify-between text-[#fff]'>
-                              <div className='flex' >
-                                <Button variant='outline' className="cursor-pointer bg-transparent text-foreground  hover:border-primary hover:bg-transparent hover:text-primary" onClick={() => copyText(selectedRecord.content)} >
-
-                                  {copiedText !== selectedRecord.content && <Copy strokeWidth={1.5} className="text-lg hover:text-primary" />}
-                                  {copiedText === selectedRecord.content && <FaCheck strokeWidth={1.5} className="text-lg hover:text-primary" />}
-                                </Button>
-
+                                    <Form method='post'>
+                                      <input type='hidden' name='name' value={selectedRecord.name} />
+                                      <input type='hidden' name='body' value={selectedRecord.content} />
+                                      <input type='hidden' name='category' value={selectedRecord.category} />
+                                      <input type='hidden' name='userEmail' value={user.email} />
+                                      <input type='hidden' name='subject' value='Copied from scripts' />
+                                      <input type='hidden' name='title' value='Copied from scripts' />
+                                      <input type='hidden' name='dept' value='sales' />
+                                      <ButtonLoading
+                                        size="lg"
+                                        name='intent'
+                                        value='createTemplate'
+                                        type='submit'
+                                        isSubmitting={isSubmitting}
+                                        onClick={() => {
+                                          toast.message('Helping you become the hulk of sales...')
+                                        }}
+                                        loadingText="Loading..."
+                                        className="w-auto cursor-pointer border-border bg-transparent text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
+                                      >
+                                        Save As Template
+                                      </ButtonLoading>
+                                    </Form>
+                                  </div>
+                                </div>
                               </div>
-                              <Form method='post'>
-                                <input type='hidden' name='name' value={selectedRecord.name} />
-                                <input type='hidden' name='body' value={selectedRecord.content} />
-                                <input type='hidden' name='category' value={selectedRecord.category} />
-                                <input type='hidden' name='userEmail' value={user.email} />
-                                <input type='hidden' name='subject' value='Copied from scripts' />
-                                <input type='hidden' name='title' value='Copied from scripts' />
-                                <input type='hidden' name='dept' value='sales' />
-                                <ButtonLoading
-                                  size="lg"
-                                  name='intent'
-                                  value='createTemplate'
-                                  type='submit'
-                                  isSubmitting={isSubmitting}
-                                  onClick={() => {
-                                    toast.message('Helping you become the hulk of sales...')
-                                  }}
-                                  loadingText="Loading..."
-                                  className="w-auto cursor-pointer border-white bg-transparent text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
-                                >
-                                  Save As Template
-                                </ButtonLoading>
-                              </Form>
                             </div>
-                          </div>
+                          )}
                         </div>
-                      </div>
-                    )}
-                  </div>
+                      )}
+                    </CardContent>
+                  </Card>
                 )}
-              </CardContent>
-            </Card>
-
+                <div className='mt-auto gap-3'>
+                  <Separator className='w-[95%] border-border bg-border text-border mx-auto my-4' />
+                  <p className='text-muted-foreground mt-auto '>Your ability to close increases with the amount of tools at your disposal. A mechanic without a tire iron wouldnt be able to change a tire. So why dont more sales people take better care of their scripts, closes, and such?</p>
+                </div>
+              </div>
+            </div>
           </div>
         </TabsContent>
+
         <TabsContent value="password">
           <Prompter />
         </TabsContent>

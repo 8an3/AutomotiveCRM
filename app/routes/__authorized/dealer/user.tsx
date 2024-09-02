@@ -73,7 +73,7 @@ export default function Quote() {
     },
     {
       title: "Document Builder",
-      to: "/dealer/document/builder",
+      to: "/dealer/document/builder/client",
     },
     {
       title: "Finance Products",
@@ -89,15 +89,12 @@ export default function Quote() {
       <div className=" space-y-6 p-10 pb-16 h-screen w-screen">
         <div className="space-y-0.5">
           <h2 className="text-2xl font-bold tracking-tight text-foreground">User Settings</h2>
-          <p className="text-foreground">
-            Manage your account settings and set e-mail preferences.
-          </p>
+          <Separator className="text-border border-border bg-border w-[95%] mb-5" />
+
         </div>
         <div className="  my-6" />
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <aside className="-mx-4 lg:w-1/8 text-foreground">
-            <p className='text-foreground'>Menu</p>
-            <hr className="text-foreground w-[90%] mb-5" />
+          <aside className="-mx-4 lg:w-64 text-foreground">
             <SidebarNav items={sidebarNavItems} />
           </aside>
           <div className="flex-1  w-auto">

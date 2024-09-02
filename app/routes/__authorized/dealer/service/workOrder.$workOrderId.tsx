@@ -1159,7 +1159,7 @@ export default function Dashboard() {
                                       defaultValue={result.tech}
                                       name='tech'
                                     >
-                                      <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                                      <SelectTrigger className="w-full bg-background text-foreground border border-border mt-3">
                                         <SelectValue defaultValue={result.tech} />
                                       </SelectTrigger>
                                       <SelectContent className='bg-background text-foreground border border-border'>
@@ -1262,7 +1262,7 @@ export default function Dashboard() {
                                     <input type='hidden' name='date' value={date} />
                                     <input type='hidden' name='id' value={order.id} />
                                     <input type='hidden' name='apptId' value={result.id} />
-                                    <Button type="submit" name='intent' className='text-foreground' value='updateWorkOrderAppt'>Save changes</Button>
+                                    <Button type="submit" name='intent' size='sm' className='text-foreground mt-3' value='updateWorkOrderAppt'>Save changes</Button>
                                   </DialogFooter>
                                 </Form>
                               </DialogContent>
@@ -1325,6 +1325,7 @@ export default function Dashboard() {
                             <SelectItem value="Waiter">Waiter</SelectItem>
                             <SelectItem value="In Works">In Works</SelectItem>
                             <SelectItem value="Work Completed">Work Completed</SelectItem>
+                            <SelectItem value="Scheduled For Delivery">Scheduled For Delivery</SelectItem>
                             <SelectItem value="Closed">Closed</SelectItem>
                           </SelectGroup>
                         </SelectContent>

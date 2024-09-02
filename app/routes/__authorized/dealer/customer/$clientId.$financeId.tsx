@@ -223,6 +223,7 @@ import {
   ContextMenuTrigger,
 } from "~/components/ui/context-menu"
 import { EditableText } from "~/components/actions/shared";
+import UnitDialog from "~/components/dashboard/inventory/diaolog";
 
 
 /**  const [formData, setFormData] = useState({
@@ -257,8 +258,8 @@ export const headers = ({ loaderHeaders, parentHeaders }) => {
 };
 
 export default function Dashboard() {
-  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown, salesPeople, financeManagers, services, dealerImage, tax, orders } = useLoaderData();
-  console.log(orders, tax, services, ' inside workordersales2222')
+  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown, salesPeople, financeManagers, services, dealerImage, tax, orders, assignedUnit, tableData } = useLoaderData();
+  // console.log(orders, tax, services, ' inside workordersales2222')
 
   const [financeIdState, setFinanceIdState] = useState();
   const fetcher = useFetcher();
@@ -2566,6 +2567,7 @@ export default function Dashboard() {
     minute: '2-digit',
     second: '2-digit',
   };
+
   const createEvent = (date, type, title, userName) => ({
     date: new Date(date).toLocaleDateString('en-US', options2),
     type,
@@ -2656,6 +2658,8 @@ export default function Dashboard() {
   ]
 
   const sortedEvents = events.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  /*
   async function getData() {
     const res = await fetch('/dealer/dashboard/inventory/moto')
     if (!res.ok) {
@@ -2675,9 +2679,10 @@ export default function Dashboard() {
   const dataFetcher = (url) => fetch(url).then((res) => res.json());
   const { data: swrTable } = useSWR("http://localhost:3000/dealer/dashboard/inventory/moto", dataFetcher);
   const result = swrTable
-  // console.log(result, 'result')
+   console.log(result, 'result')
   const [tableData, setTableData] = useState(result);
-
+*/
+  console.log(tableData, 'table data')
   let sync = useFetcher();
 
   useEffect(() => {
@@ -2824,7 +2829,7 @@ export default function Dashboard() {
   }
   // service
 
-  console.log(orders, tax, services, ' inside workordersales')
+  //  console.log(orders, tax, services, ' inside workordersales')
 
   let workOrder = useFetcher();
   let ref = useRef();
@@ -2848,7 +2853,7 @@ export default function Dashboard() {
   const [firstPageService, setFirstPageService] = useState(true);
   const [secPageService, setSecPageService] = useState(false);
   const [serviceOrder, setServiceOrder] = useState();
-  console.log(serviceOrder, 'serviceOrder')
+  // console.log(serviceOrder, 'serviceOrder')
   function handleNextPage() {
     if (firstPageService === true) {
       setFirstPageService(false)
@@ -3236,16 +3241,47 @@ export default function Dashboard() {
                         </span>
                         <span>{finance.location}</span>
                       </li>
+                      {finance.stockNum && (
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">
+                            Stock Number
+                          </span>
+                          <span>{finance.stockNum}</span>
+                        </li>
+                      )}
+                      {finance.mileage && (
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">
+                            Mileage
+                          </span>
+                          <span>{finance.mileage}</span>
+                        </li>
+                      )}
+                      {finance.modelCode && (
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">
+                            Model Code
+                          </span>
+                          <span>{finance.modelCode}</span>
+                        </li>
+                      )}
+                      {finance.tag && (
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">
+                            Tag
+                          </span>
+                          <span>{finance.tag}</span>
+                        </li>
+                      )}
                     </ul>
                   </div>
                 </CardContent>
                 <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
-                  <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => handleProgressUnits()}>
-                    <Truck className="h-3.5 w-3.5" />
-                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                      Edit Progress
-                    </span>
-                  </Button>
+                  {finance.stockNum && assignedUnit && (
+                    <>
+                      <UnitDialog data={assignedUnit} user={user} />
+                    </>
+                  )}
                 </CardFooter>
               </Card>
               <Card x-chunk="dashboard-05-chunk-2" className="text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
@@ -3407,7 +3443,7 @@ export default function Dashboard() {
                           Edit Unit
                         </span>
                       </Button>
-                      <UnitPicker finance={finance} tableData={tableData} />
+                      <UnitPicker finance={finance} tableData={tableData} user={user} />
                       {/** salesPeople, financeManagers */}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -8377,7 +8413,33 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   const clientfileId = idSession.get('clientfileId')
   const financeId = idSession.get('financeId')
   const dashboardId = idSession.get('dashboardId')
-
+  if (intent === 'assignUnit') {
+    const update = await prisma.inventoryMotorcycle.update({
+      where: { id: formData.id },
+      data: {
+        financeId: formData.financeId,
+        sold: true,
+        status: 'Reserved',
+      }
+    })
+    const finance = await prisma.finance.update({
+      where: { id: formData.financeId },
+      data: {
+        stockNum: formPayload.stockNum,
+        year: formPayload.year,
+        brand: formPayload.brand,
+        model: formPayload.model,
+        mileage: formPayload.mileage,
+        color: formPayload.color,
+        model1: formPayload.model1,
+        msrp: formPayload.msrp,
+        vin: formPayload.vin,
+        model1: formPayload.model1,
+        inventoryMotorcycleId: formData.id
+      }
+    })
+    return json({ update, finance })
+  }
   if (intent === 'pushSubtotal') {
     const finance = await prisma.finance.findUnique({ where: { id: formData.financeId } })
     const subTotal = parseFloat(finance.accessories + formPayload.subTotal).toFixed(2)
@@ -10458,6 +10520,14 @@ export async function loader({ params, request }: DataFunctionArgs) {
   });
   const dealerImage = await prisma.dealerLogo.findUnique({ where: { id: 1 } })
   const services = await prisma.services.findMany({})
+  let assignedUnit
+  if (finance.stockNum.length > 1) {
+    assignedUnit = await prisma.inventoryMotorcycle.findUnique({
+      where: { id: finance.inventoryMotorcycleId },
+    })
+  }
+  const tableData = await prisma.inventoryMotorcycle.findMany({})
+
   //
   // ----------------------service -----------------------------
   let modelData = []
@@ -10497,7 +10567,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
     // code block
   }
 
-  return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2, dealerImage, services, tax, orders }));
+  return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2, dealerImage, services, tax, orders, tableData }));
 }
 
 function SidebarNav({ mergedFinanceList, finance }) {

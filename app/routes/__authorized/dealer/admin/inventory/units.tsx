@@ -558,27 +558,7 @@ export default function UnitInv() {
   };
 
   const columns = [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <IndeterminateCheckbox
-          checked={table.getIsAllRowsSelected()}
-          indeterminate={table.getIsSomeRowsSelected()}
-          onChange={table.getToggleAllRowsSelectedHandler()}
-          className='border-primary mx-auto'
-        />
-      ),
-      cell: ({ row }) => (
-        <div className="px-1">
-          <IndeterminateCheckbox
-            checked={row.getIsSelected()}
-            indeterminate={row.getIsSomeSelected()}
-            onChange={row.getToggleSelectedHandler()}
-            className='border-primary mx-auto'
-          />
-        </div>
-      ),
-    },
+
     {
       id: 'Unit File',
       accessorKey: "Unit File",

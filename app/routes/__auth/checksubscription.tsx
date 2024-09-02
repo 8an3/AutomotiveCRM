@@ -19,7 +19,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         console.log(subscriptionId, 'checking subscription');
         if (user?.returning === true) {
             if (subscriptionId === 'trialing' || subscriptionId === 'active') {
-                return redirect('/dealer/quote/Harley-Davidson');
+                return redirect('/dealer/quote/new/Harley-Davidson');
             } else {
                 return redirect('/subscribe');
             }

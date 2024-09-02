@@ -255,7 +255,7 @@ export default function RoadMap() {
           <SidebarNav items={items} />
         </nav>
         <div className="grid gap-6">
-          <Card x-chunk="dashboard-04-chunk-1">
+          <Card x-chunk="dashboard-04-chunk-1" className='bg-bakcground'>
             <CardHeader>
               <CardTitle>Roadmap Items</CardTitle>
               <CardDescription>

@@ -34,38 +34,38 @@ export const dataUserRoles: DataUserRole[] = [
     sequence: 5,
     symbol: "Sales",
     name: "Sales",
-    description: "Sales staff.",
+    description: "Sales associate selling vehicles.",
   },
 
   {
     sequence: 6,
     symbol: "Accessories",
     name: "Accessories",
-    description: "Accessories staff",
+    description: "Accessorizing the world one client at a time.",
   },
   {
     sequence: 7,
     symbol: "Parts",
     name: "Parts",
-    description: "Parts staff",
+    description: "Parts advisor helping customer while upselling popular products.",
   },
   {
     sequence: 8,
     symbol: "Service",
     name: "Service",
-    description: "Service writers",
+    description: "Service writers, booking in clients for service.",
   },
   {
     sequence: 9,
     symbol: "Technician",
     name: "Technician",
-    description: "",
+    description: "Fixing clients vehicles as they are brought in.",
   },
   {
     sequence: 10,
     symbol: "Recieving",
     name: "Recieving",
-    description: "",
+    description: "Manages the incoming products and organizes them for store.",
   },
 
   {
@@ -78,6 +78,18 @@ export const dataUserRoles: DataUserRole[] = [
     sequence: 12,
     symbol: "Finance Manager",
     name: "Finance Manager",
-    description: "Sales staff.",
+    description: "Upsells back end productss.",
+  },
+  {
+    sequence: 13,
+    symbol: "Delivery Driver",
+    name: "Delivery Driver",
+    description: "Delivery Driver.",
+  },
+  {
+    sequence: 14,
+    symbol: "Owner",
+    name: "Owner",
+    description: "Owner",
   },
 ];

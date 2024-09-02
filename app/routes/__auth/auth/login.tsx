@@ -89,7 +89,7 @@ export default function Welcome() {
     <>
       <div className="p-5 mb-4 bg-light rounded-3">
         <UnauthenticatedTemplate>
-          <Card className="max-w-[350px] w-[350px]  fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
+          <Card className="max-w-[350px] w-[350px]  fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] bg-background">
             <CardHeader>
               <CardTitle className="text-2xl">Login</CardTitle>
               <CardDescription>
@@ -125,7 +125,7 @@ export default function Welcome() {
       </div>
       <div className="p-5 mb-4 bg-light rounded-3">
         <AuthenticatedTemplate>
-          <Card className="max-w-[350px] w-[350px] fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
+          <Card className="max-w-[350px] w-[350px] fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] bg-background">
             <CardHeader>
               <CardTitle className="text-2xl"> Welcome back {activeAccount?.name}!
               </CardTitle>

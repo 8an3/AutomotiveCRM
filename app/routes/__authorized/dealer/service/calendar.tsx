@@ -14,7 +14,7 @@ import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import clsx from 'clsx'
 import { getSession, commitSession } from '~/sessions/auth-session.server';
 import rbc from "~/styles/rbc.css";
-import { Button, buttonVariants, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Popover, PopoverTrigger, PopoverContent, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, Input, Card, } from "~/components";
+import { Button, buttonVariants, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, Popover, PopoverTrigger, PopoverContent, Input, Card, } from "~/components";
 import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';
@@ -47,6 +47,17 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { ListFilter } from 'lucide-react'
 import useSWR from 'swr'
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select"
+import { ChevronsUpDown } from 'lucide-react'
 
 const useScreenSize = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -142,12 +153,24 @@ export default function DnDResource() {
       </Button>
     ))
   }
-
+  // old resouce toggle
   const [showResources, setShowResources] = useState(true);
 
   const toggleView = () => {
     setShowResources(prevState => !prevState);
   };
+  // source resource selector
+  const [selectedResource, setSelectedResource] = useState('all');
+
+  const handleResourceChange = (value) => {
+    setSelectedResource(value);
+
+  };
+
+  const filteredEvents = selectedResource === 'all'
+    ? myEvents
+    : myEvents.filter(event => event.resourceId === selectedResource);
+
 
   const CustomToolbar = ({
     label,
@@ -170,12 +193,6 @@ export default function DnDResource() {
 
         <span className="rbc-toolbar-label">{label}</span>
         <span className="ml-auto justify-end mr-5">
-          <Button
-            onClick={toggleView}
-            className='mr-3'
-          >
-            Toggle Resource View
-          </Button>
 
 
         </span>
@@ -337,6 +354,8 @@ export default function DnDResource() {
       resourceId: tech.username,
       resourceTitle: tech.name,
     })),
+    { resourceId: 'Deliveries', resourceTitle: 'Deliveries' }, // Static entry
+
   ];
 
 
@@ -410,7 +429,7 @@ export default function DnDResource() {
         <div className="large-screen-ui">
           <>
             <div className="h-[75px]  w-auto  border-b border-border bg-background text-foreground">
-              <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Calendar</h2>
+              <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Service Calendar</h2>
               <p className="text-muted-foreground   ml-[105px]  ">
               </p>
             </div>
@@ -430,6 +449,36 @@ export default function DnDResource() {
                         onSelect={setDate}
                         initialFocus
                       />
+                    </div>
+                    <div className='mt-3  mx-auto'>
+
+                      <Select
+                        value={selectedResource}
+                        onValueChange={(value) => {
+                          handleResourceChange(value)
+                          if (value === 'all') {
+                            setShowResources(true)
+                          } else {
+                            setShowResources(false)
+                          }
+                        }}
+                      >
+                        <SelectTrigger className="w-[180px]  mx-auto ">
+                          <SelectValue defaultValue={selectedResource === 'all' ? 'All Calendar Views' : selectedResource} />
+
+                        </SelectTrigger>
+                        <SelectContent className='bg-background border-border'>
+                          <SelectGroup>
+                            <SelectLabel>Calendar Views</SelectLabel>
+                            <SelectItem className='cursor-pointer' value="all">All Calendar Views</SelectItem>
+                            {resources.map(resource => (
+                              <SelectItem className='cursor-pointer' key={resource.resourceId} value={resource.resourceId}>
+                                {resource.resourceTitle}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className='flex-col justify-center' >
 
@@ -457,11 +506,9 @@ export default function DnDResource() {
                 <div className="flex w-[97%] justify-center overflow-clip">
                   {showResources ? (
                     <DragAndDropCalendar
-
                       resources={resources}
                       resourceIdAccessor={getResourceId}
                       resourceTitleAccessor={resourceTitle}
-
 
                       style={{
                         width: `calc(100vw - 310px)`,
@@ -473,15 +520,15 @@ export default function DnDResource() {
                         color: "white",
                       }}
                       selected={selected}
-                      defaultView={Views.DAY}
-                      events={myEvents}
+                      defaultView={Views.WEEK}
+                      events={filteredEvents}
                       localizer={localizer}
                       min={minTime}
                       max={maxTime}
                       date={date}
                       onNavigate={onNavigate}
-                      onView={onView}
-                      view={view}
+                      // onView={onView}
+                      //   view={view}
                       resizable
                       selectable
                       components={{
@@ -506,7 +553,7 @@ export default function DnDResource() {
                         color: "white",
                       }}
                       selected={selected}
-                      defaultView={Views.DAY}
+                      defaultView={Views.WEEK}
                       events={myEvents}
                       step={15}
                       showMultiDayTimes={true}
@@ -552,7 +599,43 @@ export default function DnDResource() {
   };
 
   /**
-             */
+                {showResources ? (
+                       ) : (
+                        <DragAndDropCalendar
+                          style={{
+                            width: `calc(100vw - 310px)`,
+                            height: "100vh",
+                            overflowX: "hidden",
+                            overflowY: "scroll",
+                            objectFit: "contain",
+                            overscrollBehavior: "contain",
+                            color: "white",
+                          }}
+                          selected={selected}
+                          defaultView={Views.WEEK}
+                          events={myEvents}
+                          step={15}
+                          showMultiDayTimes={true}
+                          localizer={localizer}
+                          min={minTime}
+                          max={maxTime}
+                          date={date}
+                          onNavigate={onNavigate}
+                          components={{
+                            toolbar: CustomToolbar,
+                            event: EventInfo,
+                          }}
+                          resizable
+                          selectable
+                          onEventDrop={moveEvent}
+                          onEventResize={resizeEvent}
+                          onSelectEvent={HandleSelectEvent}
+                          onSelectSlot={handleSelectSlot}
+                          eventPropGetter={eventPropGetter}
+
+                        // onClick={() => setOpenDatepickerModal(true)}
+                        />
+                      )}     */
 
   const SmallScreenUI = () => {
     return (
@@ -693,6 +776,8 @@ export async function loader({ request, params }: LoaderFunction) {
   });
   const techs = allUsers.filter(user =>
     user.role.name === 'Technician'
+
+    //  ||user.role.name === 'Delivery Driver'
   );
   // console.log(order)
   return json({ user, allServiceApts, techs })
@@ -928,82 +1013,91 @@ export function EventInfoModal({ user, open, handleClose, currentEvent, techs }:
   return (
     <>
       <Dialog open={open} onOpenChange={handleClose}>
-        <DialogContent className="w-[95%] md:w-[475px] border-border">
-          <DialogHeader>
-            <DialogTitle>
-              {currentEvent?.title}
-            </DialogTitle>
-            <DialogDescription>
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-3">
-            <div className="font-semibold">Appointment Details</div>
-            <ul className="grid gap-3">
-              <div className="relative mt-5">
-                <Select
-                  defaultValue={tech}
-                  name='tech'
-                  onValueChange={(value) => {
-                    const formData = new FormData();
-                    formData.append("aptId", data.id);
-                    formData.append("workOrderId", String(data.workOrderId));
-                    formData.append("techEmail", value);
-                    formData.append("intent", 'updateTechnician');
-                    submit(formData, { method: "post" });
-                  }}
-                >
-                  <SelectTrigger className="w-full bg-background text-foreground border border-border">
-                    <SelectValue defaultValue={tech} />
-                  </SelectTrigger>
-                  <SelectContent className='bg-background text-foreground border border-border'>
-                    <SelectGroup>
-                      <SelectLabel>Technicians</SelectLabel>
-                      {techs.map((user) => (
-                        <SelectItem key={user.email} value={user.email}>
-                          {user.username}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Assigned Tech</label>
-              </div>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Unit</span>
-                <span>{data.unit} </span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Mileage</span>
-                <span> {data.mileage && (data.mileage)}</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">VIN</span>
-                <span>{data.vin && (data.vin)}</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Tag</span>
-                <span>{data.tag && (data.tag)}</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Motor</span>
-                <span>{data.motor && (data.motor)}</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Color</span>
-                <span>{data.color && (data.color)}</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Writer</span>
-                <span>{data.writer}</span>
-              </li>
-              <li className="flex items-center justify-between">
-                <span className="text-[#8a8a93]">Location</span>
-                <span>{data.location && (data.location)}</span>
-              </li>
-            </ul>
-          </div>
+        <Form method='post'>
+          <DialogContent className="w-[95%] md:w-[475px] border-border">
+            <DialogHeader>
+              <DialogTitle>
+                <div className="relative mt-4">
+                  <Input
+                    name='title'
+                    defaultValue={currentEvent?.title}
+                    className={` bg-background text-foreground border border-border mt-3`}
+                  />
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Title</label>
+                </div>
+              </DialogTitle>
+              <DialogDescription>
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-3">
+              <div className="font-semibold">Appointment Details</div>
+              <ul className="grid gap-3">
+                <div className="relative mt-5">
+                  <Select
+                    defaultValue={tech}
+                    name='tech'
+                    onValueChange={(value) => {
+                      const formData = new FormData();
+                      formData.append("aptId", data.id);
+                      formData.append("workOrderId", String(data.workOrderId));
+                      formData.append("techEmail", value);
+                      formData.append("intent", 'updateTechnician');
+                      submit(formData, { method: "post" });
+                    }}
+                  >
+                    <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                      <SelectValue defaultValue={tech} />
+                    </SelectTrigger>
+                    <SelectContent className='bg-background text-foreground border border-border'>
+                      <SelectGroup>
+                        <SelectLabel>Technicians</SelectLabel>
+                        {techs.map((user) => (
+                          <SelectItem key={user.email} value={user.email}>
+                            {user.username}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Assigned Tech</label>
+                </div>
+                <li className="flex items-center justify-between">
+                  <span className="text-[#8a8a93]">Unit</span>
+                  <span>{data.unit} </span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-[#8a8a93]">Mileage</span>
+                  <span> {data.mileage && (data.mileage)}</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-[#8a8a93]">VIN</span>
+                  <span>{data.vin && (data.vin)}</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-[#8a8a93]">Tag</span>
+                  <span>{data.tag && (data.tag)}</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-[#8a8a93]">Motor</span>
+                  <span>{data.motor && (data.motor)}</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-[#8a8a93]">Color</span>
+                  <span>{data.color && (data.color)}</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-[#8a8a93]">Writer</span>
+                  <span>{data.writer}</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-[#8a8a93]">Location</span>
+                  <span>{data.location && (data.location)}</span>
+                </li>
+              </ul>
+            </div>
 
-        </DialogContent>
+          </DialogContent>
+        </Form>
       </Dialog >
     </>
   )

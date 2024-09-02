@@ -8,10 +8,6 @@ import chalk from 'chalk';
 import { dataUserRoles } from "~/data";
 import { prisma } from "~/libs";
 
-
-
-
-
 async function seed() {
   await seedTemplates();
   await seedmy24Canam();
@@ -4572,6 +4568,13 @@ export async function seedUsers() {
   const salesRole = await prisma.userRole.findFirst({ where: { symbol: "Sales" }, });
   const financeRole = await prisma.userRole.findFirst({ where: { symbol: "Finance Manager" }, });
   const technicianRole = await prisma.userRole.findFirst({ where: { symbol: "Technician" }, });
+  const deliveryDriverRole = await prisma.userRole.findFirst({ where: { symbol: "Delivery Driver" }, });
+  const serviceRole = await prisma.userRole.findFirst({ where: { symbol: "Service" }, });
+  const managerRole = await prisma.userRole.findFirst({ where: { symbol: "Manager" }, });
+  const accessoriesRole = await prisma.userRole.findFirst({ where: { symbol: "Accessories" }, });
+  const partsRole = await prisma.userRole.findFirst({ where: { symbol: "Parts" }, });
+  const recievingRole = await prisma.userRole.findFirst({ where: { symbol: "Recieving" }, });
+
   invariant(adminUserRole, "User Role with symbol ADMIN is not found");
   invariant(devUserRole, "User Role with symbol devUserRole is not found");
   invariant(salesRole, "User Role with symbol salesRole is not found");
@@ -4595,14 +4598,13 @@ export async function seedUsers() {
   });
 
 
-
   // creating technician
   console.log(chalk.yellow("creating technician..."));
   const technician = await prisma.user.create({
     data: {
       email: 'tech@email.com',
       name: "technician",
-      username: "Technician",
+      username: "Service",
       phone: "6138980771",
       dept: 'Technician',
       dealer: "Freedom H-D",
@@ -4627,7 +4629,7 @@ export async function seedUsers() {
       name: "technician2",
       username: "Technician2",
       phone: "6138980799",
-      dept: 'Technician',
+      dept: 'Service',
       dealer: "Freedom H-D",
       role: { connect: { id: technicianRole?.id } },
 
@@ -4644,9 +4646,191 @@ export async function seedUsers() {
       },
     },
   });
-  // creating admin
+  const deliveryDriver = await prisma.user.create({
+    data: {
+      email: 'deliveryDriver@email.com',
+      name: "Delivery Driver",
+      username: "Delivery Driver",
+      phone: "6138989999",
+      dept: 'Service',
+      dealer: "Freedom H-D",
+      role: { connect: { id: deliveryDriverRole?.id } },
+
+      customerSync: {
+        create: {
+          orderId: null
+        }
+      },
+      profile: {
+        create: {
+          headline: "I am the Delivery Driver",
+          bio: "The Delivery Driver at this dealer.",
+        },
+      },
+    },
+  });
+  const serviceWriter = await prisma.user.create({
+    data: {
+      email: 'servicewriterdemodealer1282@email.com',
+      name: "Service Writer",
+      username: "Service Writer",
+      phone: "6138980711",
+      dept: 'Service',
+      dealer: "Freedom H-D",
+      role: { connect: { id: serviceRole?.id } },
+      customerSync: {
+        create: {
+          orderId: null
+        }
+      },
+      profile: {
+        create: {
+          headline: "I am a service writer",
+          bio: "The service writer at this dealer.",
+        },
+      },
+    },
+  });
+  const serviceManager = await prisma.user.create({
+    data: {
+      email: 'serviceManager@email.com',
+      name: "Service Manager",
+      username: "Service Manager",
+      phone: "6138980722",
+      dept: 'Service',
+      dealer: "Freedom H-D",
+      role: { connect: { id: managerRole?.id } },
+      customerSync: {
+        create: {
+          orderId: null
+        }
+      },
+      profile: {
+        create: {
+          headline: "I am the service manager",
+          bio: "The service manager at this dealer.",
+        },
+      },
+    },
+  });
+  const pacManager = await prisma.user.create({
+    data: {
+      email: 'pacManager@email.com',
+      name: "PAC Manager",
+      username: "PAC Manager",
+      phone: "6138980733",
+      dept: 'PAC',
+      dealer: "Freedom H-D",
+      role: { connect: { id: managerRole?.id } },
+      customerSync: {
+        create: {
+          orderId: null
+        }
+      },
+      profile: {
+        create: {
+          headline: "I am the PAC manager",
+          bio: "The PAC manager at this dealer.",
+        },
+      },
+    },
+  });
+  const accessories = await prisma.user.create({
+    data: {
+      email: 'accessories@email.com',
+      name: "accessories",
+      username: "accessories",
+      phone: "6138980744",
+      dept: 'Accessories',
+      dealer: "Freedom H-D",
+      role: { connect: { id: accessoriesRole?.id } },
+      customerSync: {
+        create: {
+          orderId: null
+        }
+      },
+      profile: {
+        create: {
+          headline: "I am the PAC manager",
+          bio: "The PAC manager at this dealer.",
+        },
+      },
+    },
+  });
+  const parts = await prisma.user.create({
+    data: {
+      email: 'parts@email.com',
+      name: "parts",
+      username: "parts",
+      phone: "6138980755",
+      dept: 'Accessories',
+      dealer: "Freedom H-D",
+      role: { connect: { id: partsRole?.id } },
+      customerSync: {
+        create: {
+          orderId: null
+        }
+      },
+      profile: {
+        create: {
+          headline: "I am the parts advisor",
+          bio: "The parts advisor at this dealer.",
+        },
+      },
+    },
+  });
+  const recieving = await prisma.user.create({
+    data: {
+      email: 'recieving@email.com',
+      name: "Recieving",
+      username: "Recieving",
+      phone: "6138980766",
+      dept: 'PAC',
+      dealer: "Freedom H-D",
+      role: { connect: { id: recievingRole?.id } },
+      customerSync: {
+        create: {
+          orderId: null
+        }
+      },
+      profile: {
+        create: {
+          headline: "I am the recieving",
+          bio: "The recieving at this dealer.",
+        },
+      },
+    },
+  });
+  const adminAssistant = await prisma.user.create({
+    data: {
+      email: 'adminAssistantdemodealer1282@email.com',
+      name: "Admin Assistant",
+      username: "Admin Assistant",
+      phone: "6138980777",
+      dept: 'Admin',
+      dealer: "Freedom H-D",
+      role: { connect: { id: adminUserRole?.id } },
+      customerSync: {
+        create: {
+          orderId: null
+        }
+      },
+      profile: {
+        create: {
+          headline: "I am the Admin Assistant",
+          bio: "The Admin Assistant at this dealer.",
+        },
+      },
+    },
+  });
+
+  /* creating admin
   const stateSales = { "id": false, "SMS": false, "pdi": false, "tag": false, "vin": false, "bank": false, "lien": false, "lost": false, "msrp": false, "on60": false, "qc60": false, "sold": false, "trim": false, "ucda": false, "vinE": false, "year": false, "Other": false, "Phone": false, "admin": false, "brand": false, "color": false, "iRate": false, "invId": false, "motor": false, "nat60": false, "notes": false, "onTax": false, "oth60": false, "qcTax": false, "total": false, "dLCopy": false, "demoed": false, "funded": false, "labour": false, "model1": false, "months": false, "othTax": false, "quoted": false, "refund": false, "result": false, "signed": false, "visits": false, "weekly": false, "deposit": false, "freight": false, "insCopy": false, "mileage": false, "options": false, "userGap": false, "visited": false, "voidChq": false, "InPerson": false, "approved": false, "biweekly": false, "discount": false, "lastNote": false, "leadNote": false, "metParts": false, "otherTax": false, "progress": false, "referral": false, "refunded": false, "signBill": false, "stockNum": false, "tradeVin": false, "turnOver": false, "userName": false, "weeklyqc": false, "activixId": false, "aptShowed": false, "biweekOth": false, "bookedApt": false, "cancelled": false, "commodity": false, "createdAt": false, "delivered": false, "licensing": false, "loanOther": false, "modelCode": false, "otherDocs": false, "paintPrem": false, "pickUpSet": false, "seenTrade": false, "testDrive": false, "tradeDesc": false, "tradeInsp": false, "tradeMake": false, "tradeTrim": false, "tradeYear": false, "updatedAt": false, "userEmail": false, "userOther": false, "weeklyOth": false, "bikeStatus": false, "biweeklNat": false, "biweeklyqc": false, "customerWS": false, "dealNumber": false, "docsSigned": false, "financeApp": false, "idVerified": false, "leadSource": false, "lienPayout": false, "loanNumber": false, "metFinance": false, "metManager": false, "metService": false, "pickUpDate": false, "pickUpTime": false, "testDrForm": false, "tradeColor": false, "tradeValue": false, "weeklylNat": false, "accessories": false, "aptNoShowed": false, "depositMade": false, "discountPer": false, "userExtWarr": false, "clientfileId": false, "firstPayment": false, "liceningDone": false, "loanMaturity": false, "optionsTotal": false, "rustProofing": false, "theRealActId": false, "tradeMileage": false, "tradeRepairs": false, "userLoanProt": false, "deliveredDate": false, "licensingSent": false, "nat60WOptions": false, "oth60WOptions": false, "tradeLocation": false, "deliveryCharge": false, "financeManager": false, "lifeDisability": false, "metSalesperson": false, "timesContacted": false, "userTireandRim": false, "applicationDone": false, "desiredPayments": false, "salesCommission": false, "userServicespkg": false, "dealerCommission": false, "depositTakenDate": false, "sendToFinanceNow": false, "totalWithOptions": false, "biweekOthWOptions": false, "financeCommission": false, "urgentFinanceNote": false, "weeklyOthWOptions": false, "biweeklNatWOptions": false, "financeApplication": false, "financeManagerName": false, "weeklylNatWOptions": false, "otherTaxWithOptions": false, "financeDeptProductsTotal": false }
   console.log(chalk.yellow("creating admin..."));
+  const stateSales2 = { "id": false, "SMS": false }
+
+*/
+
   const admin = await prisma.user.create({
     data: {
       email: REMIX_ADMIN_EMAIL,
@@ -4659,7 +4843,7 @@ export async function seedUsers() {
 
       customerSync: { create: { orderId: null } },
       ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
-      columnStateSales: { create: { state: stateSales } },
+      columnStateSales: { create: { state: { "id": false, "SMS": false, "pdi": false, "tag": false, "vin": false, "bank": false, "lien": false, "lost": false, "msrp": false, "on60": false, "qc60": false, "sold": false, "trim": false, "ucda": false, "vinE": false, "year": false, "Other": false, "Phone": false, "admin": false, "brand": false, "color": false, "iRate": false, "invId": false, "motor": false, "nat60": false, "notes": false, "onTax": false, "oth60": false, "qcTax": false, "total": false, "dLCopy": false, "demoed": false, "funded": false, "labour": false, "model1": false, "months": false, "othTax": false, "quoted": false, "refund": false, "result": false, "signed": false, "visits": false, "weekly": false, "deposit": false, "freight": false, "insCopy": false, "mileage": false, "options": false, "userGap": false, "visited": false, "voidChq": false, "InPerson": false, "approved": false, "biweekly": false, "discount": false, "lastNote": false, "leadNote": false, "metParts": false, "otherTax": false, "progress": false, "referral": false, "refunded": false, "signBill": false, "stockNum": false, "tradeVin": false, "turnOver": false, "userName": false, "weeklyqc": false, "activixId": false, "aptShowed": false, "biweekOth": false, "bookedApt": false, "cancelled": false, "commodity": false, "createdAt": false, "delivered": false, "licensing": false, "loanOther": false, "modelCode": false, "otherDocs": false, "paintPrem": false, "pickUpSet": false, "seenTrade": false, "testDrive": false, "tradeDesc": false, "tradeInsp": false, "tradeMake": false, "tradeTrim": false, "tradeYear": false, "updatedAt": false, "userEmail": false, "userOther": false, "weeklyOth": false, "bikeStatus": false, "biweeklNat": false, "biweeklyqc": false, "customerWS": false, "dealNumber": false, "docsSigned": false, "financeApp": false, "idVerified": false, "leadSource": false, "lienPayout": false, "loanNumber": false, "metFinance": false, "metManager": false, "metService": false, "pickUpDate": false, "pickUpTime": false, "testDrForm": false, "tradeColor": false, "tradeValue": false, "weeklylNat": false, "accessories": false, "aptNoShowed": false, "depositMade": false, "discountPer": false, "userExtWarr": false, "clientfileId": false, "firstPayment": false, "liceningDone": false, "loanMaturity": false, "optionsTotal": false, "rustProofing": false, "theRealActId": false, "tradeMileage": false, "tradeRepairs": false, "userLoanProt": false, "deliveredDate": false, "licensingSent": false, "nat60WOptions": false, "oth60WOptions": false, "tradeLocation": false, "deliveryCharge": false, "financeManager": false, "lifeDisability": false, "metSalesperson": false, "timesContacted": false, "userTireandRim": false, "applicationDone": false, "desiredPayments": false, "salesCommission": false, "userServicespkg": false, "dealerCommission": false, "depositTakenDate": false, "sendToFinanceNow": false, "totalWithOptions": false, "biweekOthWOptions": false, "financeCommission": false, "urgentFinanceNote": false, "weeklyOthWOptions": false, "biweeklNatWOptions": false, "financeApplication": false, "financeManagerName": false, "weeklylNatWOptions": false, "otherTaxWithOptions": false, "financeDeptProductsTotal": false } } },
       profile: { create: { headline: "I am Admin", bio: "The administrator of this app." } },
     },
   });
@@ -5926,129 +6110,7 @@ export async function seedUsers() {
 
     }
   })
-  const columns = {
-    "dl": false,
-    "id": false,
-    "pdi": false,
-    "city": false,
-    "msrp": false,
-    "note": false,
-    "on60": false,
-    "qc60": false,
-    "sold": false,
-    "vinE": false,
-    "admin": false,
-    "color": false,
-    "email": false,
-    "iRate": false,
-    "nat60": false,
-    "onTax": false,
-    "oth60": false,
-    "phone": false,
-    "qcTax": false,
-    "total": false,
-    "demoed": false,
-    "labour": false,
-    "model1": false,
-    "months": false,
-    "postal": false,
-    "refund": false,
-    "result": false,
-    "signed": false,
-    "visits": false,
-    "weekly": false,
-    "address": false,
-    "deposit": false,
-    "freight": false,
-    "trailer": false,
-    "userGap": false,
-    "visited": false,
-    "approved": false,
-    "biweekly": false,
-    "discount": false,
-    "lastNote": false,
-    "metParts": false,
-    "otherTax": false,
-    "painPrem": false,
-    "progress": false,
-    "province": false,
-    "referral": false,
-    "stockNum": false,
-    "tradeVin": false,
-    "turnOver": false,
-    "turnover": false,
-    "weeklyqc": false,
-    "aptShowed": false,
-    "biweekOth": false,
-    "bookedApt": false,
-    "commodity": false,
-    "delivered": false,
-    "financeId": false,
-    "licensing": false,
-    "modelCode": false,
-    "paintPrem": false,
-    "pickUpSet": false,
-    "seenTrade": false,
-    "testDrive": false,
-    "timeOfDay": false,
-    "tradeMake": false,
-    "tradeTrim": false,
-    "tradeYear": false,
-    "userEmail": false,
-    "userOther": false,
-    "weeklyOth": false,
-    "biweeklNat": false,
-    "biweeklyqc": false,
-    "docsSigned": false,
-    "financeApp": false,
-    "metFinance": false,
-    "metManager": false,
-    "metService": false,
-    "pickUpTime": false,
-    "tradeColor": false,
-    "tradeValue": false,
-    "unitPicker": false,
-    "weeklylNat": false,
-    "accessories": false,
-    "aptNoShowed": false,
-    "depositMade": false,
-    "discountPer": false,
-    "followUpDay": false,
-    "userExtWarr": false,
-    "clientfileId": false,
-    "rustProofing": false,
-    "tradeRepairs": false,
-    "userLoanProt": false,
-    "contactMethod": false,
-    "deliveredDate": false,
-    "nat60WOptions": false,
-    "oth60WOptions": false,
-    "singleFinNote": false,
-    "timeToContact": false,
-    "typeOfContact": false,
-    "deliveryCharge": false,
-    "documentUpload": false,
-    "lifeDisability": false,
-    "metSalesperson": false,
-    "timesContacted": false,
-    "userTireandRim": false,
-    "desiredPayments": false,
-    "userServicespkg": false,
-    "totalWithOptions": false,
-    "biweekOthWOptions": false,
-    "weeklyOthWOptions": false,
-    "biweeklNatWOptions": false,
-    "financeApplication": false,
-    "weeklylNatWOptions": false,
-    "otherTaxWithOptions": false
-  }
-  const state = JSON.stringify(columns)
-  const userEmail = 'skylerzanth@outlook.com'
-  await prisma.columnStateSales.upsert({
-    where: { userEmail },
-    create: { userEmail, state },
-    update: { state },
-  })
+
   console.log(chalk.green("Admin user seeded!"));
 
   const dev = await prisma.user.create({
@@ -6199,7 +6261,7 @@ export async function seedUsers() {
     }
   })
   console.log(chalk.green("finance2 user seeded!"));
-  return ({ admin, dev, autoAdmin, finance2, sales2, finance, clientfile, createInPerson, createPhone, createSMS, createEmail, })
+  return ({ admin, dev, autoAdmin, finance2, sales2, finance, clientfile, createInPerson, createPhone, createSMS, createEmail, recieving, parts, accessories, pacManager, serviceManager, serviceWriter, deliveryDriver, adminAssistant })
 }
 export async function SeedLockFinanceTerminals() {
   console.log(chalk.yellow("Seeding lock finance terminals ..."));
@@ -6304,6 +6366,15 @@ export async function Board() {
 
   // roadmap, control panel and board in dev mode
   const completed = [
+    { board: "dev", column: "ROLES", item: "forgot driver, need to add delivery schedule, add it as a resource like the techs need to give the ability to set deliveries to everyoneyt" },
+    { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
+    { board: "dev", column: "ISSUE", item: "need to be able to choose one resource id in calendar and display it in service" },
+
+    { board: "dev", column: "ISSUE", item: "unit picker - redesign" },
+    { board: "dev", column: "quote", item: "unit picker - once model is selected with customer=, table will render in modal with the avialble units for sale right on the quote if the customer wants to go for it" },
+    { board: "dev", column: "INFASTRUCTURE", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try - this could also be - set up demo site where, sign in is just inputing the email like technician@email.com and theyre logged in as the tech, or service writer and etc" },
+    { board: "dev", column: "docs", item: "^^^^^ used for final tesing ^^^^^" },
+
     { board: "dev", column: "service", item: "service writer dash" },
     { board: "dev", column: "service", item: "tech dash" },
     { board: "dev", column: "GET DONE NOW", item: "use swr with auto revalidation for workorders so it updates in real time to get rid of the issue of 1 work order only open, set to fast on work orders for service writers but slow on tech's page" },
@@ -6639,36 +6710,66 @@ export async function Board() {
   ]
   const getDoneNow = [
     { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
-    { board: "dev", column: "ISSUE", item: "unit picker - redesign" },
 
-    { board: "dev", column: "DEALER ONBOARDING", item: "finish dealer greeting and what to do steps for dealer to take" },
-    { board: "dev", column: "INFASTRUCTURE", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try - this could also be - set up demo site where, sign in is just inputing the email like technician@email.com and theyre logged in as the tech, or service writer and etc" },
-    { board: "dev", column: "docs", item: "^^^^^ used for final tesing ^^^^^" },
+    { board: "dev", column: "DEALER ONBOARDING", item: "finish dealer greeting - first step complete, need to set email once CRM is ready that would be sent from dev dashboard, dev dashboard needs to accomadate crm leads and clients, add notes capability for crmcleints" },
 
 
     { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH USER DOCS -----" },
     { board: "dev", column: "ISSUE", item: "user docs button that is page dynamic so its just one button to press to learn about the page and it directs you to the right video to learn instead of having a doc section " },
-    { board: "dev", column: "docs", item: "Videos for docs" },
+    { board: "dev", column: "docs", item: "-----  VIDEOS FOR DOCS -----" },
     { board: "dev", column: "docs", item: "scripts / templates" },
-    { board: "dev", column: "docs", item: "whole overview" },
     { board: "dev", column: "docs", item: "quotes" },
-    { board: "dev", column: "docs", item: "dashboard" },
-    { board: "dev", column: "docs", item: "finance dashboard" },
+    { board: "dev", column: "docs", item: "sales" },
+    { board: "dev", column: "docs", item: "finance" },
+    { board: "dev", column: "docs", item: "calendar" },
+    { board: "dev", column: "docs", item: "sales manager" },
+    { board: "dev", column: "docs", item: "unit inventory" },
+
+    { board: "dev", column: "docs", item: "pac manager" },
+    { board: "dev", column: "docs", item: "accessories" },
+    { board: "dev", column: "docs", item: "receiving" },
+
+    { board: "dev", column: "docs", item: "service manager" },
+    { board: "dev", column: "docs", item: "service writer" },
+    { board: "dev", column: "docs", item: "techs" },
+
+    { board: "dev", column: "docs", item: "admin" },
+
     { board: "dev", column: "docs", item: "user settings" },
     { board: "dev", column: "docs", item: "document builder" },
+    { board: "dev", column: "docs", item: "whole overview" },
+    { board: "dev", column: "docs", item: "leader board" },
 
 
     { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH SMS AND EMAIL TESTING BEFORE RELEASE -----" },
-    { board: "dev", column: "WIP", item: "mass email/sms - wip" },
-    { board: "dev", column: "DONE NEEDS TESTING", item: "mass sms - wip" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "email" },
+    { board: "dev", column: "DONE NEEDS TESTING", item: "email update styling so its not akward" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "sms" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "webhook for incoming emails, save notifiation and messeages" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "use same system as notifications to check on new mail - USE SWR" },
 
+    { board: "dev", column: "ISSUE", item: "----- FINAL TESTING ON PROD SITE -----" },
+    { board: "dev", column: "ROLES", item: "service manager" },
+    { board: "dev", column: "ROLES", item: "service writer" },
+    { board: "dev", column: "ROLES", item: "service writer - menu needs to be fixed" },
+    { board: "dev", column: "ROLES", item: "tech" },
+
+    { board: "dev", column: "ROLES", item: "sales manager" },
+    { board: "dev", column: "ROLES", item: "sales" },
+    { board: "dev", column: "ROLES", item: "finance" },
+
+    { board: "dev", column: "ROLES", item: "pac manager" },
+    { board: "dev", column: "ROLES", item: "receiving" },
+    { board: "dev", column: "ROLES", item: "accessories" },
+
+    { board: "dev", column: "ROLES", item: "admin" },
+    { board: "dev", column: "ROLES", item: "it" },
+    { board: "dev", column: "ROLES", item: "dev" },
+
+
+
 
     { board: "dev", column: "ISSUE", item: "***** BACKBURNER BUT NEEDS TO BE DONE ASAP DOES NOT NEED TO BE DONE FOR RELEASE *****" },
-    { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
     { board: "dev", column: "GET DONE NOW", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase in managers dash" },
     { board: "dev", column: "GET DONE NOW", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down" },
     { board: "dev", column: "ISSUE", item: "FIX MANAGER SECTION" },
@@ -6685,7 +6786,8 @@ export async function Board() {
     { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
   ]
   const WIP = [
-    { board: "dev", column: "quote", item: "unit picker - once model is selected with customer=, table will render in modal with the avialble units for sale right on the quote if the customer wants to go for it" },
+    { board: "dev", column: "WIP", item: "mass email - wip" },
+    { board: "dev", column: "DONE NEEDS TESTING", item: "mass sms - wip" },
 
     { board: "dev", column: "WIP", item: "have your own csi reporting for the dealer that can be sent to customers JUST NEED TO MAKE MOCK EMAIL FOR IT" },
     { board: "dev", column: "INFASTRUCTURE", item: "cell phone site versions for product ordering, unit inventory intake for service writers/managers to quickly take in unit orders, service quoting, search for products, search for units, orders so employees can work on them on the go, in the back getting items or on with customers on floor and as soon they are ready to buy they can just hit print receipt and collect the money instead of waiting for a till if there is none" },

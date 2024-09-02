@@ -64,13 +64,12 @@ export default function DashboardPage() {
 
   return (
     <>
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mx-auto">
-          <Card className="lg:col-span-1">
-            <CardHeader className='bg-muted/50'>
-              <CardTitle>Roadmap Menu</CardTitle>
-            </CardHeader>
-            <CardContent className="max-h-[500px] h-full overflow-y-auto">
+          <div>
+            <p className='text-2xl'>Roadmap Menu</p>
+            <Separator className='border-border bg-border text-border w-[90%] mb-3' />
+            <div className="max-h-[500px] h-full overflow-y-auto">
               <nav className={cn("flex space-x-2 flex-row max-w-[95%] lg:flex-col lg:space-x-0 lg:space-y-1 mt-3",)}    >
                 {columnsWithItems.map((item) => (
                   <Button
@@ -92,20 +91,19 @@ export default function DashboardPage() {
                 ))
                 }
               </nav >
-            </CardContent>
-            <CardFooter className='bg-muted/50'>
-              <div className="flex-col font-bold mt-3">
-                <p>
-                  Projects Completed: {completed.length}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  Projects in progess: {WIP.length}
-                </p>
-              </div>
-            </CardFooter>
-          </Card>
+            </div>
+            <Separator className='border-border bg-border text-border w-[90%] mt-3' />
 
-          <Card className="lg:col-span-2">
+            <div className="flex-col font-bold mt-3">
+              <p>
+                Projects Completed: {completed.length}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Projects in progess: {WIP.length}
+              </p>
+            </div>
+          </div>
+          <Card className="lg:col-span-2  bg-background overflow-y-clip">
             <CardHeader className='bg-muted/50'>
               <CardTitle>Roadmap Items</CardTitle>
             </CardHeader>
@@ -119,7 +117,7 @@ export default function DashboardPage() {
               </ul>
             </CardContent>
             <CardFooter className='bg-muted/50 mt-auto flex-col justify-self-end '>
-              <div className='flex justify-between mt-3'>
+              <div className="flex-col font-bold mt-3">
                 <p>Projects to be completed: {roadMapItems.length}</p>
                 {name === 'GET IT DONE NOW' && (
                   <p className="text-xs text-muted-foreground"> Items to complete:  {getDoneNow.length}</p>
@@ -167,6 +165,7 @@ export default function DashboardPage() {
                   <p className="text-xs text-muted-foreground"> Dealer on-boarding: {dealerOnboarding.length}</p>
                 )}
               </div>
+
             </CardFooter>
           </Card>
         </div>
@@ -215,11 +214,15 @@ export const metadata = {
 const completed = [
   { board: "dev", column: "service", item: "service writer dash" },
   { board: "dev", column: "service", item: "tech dash" },
+  { board: "dev", column: "GET DONE NOW", item: "use swr with auto revalidation for workorders so it updates in real time to get rid of the issue of 1 work order only open, set to fast on work orders for service writers but slow on tech's page" },
+  { board: "dev", column: "WIP", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
+  { board: "dev", column: "quote", item: "set up more parts pages - started - Manitou done - switch started" },
+  { board: "dev", column: "MANAGER", item: "manager / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
+  { board: "dev", column: "admin", item: "have it populate api keys so managers can hand them out" },
   { board: "dev", column: "accessories", item: "acc dash" },
   { board: "dev", column: "parts", item: "parts specfic page to print label, make changes etc, have search table that switch from table to part view using use state like the one in newleads" },
   { board: "dev", column: "MANAGER", item: "have all managers stuff within managers so dashboard would have sales, acc, parts, and service" },
   { board: "dev", column: "admin", item: "for making admin dash, go custom try to replicate sales dash but go all out... here you can even do context menu's aand everything, tab it by clientfile, finance, acc order, workorder, sales and in sales quickly sort by sales person by month user filters like u used in receivng" },
-
   { board: "dev", column: "GET DONE NOW", item: "put swr places it needs to be, part, unit, workorder, like the way you did on sales dashbaord" },
   { board: "dev", column: "parts", item: "parts dash" },
   { board: "dev", column: "parts", item: "shpping and receiving dash" },
@@ -231,12 +234,10 @@ const completed = [
   { board: "dev", column: "GET DONE NOW", item: "workorder/workorderid add  appts tab where you can see select and edit appts, maybe add?" },
   { board: "dev", column: "GET DONE NOW", item: "workorder/workorderid when adding part pull part status before saving" },
   { board: "dev", column: "GET DONE NOW", item: "aprts and acc -1 part when sold at parts/acc counters or when parts fulfills an order for service or sales " },
-
   { board: "dev", column: "GET DONE NOW", item: "end of day reports, choose date so you can print any day" },
   { board: "dev", column: "ISSUE", item: "accessories/parts differiantiati between parts and acc by sellingDept on dashboard" },
   { board: "dev", column: "DONE NEEDS TESTING", item: "invite user section where it send an email with links to the crm and" },
   { board: "dev", column: "ISSUE", item: "man / imprt exprort test import and putmore exports and fix exports since we changed db" },
-
   { board: "dev", column: "WIP", item: "manager Dashboard" },
   { board: "dev", column: "WIP", item: "admin dash" },
   { board: "dev", column: "done needs testing", item: "need to test all functions due to database changes" },
@@ -287,7 +288,6 @@ const completed = [
   { board: "dev", column: "SERVICE", item: "once tech is done with servicing a unit, if a wo isnt assigned have a waiter board where he can get his next service wo" },
   { board: "dev", column: "SERVICE", item: "service board to have a section with buttons that adds the most purchased services to the work order making it a breeze for the desk to produce quotes fast, that even inputs the part numbers, hours to complete, etc will need to make a dashboard where the service manager can set this up, maybe even produce a list of common parts associated with those jobs incase the customer doesn't like that specifc tire" },
   { board: "dev", column: "SERVICE", item: "try to make it so the service writers dont have to type anything in barely, maybe even have a section of most typed comments, have scanner in service as well so the can jkust scan parts instead of inputing part numbers" },
-
   { board: "dev", column: "WIP", item: "Finance Dashboard" },
   { board: "dev", column: "IDEAS", item: "trllo board for users" },
   { board: "dev", column: "ISSUE", item: "export in managers section - export csv files of customers, inventory etc" },
@@ -403,7 +403,6 @@ const completed = [
   { board: "dev", column: "USER", item: "fields to add - triggerFieldList in automations" },
   { board: "dev", column: "customer", item: "add api to import new leads" },
   { board: "dev", column: "notifications", item: "upcoming appt - wip" },
-  { board: "dev", column: "quote", item: "unit picker - once model is selected with customer=, table will render in modal with the avialble units for sale right on the quote if the customer wants to go for it" },
   { board: "dev", column: "notifications", item: "instead of somweething fancy and expensive jsut use db and have it laod on each render, and have page reload afdter 10 mins or something of inactivty - wip" },
   { board: "dev", column: "sales process", item: "internal IM system would help with these things, relying on the note system within the custemer files is just stupid - https://github.com/remix-run/examples/tree/main/sse-chat" },
   { board: "dev", column: "ISSUE", item: "pre populate random dealer info to start customer can always change it" },
@@ -436,7 +435,6 @@ const completed = [
   { board: "dev", column: "DASH", item: "import / export inventory" },
   { board: "dev", column: "ADMIN", item: "redesign admin page" },
   { board: "dev", column: "DASH", item: "finance manager dash" },
-  { board: "dev", column: "sales process", item: "electronic handovers - when you're sitting there customer says yes let's go financing instead of clunkily or very like just not efficiently going to find the f&I if they're not in the office it's going to look for them you know bring them to folder all this garbage and then go back to the customer bring them over when they're ready instead push a buttoon so that way it immediately notifies them cuz like you know when they have customers or when they don't it's already done in the systewm, the deals already built in the system so they don't have to build it at all or anything and they could just run from there so they can either reply be there in 2 seconds or be there in 5 minutes cuz they're on a call or something like that and instead of salesperson getting up going over you know leaving the customer instead they could just be with the customer the entire time and then literally just have that right person just come up into the office and make it seem like a really tight run ship same thing with sales managers the offers that are in the office at his desk or whatever he gets a notification that this customer, your customer in front of you want to get a deal done and he wants to get an XYZ dollars he can just reply to you in the system immediately and get it done for you instead of you know let me go find find him you should never have to leave the customer and it tighters everything up as far as the process goes and the customers experience is going to be like wow these guys know what they're doing they're running a really tight ship everything's quick it's fast like they obviously know what they're doing include the ability to search the inventory on the unit u picked with the custoemr so without leaving the qquote u know its in styock with what colors" },
   { board: "dev", column: "sales process", item: "to add to last item - put a non removablew modal for when client is ready to finance when at the dealer that will lock the app of the finance managers till someone clicks accept unless they are already currently in a file, need to find a way to kick them off the file after a period of inactivty to ensure they dont cheat the system" },
   { board: "dev", column: "client file", item: "change checkbox section so only finance can change finance items but display once they are checked off" },
   { board: "dev", column: "ADMIN", item: "redesign admin page" },
@@ -505,6 +503,9 @@ const completed = [
   { board: "dev", column: "TASK", item: "Put a copy text button for each script" },
   { board: "dev", column: "USER", item: "Take off contact and script upload since it's in the menu now" },
   { board: "dev", column: "DASH", item: "instead of sorting the table to see what deliveries are, have a 3-day rolling list, one less thing to sort on the table, the same in-person appt, not follow-up calls" },
+
+
+
   { board: "dev", column: "quote", item: "apt list breakdown on profile with delete and edit options" },
   { board: "dev", column: "DASH", item: "change filter input to dropdown based on column selection" },
   { board: "dev", column: "DASH", item: "have it on top of the dashboard so it displays every morning and you can select a button to hide so you never forget about deliveries" },
@@ -545,57 +546,92 @@ const completed = [
 
 ]
 const getDoneNow = [
-  { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
+  { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
+  { board: "dev", column: "ISSUE", item: "unit picker - redesign" },
 
+  { board: "dev", column: "DEALER ONBOARDING", item: "finish dealer greeting and what to do steps for dealer to take" },
+  { board: "dev", column: "INFASTRUCTURE", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try - this could also be - set up demo site where, sign in is just inputing the email like technician@email.com and theyre logged in as the tech, or service writer and etc" },
+  { board: "dev", column: "docs", item: "^^^^^ used for final tesing ^^^^^" },
+
+
+  { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH USER DOCS -----" },
+  { board: "dev", column: "ISSUE", item: "user docs button that is page dynamic so its just one button to press to learn about the page and it directs you to the right video to learn instead of having a doc section " },
+  { board: "dev", column: "docs", item: "Videos for docs" },
+  { board: "dev", column: "docs", item: "scripts / templates" },
+  { board: "dev", column: "docs", item: "whole overview" },
+  { board: "dev", column: "docs", item: "quotes" },
+  { board: "dev", column: "docs", item: "dashboard" },
+  { board: "dev", column: "docs", item: "finance dashboard" },
+  { board: "dev", column: "docs", item: "user settings" },
+  { board: "dev", column: "docs", item: "document builder" },
+
+
+  { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH SMS AND EMAIL TESTING BEFORE RELEASE -----" },
+  { board: "dev", column: "WIP", item: "mass email/sms - wip" },
+  { board: "dev", column: "DONE NEEDS TESTING", item: "mass sms - wip" },
+  { board: "dev", column: "DONE NEEDS TESTING", item: "email" },
+  { board: "dev", column: "DONE NEEDS TESTING", item: "sms" },
+  { board: "dev", column: "DONE NEEDS TESTING", item: "webhook for incoming emails, save notifiation and messeages" },
+  { board: "dev", column: "DONE NEEDS TESTING", item: "use same system as notifications to check on new mail - USE SWR" },
+
+
+  { board: "dev", column: "ISSUE", item: "***** BACKBURNER BUT NEEDS TO BE DONE ASAP DOES NOT NEED TO BE DONE FOR RELEASE *****" },
+  { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
+  { board: "dev", column: "GET DONE NOW", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase in managers dash" },
+  { board: "dev", column: "GET DONE NOW", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down" },
+  { board: "dev", column: "ISSUE", item: "FIX MANAGER SECTION" },
+  { board: "dev", column: "ISSUE", item: "FIX ADMIN SECTION" },
+  { board: "dev", column: "ISSUE", item: "need winter storage dash for service / winter storage long term" },
+  { board: "dev", column: "ISSUE", item: "Parts order printout and workorder printout for srevice" },
   { board: "dev", column: "GET DONE NOW", item: "saving doc templates, see if you can save big json strings in database - make template master sheets designated for specific purposes that way the values used are for that specific type of document with a legend on the side incase they delete something they should where they click and it copies the value it needs" },
 
-  { board: "dev", column: "GET DONE NOW", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase in managers dash" },
 
-  { board: "dev", column: "GET DONE NOW", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down" },
-  { board: "dev", column: "ISSUE", item: "FIX ADMIN AND MANAGER SECTIONS" },
-  { board: "dev", column: "ISSUE", item: "Parts order printout and workorder printout for srevice" },
 ]
 const issue = [
   { board: "dev", column: "ISSUE", item: "end of day report, sales people arent printing out" },
-  { board: "dev", column: "ISSUE", item: "need winter storage dash for service / winter storage long term" },
-  { board: "dev", column: "ISSUE", item: "user docs instead of having a doc section have button where it brings them to utube video to teach them about page" },
   { board: "dev", column: "accessories", item: "dealer/accessories/newOrder/cm06lhi4u0001lb03xvaq4gwu print receipt not working in prod" },
   { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
 ]
 const WIP = [
+  { board: "dev", column: "quote", item: "unit picker - once model is selected with customer=, table will render in modal with the avialble units for sale right on the quote if the customer wants to go for it" },
+
   { board: "dev", column: "WIP", item: "have your own csi reporting for the dealer that can be sent to customers JUST NEED TO MAKE MOCK EMAIL FOR IT" },
-  { board: "dev", column: "WIP", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
   { board: "dev", column: "INFASTRUCTURE", item: "cell phone site versions for product ordering, unit inventory intake for service writers/managers to quickly take in unit orders, service quoting, search for products, search for units, orders so employees can work on them on the go, in the back getting items or on with customers on floor and as soon they are ready to buy they can just hit print receipt and collect the money instead of waiting for a till if there is none" },
 
-  { board: "dev", column: "WIP", item: "mass email/sms - wip" },
   { board: "dev", column: "WIP", item: "clientfile/financeid cc user for notes" },
-  { board: "dev", column: "WIP", item: "https://developers.klaviyo.com/en/reference/get_campaigns" },
 ]
 const doneneedstesting = [
-  { board: "dev", column: "GET DONE NOW", item: "use swr with auto revalidation for workorders so it updates in real time to get rid of the issue of 1 work order only open, set to fast on work orders for service writers but slow on tech's page" },
-
-  { board: "dev", column: "DONE NEEDS TESTING", item: "use same system as notifications to check on new mail - USE SWR" },
-  { board: "dev", column: "DONE NEEDS TESTING", item: "webhook for incoming emails, save notifiation and messeages" },
-  { board: "dev", column: "DONE NEEDS TESTING", item: "mass sms - wip" },
-  { board: "dev", column: "DONE NEEDS TESTING", item: "email" },
-  { board: "dev", column: "DONE NEEDS TESTING", item: "sms" },
   { board: "dev", column: "DONE NEEDS TESTING", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
 ]
 const BACKBURNER = [
   { board: "dev", column: "BACKBURNER", item: "set up more parts pages - started - Manitou done - switch started" },
-  { board: "dev", column: "BACKBURNER", item: "payment processor for purchases?" },
-  { board: "dev", column: "BACKBURNER", item: "have it populate api keys so managers can hand them out" },
-  { board: "dev", column: "BACKBURNER", item: "cross platform ad manager, post it once here and push it to different providors" },
+  { board: "dev", column: "BACKBURNER", item: "ADMIN DASH - have it populate api keys so managers can hand them out" },
   { board: "dev", column: "BACKBURNER", item: "email / sms campaigns" },
-  { board: "dev", column: "BACKBURNER", item: "fb msgr integration" },
+  { board: "dev", column: "WIP", item: "^^^^^ https://developers.klaviyo.com/en/reference/get_campaigns" },
+
 ]
 const ideas = [
+  { board: "dev", column: "SALES", item: "sales bot - take care of some of the sales process - uses natural language processing and machine learning to assist in automated contract negotiations based on predefined parameters." },
+  { board: "dev", column: "SALES", item: "sales bot 2 - customer onboarding" },
+  { board: "dev", column: "SALES", item: "sales bot 3 - after sales" },
+  { board: "dev", column: "SALES", item: "payment processor for purchases?" },
+  { board: "dev", column: "SALES", item: "cross platform ad manager, post it once here and push it to different providors" },
+  { board: "dev", column: "SALES", item: "fb msgr integration" },
+
+
   { board: "dev", column: "IDEAS", item: "service calendar - select mechanic and it only shows that mechanics appts" },
   { board: "dev", column: "IDEAS", item: "save form to local storage, never loose data for a internet hiccup or outage" },
   { board: "dev", column: "IDEAS", item: "have blue book values on quote section" },
   { board: "dev", column: "IDEAS", item: "service dash - tab where it shows customers who havent had a service in 6 months" },
-  { board: "dev", column: "dash", item: "dynamic dashboard widgets" },
   { board: "dev", column: "IDEAS", item: "idea for a chart current contact time, 1 day 7 days 14 days 30 days 60 days 90 days" },
+
+
+  { board: "dev", column: "dash", item: "dynamic dashboard widgets" },
+
+
+  { board: "dev", column: "INFASTRUCTURE", item: "have a second non-cloud option, either as a rack for a server or tower for a non tech orientated dealer to be hosted on site but would need a license key that needs a new token every 30 days/6 months/12 months to operate based on payment plan, hardware to be paid upfront before build, payments start once activated at dealer" },
+
+
   { board: "dev", column: "PAID FEATURE - ai", item: "Ai assistant to book apointments, complete and etc like gowrench or just a work flow to customers to guide themselves" },
   { board: "dev", column: "PAID FEATURE - ai", item: "Ai assistant to give hints on what to do next like a reminder" },
   { board: "dev", column: 'PAID FEATURE - ai', item: 'have ai take in last 5 emails with customer and suggest your next communication/script - not done yet but easy enough to complete in components folder' },
@@ -610,9 +646,7 @@ const sales = [
   { board: "dev", column: "SALES", item: "finance section in finance file, have it where it can be switch to manual mode only where there are no calculations being done" },
   { board: "dev", column: "SALES", item: "finish className={${isCompleted ? bg-[#30A46C]: bg-primary} in finance file" },
   { board: "dev", column: "SALES", item: "Call center Section" },
-  { board: "dev", column: "SALES", item: "sales bot - take care of some of the sales process - uses natural language processing and machine learning to assist in automated contract negotiations based on predefined parameters." },
-  { board: "dev", column: "SALES", item: "sales bot 2 - customer onboarding" },
-  { board: "dev", column: "SALES", item: "sales bot 3 - after sales" },
+
 ]
 const automation = [
   { board: "dev", column: "AUTOMATION", item: "customer set time before delivery of what to bring" },
@@ -623,21 +657,13 @@ const service = [
   { board: "dev", column: "service", item: "scan incoming crates and add them into inventory or something, maybe a inbox for the admin to convert them to inventory" },
 ]
 const docs = [
-  { board: "dev", column: "docs", item: "Videos for docs" },
-  { board: "dev", column: "docs", item: "scripts / templates" },
-  { board: "dev", column: "docs", item: "whole overview" },
-  { board: "dev", column: "docs", item: "quotes" },
-  { board: "dev", column: "docs", item: "dashboard" },
-  { board: "dev", column: "docs", item: "finance dashboard" },
-  { board: "dev", column: "docs", item: "user settings" },
-  { board: "dev", column: "docs", item: "document builder" },
+
 ]
 const owner = [
   { board: "dev", column: "OWNER", item: "Owners dashboard" },
   { board: "dev", column: "OWNER", item: "Owner Section" },
 ]
 const quote = [
-  { board: "dev", column: "quote", item: "set up more parts pages - started - Manitou done - switch started" },
 ]
 const parts = [
 
@@ -646,17 +672,12 @@ const accessories = [
 
 ]
 const manager = [
-  { board: "dev", column: "MANAGER", item: "manager / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
 ]
 const admin = [
-  { board: "dev", column: "admin", item: "have it populate api keys so managers can hand them out" },
 ]
 const dealerOnboarding = [
-  { board: "dev", column: "DEALER ONBOARDING", item: "free simple install with insructions, fee for total install - for dealer that already have an it team it would save them money" },
 ]
 const infastructure = [
-  { board: "dev", column: "INFASTRUCTURE", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try - this could also be - set up demo site where, sign in is just inputing the email like technician@email.com and theyre logged in as the tech, or service writer and etc" },
-  { board: "dev", column: "INFASTRUCTURE", item: "have a second non-cloud option, either as a rack for a server or tower for a non tech orientated dealer to be hosted on site but would need a license key that needs a new token every 30 days/6 months/12 months to operate based on payment plan, hardware to be paid upfront before build, payments start once activated at dealer" },
 ]
 const dash = [
 ]

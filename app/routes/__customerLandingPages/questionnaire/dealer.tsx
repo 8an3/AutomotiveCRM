@@ -12,23 +12,14 @@ export default function DealerQuestionnaire() {
       <Form method='post' action='/questionnaire/completed'>
         <div className="border border-solid border-[#eaeaea] rounded-md my-[40px] mx-auto p-[20px] max-w-[465px] rounded-md">
           <h1 className="text-black text-[24px] font-normal text-center p-0 my-[30px] mx-0">
-            Dealer Questionnaire
+            Dealer Onboarding
           </h1>
           <p className="text-black text-[14px] leading-[24px]">
-            This is just some basic information we need to get you up and running logistically, it's ok you don't have all the answers with you now. We can always update the information later, the important pieces are phone number, contact name and email.
+            For now we just need the basics to get everything set up...
           </p>
           <section>
             <hr className='text-center w-[90%] my-[16px] mx-auto border-t-[#e6e6e6]' />
 
-            <div className="flex">
-              <p className="text-black text-[14px] leading-[24px]">
-                Before we can set you up, we need some basic information to get
-                your dedicated server up and running. Once completed, we will
-                get your site live and send you an email as soon as it's done,
-                along with all the key pieces of information you need to start
-                using the application.
-              </p>
-            </div>
             <p className='my-[15px] mx-[10px] font-[24px] font-[#262626]'> Dealer Information</p>
             <hr className='text-center w-[90%] my-[16px] mx-auto border-t-[#e6e6e6]' />
             <div className="relative mt-[25px]">
@@ -37,7 +28,7 @@ export default function DealerQuestionnaire() {
                 name='dealerName'
                 className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
               />
-              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  "> Name</label>
+              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">  Name - Dealer</label>
             </div>
             <div className="relative mt-5">
               <Input
@@ -45,7 +36,7 @@ export default function DealerQuestionnaire() {
                 name='dealerAddress'
                 className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
               />
-              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  "> Address</label>
+              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  "> Address - Dealer</label>
             </div>
             <div className="relative mt-5">
               <Input
@@ -53,7 +44,7 @@ export default function DealerQuestionnaire() {
                 name='dealerCity'
                 className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
               />
-              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">  City</label>
+              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  "> City</label>
             </div>
             <div className="relative mt-5">
               <Input
@@ -77,40 +68,56 @@ export default function DealerQuestionnaire() {
                 type="text"
                 className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
               />
-              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Phone Number</label>
+              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  "> Phone Number - Dealer</label>
             </div>
             <div className="relative mt-5">
               <Input
-                name='dealerEmail'
+                name='ownerName'
                 type="text"
                 className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
               />
-              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Email</label>
+              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">First and last name - Owner</label>
+            </div>
+            <div className="relative mt-5">
+              <Input
+                name='ownerEmail'
+                type="text"
+                className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
+              />
+              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  "> Email - Owner</label>
             </div>
 
             <div className="relative mt-5">
               <Input
-                name='dealerContact'
+                name='ownerPhone'
                 type="text"
                 className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
               />
-              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Contact</label>
+              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  "> Phone - Owner</label>
             </div>
             <div className="relative mt-5">
               <Input
-                name='dealerAdminContact'
+                name='adminName'
                 type="text"
                 className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
               />
-              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Admin Contact</label>
+              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">First and last name - Admin (or IT dept manager/lead)</label>
             </div>
             <div className="relative mt-5">
               <Input
-                name='dealerEmailAdmin'
+                name='adminEmail'
                 type="text"
                 className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
               />
-              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Admin Email</label>
+              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  "> Email - Admin</label>
+            </div>
+            <div className="relative mt-5">
+              <Input
+                name='adminPhone'
+                type="text"
+                className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
+              />
+              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  "> Phone - Admin</label>
             </div>
             <div className="relative mt-5">
               <Input
@@ -118,20 +125,20 @@ export default function DealerQuestionnaire() {
                 type="text"
                 className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
               />
-              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Etransfer Email</label>
+              <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Dealer Etransfer Email (If your dealer uses etransfers to collect payments/deposits)</label>
             </div>
             <hr className='text-center w-[90%] my-[16px] mx-auto border-t-[#e6e6e6]' />
             <div className="flex">
               <p className="text-black text-[14px] leading-[24px]">
-                Your new application will be up shortly, and will reach out the moment it is ready for you.
+                Your new CRM will be up shortly, and will reach out the moment it is ready for you.
               </p>
             </div>
 
             <p className="text-black text-[14px] leading-[24px]">
               Again, thank you for your business, and I hope this brings you as
-              much of an increase in business as it did for me,
+              much of an increase in business as it did for us,
               <br />
-              Skyler Zanth
+              DSA Team
               <br />
             </p>
           </section>

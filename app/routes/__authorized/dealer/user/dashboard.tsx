@@ -29,8 +29,8 @@ export const loader = async ({ request }) => {
 
 export default function MusicPlayerDemo() {
   return (
-    <div className=" w-full overflow-clip mx-auto ">
-      <div className="h-full px-8 py-6 mx-auto mt-10">
+    <div className=" max-w-[98%] max-h-[98%] h-auto w-auto overflow-hidden mx-auto ">
+      <div className=" px-8 py-6 mx-auto mt-10">
         <Outlet />
       </div>
     </div>

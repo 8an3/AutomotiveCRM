@@ -46,7 +46,7 @@ import SearchFunction2 from './dealer/searchTable';
 import useSWR from 'swr';
 import SearchByOrderFunction from './dealer/searchByOrder';
 import { toast } from 'sonner';
-
+import Warning from '~/overviewUtils/images/warning.svg'
 
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -393,10 +393,10 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
     },
   ]
   const userIsFinance = user.positions.some(
-    (pos) => pos.position === 'Finance Manager' || pos.position === 'Administrator'
+    (pos) => pos.position === 'Finance Manager' || pos.position === 'Administrator' || pos.position === 'Manager'
   );
   const userIsSales = user.positions.some(
-    (pos) => pos.position === 'Sales' || pos.position === 'Administrator'
+    (pos) => pos.position === 'Sales' || pos.position === 'Administrator' || pos.position === 'Manager'
   );
   const userIsManager = user.positions.some(
     (pos) => pos.position === 'Manager' || pos.position === 'Administrator'
@@ -408,10 +408,18 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
     (pos) => pos.position === 'DEV' || pos.position === 'Administrator'
   );
   const userIsSERVICE = user.positions.some(
-    (pos) => pos.position === 'Service' || pos.position === 'Administrator'
+    (pos) => pos.position === 'Service' ||
+      pos.position === 'Administrator' ||
+      pos.position === 'Delivery Driver' ||
+      pos.position === 'Technician' ||
+      pos.position === 'Manager'
   );
   const userIsACC = user.positions.some(
-    (pos) => pos.position === 'Accessories' || pos.position === 'Administrator'
+    (pos) => pos.position === 'Accessories' ||
+      pos.position === 'Administrator' ||
+      pos.position === 'Recieving' ||
+      pos.position === 'Parts' ||
+      pos.position === 'Manager'
   );
 
   const userIsACCESSORIES = getUserIsAllowed(user, ["ACCESSORIES"]);
@@ -647,6 +655,17 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
   const [finance, setFinance] = useState(false)
   const [manager, setManager] = useState(false)
 
+  const options = {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  };
+
+
   if (user.email === 'skylerzanth@outlook.com') {
     return (
       <>
@@ -688,13 +707,13 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                   Messages
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
-                  <DropdownMenuSubContent className="bg-background w-[300px] border border-border">
+                  <DropdownMenuSubContent className="bg-background w-[385px] border border-border max-h-[500px] h-auto overflow-y-auto">
                     {messages ? messages.map((item, index) => {
                       return (
                         <DropdownMenuItem
                           key={index}
-                          className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
-            ${item.read === true ? 'bg-background' : 'bg-[#181818]'}`}
+                          className={`focus:bg-accent focus:text-accent-foreground  justify-start mx-auto cursor-pointer h-[85px] border-b border-border bg-background hover:bg-[#111111] `}
+
                           onSelect={() => {
                             const formData = new FormData();
                             formData.append("notificationId", item.id);
@@ -705,7 +724,21 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                             submit(formData, { method: "post" });
                           }}
                         >
-                          {item.title}
+                          <div className='flex items-center gap-3'>
+                            {item.read === true ? null :
+                              < img
+                                alt='warning'
+                                src={Warning}
+                                className="object-contain"
+                              />
+                            }
+                            <div className='grid grid-cols-1'>
+                              <p> {item.title}</p>
+                              <p className='text-muted-foreground'> {new Date(item.createdAt).toLocaleDateString("en-US", options)}</p>
+
+                            </div>
+                          </div>
+
                         </DropdownMenuItem>
                       );
                     }) : (
@@ -737,8 +770,7 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                       {lead ? lead.map((item, index) => (
                         <DropdownMenuItem
                           key={index}
-                          className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
-                            ${item.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                          className={`focus:bg-accent focus:text-accent-foreground  justify-start mx-auto cursor-pointer h-[85px] border-b border-border bg-background hover:bg-[#111111] `}
                           onSelect={() => {
                             const formData = new FormData();
                             formData.append("notificationId", item.id);
@@ -749,9 +781,20 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                             submit(formData, { method: "post" });
                           }}
                         >
-                          <div>
-                            <p> {item.title} - {item.content}</p>
-                            <p className='text-muted-foreground'>billy bobby</p>
+                          <div className='flex items-center gap-3'>
+                            {item.read === true ? null :
+                              < img
+                                alt='warning'
+                                src={Warning}
+                                className="object-contain"
+                              />
+                            }
+                            <div className='grid grid-cols-1'>
+                              <p> {item.title} - {item.content}</p>
+                              <p>{item.cusxtomerName}</p>
+                              <p className='text-muted-foreground'> {new Date(item.createdAt).toLocaleDateString("en-US", options)}</p>
+
+                            </div>
                           </div>
 
                         </DropdownMenuItem>
@@ -780,8 +823,7 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                     {updates ? updates.map((item, index) => (
                       <DropdownMenuItem
                         key={index}
-                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
-                          ${item.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                        className={`focus:bg-accent focus:text-accent-foreground  justify-start mx-auto cursor-pointer h-[85px] border-b border-border bg-background hover:bg-[#111111] `}
                         onSelect={() => {
                           const formData = new FormData();
                           formData.append("notificationId", item.id);
@@ -792,9 +834,21 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                           submit(formData, { method: "post" });
                         }}
                       >
-                        <p className='w-[95%] rounded-[6px] flex justify-between items-center'>
-                          {item.title}
-                        </p>
+                        <div className='flex items-center gap-3'>
+                          {item.read === true ? null :
+                            < img
+                              alt='warning'
+                              src={Warning}
+                              className="object-contain"
+                            />
+                          }
+                          <div className='grid grid-cols-1'>
+                            <p> {item.title}</p>
+                            <p className='text-muted-foreground'> {new Date(item.createdAt).toLocaleDateString("en-US", options)}</p>
+
+                          </div>
+                        </div>
+
                       </DropdownMenuItem>
                     )) : <DropdownMenuItem>No updates available</DropdownMenuItem>}
                   </DropdownMenuSubContent>
@@ -812,8 +866,6 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                         </span>
                       </span>
                     )}
-
-
                   </div>
                   Interruptions
                 </DropdownMenuSubTrigger>
@@ -822,8 +874,7 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                     {interruptions ? (interruptions.map((item, index) => (
                       <DropdownMenuItem
                         key={index}
-                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
-                          ${item.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                        className={`focus:bg-accent focus:text-accent-foreground  justify-start mx-auto cursor-pointer h-[85px] border-b border-border bg-background hover:bg-[#111111] `}
                         onSelect={() => {
                           const formData = new FormData();
                           formData.append("notificationId", item.id);
@@ -834,12 +885,21 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                           submit(formData, { method: "post" });
                         }}
                       >
-                        <div>
-                          <p> {item.title} </p>
-                          <p className='text-muted-foreground'>{item.date}</p>
-                          <p className='text-muted-foreground'>{item.location}</p>
+                        <div className='flex items-center gap-3'>
+                          {item.read === true ? null :
+                            < img
+                              alt='warning'
+                              src={Warning}
+                              className="object-contain"
+                            />
+                          }
+                          <div className='grid grid-cols-1'>
+                            <p> {item.title}</p>
+                            <p className='text-muted-foreground'>{item.date}</p>
+                            <p className='text-muted-foreground'>{item.location}</p>
+                            <p className='text-muted-foreground'> {new Date(item.createdAt).toLocaleDateString("en-US", options)}</p>
+                          </div>
                         </div>
-
                       </DropdownMenuItem>
                     ))) : <DropdownMenuItem>No interruptions available</DropdownMenuItem>}
                   </DropdownMenuSubContent>
@@ -2123,7 +2183,7 @@ export const userNavSidebarNav = [
 export const documentNavSidebarNav = [
   {
     title: "Document Builder",
-    to: "/dealer/document/builder",
+    to: "/dealer/document/builder/client",
   },
   {
     title: "Template Builder",
