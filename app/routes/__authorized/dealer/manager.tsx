@@ -76,10 +76,13 @@ import {
 } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet"
 import { FaCircleUser } from "react-icons/fa6";
+import NavMenuAdminAndMan from '~/routes/__authorized/dealer/$dept'
 
+export { NavMenuAdminAndMan as default };
 
 export const handle = createSitemap();
 
+/**
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
@@ -112,12 +115,7 @@ export default function Dashboard() {
   const navigate = useNavigate()
   const pathname = location.pathname
   const orderId = user?.customerSync.orderId
-  /**
-   * /dealer/admin/acc
-   * /dealer/admin/parts
-   * /dealer/admin/sales
-   * /dealer/admin/Service
-   */
+
   return (
     <div className="flex min-h-screen w-full flex-col overflow-hidden ">
       <header className="sticky top-0 flex h-[35px] items-center gap-4 border-b border-border  bg-background px-4 md:px-6">
@@ -192,3 +190,4 @@ export const meta = () => {
     },
   ];
 };
+ */

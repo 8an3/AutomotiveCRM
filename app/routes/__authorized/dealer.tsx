@@ -1462,7 +1462,7 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                         <DropdownMenuItem
                           key={index}
                           className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer h-[90px]
-            ${item.read === true ? 'bg-background' : 'bg-[#181818]'}`}
+                 ${item.read === true ? 'bg-background' : 'bg-[#181818]'}`}
                           onSelect={() => {
                             const formData = new FormData();
                             formData.append("notificationId", item.id);

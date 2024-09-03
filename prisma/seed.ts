@@ -6375,7 +6375,7 @@ export async function Board() {
     { board: "dev", column: "INFASTRUCTURE", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try - this could also be - set up demo site where, sign in is just inputing the email like technician@email.com and theyre logged in as the tech, or service writer and etc" },
     { board: "dev", column: "docs", item: "^^^^^ used for final tesing ^^^^^" },
 
-    { board: "dev", column: "service", item: "service writer dash" },
+    { board: "dev", column: "service", item: "service writer dash" }, c
     { board: "dev", column: "service", item: "tech dash" },
     { board: "dev", column: "GET DONE NOW", item: "use swr with auto revalidation for workorders so it updates in real time to get rid of the issue of 1 work order only open, set to fast on work orders for service writers but slow on tech's page" },
     { board: "dev", column: "WIP", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
@@ -6710,35 +6710,9 @@ export async function Board() {
   ]
   const getDoneNow = [
     { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
+    { board: "dev", column: "ISSUE", item: "with production demo site, problem started after you manually had to update the files from remote because github action was not working" },
 
     { board: "dev", column: "DEALER ONBOARDING", item: "finish dealer greeting - first step complete, need to set email once CRM is ready that would be sent from dev dashboard, dev dashboard needs to accomadate crm leads and clients, add notes capability for crmcleints" },
-
-
-    { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH USER DOCS -----" },
-    { board: "dev", column: "ISSUE", item: "user docs button that is page dynamic so its just one button to press to learn about the page and it directs you to the right video to learn instead of having a doc section " },
-    { board: "dev", column: "docs", item: "-----  VIDEOS FOR DOCS -----" },
-    { board: "dev", column: "docs", item: "scripts / templates" },
-    { board: "dev", column: "docs", item: "quotes" },
-    { board: "dev", column: "docs", item: "sales" },
-    { board: "dev", column: "docs", item: "finance" },
-    { board: "dev", column: "docs", item: "calendar" },
-    { board: "dev", column: "docs", item: "sales manager" },
-    { board: "dev", column: "docs", item: "unit inventory" },
-
-    { board: "dev", column: "docs", item: "pac manager" },
-    { board: "dev", column: "docs", item: "accessories" },
-    { board: "dev", column: "docs", item: "receiving" },
-
-    { board: "dev", column: "docs", item: "service manager" },
-    { board: "dev", column: "docs", item: "service writer" },
-    { board: "dev", column: "docs", item: "techs" },
-
-    { board: "dev", column: "docs", item: "admin" },
-
-    { board: "dev", column: "docs", item: "user settings" },
-    { board: "dev", column: "docs", item: "document builder" },
-    { board: "dev", column: "docs", item: "whole overview" },
-    { board: "dev", column: "docs", item: "leader board" },
 
 
     { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH SMS AND EMAIL TESTING BEFORE RELEASE -----" },
@@ -6778,6 +6752,33 @@ export async function Board() {
     { board: "dev", column: "ISSUE", item: "Parts order printout and workorder printout for srevice" },
     { board: "dev", column: "GET DONE NOW", item: "saving doc templates, see if you can save big json strings in database - make template master sheets designated for specific purposes that way the values used are for that specific type of document with a legend on the side incase they delete something they should where they click and it copies the value it needs" },
 
+
+
+    { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH USER DOCS -----" },
+    { board: "dev", column: "ISSUE", item: "user docs button that is page dynamic so its just one button to press to learn about the page and it directs you to the right video to learn instead of having a doc section " },
+    { board: "dev", column: "docs", item: "-----  VIDEOS FOR DOCS -----" },
+    { board: "dev", column: "docs", item: "scripts / templates" },
+    { board: "dev", column: "docs", item: "quotes" },
+    { board: "dev", column: "docs", item: "sales" },
+    { board: "dev", column: "docs", item: "finance" },
+    { board: "dev", column: "docs", item: "calendar" },
+    { board: "dev", column: "docs", item: "sales manager" },
+    { board: "dev", column: "docs", item: "unit inventory" },
+
+    { board: "dev", column: "docs", item: "pac manager" },
+    { board: "dev", column: "docs", item: "accessories" },
+    { board: "dev", column: "docs", item: "receiving" },
+
+    { board: "dev", column: "docs", item: "service manager" },
+    { board: "dev", column: "docs", item: "service writer" },
+    { board: "dev", column: "docs", item: "techs" },
+
+    { board: "dev", column: "docs", item: "admin" },
+
+    { board: "dev", column: "docs", item: "user settings" },
+    { board: "dev", column: "docs", item: "document builder" },
+    { board: "dev", column: "docs", item: "whole overview" },
+    { board: "dev", column: "docs", item: "leader board" },
 
   ]
   const issue = [

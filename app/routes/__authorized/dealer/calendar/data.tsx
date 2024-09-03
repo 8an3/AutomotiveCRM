@@ -66,19 +66,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     // console.log(salesData2)
     return json({ salesData, user, quotes })
   }
-  if (intent === 'deliveries') {
-    const salesData = await getAllFinanceAptsForCalendar(userId)
-    const quotes = salesData
-    // console.log(salesData2)
-    return json({ salesData, user, quotes })
-  }
   if (intent === 'finance') {
-    const salesData = await getAllFinanceAptsForCalendar(userId)
-    const quotes = salesData
-    // console.log(salesData2)
-    return json({ salesData, user, quotes })
-  }
-  if (intent === 'service') {
     const salesData = await getAllFinanceAptsForCalendar(userId)
     const quotes = salesData
     // console.log(salesData2)

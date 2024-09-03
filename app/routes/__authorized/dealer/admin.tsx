@@ -76,10 +76,35 @@ import {
 } from "lucide-react"
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet"
 import { FaCircleUser } from "react-icons/fa6";
+import NavMenuAdminAndMan from '~/routes/__authorized/dealer/$dept'
 
+
+export { NavMenuAdminAndMan as default };
 
 export const handle = createSitemap();
 
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: '/favicons/wrench.svg' },
+]
+
+export const meta = () => {
+  return [
+    { title: 'Admin - Dealer Sales Assistant' },
+    {
+      property: "og:title",
+      content: "Your very own assistant!",
+    },
+    {
+      name: "description",
+      content: "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
+      keywords: 'Automotive Sales, dealership sales, automotive CRM',
+    },
+  ];
+};
+
+
+/**
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
@@ -106,37 +131,18 @@ export async function action({ request }: ActionArgs) {
   }
 }
 
-export default function Dashboard() {
+export  function Dashboard() {
   const { user } = useLoaderData()
   const location = useLocation();
   const navigate = useNavigate()
   const pathname = location.pathname
   const orderId = user?.customerSync.orderId
-  /**
-   * /dealer/admin/acc
-   * /dealer/admin/parts
-   * /dealer/admin/sales
-   * /dealer/admin/Service
-   */
+
   return (
     <div className="flex min-h-screen w-full flex-col overflow-hidden ">
       <header className="sticky top-0 flex h-[35px] items-center gap-4 border-b border-border  bg-background px-4 md:px-6">
         <nav className="hidden ml-[35px] flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
-          <NavLink
-            to="/dealer/admin/settings/general"
-            className={`flex items-center gap-2 text-lg font-semibold md:text-base
-    ${pathname.startsWith("/dealer/admin/settings/general") ? ' text-foreground ' : 'text-muted-foreground'}`}
-          >
-            Settings
-            <span className="sr-only">Settings</span>
-          </NavLink>
-          <NavLink
-            to="/dealer/admin/users/overview"
-            className={`flex items-center gap-2 text-lg font-semibold md:text-base
-              ${pathname.startsWith("/dealer/admin/users/overview") ? ' text-foreground ' : 'text-muted-foreground'}`}
-          >
-            Users
-          </NavLink>
+
           <NavLink
             to="/dealer/admin/customers/all"
             className={`flex items-center gap-2 text-lg font-semibold md:text-base
@@ -229,23 +235,4 @@ export default function Dashboard() {
     </div>
 
   )
-}
-
-export const links: LinksFunction = () => [
-  { rel: "icon", type: "image/svg", href: '/favicons/wrench.svg' },
-]
-
-export const meta = () => {
-  return [
-    { title: 'Admin - Dealer Sales Assistant' },
-    {
-      property: "og:title",
-      content: "Your very own assistant!",
-    },
-    {
-      name: "description",
-      content: "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
-      keywords: 'Automotive Sales, dealership sales, automotive CRM',
-    },
-  ];
-};
+} */

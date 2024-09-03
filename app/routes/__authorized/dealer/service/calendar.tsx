@@ -8,7 +8,7 @@ import { type LinksFunction, type LoaderFunction, type ActionFunction, json, red
 import { useLoaderData, Link, useNavigate, useSubmit, useFetcher, useSearchParams, Form, useNavigation } from '@remix-run/react'
 import { prisma } from "~/libs";
 import { Text, } from '@radix-ui/themes';
-import { UserPlus, Gauge, CalendarPlus, ChevronsLeft, ChevronsRightLeft, ChevronsRight } from 'lucide-react';
+import { UserPlus, Gauge, CalendarPlus, ChevronsLeft, ChevronsRightLeft, ChevronsRight, Truck, Sheet } from 'lucide-react';
 import EventInfo from "~/components/serviceDept/EventInfo"
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import clsx from 'clsx'
@@ -58,6 +58,7 @@ import {
   SelectValue,
 } from "~/components/ui/select"
 import { ChevronsUpDown } from 'lucide-react'
+import { Wrench } from 'lucide-react'
 
 const useScreenSize = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -405,9 +406,15 @@ export default function DnDResource() {
   const getResourceTitle = (resource) => resource.resourceTitle;
 
   const resourceTitle = (resource) => {
+
     return (
-      <div className='h-[50px] justify-center items-center mt-[25px]'>
-        <p className='text-primary text-center text-3xl my-auto'>{resource.resourceTitle}</p>
+      <div className='h-[50px] flex justify-center items-center mt-[25px]'>
+        {resource.resourceTitle === 'Service Desk' ? (
+          <Sheet />
+        ) : resource.resourceTitle === 'Deliveries' ? (
+          <Truck />
+        ) : <Wrench />}
+        <p className='text-foreground text-center text-3xl my-auto ml-3'>{resource.resourceTitle}</p>
       </div>
     )
   }
