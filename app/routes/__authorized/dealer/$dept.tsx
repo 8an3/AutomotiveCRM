@@ -1,219 +1,149 @@
-import { isRouteErrorResponse, Outlet, Link, useLoaderData, useFetcher, Form, useSubmit, useLocation, useNavigate, useRouteError, NavLink } from "@remix-run/react";
+import { isRouteErrorResponse, Outlet, Link, useLoaderData, useFetcher, Form, useSubmit, useLocation, useNavigate, useRouteError, NavLink, useParams } from "@remix-run/react";
 import { GetUser } from "~/utils/loader.server";
 import { getSession } from "~/sessions/auth-session.server";
 import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { requireUserSession, getUserIsAllowed } from "~/helpers";
-import { Separator } from "~/components";
-import { SidebarNav } from "~/components/ui/sidebar-nav";
-import { LampDesk} from 'lucide-react'
-
-
-export async function loader({ request, params }: LoaderFunction) {
-  const session2 = await getSession(request.headers.get("Cookie"));
-  const email = session2.get("email");
-  const user = await GetUser(email);
-  if (!user) {    redirect("/login");  }
-  const { userIsAllowed } = await requireUserSession(request, [
-    "Administrator",
-    "Manager",
-  ]);
-  if (!userIsAllowed) {
-    return redirect(`/`);
-  }
-const whereRYa = params.dept
-  return json({ user, whereRYa });
-}
+import { Separator, Button, buttonVariants, } from "~/components";
+import { LampDesk } from 'lucide-react'
+import { cn } from "~/components/ui/utils";
+import { Fragment } from 'react'
 
 
 export default function NavMenuAdminAndMan() {
-  const { user,whereRYa } = useLoaderData()
+  const { user } = useLoaderData()
   const location = useLocation();
   const pathname = location.pathname
+  const params = useParams();
 
   const inventorySide = [
     {
-      title: "Unit",
-      to: `/dealer/${whereRYa}/inventory/units`,
+      title: "Unit Inventory",
+      to: `/dealer/${params.dept}/inventory/units`,
     },
     {
-      title: "PAC",
-      to: `/dealer/${whereRYa}/inventory/pac`,
-    },
-  ]
-  const customerSide = [
-    {
-      title: "Customers",
-      to: `/dealer/${whereRYa}/customers/all`,
-    },
-  ]
-  const reportsSide = [
-    {
-      title: "Commissions",
-      to: `/dealer/${whereRYa}/reports/commissions`,
-    },
-    {
-      title: "End Of Day",
-      to: `/dealer/${whereRYa}/reports/endOfDay`,
+      title: "PAC Inventory",
+      to: `/dealer/${params.dept}/inventory/pac`,
     },
   ]
   const ordersSide = [
     {
-      title: "Service",
-      to: `/dealer/${whereRYa}/orders/service`,
+      title: "Service Work Orders",
+      to: `/dealer/${params.dept}/orders/service`,
     },
     {
-      title: "PAC",
-      to: `/dealer/${whereRYa}/orders/pac`,
+      title: "Service Work Orders",
+      to: `/dealer/${params.dept}/orders/service`,
+    },
+    {
+      title: "PAC Orders",
+      to: `/dealer/${params.dept}/orders/pac`,
     },
   ]
-  const deptsSide = [
-    {
-      title: "Sales ",
-      to: `/dealer/${whereRYa}/depts/sales`,
-    },
-    {
-      title: "PAC ",
-      to: `/dealer/${whereRYa}/depts/pac`,
-    },
-    {
-      title: "Service ",
-      to: `/dealer/${whereRYa}/depts/service`,
-    },
-    {
-      title: "Service ",
-      to: `/dealer/${whereRYa}/depts/service`,
-    },
-  ]
-
   const importExportSide = [
     {
-      title: "Units",
-      to: `/dealer/${whereRYa}/importexport/units`,
+      title: "Import / Export",
+      to: `/dealer/${params.dept}/importexport/units`,
+    },
+  ]
+
+
+  const bullshit = [
+    {
+      title: "Store Hours",
+      to: `/dealer/${params.dept}/scheduling/storeHours`,
     },
     {
-      title: "Client",
-      to: `/dealer/${whereRYa}/importexport/clients`,
+      title: "Employee Scheduling",
+      to: `/dealer/${params.dept}/scheduling/storeHours`,
     },
     {
-      title: "Quotes",
-      to: `/dealer/${whereRYa}/importexport/quotes`,
+      title: "CSI Surveys",
+      to: `/dealer/${params.dept}/csi`,
+    },
+    {
+      title: "Commissions Reports",
+      to: `/dealer/${params.dept}/reports/commissions`,
+    },
+    {
+      title: "End Of Day Reports",
+      to: `/dealer/${params.dept}/reports/endOfDay`,
+    },
+    {
+      title: "Employees",
+      to: `/dealer/${params.dept}/users/overview`,
+    },
+
+  ]
+  const dashboards = [
+    {
+      title: "Depts",
+      to: `/dealer/${params.dept}/depts/sales`,
+    },
+
+    {
+      title: "Customers",
+      to: `/dealer/${params.dept}/customers/all`,
+    },
+  ]
+  /**  {
+      title: "Sales",
+      to: `/dealer/${params.dept}/depts/sales`,
     },
     {
       title: "PAC",
-      to: `/dealer/${whereRYa}/importexport/pac`,
+      to: `/dealer/${params.dept}/depts/pac`,
     },
-  ]
+    {
+      title: "Service",
+      to: `/dealer/${params.dept}/depts/service`,
+    },
+    {
+      title: "Administrator",
+      to: `/dealer/${params.dept}/settings/general`,
+    }, */
+  const userIsManager = user.positions.some(
+    (pos) => pos.position === 'Manager' || pos.position === 'Administrator'
+  );
+  const userIsADMIN = user.positions.some(
+    (pos) => pos.position === 'Administrator'
+  );
+
   return (
-    <div className=" space-y-6 p-10 pb-16 h-screen w-screen">
-    <div className="space-y-0.5">
-      <h2 className="text-2xl font-bold tracking-tight text-foreground">{whereRYa} Section</h2>
-      <Separator className="text-border border-border bg-border w-[95%] mb-3" />
-
-    </div>
-    <div className="  my-6" />
-    {userIsManager && (
-              <>
-                  <NavLink
-            to="/dealer/manager/depts/sales"
-            className={`flex items-center gap-2 text-lg font-semibold md:text-base
-    ${pathname.startsWith("/dealer/manager/depts/sales") ? ' text-foreground ' : 'text-muted-foreground'}`}
-          >
-            Dashboard
-            <span className="sr-only">Dashboard</span>
-          </NavLink>
-          <NavLink
-            to="/dealer/manager/scheduling/storeHours"
-            className={`flex items-center gap-2 text-lg font-semibold md:text-base
-              ${pathname.startsWith("/dealer/manager/scheduling/storeHours") ? ' text-foreground ' : 'text-muted-foreground'}`}
-          >
-            Scheduling
-          </NavLink>
-          <NavLink
-            to="/dealer/manager/csi"
-            className={`flex items-center gap-2 text-lg font-semibold md:text-base
-              ${pathname.startsWith("/dealer/manager/csi") ? ' text-foreground ' : 'text-muted-foreground'}`}
-          >
-            CSI
-          </NavLink>
-              </>
-    )}
-        {userIsADMIN && (
-              <>
-               <NavLink
-            to="/dealer/admin/settings/general"
-            className={`flex items-center gap-2 text-lg font-semibold md:text-base
-    ${pathname.startsWith("/dealer/admin/settings/general") ? ' text-foreground ' : 'text-muted-foreground'}`}
-          >
-            Dashboard
-            <span className="sr-only">Dashboard</span>
-          </NavLink>
-          <NavLink
-            to="/dealer/admin/users/overview"
-            className={`flex items-center gap-2 text-lg font-semibold md:text-base
-              ${pathname.startsWith("/dealer/admin/users/overview") ? ' text-foreground ' : 'text-muted-foreground'}`}
-          >
-            Users
-          </NavLink>
-              </>
-    )}
-
-
-
-    <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-      <aside className="-mx-4 lg:w-64 text-foreground">
-        <div className='my-2' >
-      <p className="font-bold tracking-tight text-foreground">Customers</p>
-      <Separator className="text-border border-border bg-border w-[95%] mb-3" />
-        <SidebarNav items={customerSide} />
+    <>
+      <div className="hidden space-y-6 p-10 pb-16 md:block">
+        <div className="space-y-0.5">
+          <h2 className="text-2xl font-bold tracking-tight">{params.dept} Section</h2>
         </div>
-        <div className='my-2' >
-      <p className="font-bold tracking-tight text-foreground">Inventory</p>
-      <Separator className="text-border border-border bg-border w-[95%] mb-3" />
-        <SidebarNav items={inventorySide} />
+        <Separator className="my-6 bg-border border-border text-border" />
+        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
+          <aside className="-mx-4 lg:w-[250px]">
+            <SidebarNav items={dashboards} />
+            <Separator className='my-1 bg-border border-border text-border' />
+            <SidebarNav items={inventorySide} />
+            <Separator className='my-1 bg-border border-border text-border' />
+            <SidebarNav items={ordersSide} />
+            <Separator className='my-1 bg-border border-border text-border' />
+            <SidebarNav items={importExportSide} />
+            <Separator className='my-1 bg-border border-border text-border' />
+            <SidebarNav items={bullshit} />
+          </aside>
+          <div className="flex-1 lg:max-w-90[%]">
+            <Outlet />
+          </div>
         </div>
-
-        <div className='my-2' >
-      <p className="font-bold tracking-tight text-foreground">Reports</p>
-      <Separator className="text-border border-border bg-border w-[95%] mb-3" />
-        <SidebarNav items={reportsSide} />
-        </div>
-
-        <div className='my-2' >
-      <p className="font-bold tracking-tight text-foreground">Depts</p>
-      <Separator className="text-border border-border bg-border w-[95%] mb-3" />
-        <SidebarNav items={deptsSide} />
-        </div>
-
-        <div className='my-2' >
-      <p className="font-bold tracking-tight text-foreground">Order</p>
-      <Separator className="text-border border-border bg-border w-[95%] mb-3" />
-        <SidebarNav items={ordersSide} />
-        </div>
-
-        <div className='my-2' >
-      <p className="font-bold tracking-tight text-foreground">Immport / Export</p>
-      <Separator className="text-border border-border bg-border w-[95%] mb-3" />
-        <SidebarNav items={importExportSide} />
-        </div>
-      </aside>
-      <div className="flex-1  w-auto">
-        <Outlet />
       </div>
-    </div>
-  </div>
-
+    </>
   )
 }
 
-export const links: LinksFunction = ({params}) => [
-  { rel: "icon", type: "image/svg", href: params.dept === 'service' ? '/favicons/wrench.svg' :  LampDesk },
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: '/favicons/wrench.svg' },
 ]
 
-export const meta = ({params}) => {
-const whereRYa = params.dept
+export const meta = () => {
 
   return [
-    { title: `${whereRYa} - Dealer Sales Assistant` },
+    { title: `Dealer Sales Assistant` },
     {
       property: "og:title",
       content: "Your very own assistant!",
@@ -226,33 +156,180 @@ const whereRYa = params.dept
   ];
 };
 
-/**  <main className="flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 bg-muted/40 p-4 md:gap-8 md:p-10">
-      <div className="mx-auto grid w-full max-w-6xl gap-2">
-        <h1 className="text-3xl font-semibold">Import / Export</h1>
-      </div>
-      <div className="mx-auto grid w-full max-w-7xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
-        <nav className="grid gap-4 text-sm text-muted-foreground" x-chunk="dashboard-04-chunk-0"        >
-          <NavLink to="units"
-            className={`flex items-center gap-2 text-lg font-semibold md:text-base
-              ${pathname === "/dealer/admin/importexport/units" ? ' font-semibold text-primary ' : 'text-muted-foreground'}`}>
-            Units
-          </NavLink>
-          <NavLink to="clients"
-            className={`flex items-center gap-2 text-lg font-semibold md:text-base
-              ${pathname === "/dealer/admin/importexport/" ? ' font-semibold text-primary ' : 'text-muted-foreground'}`}>
-            Clients
-          </NavLink>
-          <NavLink to="quotes"
-            className={`flex items-center gap-2 text-lg font-semibold md:text-base
-              ${pathname === "/dealer/admin/importexport/" ? ' font-semibold text-primary ' : 'text-muted-foreground'}`}>
-            Quotes
-          </NavLink>
-          <NavLink to="acc"
-            className={`flex items-center gap-2 text-lg font-semibold md:text-base
-              ${pathname === "/dealer/admin/importexport/acc" ? ' font-semibold text-primary ' : 'text-muted-foreground'}`}>
-            Parts/Accessories
-          </NavLink>
-        </nav>
-        <Outlet />
-      </div>
-    </main> */
+
+interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
+  items: {
+    to: string
+    title: string
+  }[]
+}
+
+export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
+  const location = useLocation();
+  const pathname = location.pathname
+  const params = useParams();
+  console.log(pathname)
+  return (
+    <nav
+      className={cn(
+        "flex space-x-2 flex-row max-w-[95%] lg:flex-col lg:space-x-0 lg:space-y-1 mt-3",
+        className
+      )}
+      {...props}
+    >
+      {items.map((item) => (
+
+        <Fragment key={item.to}>
+          <Link
+            to={item.to}
+            className="justify-start" >
+            <Button variant='ghost'
+              className={cn(
+                buttonVariants({ variant: "ghost" }),
+                pathname === item.to
+                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]     "
+                  : "hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  ",
+                "justify-start w-[90%] "
+              )} >
+              {item.title}
+            </Button>
+          </Link>
+          {item.title === "Employees" && pathname.includes(`/dealer/${params.dept}/users`) && (
+            <nav className="grid gap-4 text-sm text-muted-foreground ml-6">
+              <NavLink
+                to={`/dealer/${params.dept}/users/all`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base ml-6
+              ${pathname === `/dealer/${params.dept}/users/all` ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >
+                Dashboard
+              </NavLink>
+              <NavLink
+                to={`/dealer/${params.dept}/users/all`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base ml-6
+              ${pathname === "/dealer/admin/users/addUser" ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >`/dealer/${params.dept}/users/all`
+                Add Employee
+              </NavLink>
+              <NavLink
+                to={`/dealer/${params.dept}/users/all`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base ml-6
+              ${pathname === `/dealer/${params.dept}/users/all` ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >
+                Employee Roles
+              </NavLink>
+            </nav>
+          )}
+          {item.title === "Depts" && pathname.includes(`/dealer/${params.dept}/depts`) && (
+            <nav className="grid gap-3  text-sm text-foreground">
+              <NavLink
+                to={`/dealer/${params.dept}/depts/sales`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base  ml-6
+              ${pathname === `/dealer/${params.dept}/depts/sales` ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >
+                Sales
+              </NavLink>
+              <NavLink
+                to={`/dealer/${params.dept}/depts/pac`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base   ml-6
+              ${pathname === `/dealer/${params.dept}/depts/pac` ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >
+                PAC
+              </NavLink>
+              <NavLink
+                to={`/dealer/${params.dept}/depts/service`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base  ml-6
+              ${pathname === `/dealer/${params.dept}/depts/service` ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >
+                Service
+              </NavLink>
+              <NavLink
+                to={`/dealer/${params.dept}/depts/user-roles`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base  ml-6
+              ${pathname === `/dealer/${params.dept}/depts/user-roles` ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >
+                User Roles
+              </NavLink>
+            </nav>
+          )}
+          {item.title === "Import / Export" && pathname.includes(`/dealer/${params.dept}/importexport`) && (
+            <nav className="grid gap-4 text-sm text-muted-foreground ml-6">
+              <NavLink
+                to={`/dealer/${params.dept}/importexport/units`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base  ml-6
+              ${pathname === `/dealer/${params.dept}/importexport/units` ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >
+                Units
+              </NavLink>
+              <NavLink
+                to={`/dealer/${params.dept}/importexport/clients`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base ml-6
+              ${pathname === `/dealer/${params.dept}/users/addUser` ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >
+                Clients
+              </NavLink>
+              <NavLink
+                to={`/dealer/${params.dept}/importexport/quotes`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base ml-6
+              ${pathname === `/dealer/${params.dept}/users/userRoles` ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >
+                Quotes
+              </NavLink>
+              <NavLink
+                to={`/dealer/${params.dept}/importexport/pac`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base ml-6
+              ${pathname === `/dealer/${params.dept}/users/userRoles` ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >
+                PAC
+              </NavLink>
+            </nav>
+          )}
+          {item.title === "Customers" && pathname.includes(`/dealer/${params.dept}/customers`) && (
+            <nav className="grid gap-4 text-sm text-muted-foreground ml-6">
+              <NavLink
+                to={`/dealer/${params.dept}/customers/all`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base  ml-6
+              ${pathname === "/dealer/admin/users/overview" ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >
+                All Depts
+              </NavLink>
+              <NavLink
+                to={`/dealer/${params.dept}/customers/pac`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base ml-6
+              ${pathname === "/dealer/admin/users/addUser" ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >
+                Sales
+              </NavLink>
+              <NavLink
+                to={`/dealer/${params.dept}/customers/service`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base ml-6
+              ${pathname === "/dealer/admin/users/userRoles" ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >
+                Quotes
+              </NavLink>
+              <NavLink
+                to={`/dealer/${params.dept}/importexport/pac`}
+                className={`flex items-center gap-2 text-lg font-semibold md:text-base ml-6
+              ${pathname === "/dealer/admin/users/userRoles" ? 'font-semibold text-primary' : 'text-foreground'}`}
+              >
+                PAC
+              </NavLink>
+            </nav>
+          )}
+        </Fragment>
+      ))
+
+      }
+    </nav >
+  )
+}
+
+export async function loader({ request, params }: LoaderFunction) {
+  const session2 = await getSession(request.headers.get("Cookie"));
+  const email = session2.get("email");
+  const user = await GetUser(email);
+  if (!user) { redirect("/login"); }
+
+
+  return json({ user })
+}
+

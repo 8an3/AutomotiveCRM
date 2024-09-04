@@ -570,6 +570,21 @@ export default function Dashboard() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={() => {
+                        const result = orders.filter((result) => result.status === 'Long Term Storage')
+                        setList(result)
+                      }}>
+                      Long Term Storage
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onSelect={() => {
+                        const result = orders.filter((result) => result.status === 'Winter Storage')
+                        setList(result)
+                      }}>
+                      Winter Storage
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => {
                         const result = orders.filter((result) => result.status === 'Closed')
                         setList(result)
                       }}>
@@ -1186,7 +1201,9 @@ export default function Dashboard() {
                               <SelectItem value="In Works">In Works</SelectItem>
                               <SelectItem value="Work Completed">Work Completed</SelectItem>
                               <SelectItem value="Scheduled For Delivery">Scheduled For Delivery</SelectItem>
-
+                              <SelectItem value="Long Term Storage">Long Term Storage</SelectItem>
+                              <SelectItem value="Winter Storage">Winter Storage</SelectItem>
+                              <SelectItem value="Closer" disabled>Closed</SelectItem>
                             </SelectGroup>
                           </SelectContent>
                         </Select>

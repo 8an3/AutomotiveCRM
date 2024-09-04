@@ -111,7 +111,7 @@ export default function DashboardPage() {
               <ul className="grid gap-3 text-sm mt-2">
                 {pickedRoadmap.map((item, index) => (
                   <li key={index} className="flex mt-2">
-                    <p className='text-foreground text-left'>{index}{")"} {item.item}</p>
+                    <p className='text-foreground text-left'>{index + 1}{") "} {item.item}</p>
                   </li>
                 ))}
               </ul>

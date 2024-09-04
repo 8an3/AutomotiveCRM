@@ -266,7 +266,7 @@ export default function RoadMap() {
               <ul className="grid gap-3 text-sm mt-2">
                 {list && list.map((item, index) => (
                   <li key={index} className="flex mt-2">
-                    <p className='text-foreground text-left'>-- {' '}{item.item}</p>
+                    <p className='text-foreground text-left'>{index + 1}{')'}{' '}{item.item}</p>
                   </li>
                 ))}
               </ul>

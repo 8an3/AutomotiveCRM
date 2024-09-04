@@ -1326,7 +1326,9 @@ export default function Dashboard() {
                             <SelectItem value="In Works">In Works</SelectItem>
                             <SelectItem value="Work Completed">Work Completed</SelectItem>
                             <SelectItem value="Scheduled For Delivery">Scheduled For Delivery</SelectItem>
-                            <SelectItem value="Closed">Closed</SelectItem>
+                            <SelectItem value="Long Term Storage">Long Term Storage</SelectItem>
+                            <SelectItem value="Winter Storage">Winter Storage</SelectItem>
+                            <SelectItem value="Closer" >Closed</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>

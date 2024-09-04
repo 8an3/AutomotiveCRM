@@ -33,7 +33,7 @@ export default function Accessories() {
         <TabsContent value="To Order">
           <Card className='mx-3'>
             <CardHeader>
-              <CardTitle>Need To Order</CardTitle>
+              <CardTitle>Go over service numbers like how many w/o done how many open with no appointments etc</CardTitle>
               <CardDescription>Card Description</CardDescription>
             </CardHeader>
             <CardContent>

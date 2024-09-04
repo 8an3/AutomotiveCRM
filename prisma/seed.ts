@@ -4596,13 +4596,25 @@ export async function seedUsers() {
       symbol: 'ADMIN',
     },
   });
+  const tech1Email = 'techdealer1282@email.com'
+  const tech2Email = 'tech2dealer1282@email.com'
+  const deliveryDriverEmail = 'deliveryDriverdealer1282@email.com'
+  const serviceManagerEmail = 'serviceManagerdealer1282@email.com'
+  const pacManagerEmail = 'pacManagerdealer1282@email.com'
+  const accessoriesEmail = 'accessoriesdealer1282@email.com'
+  const partsEmail = 'partsdealer1282@email.com'
+  const recievingEmail = 'recievingdealer1282@email.com'
+  const sales2gEmail = 'sales2@gmail.com'
+  const finance2Email = 'finance2@gmail.com'
 
+  const servicewriterEmail = 'servicewriterdemodealer1282@email.com'
+  const adminAssistantEmail = 'adminAssistantdemodealer1282@email.com'
 
   // creating technician
   console.log(chalk.yellow("creating technician..."));
   const technician = await prisma.user.create({
     data: {
-      email: 'tech@email.com',
+      email: tech1Email,
       name: "technician",
       username: "Service",
       phone: "6138980771",
@@ -4625,7 +4637,7 @@ export async function seedUsers() {
   });
   const technician2 = await prisma.user.create({
     data: {
-      email: 'tech2@email.com',
+      email: tech2Email,
       name: "technician2",
       username: "Technician2",
       phone: "6138980799",
@@ -4648,7 +4660,7 @@ export async function seedUsers() {
   });
   const deliveryDriver = await prisma.user.create({
     data: {
-      email: 'deliveryDriver@email.com',
+      email: deliveryDriverEmail,
       name: "Delivery Driver",
       username: "Delivery Driver",
       phone: "6138989999",
@@ -4671,7 +4683,7 @@ export async function seedUsers() {
   });
   const serviceWriter = await prisma.user.create({
     data: {
-      email: 'servicewriterdemodealer1282@email.com',
+      email: servicewriterEmail,
       name: "Service Writer",
       username: "Service Writer",
       phone: "6138980711",
@@ -4693,7 +4705,7 @@ export async function seedUsers() {
   });
   const serviceManager = await prisma.user.create({
     data: {
-      email: 'serviceManager@email.com',
+      email: serviceManagerEmail,
       name: "Service Manager",
       username: "Service Manager",
       phone: "6138980722",
@@ -4715,7 +4727,7 @@ export async function seedUsers() {
   });
   const pacManager = await prisma.user.create({
     data: {
-      email: 'pacManager@email.com',
+      email: pacManagerEmail,
       name: "PAC Manager",
       username: "PAC Manager",
       phone: "6138980733",
@@ -4737,7 +4749,7 @@ export async function seedUsers() {
   });
   const accessories = await prisma.user.create({
     data: {
-      email: 'accessories@email.com',
+      email: accessoriesEmail,
       name: "accessories",
       username: "accessories",
       phone: "6138980744",
@@ -4759,7 +4771,7 @@ export async function seedUsers() {
   });
   const parts = await prisma.user.create({
     data: {
-      email: 'parts@email.com',
+      email: partsEmail,
       name: "parts",
       username: "parts",
       phone: "6138980755",
@@ -4781,7 +4793,7 @@ export async function seedUsers() {
   });
   const recieving = await prisma.user.create({
     data: {
-      email: 'recieving@email.com',
+      email: recievingEmail,
       name: "Recieving",
       username: "Recieving",
       phone: "6138980766",
@@ -4803,7 +4815,7 @@ export async function seedUsers() {
   });
   const adminAssistant = await prisma.user.create({
     data: {
-      email: 'adminAssistantdemodealer1282@email.com',
+      email: adminAssistantEmail,
       name: "Admin Assistant",
       username: "Admin Assistant",
       phone: "6138980777",
@@ -6169,7 +6181,7 @@ export async function seedUsers() {
 
   const sales2 = await prisma.user.create({
     data: {
-      email: 'sales2@gmail.com',
+      email: sales2gEmail,
       name: "sales2",
       username: "sales2",
       dept: 'Sales',
@@ -6217,7 +6229,7 @@ export async function seedUsers() {
 
   const finance2 = await prisma.user.create({
     data: {
-      email: 'finance2@gmail.com',
+      email: finance2Email,
       name: "finance2",
       username: "finance2",
       dept: 'Finance',
@@ -6367,15 +6379,18 @@ export async function Board() {
   // roadmap, control panel and board in dev mode
   const completed = [
     { board: "dev", column: "ROLES", item: "forgot driver, need to add delivery schedule, add it as a resource like the techs need to give the ability to set deliveries to everyoneyt" },
+    { board: "dev", column: "ISSUE", item: "with production demo site, problem started after you manually had to update the files from remote because github action was not working" },
+
     { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
     { board: "dev", column: "ISSUE", item: "need to be able to choose one resource id in calendar and display it in service" },
+    { board: "dev", column: "ISSUE", item: "need winter storage dash for service / winter storage long term" },
 
     { board: "dev", column: "ISSUE", item: "unit picker - redesign" },
     { board: "dev", column: "quote", item: "unit picker - once model is selected with customer=, table will render in modal with the avialble units for sale right on the quote if the customer wants to go for it" },
     { board: "dev", column: "INFASTRUCTURE", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try - this could also be - set up demo site where, sign in is just inputing the email like technician@email.com and theyre logged in as the tech, or service writer and etc" },
     { board: "dev", column: "docs", item: "^^^^^ used for final tesing ^^^^^" },
 
-    { board: "dev", column: "service", item: "service writer dash" }, c
+    { board: "dev", column: "service", item: "service writer dash" },
     { board: "dev", column: "service", item: "tech dash" },
     { board: "dev", column: "GET DONE NOW", item: "use swr with auto revalidation for workorders so it updates in real time to get rid of the issue of 1 work order only open, set to fast on work orders for service writers but slow on tech's page" },
     { board: "dev", column: "WIP", item: "implement server to accommodate automation https://github.com/Saicharan0662/email-scheduler-client" },
@@ -6710,7 +6725,6 @@ export async function Board() {
   ]
   const getDoneNow = [
     { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
-    { board: "dev", column: "ISSUE", item: "with production demo site, problem started after you manually had to update the files from remote because github action was not working" },
 
     { board: "dev", column: "DEALER ONBOARDING", item: "finish dealer greeting - first step complete, need to set email once CRM is ready that would be sent from dev dashboard, dev dashboard needs to accomadate crm leads and clients, add notes capability for crmcleints" },
 
@@ -6741,14 +6755,11 @@ export async function Board() {
     { board: "dev", column: "ROLES", item: "dev" },
 
 
-
-
     { board: "dev", column: "ISSUE", item: "***** BACKBURNER BUT NEEDS TO BE DONE ASAP DOES NOT NEED TO BE DONE FOR RELEASE *****" },
     { board: "dev", column: "GET DONE NOW", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase in managers dash" },
     { board: "dev", column: "GET DONE NOW", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down" },
     { board: "dev", column: "ISSUE", item: "FIX MANAGER SECTION" },
     { board: "dev", column: "ISSUE", item: "FIX ADMIN SECTION" },
-    { board: "dev", column: "ISSUE", item: "need winter storage dash for service / winter storage long term" },
     { board: "dev", column: "ISSUE", item: "Parts order printout and workorder printout for srevice" },
     { board: "dev", column: "GET DONE NOW", item: "saving doc templates, see if you can save big json strings in database - make template master sheets designated for specific purposes that way the values used are for that specific type of document with a legend on the side incase they delete something they should where they click and it copies the value it needs" },
 

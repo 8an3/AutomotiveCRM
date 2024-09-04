@@ -281,117 +281,7 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
   /**  <Sidebar user={user} email={email} /> */
-  let quoteUrl = '/dealer/quote/new/'
-  const my24Watercraft = [
-    {
-      title: "Kawasaki",
-      to: quoteUrl + "Kawasaki",
-    },
-  ]
-  const my23Watercraft = [
-    {
-      title: "Kawasaki",
-      to: quoteUrl + "Kawasaki",
-    },
-    {
-      title: "Manitou",
-      to: quoteUrl + "Manitou",
-    },
-    {
-      title: "Sea-Doo",
-      to: quoteUrl + "Sea-Doo",
-    },
-    {
-      title: "Sea-Doo Switch",
-      to: quoteUrl + "Switch",
-    },
 
-  ]
-  const my24Moto = [
-    {
-      title: "Harley-Davidson",
-      to: quoteUrl + "Harley-DavidsonMY24",
-    },
-  ]
-  const my23Moto = [
-    {
-      title: "BMW Motorrad",
-      to: quoteUrl + "BMW-Motorrad",
-    },
-    {
-      title: "Harley-Davidson",
-      to: quoteUrl + "Harley-Davidson",
-    },
-    {
-      title: "Kawasaki",
-      to: quoteUrl + "Kawasaki",
-    },
-    {
-      title: "KTM",
-      to: quoteUrl + "KTM",
-    },
-    {
-      title: "Indian",
-      to: quoteUrl + "Indian",
-    },
-    {
-      title: "Suzuki",
-      to: quoteUrl + "Suzuki",
-    },
-    {
-      title: "Spyder",
-      to: quoteUrl + "Spyder",
-    },
-    {
-      title: "Triumph",
-      to: quoteUrl + "Triumph",
-    },
-    {
-      title: "Yamaha",
-      to: quoteUrl + "Yamaha",
-    },
-
-  ]
-  const my24OffRoad = [
-    {
-      title: "Can-AM SxS",
-      to: quoteUrl + "Can-Am-SXS-MY24",
-    },
-    {
-      title: "Can-AM Ski-Doo",
-      to: quoteUrl + "Ski-Doo-MY24",
-    },
-  ]
-  const my23OffRoad = [
-    {
-      title: "Can-AM",
-      to: quoteUrl + "Can-Am",
-    },
-    {
-      title: "Can-AM SXS",
-      to: quoteUrl + "Can-Am-SXS",
-    },
-    {
-      title: "KTM",
-      to: quoteUrl + "KTM",
-    },
-    {
-      title: "Kawasaki",
-      to: quoteUrl + "Kawasaki",
-    },
-    {
-      title: "Ski-Doo",
-      to: quoteUrl + "Ski-Doo",
-    },
-    {
-      title: "Suzuki",
-      to: quoteUrl + "Suzuki",
-    },
-    {
-      title: "Triumph",
-      to: quoteUrl + "Triumph",
-    },
-  ]
   const userIsFinance = user.positions.some(
     (pos) => pos.position === 'Finance Manager' || pos.position === 'Administrator' || pos.position === 'Manager'
   );
@@ -2350,109 +2240,114 @@ export const managerSidebarNav = [
   },
 
 ]
+let quoteUrl = '/dealer/quote/new/'
+export const my24Watercraft = [
+  {
+    title: "Kawasaki",
+    to: quoteUrl + "Kawasaki",
+  },
+]
+export const my23Watercraft = [
+  {
+    title: "Kawasaki",
+    to: quoteUrl + "Kawasaki",
+  },
+  {
+    title: "Manitou",
+    to: quoteUrl + "Manitou",
+  },
+  {
+    title: "Sea-Doo",
+    to: quoteUrl + "Sea-Doo",
+  },
+  {
+    title: "Sea-Doo Switch",
+    to: quoteUrl + "Switch",
+  },
 
-/**     <DropdownMenuSub>
-              <DropdownMenuSubTrigger className='cursor-pointer'>Toggle Depts</DropdownMenuSubTrigger>
-              <DropdownMenuPortal>
-                <DropdownMenuSubContent className='bg-background border-border border w-[200px]'>
-                  <DropdownMenuItem
-                    className={cn(
-                      ' ',
-                      sales === true
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                    onSelect={() => { setSales((prevSales) => !prevSales); }}
-                  >
-                    Sales
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className={cn(
-                      ' ',
-                      acc === true
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                    onSelect={() => { setAcc((prevAcc) => !prevAcc); }}
-                  >
-                    Acc
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className={cn(
-                      ' ',
-                      finance === true
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                    onSelect={() => { setFinance((prevFinance) => !prevFinance); }}
-                  >
-                    Finance
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className={cn(
-                      ' ',
-                      manager === true
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                    onSelect={() => { setManager((prevManager) => !prevManager); }}
-                  >
-                    Manager
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className={cn(
-                      ' ',
-                      dev === true
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                    onSelect={() => { setDev((prevDev) => !prevDev); }}
-                  >
-                    Dev
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className={cn(
-                      ' ',
-                      admin === true
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                    onSelect={() => { setAdmin((prevAdmin) => !prevAdmin); }}
-                  >
-                    Admin
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className={cn(
-                      ' ',
-                      doc === true
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                    onSelect={() => { setDoc((prevDoc) => !prevDoc); }}
-                  >
-                    Doc
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    className={cn(
-                      ' ',
-                      service === true
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                    onSelect={() => { setService((prevService) => !prevService); }}
-                  >
-                    Service
-                  </DropdownMenuItem>
-                </DropdownMenuSubContent>
-              </DropdownMenuPortal>
-            </DropdownMenuSub>
-            <DropdownMenuSeparator />
- */
+]
+export const my24Moto = [
+  {
+    title: "Harley-Davidson",
+    to: quoteUrl + "Harley-DavidsonMY24",
+  },
+]
+export const my23Moto = [
+  {
+    title: "BMW Motorrad",
+    to: quoteUrl + "BMW-Motorrad",
+  },
+  {
+    title: "Harley-Davidson",
+    to: quoteUrl + "Harley-Davidson",
+  },
+  {
+    title: "Kawasaki",
+    to: quoteUrl + "Kawasaki",
+  },
+  {
+    title: "KTM",
+    to: quoteUrl + "KTM",
+  },
+  {
+    title: "Indian",
+    to: quoteUrl + "Indian",
+  },
+  {
+    title: "Suzuki",
+    to: quoteUrl + "Suzuki",
+  },
+  {
+    title: "Spyder",
+    to: quoteUrl + "Spyder",
+  },
+  {
+    title: "Triumph",
+    to: quoteUrl + "Triumph",
+  },
+  {
+    title: "Yamaha",
+    to: quoteUrl + "Yamaha",
+  },
+
+]
+export const my24OffRoad = [
+  {
+    title: "Can-AM SxS",
+    to: quoteUrl + "Can-Am-SXS-MY24",
+  },
+  {
+    title: "Can-AM Ski-Doo",
+    to: quoteUrl + "Ski-Doo-MY24",
+  },
+]
+export const my23OffRoad = [
+  {
+    title: "Can-AM",
+    to: quoteUrl + "Can-Am",
+  },
+  {
+    title: "Can-AM SXS",
+    to: quoteUrl + "Can-Am-SXS",
+  },
+  {
+    title: "KTM",
+    to: quoteUrl + "KTM",
+  },
+  {
+    title: "Kawasaki",
+    to: quoteUrl + "Kawasaki",
+  },
+  {
+    title: "Ski-Doo",
+    to: quoteUrl + "Ski-Doo",
+  },
+  {
+    title: "Suzuki",
+    to: quoteUrl + "Suzuki",
+  },
+  {
+    title: "Triumph",
+    to: quoteUrl + "Triumph",
+  },
+]

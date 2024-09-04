@@ -137,13 +137,13 @@ export async function loader({ params, request }: DataFunctionArgs) {
 export default function Accessories() {
   return (
     <div>
-      <Tabs defaultValue="Dashboard" className="w-full mx-3">
+      <Tabs defaultValue="Dashboard" className="w-full">
         <TabsList>
           <TabsTrigger value="Dashboard">Dashboard</TabsTrigger>
           <TabsTrigger value="To Order">The Numbers</TabsTrigger>
         </TabsList>
         <TabsContent value="Dashboard">
-          <Card className='mx-3 w-full'>
+          <Card className=' w-full'>
             <CardHeader>
               <CardTitle>Overview of all sales being made in the last 7 days by who, when.</CardTitle>
               <CardDescription>Card Description</CardDescription>
@@ -157,7 +157,7 @@ export default function Accessories() {
           </Card>
         </TabsContent>
         <TabsContent value="To Order">
-          <Card className='mx-3'>
+          <Card className=''>
             <CardHeader>
               <CardTitle>Who's falling behing on quotes, whos excelling</CardTitle>
               <CardDescription>Card Description</CardDescription>
