@@ -1338,6 +1338,7 @@ model Clientfile {
   timeToContact  String?
   conversationId String?
   billingAddress Boolean?
+  dob            String?
 
   AccOrder    AccOrder[]
   Finance     Finance[]

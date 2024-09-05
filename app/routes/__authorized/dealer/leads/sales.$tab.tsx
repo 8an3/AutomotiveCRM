@@ -253,10 +253,19 @@ export function MainDashbaord({ user }) {
         };
         data()
     }, []);
+
+    const [getDomain, setGetDomain] = useState("http://localhost:3000");
+
+    useEffect(() => {
+        const currentHost = typeof window !== "undefined" ? window.location.host : null;
+        if (currentHost === "dealersalesassistant.ca") {
+            setGetDomain("https://www.dealersalesassistant.ca")
+        }
+    }, []);
     const navigation = useNavigation();
     const isSubmitting = navigation.state === "submitting";
     const dataFetcher = (url) => fetch(url).then(res => res.json());
-    const { data: swrData } = useSWR(isSubmitting ? 'http://localhost:3000/dealer/dashboard/calls/loader' : null, dataFetcher, {})
+    const { data: swrData } = useSWR(isSubmitting ? getDomain + '/dealer/dashboard/calls/loader' : null, dataFetcher, {})
 
     useEffect(() => {
         if (swrData) {

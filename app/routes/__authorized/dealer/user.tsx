@@ -80,8 +80,12 @@ export default function Quote() {
       to: "/dealer/user/dashboard/finance/board",
     },
     {
-      title: "Log Out",
-      to: "/auth/logout",
+      title: "Contact",
+      to: "/dealer/user/dashboard/contact",
+    },
+    {
+      title: "Getting Started",
+      to: "/dealer/user/dashboard/gettingStarted",
     },
   ]
   return (

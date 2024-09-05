@@ -567,7 +567,7 @@ const financeFormSchema = z.object({
   appointment: zfd.text(z.string().optional()),
   completed: zfd.text(z.string().optional()),
   apptStatus: zfd.text(z.string().optional()),
-
+  quoted: zfd.text(z.string().optional()),
   lastContact: zfd.text(z.string().optional()),
   customerState: zfd.text(z.string().optional()),
   result: zfd.text(z.string().optional()),
@@ -576,7 +576,7 @@ const financeFormSchema = z.object({
   completeCall: zfd.text(z.string().optional()),
   followUpDay: zfd.text(z.string().default("3")).optional(),
   state: z.string().default("Pending").optional(),
-
+  tag: zfd.text(z.string().optional()),
   notes: zfd.text(z.string().optional()),
   visits: zfd.text(z.string().optional()),
   progress: zfd.text(z.string().optional()),

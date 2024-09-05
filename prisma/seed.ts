@@ -6380,11 +6380,12 @@ export async function Board() {
   const completed = [
     { board: "dev", column: "ROLES", item: "forgot driver, need to add delivery schedule, add it as a resource like the techs need to give the ability to set deliveries to everyoneyt" },
     { board: "dev", column: "ISSUE", item: "with production demo site, problem started after you manually had to update the files from remote because github action was not working" },
-
+    { board: "dev", column: "SALES", item: "have it so if you sdelect clientfile it just goes to client file and then you can select a unit if you want to but it displays orders, and work orders under clients name not under a unit bought there" },
     { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
     { board: "dev", column: "ISSUE", item: "need to be able to choose one resource id in calendar and display it in service" },
     { board: "dev", column: "ISSUE", item: "need winter storage dash for service / winter storage long term" },
 
+    { board: "dev", column: "DEALER ONBOARDING", item: "finish dealer greeting - first step complete, need to set email once CRM is ready that would be sent from dev dashboard, dev dashboard needs to accomadate crm leads and clients, add notes capability for crmcleints" },
     { board: "dev", column: "ISSUE", item: "unit picker - redesign" },
     { board: "dev", column: "quote", item: "unit picker - once model is selected with customer=, table will render in modal with the avialble units for sale right on the quote if the customer wants to go for it" },
     { board: "dev", column: "INFASTRUCTURE", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try - this could also be - set up demo site where, sign in is just inputing the email like technician@email.com and theyre logged in as the tech, or service writer and etc" },
@@ -6726,12 +6727,13 @@ export async function Board() {
   const getDoneNow = [
     { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
 
-    { board: "dev", column: "DEALER ONBOARDING", item: "finish dealer greeting - first step complete, need to set email once CRM is ready that would be sent from dev dashboard, dev dashboard needs to accomadate crm leads and clients, add notes capability for crmcleints" },
-
+    { board: "dev", column: "DONE NEEDS TESTING", item: "instead of input for tax on quotes do a drop down with actual provines taxes" },
+    { board: "dev", column: "IDEAS", item: "service calendar - select mechanic and it only shows that mechanics appts" },
+    { board: "dev", column: "IDEAS", item: "import / export allow to downlaod a template example so people can see the columns needed for that dataset" },
 
     { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH SMS AND EMAIL TESTING BEFORE RELEASE -----" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "email" },
-    { board: "dev", column: "DONE NEEDS TESTING", item: "email update styling so its not akward" },
+    { board: "dev", column: "DONE NEEDS TESTING", item: "email - update styling so its not akward" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "sms" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "webhook for incoming emails, save notifiation and messeages" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "use same system as notifications to check on new mail - USE SWR" },
@@ -6744,6 +6746,8 @@ export async function Board() {
 
     { board: "dev", column: "ROLES", item: "sales manager" },
     { board: "dev", column: "ROLES", item: "sales" },
+    { board: "dev", column: "ROLES", item: "sales - clientid - financeid --- add commuinication not saving" },
+    { board: "dev", column: "ROLES", item: "sales - clientid - financeid --- apt history not saving" },
     { board: "dev", column: "ROLES", item: "finance" },
 
     { board: "dev", column: "ROLES", item: "pac manager" },
@@ -6755,9 +6759,21 @@ export async function Board() {
     { board: "dev", column: "ROLES", item: "dev" },
 
 
+    { board: "dev", column: "ISSUE", item: "----- FINAL TESTING ON PROD SITE - COMPLETED -----" },
+    { board: "dev", column: "ROLES", item: "user staff chat - doesnt auto update chat after submiussion" },
+    { board: "dev", column: "ROLES", item: "user staff leaderboard - does not work in prod" },
+    { board: "dev", column: "ROLES", item: "user staff settings - account not saving" },
+    { board: "dev", column: "ROLES", item: "user staff roadmap " },
+    { board: "dev", column: "ROLES", item: "user staff board - board not saving" },
+    { board: "dev", column: "ROLES", item: "sales - payment calculator" },
+    { board: "dev", column: "ROLES", item: "sales - quote" },
+    { board: "dev", column: "ROLES", item: "sales - overview" },
+
+
+
     { board: "dev", column: "ISSUE", item: "***** BACKBURNER BUT NEEDS TO BE DONE ASAP DOES NOT NEED TO BE DONE FOR RELEASE *****" },
     { board: "dev", column: "GET DONE NOW", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase in managers dash" },
-    { board: "dev", column: "GET DONE NOW", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down" },
+    { board: "dev", column: "GET DONE NOW", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down -- for range date pick see shad cd examples cards, middle row third from the top" },
     { board: "dev", column: "ISSUE", item: "FIX MANAGER SECTION" },
     { board: "dev", column: "ISSUE", item: "FIX ADMIN SECTION" },
     { board: "dev", column: "ISSUE", item: "Parts order printout and workorder printout for srevice" },
@@ -6825,7 +6841,7 @@ export async function Board() {
     { board: "dev", column: "SALES", item: "fb msgr integration" },
 
 
-    { board: "dev", column: "IDEAS", item: "service calendar - select mechanic and it only shows that mechanics appts" },
+
     { board: "dev", column: "IDEAS", item: "save form to local storage, never loose data for a internet hiccup or outage" },
     { board: "dev", column: "IDEAS", item: "have blue book values on quote section" },
     { board: "dev", column: "IDEAS", item: "service dash - tab where it shows customers who havent had a service in 6 months" },
@@ -6848,7 +6864,7 @@ export async function Board() {
   ]
   const sales = [
     { board: "dev", column: "SALES", item: "make a bill of sale where it prints the items off of acc and parts orders - KIND OF ALREADY DONE BY PUSHING ACC TOTAL TO BOS BUT DOES NOT ITEMIZE ITEMS" },
-    { board: "dev", column: "SALES", item: "have it so if you sdelect clientfile it just goes to client file and then you can select a unit if you want to but it displays orders, and work orders under clients name not under a unit bought there" },
+
     { board: "dev", column: "SALES", item: "finance section in finance file, have it where it can be switch to manual mode only where there are no calculations being done" },
     { board: "dev", column: "SALES", item: "finish className={${isCompleted ? bg-[#30A46C]: bg-primary} in finance file" },
     { board: "dev", column: "SALES", item: "Call center Section" },

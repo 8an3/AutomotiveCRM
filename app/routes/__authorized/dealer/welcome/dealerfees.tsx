@@ -1,4 +1,4 @@
-import { useLoaderData, Form, useActionData } from '@remix-run/react'
+import { useLoaderData, Form, useActionData, NavLink } from '@remix-run/react'
 import { type MetaFunction, json, redirect, type ActionFunction, type LoaderFunction, } from '@remix-run/node'
 import { Input, Label, Separator, Button, } from '~/components/ui/index'
 import { prisma } from "~/libs";
@@ -12,168 +12,22 @@ import { getSession } from "~/sessions/auth-session.server";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from '~/models'
 import { GetUser } from "~/utils/loader.server";
-
-
-export function invariant(
-  condition: any,
-  message: string | (() => string),
-): asserts condition {
-  if (!condition) {
-    throw new Error(typeof message === 'function' ? message() : message)
-  }
-}
-
-export const action: ActionFunction = async ({ request }) => {
-  const formPayload = Object.fromEntries(await request.formData())
-  const formData = financeFormSchema.parse(formPayload)
-
-  const session = await getSession(request.headers.get("Cookie"));
-  const email = session.get("email")
-
-
-  const user = await GetUser(email)
-  /// console.log(user, account, 'wquiote loadert')
-  if (!user) {
-    redirect('/login')
-  }
-
-  const userEmail = email
-  const userLicensing = formPayload.userLicensing
-  const userTax = formPayload.userTax
-  const userLabour = formPayload.userLabour;
-  const intent = formData.intent
-  const DealerInfo = await prisma.dealerInfo.findUnique({
-    where: {
-      id: 1
-    }
-  })
-  if (intent === 'updateUser') {
-    delete formData.intent;
-
-    const saveUser = await updateUser(formData)
-    const saveDealer = await updateDealerFees(formData)
-    return ({ saveUser, saveDealer })
-  }
-  if (intent === 'dailyPPDF') {
-    const userId = formData.userId
-    const delete2 = await deleteDailyPDF(userId)
-    delete formData.intent;
-    const savedaily = await saveDailyWorkPlan(formData)
-    console.log(savedaily)
-    return ({ savedaily, delete2 })
-
-  }
-  const errors = {
-    userLicensing: (userLicensing && parseInt(userLicensing) > 1) ? null : "Licensing is required",
-    userTax: (userTax && parseInt(userTax) > 1) ? null : "Tax is required",
-    userLabour: (userLabour && parseInt(userLabour) > 1) ? null : "Labour is required",
-  };
-  const hasErrors = Object.values(errors).some((errorMessage) => errorMessage);
-  if (hasErrors) {
-    return json(errors);
-  }
-
-  invariant(typeof userLicensing === "string", "Licensing must be a string");
-  invariant(typeof userTax === "string", "Tax must be a string");
-  invariant(typeof userLabour === "string", "Labour must be a string");
-
-  if (user?.plan === 'prod_Q9tYUe0dEVzaRf') {
-    return redirect("/dealer/welcome/quote");
-  } else {
-    await prisma.dealer.create({
-      data: {
-        userEmail: userEmail,
-        dealerName: formData.dealer,
-        dealerAddress: formData.dealerAddress,
-        dealerProv: formData.dealerProv,
-        dealerPhone: formData.dealerPhone,
-        userLoanProt: formData.userLoanProt,
-        userTireandRim: formData.userTireandRim,
-        userGap: formData.userGap,
-        userExtWarr: formData.userExtWarr,
-        userServicespkg: formData.userServicespkg,
-        vinE: formData.vinE,
-        lifeDisability: formData.lifeDisability,
-        rustProofing: formData.rustProofing,
-        userLicensing: formData.userLicensing,
-        userFinance: formData.userFinance,
-        userDemo: formData.userDemo,
-        userGasOnDel: formData.userGasOnDel,
-        userOMVIC: formData.userOMVIC,
-        userOther: formData.userOther,
-        userTax: formData.userTax,
-        userAirTax: formData.userAirTax,
-        userTireTax: formData.userTireTax,
-        userGovern: formData.userGovern,
-        userPDI: formData.userPDI,
-        userLabour: formData.userLabour,
-        userMarketAdj: formData.userMarketAdj,
-        userCommodity: formData.userCommodity,
-        destinationCharge: formData.destinationCharge,
-        userFreight: formData.userFreight,
-        userAdmin: formData.userAdmin,
-      },
-    });
-    return redirect("/dealer/welcome/quote");
-  }
-}
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card"
+import { Bell, ScrollText, Sheet, User2 } from 'lucide-react';
+import { PauseCircle } from 'lucide-react';
+import { Presentation } from 'iconoir-react';
+import { FileQuestion } from 'lucide-react';
 
 
 export const loader = async ({ request, params }) => {
-  const session = await getSession(request.headers.get("Cookie"));
-  const email = session.get("email")
-  const user = await GetUser(email)
-  if (!user) {
-    redirect('/login')
-  }
-  if (user?.plan === 'prod_OY8EMf7RNoJXhX') {
-    redirect('/dealer/user/dashboard/settings')
-
-  }
-  // if (!deFees) { deFees = await prisma.dealer.findUnique({ where: { userEmail: user?.email } }); }
-  const urlSegmentsDashboard = new URL(request.url).pathname.split('/');
-  const url = urlSegmentsDashboard.slice(0, 3).join('/');
-  console.log(url)
-  let DealerInfo
-
-  let deFees = await prisma.dealer.findUnique({ where: { id: 1 } })
-  if (!deFees) {
-    deFees = await prisma.dealer.create({
-      data: {
-        dealerName: 'Dealer Name',
-        dealerAddress: '1234 Example St',
-        dealerProv: 'Ottawa, ON K1A 0B1',
-        dealerPhone: '8198198194',
-        userLoanProt: 0,
-        userTireandRim: '0',
-        userGap: 0,
-        userExtWarr: '0',
-        userServicespkg: 0,
-        vinE: 0,
-        lifeDisability: 0,
-        rustProofing: 0,
-        userLicensing: 60,
-        userFinance: '0',
-        userDemo: '0',
-        userGasOnDel: '0',
-        userOMVIC: '60',
-        userOther: 0,
-        userTax: '13',
-        userAirTax: '0',
-        userTireTax: '0',
-        userGovern: '0',
-        userPDI: '0',
-        userLabour: '118',
-        userMarketAdj: '0',
-        userCommodity: '0',
-        destinationCharge: 0,
-        userFreight: '0',
-        userAdmin: '0',
-        userEmail: user?.email,
-      },
-    });
-  }
-  return json({ request, user, deFees, });
+  redirect('/dealer/user/dashboard/gettingStarted')
 }
 
 export const meta = () => {
@@ -191,71 +45,187 @@ export const meta = () => {
 };
 
 export default function WelcomeDealerFeesSection() {
-  const { user, deFees } = useLoaderData();
-  // const [open, setOpen] = React.useState(false);
-  //  console.log(deFees, data, finance, 'inside welcome dealer fees section')
-  const timerRef = React.useRef(0);
-  const errors = useActionData() as Record<string, string | null>;
-
-  const Dealerfees = [
-    { name: "userAdmin", value: deFees.userAdmin, placeholder: "Admin" },
-    { name: "userFreight", value: deFees.userFreight, placeholder: "Freight" },
-    { name: "userCommodity", value: deFees.userCommodity, placeholder: "Commodity" },
-    { name: "userPDI", value: deFees.userPDI, placeholder: "PDI" },
-    { name: "userAirTax", value: deFees.userAirTax, placeholder: "Air Tax" },
-    { name: "userTireTax", value: deFees.userTireTax, placeholder: "Tire Tax" },
-    { name: "userGovern", value: deFees.userGovern, placeholder: "Government Fees" },
-    { name: "userFinance", value: deFees.userFinance, placeholder: "Finance Fees" },
-    { name: "destinationCharge", value: deFees.destinationCharge, placeholder: "Destination Charge" },
-    { name: "userGasOnDel", value: deFees.userGasOnDel, placeholder: "Gas On Delivery" },
-    { name: "userMarketAdj", value: deFees.userMarketAdj, placeholder: "Market Adjustment" },
-    { name: "userDemo", value: deFees.userDemo, placeholder: "Demonstratration Fee" },
-    { name: "userOMVIC", value: deFees.userOMVIC, placeholder: "OMVIC or Other" },
-  ];
-
-  const FinanceOptions = [
-    { name: "userExtWarr", value: deFees.userExtWarr, placeholder: 'Extended Warranty' },
-    { name: "userLoanProt", value: deFees.userLoanProt, placeholder: 'Loan Protection' },
-    { name: "userGap", value: deFees.userGap, placeholder: 'Gap Protection' },
-    { name: "userTireandRim", deFees: deFees.userTireandRim, placeholder: 'Tire and Rim' },
-    { name: "vinE", value: deFees.vinE, placeholder: 'Vin Etching' },
-    { name: "rustProofing", value: deFees.rustProofing, placeholder: 'Under Coating' },
-    { name: "userServicespkg", value: deFees.userServicespkg, placeholder: 'Service Package' },
-    { name: "lifeDisability", value: deFees.lifeDisability, placeholder: 'Life and Disability' },
-    { name: "userOther", value: deFees.userOther, placeholder: 'Other data Package' },
-  ];
-  //      <video loop autoPlay width='750' height='750' src='https://youtu.be/u1MLfrFzCBo' className='mx-auto z-49' frameBorder="0" allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
-  const [open, setOpen] = React.useState(false);
   return (
-    <div className="grid grid-cols-1 mx-auto ">
-      <div className=" mt-5">
-        <h2 className="text-2xl font-thin">
-          Getting Started
-        </h2>
-        <Separator className="mb-4" />
-        <p className="text-sm text-foreground mt-3 mb-3">
-          To get started you will need to take care of a few things before using the CRM. First you will need to input your dealer's fees and other values, in your settings section, for the quoting system to populate accurate quotes.
-        </p>
-      </div>
-      <a href='/dealer/user/dashboard/settings' target="_blank">
-        <Button className='bg-primary border border-border text-foreground'>
-          User Settings
-        </Button>
-      </a>
-      <p className='my-3'>
-        Afterwards your free to start using the crm you can access everything from the menu on the top right of the screen. Although we suggest going over the documentation to get the most out of the CRM. It's not needed if you have used other CRM's before, but there are features found in our CRM that you have not used before that could be useful in your everyday tasks.
-      </p>
-      <a href='/dealer/user/_docs/docs' target="_blank">
-        <Button className='bg-primary border border-border text-foreground'>
-          Documentation
-        </Button>
-      </a>
+    <div className="grid grid-cols-1 lg:grid-cols-2 mx-auto gap-4 ">
+      <SalesCard />
+      <DealerCard />
     </div>
 
   )
 }
 
+function DealerCard() {
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle>Dealers</CardTitle>
+        <CardDescription>
+          Some house keeping before you started.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-1">
+        <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+          <Bell className="mt-px h-5 w-5" />
+          <div className="space-y-1">
+            <p className="text-sm font-medium leading-none">Other Steps</p>
+            <p className="text-sm text-muted-foreground">
+              All the steps in the sales card are needed to be completed for you as well.
+            </p>
+          </div>
+        </div>
+        <NavLink to='/dealer/admin/users/overview'>
+          <div className="-mx-2 flex items-start space-x-4 rounded-md bg-accent p-2 text-accent-foreground transition-all">
+            <User2 className="mt-px h-5 w-5" />
+            <div className="space-y-1">
+              <p className="text-sm font-medium leading-none">Adding Employees</p>
+              <p className="text-sm text-muted-foreground">
+                Here you can add your employees so they can start using the system. Once created you can delegate the previous tasks to them, or take care of them yourself.
+              </p>
+            </div>
+          </div>
+        </NavLink>
+        <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+          <Link className="mt-px h-5 w-5" />
+          <div className="space-y-1">
+            <p className="text-sm font-medium leading-none">Links</p>
+            <p className="text-sm text-muted-foreground">
+              Here are the links needed to complete the previous steps, and what position can complete them.
+            </p>
+            <div className='grid grid-cols-1 justify-center'>
 
+              <NavLink to='/dealer/admin/settings/general'>
+                Dealer Fees and Information - Admin / Manager
+              </NavLink>
+              <NavLink to='/dealer/user/dashboard/templates'>
+                Templates - Any
+              </NavLink>
+              <NavLink to='/dealer/user/dashboard/board'>
+                Boards - Any
+              </NavLink>
+              <NavLink to='/dealer/user/dashboard/scripts'>
+                Scripts - Any
+              </NavLink>
+            </div>
+          </div>
+        </div>
+
+
+        <NavLink to='/dealer/admin/importexport/units'>
+          <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+            <Database className="mt-px h-5 w-5" />
+            <div className="space-y-1">
+              <p className="text-sm font-medium leading-none">Data</p>
+              <p className="text-sm text-muted-foreground">
+                To import data from your current CRM.
+              </p>
+            </div>
+          </div>
+        </NavLink>
+      </CardContent>
+    </Card>
+
+  )
+}
+function SalesCard() {
+  return (
+    <Card>
+      <CardHeader className="pb-3">
+        <CardTitle>Sales People</CardTitle>
+        <CardDescription>
+          Some house keeping before you started.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-1">
+        <NavLink to='/dealer/user/dashboard/dealerFees'>
+          <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+            <Bell className="mt-px h-5 w-5" />
+            <div className="space-y-1">
+              <p className="text-sm font-medium leading-none">Dealer Fees</p>
+              <p className="text-sm text-muted-foreground">
+                First you will need to input your dealer's fees and other values, in your settings section, for the quoting system to populate accurate quotes.
+              </p>
+            </div>
+          </div>
+        </NavLink>
+        <NavLink to='/dealer/user/dashboard/settings'>
+          <div className="-mx-2 flex items-start space-x-4 rounded-md bg-accent p-2 text-accent-foreground transition-all">
+            <User2 className="mt-px h-5 w-5" />
+            <div className="space-y-1">
+              <p className="text-sm font-medium leading-none">Profile</p>
+              <p className="text-sm text-muted-foreground">
+                Update your profile information as much as you can.
+              </p>
+            </div>
+          </div>
+        </NavLink>
+        <NavLink to='/dealer/user/dashboard/templates'>
+
+          <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+            <Sheet className="mt-px h-5 w-5" />
+            <div className="space-y-1">
+              <p className="text-sm font-medium leading-none">Documents</p>
+              <p className="text-sm text-muted-foreground">
+                Creating all of your templated documents ahead of time can you alot of it during the sales process, it is worth the initial investment setting everything up. Currently once your done your document you will have to email us the template to have it saved to your clients dashboard so it can be used for every sale. In the future this will be automatic and sending it to us will not be needed.
+              </p>
+            </div>
+          </div>
+        </NavLink>
+        <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+          <PauseCircle className="mt-px h-5 w-5" />
+          <div className="space-y-1">
+            <p className="text-sm font-medium leading-none">How to documentation</p>
+            <p className="text-sm text-muted-foreground">
+              In your drop down, it will display documenation. No matter the page your on it will bring you to that pages video, explaining all the features and abilities that page has. That way you can learn as you go when needed, instead of sitting there for the next 4 hours and only retaining a portain of the information.
+            </p>
+          </div>
+        </div>
+        <NavLink to='/dealer/user/dashboard/board'>
+          <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+            <Presentation className="mt-px h-5 w-5" />
+            <div className="space-y-1">
+              <p className="text-sm font-medium leading-none">The Board</p>
+              <p className="text-sm text-muted-foreground">
+                The board in your settings area is similar to a trello board, it can be used to set up a sale process that works for you and guide you through it when you can't remember, or other ideas like that.
+              </p>
+            </div>
+          </div>
+        </NavLink>
+        <NavLink to='/dealer/user/dashboard/scripts'>
+          <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+            <ScrollText className="mt-px h-5 w-5" />
+            <div className="space-y-1">
+              <p className="text-sm font-medium leading-none">Scripts</p>
+              <p className="text-sm text-muted-foreground">
+                Building your scripts library now and on the go will save you time when you can reuse that script with the next customer. They're accessible when emailing or texting people so they can come in handy to take care of calls.
+              </p>
+            </div>
+          </div>
+        </NavLink>
+        <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+          <Wrench className="mt-px h-5 w-5" />
+          <div className="space-y-1">
+            <p className="text-sm font-medium leading-none">Preconfigured</p>
+            <p className="text-sm text-muted-foreground">
+              Almost everything is pre configured to help you succeed. For example the dashbaord's are already set up to hit the ground running so you don't need to move / hide or display columns for it to be effecient to work with. It is there if you do want it to be different though. Same with scripts, there are already a number that you have access to. Along with a number of other pre configured systems.
+            </p>
+          </div>
+        </div>
+        <NavLink to='/dealer/user/dashboard/contact'>
+          <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+            <FileQuestion className="mt-px h-5 w-5" />
+            <div className="space-y-1">
+              <p className="text-sm font-medium leading-none">Suggestions</p>
+              <p className="text-sm text-muted-foreground">
+                If you see an area/process that can be accomplished more effieciently, let us know and we can update/upgrade it.
+              </p>
+            </div>
+          </div>
+        </NavLink>
+      </CardContent>
+    </Card>
+
+  )
+}
 export const asdsaloader: LoaderFunction = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")

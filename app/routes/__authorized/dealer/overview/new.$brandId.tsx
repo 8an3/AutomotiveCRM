@@ -1994,1037 +1994,13 @@ export function Overview({ outletSize }) {
               </DropdownMenu>
             </div>
           </CardHeader>
-          <Form method="post">
-            {secPage && (
-              <>
-                <CardContent className="bg-background p-6 text-sm max-h-[700px] overflow-y-auto h-[700px]">
-                  <div className="grid gap-3">
-                    <div className="font-semibold">Payment Details</div>
-                    <li className="flex items-center justify-between">
-                      <span className="text-[#8a8a93]">Brand</span>
-                      <span>{finance.brand}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-[#8a8a93]">Model</span>
-                      <span> {finance.model}</span>
-                    </li>
-                    {finance.brand !== "BMW-Motorrad" && (
-                      <>
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">Color</span>
-                          <span>{finance.color}</span>
-                        </li>
-                      </>
-                    )}
-                    {finance.modelCode !== null && (
-                      <li className="flex items-center justify-between">
-                        <span className="text-[#8a8a93]">Model Code</span>
-                        <span>{finance.modelCode}</span>
-                      </li>
-                    )}
-                    {finance.modelCode !== null && (
-                      <li className="flex items-center justify-between">
-                        <span className="text-[#8a8a93]">Year</span>
-                        <span>{finance.year}</span>
-                      </li>
-                    )}
-                    {finance.stockNum !== null && (
-                      <li className="flex items-center justify-between">
-                        <span className="text-[#8a8a93]">Stock Number</span>
-                        <span>{finance.stockNum}</span>
-                      </li>
-                    )}
-
-                    <ul className="grid gap-3">
-                      <li className="flex items-center justify-between">
-                        <span className="text-[#8a8a93]">MSRP</span>
-                        <span>
-                          <Input
-                            name="msrp"
-                            id="msrp"
-                            className="h-8 w-20 border-border bg-background text-right "
-                            autoComplete="msrp"
-                            defaultValue={formData.msrp}
-                            onChange={handleChange}
-                          />
-                        </span>
-                      </li>
-                      {formData.freight > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">Freight</span>
-                          <span>
-                            <Input
-                              className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
-                              defaultValue={formData.freight}
-                              placeholder="freight"
-                              type="text"
-                              name="freight"
-                              onChange={handleChange}
-                            />
-                          </span>
-                        </li>
-                      )}
-
-                      {formData.pdi > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">PDI</span>
-                          <span>
-                            <Input
-                              className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
-                              defaultValue={formData.pdi}
-                              placeholder="pdi"
-                              type="text"
-                              name="pdi"
-                              onChange={handleChange}
-                            />
-                          </span>
-                        </li>
-                      )}
-                      {formData.admin > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">Admin</span>
-                          <span>
-                            <Input
-                              className="mt-2 h-8 w-20 items-end justify-end  border-border  bg-background text-right "
-                              defaultValue={formData.admin}
-                              placeholder="admin"
-                              type="text"
-                              name="admin"
-                              onChange={handleChange}
-                            />
-                          </span>
-                        </li>
-                      )}
-                      {formData.commodity > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">Commodity</span>
-                          <span>
-                            <Input
-                              className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
-                              defaultValue={formData.commodity}
-                              placeholder="commodity"
-                              type="text"
-                              name="commodity"
-                              onChange={handleChange}
-                            />
-                          </span>
-                        </li>
-                      )}
-
-                      <li className="flex items-center justify-between">
-                        <span className="text-[#8a8a93]">Accessories</span>
-                        <span>
-                          <Input
-                            name="accessories"
-                            id="msrp"
-                            className="h-8 w-20 border-border bg-background text-right "
-                            autoComplete="msrp"
-                            defaultValue={formData.accessories}
-                            onChange={handleChange}
-                          />
-                        </span>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <span className="text-[#8a8a93]">Labour Hours</span>
-                        <span>
-                          <Input
-                            name="labour"
-                            id="msrp"
-                            className="h-8 w-20 border-border bg-background text-right "
-                            autoComplete="msrp"
-                            defaultValue={formData.labour}
-                            onChange={handleChange}
-                          />
-                        </span>
-                      </li>
-                      <li className="flex items-center justify-between font-semibold">
-                        <span className="text-[#8a8a93]">Licensing</span>
-                        <span>
-                          <Input
-                            className="ml-auto mt-2 h-8 w-20  justify-end border-border bg-background text-right "
-                            defaultValue={licensing}
-                            placeholder="licensing"
-                            type="text"
-                            name="licensing"
-                            onChange={handleChange}
-                          />
-                        </span>
-                      </li>
-
-                      {modelData.trailer > 0 && (
-                        <li className="flex items-center justify-between font-semibold">
-                          <span className="text-[#8a8a93]">Trailer</span>
-                          <span>${modelData.trailer}</span>
-                        </li>
-                      )}
-                      {modelData.painPrem > 0 && (
-                        <li className="flex items-center justify-between font-semibold">
-                          <span className="text-[#8a8a93]">Paint Premium</span>
-                          <span> ${modelData.painPrem}</span>
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                  <div className="font-semibold">Standard Terms</div>
-                  <div className="my-4">
-                    <div className="main-button-group flex justify-between ">
-                      <Badge
-                        id="myButton"
-                        className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
-                          ? "active bg-[#c72323] text-foreground"
-                          : "bg-[#0a0a0a] text-foreground"
-                          }`}
-                        onClick={() => handleMainButtonClick("payments")}
-                      >
-                        Payments
-                      </Badge>
-
-                      <Badge
-                        id="myButton1"
-                        className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
-                          ? "active bg-[#c72323] text-foreground "
-                          : "bg-[#0a0a0a] text-foreground"
-                          }`}
-                        onClick={() => handleMainButtonClick("noTax")}
-                      >
-                        No Tax
-                      </Badge>
-
-                      <Badge
-                        id="myButton2"
-                        className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
-                          ? "active bg-[#c72323] text-foreground"
-                          : "bg-[#0a0a0a] text-foreground"
-                          }`}
-                        onClick={() => handleMainButtonClick("customTax")}
-                      >
-                        Custom Tax
-                      </Badge>
-                    </div>
-                    <div className="sub-button-group mt-2 flex justify-between">
-                      <Badge
-                        id="myButton3"
-                        className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
-                          ? "active bg-[#c72323] text-foreground"
-                          : "bg-[#0a0a0a] text-foreground"
-                          }`}
-                        onClick={() => handleSubButtonClick("withoutOptions")}
-                      >
-                        W/O Options
-                      </Badge>
-
-                      <Badge
-                        id="myButton5"
-                        className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
-                          ? "active bg-[#c72323] text-foreground"
-                          : "bg-[#0a0a0a] text-foreground"
-                          }`}
-                        onClick={() => handleSubButtonClick("withOptions")}
-                      >
-                        W/ Options
-                      </Badge>
-                    </div>
-                  </div>
-                  {mainButton === "payments" && (
-                    <div className="">
-                      {subButton === "withoutOptions" && (
-                        <ul className="grid gap-3">
-                          <li className="flex items-center justify-between">
-                            <span className="text-[#8a8a93]">Monthly</span>
-                            <span> ${on60}</span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-[#8a8a93]">Bi-weekly</span>
-                            <span> ${biweekly}</span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-[#8a8a93]">Weekly</span>
-                            <span> ${weekly}</span>
-                          </li>
-                        </ul>
-                      )}
-                      {subButton === "withOptions" && (
-                        <>
-                          <div className="font-semibold">Options Include</div>
-                          <DealerOptionsAmounts />
-                          <ul className="grid gap-3">
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Monthly</span>
-                              <span> ${qc60}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Bi-weekly</span>
-                              <span> ${biweeklyqc}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Weekly</span>
-                              <span> ${weeklyqc}</span>
-                            </li>
-                          </ul>
-                        </>
-                      )}
-                    </div>
-                  )}
-
-                  {mainButton === "noTax" && (
-                    <div className="">
-                      {subButton === "withoutOptions" && (
-                        <div>
-                          <ul className="grid gap-3">
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Monthly</span>
-                              <span> ${nat60}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Bi-weekly</span>
-                              <span> ${biweeklNat}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Weekly</span>
-                              <span> ${weeklylNat}</span>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                      {subButton === "withOptions" && (
-                        <div>
-                          <div className="font-semibold">Options Include</div>
-                          <DealerOptionsAmounts />
-                          <ul className="grid gap-3">
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Monthly</span>
-                              <span> ${nat60WOptions}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Bi-weekly</span>
-                              <span> ${biweeklNatWOptions}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Weekly</span>
-                              <span> ${biweeklNatWOptions}</span>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {mainButton === "customTax" && (
-                    <div className="">
-                      <ul className="grid gap-3">
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">Other tax %</span>
-                          <span>
-                            <Input
-                              name="othTax"
-                              id="othTax"
-                              className="h-8 w-20 border-border bg-background text-right "
-                              autoComplete="othTax"
-                              defaultValue={formData.othTax}
-                              onChange={handleChange}
-                            />
-                          </span>
-                        </li>
-                      </ul>
-                      {subButton === "withoutOptions" && (
-                        <div className="mt-5 flex justify-between">
-                          <ul className="grid gap-3">
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Monthly</span>
-                              <span> ${oth60}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Bi-weekly</span>
-                              <span> ${biweekOth}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Weekly</span>
-                              <span> ${weeklyOth}</span>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                      {subButton === "withOptions" && (
-                        <div>
-                          <div className="font-semibold">Options Include</div>
-                          <DealerOptionsAmounts />
-                          <ul className="grid gap-3">
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Monthly</span>
-                              <span> ${oth60WOptions}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Bi-weekly</span>
-                              <span> ${biweekOthWOptions}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Weekly</span>
-                              <span> ${weeklyOthWOptions}</span>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                  <div className="font-semibold">Contract Variables</div>
-                  <ul className="grid gap-3">
-                    <li className="flex items-center justify-between">
-                      <span className="text-[#8a8a93]">Term</span>
-                      <span>
-                        <Input
-                          className="h-8 w-20 border-border bg-background text-right "
-                          name="months"
-                          id="months"
-                          autoComplete="months"
-                          defaultValue={months}
-                          onChange={handleChange}
-                          type="number"
-                        />
-                      </span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-[#8a8a93]">Rate</span>
-                      <span>
-                        <Input
-                          className="h-8 w-20 items-end justify-end border-border bg-background text-right  "
-                          name="iRate"
-                          id="iRate"
-                          autoComplete="iRate"
-                          defaultValue={iRate}
-                          onChange={handleChange}
-                        />
-                      </span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-[#8a8a93]">Deposit</span>
-                      <span>
-                        <Input
-                          className="h-8 w-20 border-border bg-background text-right "
-                          name="deposit"
-                          id="deposit"
-                          autoComplete="deposit"
-                          defaultValue={deposit}
-                          onChange={handleChange}
-                          type="number"
-                        />
-                      </span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-[#8a8a93]">Trade Value</span>
-                      <span>
-                        <Input
-                          className="ml-auto h-8 w-20 border-border bg-background text-right "
-                          name="tradeValue"
-                          id="tradeValue"
-                          autoComplete="tradeValue"
-                          defaultValue={tradeValue}
-                          onChange={handleChange}
-                        />
-                      </span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-[#8a8a93]">Lien</span>
-                      <span>
-                        <Input
-                          className="h-8 w-20 border-border bg-background text-right "
-                          name="lien"
-                          id="lien"
-                          autoComplete="lien"
-                          defaultValue={lien}
-                          onChange={handleChange}
-                          type="number"
-                        />
-                      </span>
-                    </li>
-                  </ul>
-
-                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                  <div className="font-semibold">
-                    Customer Detail Confirmation
-                  </div>
-                  <div className="mx-3 mb-3 grid grid-cols-2 justify-between gap-3">
-                    <div className="relative mt-5">
-                      <Input
-                        defaultValue={formData.firstName}
-                        name="firstName"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        First Name
-                      </label>
-                    </div>
-                    <div className="relative mt-5">
-                      <Input
-                        defaultValue={formData.lastName}
-                        name="lastName"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Last Name
-                      </label>
-                    </div>
-                    <div className="relative mt-3">
-                      <Input
-                        defaultValue={finance.phone}
-                        name="phone"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Phone
-                      </label>
-                    </div>
-                    <div className="relative mt-3">
-                      <Input
-                        defaultValue={finance.email}
-                        name="email"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Email
-                      </label>
-                    </div>
-                  </div>
-
-
-                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                  <div className="font-semibold">Trade Information</div>
-                  <div className="mx-3 mb-3 grid grid-cols-2 justify-between gap-3">
-                    <div className="relative mt-5">
-                      <Input
-                        defaultValue={finance.tradeYear}
-                        name="tradeYear"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Year
-                      </label>
-                    </div>
-                    <div className="relative mt-5">
-                      <Input
-                        defaultValue={finance.tradeMake}
-                        name="tradeMake"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Make
-                      </label>
-                    </div>
-                    <div className="relative mt-3">
-                      <Input
-                        defaultValue={finance.tradeDesc}
-                        name="tradeDesc"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Model
-                      </label>
-                    </div>
-                    <div className="relative mt-3">
-                      <Input
-                        defaultValue={finance.tradeColor}
-                        name="tradeColor"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Color
-                      </label>
-                    </div>
-                    <div className="relative mt-3">
-                      <Input
-                        defaultValue={finance.tradeVin}
-                        name="tradeVin"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        VIN
-                      </label>
-                    </div>
-                    <div className="relative mt-3">
-                      <Input
-                        defaultValue={finance.tradeMileage}
-                        name="tradeMileage"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Mileage
-                      </label>
-                    </div>
-                    <div className="relative mt-3">
-                      <Input
-                        defaultValue={finance.tradeLocation}
-                        name="tradeLocation"
-                        type="text"
-                        className="w-full border-border bg-background "
-                      />
-                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                        Trade Location
-                      </label>
-                    </div>
-                  </div>
-                  <Drawer direction="left">
-                    <DrawerTrigger asChild>
-                      <Button size="sm" className="ml-auto" variant="outline">
-                        Other Inputs
-                      </Button>
-                    </DrawerTrigger>
-                    <DrawerContent className="bg-background text-foreground border-border">
-                      <div className="mx-auto h-full w-full max-w-sm lg:w-[700px]">
-                        <DrawerHeader>
-                          <DrawerTitle>Other Inputs</DrawerTitle>
-                          <DrawerDescription>
-                            Changes to discounts and such
-                          </DrawerDescription>
-                        </DrawerHeader>
-                        <ul className="grid gap-3">
-                          <li className="flex items-center justify-between">
-                            <span className="text-[#8a8a93]">Discount $</span>
-                            <span>
-                              <Input
-                                name="discount"
-                                className="h-8 w-20 border-border bg-background text-right "
-                                defaultValue={discount}
-                                onChange={handleChange}
-                              />
-                            </span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-[#8a8a93]">
-                              Discount (1.1-15)%
-                            </span>
-                            <span>
-                              <Input
-                                name="discountPer"
-                                className="h-8 w-20 border-border bg-background text-right "
-                                defaultValue={0}
-                                onChange={handleChange}
-                              />
-                            </span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-[#8a8a93]">
-                              Delivery Charge
-                            </span>
-                            <span>
-                              <Input
-                                name="deliveryCharge"
-                                id="msrp"
-                                className="h-8 w-20 border-border bg-background text-right "
-                                autoComplete="msrp"
-                                defaultValue={deliveryCharge}
-                                onChange={handleChange}
-                              />
-                            </span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-[#8a8a93]">Total Labour</span>
-                            <span>${totalLabour}</span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-[#8a8a93]">Lien</span>
-                            <span>
-                              <Input
-                                className="h-8 w-20 border-border bg-background text-right "
-                                name="lien"
-                                id="lien"
-                                autoComplete="lien"
-                                defaultValue={lien}
-                                onChange={handleChange}
-                              />
-                            </span>
-                          </li>
-                        </ul>
-                        <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                        <div className="font-semibold">
-                          Customer Detail Confirmation
-                        </div>
-                        <div className="mb-3 grid grid-cols-2 justify-between gap-3">
-
-                          <div className="relative mt-3">
-                            <Input
-                              defaultValue={finance.address}
-                              name="address"
-                              type="text"
-                              className="w-full border-border bg-background "
-                            />
-                            <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                              Address
-                            </label>
-                          </div>
-                          <div className="relative mt-3">
-                            <Input
-                              defaultValue={finance.city}
-                              name="city"
-                              type="text"
-                              className="w-full border-border bg-background "
-                            />
-                            <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                              City
-                            </label>
-                          </div>
-                          <div className="relative mt-3">
-                            <Input
-                              defaultValue={finance.province}
-                              name="province"
-                              type="text"
-                              className="w-full border-border bg-background "
-                            />
-                            <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                              Province
-                            </label>
-                          </div>
-                          <div className="relative mt-3">
-                            <Input
-                              defaultValue={finance.postal}
-                              name="postal"
-                              type="text"
-                              className="w-full border-border bg-background "
-                            />
-                            <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                              Postal Code
-                            </label>
-                          </div>
-                          <div className="relative mt-3">
-                            <Input
-                              defaultValue={finance.dl}
-                              name="dl"
-                              type="text"
-                              className="w-full border-border bg-background "
-                            />
-                            <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                              Drivers Lic.
-                            </label>
-                          </div>
-                        </div>
-                        <div className=" mb-3 grid grid-cols-2 justify-between gap-3">
-                          <div className="relative mt-3">
-                            <Select name="timeToContact">
-                              <SelectTrigger className="w-full  border border-border bg-background text-foreground">
-                                <SelectValue defaultValue={finance.timeToContact} />
-                              </SelectTrigger>
-                              <SelectContent className=" border border-border bg-background text-foreground">
-                                <SelectGroup>
-                                  <SelectLabel>Best Time To Contact</SelectLabel>
-                                  <SelectItem value="Morning">Morning</SelectItem>
-                                  <SelectItem value="Afternoon">Afternoon</SelectItem>
-                                  <SelectItem value="Evening">Evening</SelectItem>
-                                  <SelectItem value="Do Not Contact">
-                                    Do Not Contact
-                                  </SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                            <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                              Prefered Time
-                            </label>
-                          </div>
-                          <div className="relative mt-3">
-                            <Select name="typeOfContact">
-                              <SelectTrigger className="w-full  border border-border bg-background text-foreground">
-                                <SelectValue defaultValue={finance.typeOfContact} />
-                              </SelectTrigger>
-                              <SelectContent className=" border border-border bg-background text-foreground">
-                                <SelectGroup>
-                                  <SelectLabel>Contact Method</SelectLabel>
-                                  <SelectItem value="Phone">Phone</SelectItem>
-                                  <SelectItem value="InPerson">In-Person</SelectItem>
-                                  <SelectItem value="SMS">SMS</SelectItem>
-                                  <SelectItem value="Email">Email</SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                            <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                              Prefered Contact
-                            </label>
-                          </div>
-
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <div className="relative mt-3">
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-full justify-start  text-center  font-normal",
-                                    !dateCal && "text-muted-foreground"
-                                  )}
-                                >
-                                  <CalendarIcon className="mr-2 h-4 w-4 " />
-                                  {dateCal ? (
-                                    format(dateCal, "PPP")
-                                  ) : (
-                                    <span>Pick a date</span>
-                                  )}
-                                </Button>
-                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                  Pick A Date
-                                </label>
-                              </div>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto bg-background p-0 text-foreground border-border"
-                              align="start"
-                            >
-                              <Calendar
-                                className="bg-background text-foreground"
-                                mode="single"
-                                selected={dateCal}
-                                onSelect={setDate}
-                                initialFocus
-                              />
-                            </PopoverContent>
-                          </Popover>
-                          <input
-                            type="hidden"
-                            value={String(dateCal)}
-                            name="pickedDate"
-                          />
-
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <div className="relative mt-3">
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-full justify-start text-right font-normal",
-                                    !dateCal && "text-muted-foreground"
-                                  )}
-                                >
-                                  <ClockIcon className="mr-2 h-4 w-4 " />
-                                  {currentTime ? time : <span>Pick a Time</span>}
-                                </Button>
-                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                  Pick A Time
-                                </label>
-                              </div>
-                            </PopoverTrigger>
-                            <PopoverContent
-                              className="w-auto bg-background p-0 text-foreground"
-                              align="start"
-                            >
-                              <div className="flex items-center">
-                                <Select
-                                  name="pickHour"
-                                  value={hour}
-                                  onValueChange={setHour}
-                                >
-                                  <SelectTrigger className="m-3 w-auto">
-                                    <SelectValue placeholder="hour" />
-                                  </SelectTrigger>
-                                  <SelectContent className="bg-background text-foreground">
-                                    <SelectGroup>
-                                      <SelectLabel>Hour</SelectLabel>
-                                      <SelectItem value="09">09</SelectItem>
-                                      <SelectItem value="10">10</SelectItem>
-                                      <SelectItem value="11">11</SelectItem>
-                                      <SelectItem value="12">12</SelectItem>
-                                      <SelectItem value="13">13</SelectItem>
-                                      <SelectItem value="14">14</SelectItem>
-                                      <SelectItem value="15">15</SelectItem>
-                                      <SelectItem value="16">16</SelectItem>
-                                      <SelectItem value="17">17</SelectItem>
-                                      <SelectItem value="18">18</SelectItem>
-                                    </SelectGroup>
-                                  </SelectContent>
-                                </Select>
-
-                                <Select
-                                  name="pickMin"
-                                  value={min}
-                                  onValueChange={setMin}
-                                >
-                                  <SelectTrigger className="m-3 w-auto">
-                                    <SelectValue placeholder="min" />
-                                  </SelectTrigger>
-                                  <SelectContent className="bg-background text-foreground">
-                                    <SelectGroup>
-                                      <SelectLabel>Minute</SelectLabel>
-                                      <SelectItem value="00">00</SelectItem>
-                                      <SelectItem value="10">10</SelectItem>
-                                      <SelectItem value="20">20</SelectItem>
-                                      <SelectItem value="30">30</SelectItem>
-                                      <SelectItem value="40">40</SelectItem>
-                                      <SelectItem value="50">50</SelectItem>
-                                    </SelectGroup>
-                                  </SelectContent>
-                                </Select>
-                              </div>
-                            </PopoverContent>
-                          </Popover>
-                        </div>
-
-                        <DrawerFooter>
-                          <DrawerClose asChild>
-                            <Button variant="outline">Close</Button>
-                          </DrawerClose>
-                        </DrawerFooter>
-                      </div>
-                    </DrawerContent>
-                  </Drawer>
-                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                  <div className="font-semibold">Total</div>
-                  <ul className="grid gap-3">
-                    {perDiscountGiven > 0 && (
-                      <>
-                        <li className="mt-3 flex items-center justify-between">
-                          <span className="text-[#8a8a93]">
-                            Total Before Discount
-                          </span>
-                          <span>${beforeDiscount}</span>
-                        </li>
-                      </>
-                    )}
-                    {perDiscountGiven > 0 && (
-                      <>
-                        <li className="mt-3 flex items-center justify-between">
-                          <span className="text-[#8a8a93]">
-                            Discount (MSRP only)
-                          </span>
-                          <span> ${perDiscountGiven}</span>
-                        </li>
-                      </>
-                    )}
-                    {mainButton === "payments" && (
-                      <div>
-                        {subButton === "withoutOptions" && (
-                          <>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Total</span>
-                              <span>${total}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">With taxes</span>
-                              <span> ${onTax}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">
-                                After Deposit
-                              </span>
-                              <span> ${onTax - deposit}</span>
-                            </li>
-                          </>
-                        )}
-                        {subButton === "withOptions" && (
-                          <>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Total</span>
-                              <span>${totalWithOptions}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">With taxes</span>
-                              <span> ${qcTax}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">
-                                After Deposit
-                              </span>
-                              <span> ${qcTax - deposit}</span>
-                            </li>
-                          </>
-                        )}
-                      </div>
-                    )}
-                    {mainButton === "noTax" && (
-                      <div>
-                        {subButton === "withoutOptions" && (
-                          <>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Total</span>
-                              <span>${total}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">With taxes</span>
-                              <span> ${native}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">
-                                After Deposit
-                              </span>
-                              <span> ${native - deposit}</span>
-                            </li>
-                          </>
-                        )}
-                        {subButton === "withOptions" && (
-                          <>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Total</span>
-                              <span>${totalWithOptions}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">With taxes</span>
-                              <span> ${totalWithOptions}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">
-                                After Deposit
-                              </span>
-                              <span> ${totalWithOptions - deposit}</span>
-                            </li>
-                          </>
-                        )}
-                      </div>
-                    )}
-                    {mainButton === "customTax" && (
-                      <div>
-                        {subButton === "withoutOptions" && (
-                          <>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Total</span>
-                              <span>${total}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">With taxes</span>
-                              <span> ${otherTax}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">
-                                After Deposit
-                              </span>
-                              <span> ${otherTax - deposit}</span>
-                            </li>
-                          </>
-                        )}
-                        {subButton === "withOptions" && (
-                          <>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Total</span>
-                              <span>${totalWithOptions}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">With taxes</span>
-                              <span> ${otherTaxWithOptions}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">
-                                After Deposit
-                              </span>
-                              <span> ${otherTaxWithOptions - deposit}</span>
-                            </li>
-                          </>
-                        )}
-                      </div>
-                    )}
-                  </ul>
-                </CardContent>
-              </>
-            )}
-            {firstPage && (
-              <>
-                <CardContent className="bg-background p-6  text-sm  max-h-[700px] overflow-y-auto h-[700px]">
-                  <div className="grid gap-3">
-                    <div className="font-semibold">Payment Details</div>
-                    <ul className="grid gap-3">
+          <CardContent className='bg-background'>
+            <Form method="post">
+              {secPage && (
+                <>
+                  <CardContent className="bg-background p-6 text-sm max-h-[700px] overflow-y-auto h-[700px]">
+                    <div className="grid gap-3">
+                      <div className="font-semibold">Payment Details</div>
                       <li className="flex items-center justify-between">
                         <span className="text-[#8a8a93]">Brand</span>
                         <span>{finance.brand}</span>
@@ -3059,595 +2035,1621 @@ export function Overview({ outletSize }) {
                           <span>{finance.stockNum}</span>
                         </li>
                       )}
-                    </ul>
-                    <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                    <div className="font-semibold">Price</div>
-                    <ul className="grid gap-3">
-                      <li className="flex items-center justify-between">
-                        <span className="text-[#8a8a93]">MSRP</span>
-                        <span> ${formData.msrp}</span>
-                      </li>
-                      {formData.freight > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">Freight</span>
-                          <span>${formData.freight}</span>
-                        </li>
-                      )}
 
-                      {formData.pdi > 0 && (
+                      <ul className="grid gap-3">
                         <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">PDI</span>
-                          <span>${formData.pdi}</span>
+                          <span className="text-[#8a8a93]">MSRP</span>
+                          <span>
+                            <Input
+                              name="msrp"
+                              id="msrp"
+                              className="h-8 w-20 border-border bg-background text-right "
+                              autoComplete="msrp"
+                              defaultValue={formData.msrp}
+                              onChange={handleChange}
+                            />
+                          </span>
                         </li>
-                      )}
-                      {formData.admin > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">Admin</span>
-                          <span>${formData.admin}</span>
-                        </li>
-                      )}
-                      {formData.commodity > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">Commodity</span>
-                          <span>${formData.commodity}</span>
-                        </li>
-                      )}
-                      <li className="flex items-center justify-between">
-                        <span className="text-[#8a8a93]">Accessories</span>
-                        <span>${accessories}</span>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <span className="text-[#8a8a93]">Labour Hours</span>
-                        <span>${formData.labour}</span>
-                      </li>
-                      <li className="flex items-center justify-between font-semibold">
-                        <span className="text-[#8a8a93]">Licensing</span>
-                        <span>${licensing}</span>
-                      </li>
-
-                      {finance.brand === "Sea-Doo" && modelData.trailer > 0 && (
-                        <li className="flex items-center justify-between font-semibold">
-                          <span className="text-[#8a8a93]">Trailer</span>
-                          <span>${modelData.trailer}</span>
-                        </li>
-                      )}
-                      {finance.brand === "Triumph" &&
-                        modelData.painPrem > 0 && (
-                          <li className="flex items-center justify-between font-semibold">
-                            <span className="text-[#8a8a93]">
-                              Paint Premium
+                        {formData.freight > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">Freight</span>
+                            <span>
+                              <Input
+                                className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
+                                defaultValue={formData.freight}
+                                placeholder="freight"
+                                type="text"
+                                name="freight"
+                                onChange={handleChange}
+                              />
                             </span>
+                          </li>
+                        )}
+
+                        {formData.pdi > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">PDI</span>
+                            <span>
+                              <Input
+                                className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
+                                defaultValue={formData.pdi}
+                                placeholder="pdi"
+                                type="text"
+                                name="pdi"
+                                onChange={handleChange}
+                              />
+                            </span>
+                          </li>
+                        )}
+                        {formData.admin > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">Admin</span>
+                            <span>
+                              <Input
+                                className="mt-2 h-8 w-20 items-end justify-end  border-border  bg-background text-right "
+                                defaultValue={formData.admin}
+                                placeholder="admin"
+                                type="text"
+                                name="admin"
+                                onChange={handleChange}
+                              />
+                            </span>
+                          </li>
+                        )}
+                        {formData.commodity > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">Commodity</span>
+                            <span>
+                              <Input
+                                className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
+                                defaultValue={formData.commodity}
+                                placeholder="commodity"
+                                type="text"
+                                name="commodity"
+                                onChange={handleChange}
+                              />
+                            </span>
+                          </li>
+                        )}
+
+                        <li className="flex items-center justify-between">
+                          <span className="text-[#8a8a93]">Accessories</span>
+                          <span>
+                            <Input
+                              name="accessories"
+                              id="msrp"
+                              className="h-8 w-20 border-border bg-background text-right "
+                              autoComplete="msrp"
+                              defaultValue={formData.accessories}
+                              onChange={handleChange}
+                            />
+                          </span>
+                        </li>
+                        <li className="flex items-center justify-between">
+                          <span className="text-[#8a8a93]">Labour Hours</span>
+                          <span>
+                            <Input
+                              name="labour"
+                              id="msrp"
+                              className="h-8 w-20 border-border bg-background text-right "
+                              autoComplete="msrp"
+                              defaultValue={formData.labour}
+                              onChange={handleChange}
+                            />
+                          </span>
+                        </li>
+                        <li className="flex items-center justify-between font-semibold">
+                          <span className="text-[#8a8a93]">Licensing</span>
+                          <span>
+                            <Input
+                              className="ml-auto mt-2 h-8 w-20  justify-end border-border bg-background text-right "
+                              defaultValue={licensing}
+                              placeholder="licensing"
+                              type="text"
+                              name="licensing"
+                              onChange={handleChange}
+                            />
+                          </span>
+                        </li>
+
+                        {modelData.trailer > 0 && (
+                          <li className="flex items-center justify-between font-semibold">
+                            <span className="text-[#8a8a93]">Trailer</span>
+                            <span>${modelData.trailer}</span>
+                          </li>
+                        )}
+                        {modelData.painPrem > 0 && (
+                          <li className="flex items-center justify-between font-semibold">
+                            <span className="text-[#8a8a93]">Paint Premium</span>
                             <span> ${modelData.painPrem}</span>
                           </li>
                         )}
-                    </ul>
+                      </ul>
+                    </div>
                     <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                    <div className="font-semibold">Fees</div>
-                    <ul className="grid gap-3">
-                      {deFees.userAirTax > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">Air Tax</span>
-                          <span>${deFees.userAirTax}</span>
-                        </li>
-                      )}
-                      {deFees.userTireTax > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">Tire Tax</span>
-                          <span> ${deFees.userTireTax}</span>
-                        </li>
-                      )}
-                      {deFees.userGovern > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">
-                            Government Fees
-                          </span>
-                          <span> ${deFees.userGovern}</span>
-                        </li>
-                      )}
-                      {deFees.userFinance > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">Finance Fees</span>
-                          <span> ${deFees.userFinance}</span>
-                        </li>
-                      )}
-                      {deFees.destinationCharge > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">
-                            Destination Charge
-                          </span>
-                          <span>${deFees.destinationCharge}</span>
-                        </li>
-                      )}
-                      {deFees.userGasOnDel > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">
-                            Gas On Delivery
-                          </span>
-                          <span>${deFees.userGasOnDel}</span>
-                        </li>
-                      )}
-                      {deFees.userMarketAdj > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">
-                            Market Adjustment
-                          </span>
-                          <span> ${deFees.userMarketAdj}</span>
-                        </li>
-                      )}
-                      {deFees.userDemo > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">
-                            Demonstrate features or walkaround
-                          </span>
-                          <span>${deFees.userDemo}</span>
-                        </li>
-                      )}
-                      {deFees.userOMVIC > 0 && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">
-                            OMVIC / Other GV Fees
-                          </span>
-                          <span> ${deFees.userOMVIC}</span>
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                  <div className="font-semibold">Standard Terms</div>
-                  <div className="mt-3">
-                    <div className="main-button-group flex justify-between ">
-                      <Badge
-                        id="myButton"
-                        className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
-                          ? "active bg-[#c72323] text-foreground"
-                          : "bg-[#0a0a0a] text-foreground"
-                          }`}
-                        onClick={() => handleMainButtonClick("payments")}
-                      >
-                        Payments
-                      </Badge>
+                    <div className="font-semibold">Standard Terms</div>
+                    <div className="my-4">
+                      <div className="main-button-group flex justify-between ">
+                        <Badge
+                          id="myButton"
+                          className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
+                            ? "active bg-[#c72323] text-foreground"
+                            : "bg-[#0a0a0a] text-foreground"
+                            }`}
+                          onClick={() => handleMainButtonClick("payments")}
+                        >
+                          Payments
+                        </Badge>
 
-                      <Badge
-                        id="myButton1"
-                        className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
-                          ? "active bg-[#c72323] text-foreground "
-                          : "bg-[#0a0a0a] text-foreground"
-                          }`}
-                        onClick={() => handleMainButtonClick("noTax")}
-                      >
-                        No Tax
-                      </Badge>
+                        <Badge
+                          id="myButton1"
+                          className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
+                            ? "active bg-[#c72323] text-foreground "
+                            : "bg-[#0a0a0a] text-foreground"
+                            }`}
+                          onClick={() => handleMainButtonClick("noTax")}
+                        >
+                          No Tax
+                        </Badge>
 
-                      <Badge
-                        id="myButton2"
-                        className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
-                          ? "active bg-[#c72323] text-foreground"
-                          : "bg-[#0a0a0a] text-foreground"
-                          }`}
-                        onClick={() => handleMainButtonClick("customTax")}
-                      >
-                        Custom Tax
-                      </Badge>
+                        <Badge
+                          id="myButton2"
+                          className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
+                            ? "active bg-[#c72323] text-foreground"
+                            : "bg-[#0a0a0a] text-foreground"
+                            }`}
+                          onClick={() => handleMainButtonClick("customTax")}
+                        >
+                          Custom Tax
+                        </Badge>
+                      </div>
+                      <div className="sub-button-group mt-2 flex justify-between">
+                        <Badge
+                          id="myButton3"
+                          className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
+                            ? "active bg-[#c72323] text-foreground"
+                            : "bg-[#0a0a0a] text-foreground"
+                            }`}
+                          onClick={() => handleSubButtonClick("withoutOptions")}
+                        >
+                          W/O Options
+                        </Badge>
+
+                        <Badge
+                          id="myButton5"
+                          className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
+                            ? "active bg-[#c72323] text-foreground"
+                            : "bg-[#0a0a0a] text-foreground"
+                            }`}
+                          onClick={() => handleSubButtonClick("withOptions")}
+                        >
+                          W/ Options
+                        </Badge>
+                      </div>
                     </div>
-                    <div className="sub-button-group mt-2 flex justify-between">
-                      <Badge
-                        id="myButton3"
-                        className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
-                          ? "active bg-[#c72323] text-foreground"
-                          : "bg-[#0a0a0a] text-foreground"
-                          }`}
-                        onClick={() => handleSubButtonClick("withoutOptions")}
-                      >
-                        W/O Options
-                      </Badge>
+                    {mainButton === "payments" && (
+                      <div className="">
+                        {subButton === "withoutOptions" && (
+                          <ul className="grid gap-3">
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Monthly</span>
+                              <span> ${on60}</span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Bi-weekly</span>
+                              <span> ${biweekly}</span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Weekly</span>
+                              <span> ${weekly}</span>
+                            </li>
+                          </ul>
+                        )}
+                        {subButton === "withOptions" && (
+                          <>
+                            <div className="font-semibold">Options Include</div>
+                            <DealerOptionsAmounts />
+                            <ul className="grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Monthly</span>
+                                <span> ${qc60}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Bi-weekly</span>
+                                <span> ${biweeklyqc}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Weekly</span>
+                                <span> ${weeklyqc}</span>
+                              </li>
+                            </ul>
+                          </>
+                        )}
+                      </div>
+                    )}
 
-                      <Badge
-                        id="myButton5"
-                        className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
-                          ? "active bg-[#c72323] text-foreground"
-                          : "bg-[#0a0a0a] text-foreground"
-                          }`}
-                        onClick={() => handleSubButtonClick("withOptions")}
-                      >
-                        W/ Options
-                      </Badge>
-                    </div>
-                  </div>
-                  {mainButton === "payments" && (
-                    <div className="">
-                      {subButton === "withoutOptions" && (
-                        <ul className="mt-3 grid gap-3">
+                    {mainButton === "noTax" && (
+                      <div className="">
+                        {subButton === "withoutOptions" && (
+                          <div>
+                            <ul className="grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Monthly</span>
+                                <span> ${nat60}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Bi-weekly</span>
+                                <span> ${biweeklNat}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Weekly</span>
+                                <span> ${weeklylNat}</span>
+                              </li>
+                            </ul>
+                          </div>
+                        )}
+                        {subButton === "withOptions" && (
+                          <div>
+                            <div className="font-semibold">Options Include</div>
+                            <DealerOptionsAmounts />
+                            <ul className="grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Monthly</span>
+                                <span> ${nat60WOptions}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Bi-weekly</span>
+                                <span> ${biweeklNatWOptions}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Weekly</span>
+                                <span> ${biweeklNatWOptions}</span>
+                              </li>
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {mainButton === "customTax" && (
+                      <div className="">
+                        <ul className="grid gap-3">
                           <li className="flex items-center justify-between">
-                            <span className="text-[#8a8a93]">Monthly</span>
-                            <span> ${on60}</span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-[#8a8a93]">Bi-weekly</span>
-                            <span> ${biweekly}</span>
-                          </li>
-                          <li className="flex items-center justify-between">
-                            <span className="text-[#8a8a93]">Weekly</span>
-                            <span> ${weekly}</span>
+                            <span className="text-[#8a8a93]">Other tax %</span>
+                            <span>
+                              <Input
+                                name="othTax"
+                                id="othTax"
+                                className="h-8 w-20 border-border bg-background text-right "
+                                autoComplete="othTax"
+                                defaultValue={formData.othTax}
+                                onChange={handleChange}
+                              />
+                            </span>
                           </li>
                         </ul>
-                      )}
-                      {subButton === "withOptions" && (
-                        <>
-                          <div className="mt-3 font-semibold">
-                            Options Include
+                        {subButton === "withoutOptions" && (
+                          <div className="mt-5 flex justify-between">
+                            <ul className="grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Monthly</span>
+                                <span> ${oth60}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Bi-weekly</span>
+                                <span> ${biweekOth}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Weekly</span>
+                                <span> ${weeklyOth}</span>
+                              </li>
+                            </ul>
                           </div>
-                          <DealerOptionsAmounts />
-                          <ul className="grid gap-3">
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Monthly</span>
-                              <span> ${qc60}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Bi-weekly</span>
-                              <span> ${biweeklyqc}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Weekly</span>
-                              <span> ${weeklyqc}</span>
-                            </li>
-                          </ul>
-                        </>
-                      )}
-                    </div>
-                  )}
-
-                  {mainButton === "noTax" && (
-                    <div className="">
-                      {subButton === "withoutOptions" && (
-                        <div>
-                          <ul className="mt-3 grid gap-3">
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Monthly</span>
-                              <span> ${nat60}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Bi-weekly</span>
-                              <span> ${biweeklNat}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Weekly</span>
-                              <span> ${weeklylNat}</span>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                      {subButton === "withOptions" && (
-                        <div>
-                          <div className="mt-3 font-semibold">
-                            Options Include
+                        )}
+                        {subButton === "withOptions" && (
+                          <div>
+                            <div className="font-semibold">Options Include</div>
+                            <DealerOptionsAmounts />
+                            <ul className="grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Monthly</span>
+                                <span> ${oth60WOptions}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Bi-weekly</span>
+                                <span> ${biweekOthWOptions}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Weekly</span>
+                                <span> ${weeklyOthWOptions}</span>
+                              </li>
+                            </ul>
                           </div>
-                          <DealerOptionsAmounts />
-                          <ul className="grid gap-3">
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Monthly</span>
-                              <span> ${nat60WOptions}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Bi-weekly</span>
-                              <span> ${biweeklNatWOptions}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Weekly</span>
-                              <span> ${weeklylNatWOptions}</span>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                        )}
+                      </div>
+                    )}
 
-                  {mainButton === "customTax" && (
-                    <div className="">
-                      {subButton === "withoutOptions" && (
-                        <div className=" ">
-                          <ul className="mt-3 grid gap-3">
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Monthly</span>
-                              <span> ${oth60}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Bi-weekly</span>
-                              <span> ${biweekOth}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Weekly</span>
-                              <span> ${weeklyOth}</span>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                      {subButton === "withOptions" && (
-                        <div>
-                          <div className="mt-3 font-semibold">
-                            Options Include
-                          </div>
-                          <DealerOptionsAmounts />
-                          <ul className="grid gap-3">
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Monthly</span>
-                              <span> ${oth60WOptions}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Bi-weekly</span>
-                              <span> ${biweekOthWOptions}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Weekly</span>
-                              <span> ${weeklyOthWOptions}</span>
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                  <div className="font-semibold">Contract Variables</div>
-                  <ul className="mt-3 grid gap-3">
-                    <li className="flex items-center justify-between">
-                      <span className="text-[#8a8a93]">Term</span>
-                      <span>{months} / months</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-[#8a8a93]">Rate</span>
-                      <span>{iRate}%</span>
-                    </li>
-                    {finance.deposit > 0 && (
+                    <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                    <div className="font-semibold">Contract Variables</div>
+                    <ul className="grid gap-3">
+                      <li className="flex items-center justify-between">
+                        <span className="text-[#8a8a93]">Term</span>
+                        <span>
+                          <Input
+                            className="h-8 w-20 border-border bg-background text-right "
+                            name="months"
+                            id="months"
+                            autoComplete="months"
+                            defaultValue={months}
+                            onChange={handleChange}
+                            type="number"
+                          />
+                        </span>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-[#8a8a93]">Rate</span>
+                        <span>
+                          <Input
+                            className="h-8 w-20 items-end justify-end border-border bg-background text-right  "
+                            name="iRate"
+                            id="iRate"
+                            autoComplete="iRate"
+                            defaultValue={iRate}
+                            onChange={handleChange}
+                          />
+                        </span>
+                      </li>
                       <li className="flex items-center justify-between">
                         <span className="text-[#8a8a93]">Deposit</span>
-                        <span>${finance.deposit}</span>
+                        <span>
+                          <Input
+                            className="h-8 w-20 border-border bg-background text-right "
+                            name="deposit"
+                            id="deposit"
+                            autoComplete="deposit"
+                            defaultValue={deposit}
+                            onChange={handleChange}
+                            type="number"
+                          />
+                        </span>
                       </li>
-                    )}
-                    <li className="flex items-center justify-between">
-                      <span className="text-[#8a8a93]">Trade Value</span>
-                      <span>${tradeValue}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-[#8a8a93]">Lien</span>
-                      <span>${lien}</span>
-                    </li>
-                  </ul>
+                      <li className="flex items-center justify-between">
+                        <span className="text-[#8a8a93]">Trade Value</span>
+                        <span>
+                          <Input
+                            className="ml-auto h-8 w-20 border-border bg-background text-right "
+                            name="tradeValue"
+                            id="tradeValue"
+                            autoComplete="tradeValue"
+                            defaultValue={tradeValue}
+                            onChange={handleChange}
+                          />
+                        </span>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-[#8a8a93]">Lien</span>
+                        <span>
+                          <Input
+                            className="h-8 w-20 border-border bg-background text-right "
+                            name="lien"
+                            id="lien"
+                            autoComplete="lien"
+                            defaultValue={lien}
+                            onChange={handleChange}
+                            type="number"
+                          />
+                        </span>
+                      </li>
+                    </ul>
 
-                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                  <div className="font-semibold">Total</div>
-                  <ul className="grid gap-3">
-                    {perDiscountGiven > 0 && (
-                      <>
+                    <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                    <div className="font-semibold">
+                      Customer Detail Confirmation
+                    </div>
+                    <div className="mx-3 mb-3 grid grid-cols-2 justify-between gap-3">
+                      <div className="relative mt-5">
+                        <Input
+                          defaultValue={formData.firstName}
+                          name="firstName"
+                          type="text"
+                          className="w-full border-border bg-background "
+                        />
+                        <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                          First Name
+                        </label>
+                      </div>
+                      <div className="relative mt-5">
+                        <Input
+                          defaultValue={formData.lastName}
+                          name="lastName"
+                          type="text"
+                          className="w-full border-border bg-background "
+                        />
+                        <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                          Last Name
+                        </label>
+                      </div>
+                      <div className="relative mt-3">
+                        <Input
+                          defaultValue={finance.phone}
+                          name="phone"
+                          type="text"
+                          className="w-full border-border bg-background "
+                        />
+                        <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                          Phone
+                        </label>
+                      </div>
+                      <div className="relative mt-3">
+                        <Input
+                          defaultValue={finance.email}
+                          name="email"
+                          type="text"
+                          className="w-full border-border bg-background "
+                        />
+                        <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                          Email
+                        </label>
+                      </div>
+                    </div>
+
+
+                    <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                    <div className="font-semibold">Trade Information</div>
+                    <div className="mx-3 mb-3 grid grid-cols-2 justify-between gap-3">
+                      <div className="relative mt-5">
+                        <Input
+                          defaultValue={finance.tradeYear}
+                          name="tradeYear"
+                          type="text"
+                          className="w-full border-border bg-background "
+                        />
+                        <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                          Year
+                        </label>
+                      </div>
+                      <div className="relative mt-5">
+                        <Input
+                          defaultValue={finance.tradeMake}
+                          name="tradeMake"
+                          type="text"
+                          className="w-full border-border bg-background "
+                        />
+                        <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                          Make
+                        </label>
+                      </div>
+                      <div className="relative mt-3">
+                        <Input
+                          defaultValue={finance.tradeDesc}
+                          name="tradeDesc"
+                          type="text"
+                          className="w-full border-border bg-background "
+                        />
+                        <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                          Model
+                        </label>
+                      </div>
+                      <div className="relative mt-3">
+                        <Input
+                          defaultValue={finance.tradeColor}
+                          name="tradeColor"
+                          type="text"
+                          className="w-full border-border bg-background "
+                        />
+                        <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                          Color
+                        </label>
+                      </div>
+                      <div className="relative mt-3">
+                        <Input
+                          defaultValue={finance.tradeVin}
+                          name="tradeVin"
+                          type="text"
+                          className="w-full border-border bg-background "
+                        />
+                        <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                          VIN
+                        </label>
+                      </div>
+                      <div className="relative mt-3">
+                        <Input
+                          defaultValue={finance.tradeMileage}
+                          name="tradeMileage"
+                          type="text"
+                          className="w-full border-border bg-background "
+                        />
+                        <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                          Mileage
+                        </label>
+                      </div>
+                      <div className="relative mt-3">
+                        <Input
+                          defaultValue={finance.tradeLocation}
+                          name="tradeLocation"
+                          type="text"
+                          className="w-full border-border bg-background "
+                        />
+                        <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                          Trade Location
+                        </label>
+                      </div>
+                    </div>
+                    <Drawer direction="left">
+                      <DrawerTrigger asChild>
+                        <Button size="sm" className="ml-auto" variant="outline">
+                          Other Inputs
+                        </Button>
+                      </DrawerTrigger>
+                      <DrawerContent className="bg-background text-foreground border-border">
+                        <div className="mx-auto h-full w-full max-w-sm lg:w-[700px]">
+                          <DrawerHeader>
+                            <DrawerTitle>Other Inputs</DrawerTitle>
+                            <DrawerDescription>
+                              Changes to discounts and such
+                            </DrawerDescription>
+                          </DrawerHeader>
+                          <ul className="grid gap-3">
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Discount $</span>
+                              <span>
+                                <Input
+                                  name="discount"
+                                  className="h-8 w-20 border-border bg-background text-right "
+                                  defaultValue={discount}
+                                  onChange={handleChange}
+                                />
+                              </span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">
+                                Discount (1.1-15)%
+                              </span>
+                              <span>
+                                <Input
+                                  name="discountPer"
+                                  className="h-8 w-20 border-border bg-background text-right "
+                                  defaultValue={0}
+                                  onChange={handleChange}
+                                />
+                              </span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">
+                                Delivery Charge
+                              </span>
+                              <span>
+                                <Input
+                                  name="deliveryCharge"
+                                  id="msrp"
+                                  className="h-8 w-20 border-border bg-background text-right "
+                                  autoComplete="msrp"
+                                  defaultValue={deliveryCharge}
+                                  onChange={handleChange}
+                                />
+                              </span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Total Labour</span>
+                              <span>${totalLabour}</span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Lien</span>
+                              <span>
+                                <Input
+                                  className="h-8 w-20 border-border bg-background text-right "
+                                  name="lien"
+                                  id="lien"
+                                  autoComplete="lien"
+                                  defaultValue={lien}
+                                  onChange={handleChange}
+                                />
+                              </span>
+                            </li>
+                          </ul>
+                          <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                          <div className="font-semibold">
+                            Customer Detail Confirmation
+                          </div>
+                          <div className="mb-3 grid grid-cols-2 justify-between gap-3">
+
+                            <div className="relative mt-3">
+                              <Input
+                                defaultValue={finance.address}
+                                name="address"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Address
+                              </label>
+                            </div>
+                            <div className="relative mt-3">
+                              <Input
+                                defaultValue={finance.city}
+                                name="city"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                City
+                              </label>
+                            </div>
+                            <div className="relative mt-3">
+                              <Input
+                                defaultValue={finance.province}
+                                name="province"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Province
+                              </label>
+                            </div>
+                            <div className="relative mt-3">
+                              <Input
+                                defaultValue={finance.postal}
+                                name="postal"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Postal Code
+                              </label>
+                            </div>
+                            <div className="relative mt-3">
+                              <Input
+                                defaultValue={finance.dl}
+                                name="dl"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Drivers Lic.
+                              </label>
+                            </div>
+                          </div>
+                          <div className=" mb-3 grid grid-cols-2 justify-between gap-3">
+                            <div className="relative mt-3">
+                              <Select name="timeToContact">
+                                <SelectTrigger className="w-full  border border-border bg-background text-foreground">
+                                  <SelectValue defaultValue={finance.timeToContact} />
+                                </SelectTrigger>
+                                <SelectContent className=" border border-border bg-background text-foreground">
+                                  <SelectGroup>
+                                    <SelectLabel>Best Time To Contact</SelectLabel>
+                                    <SelectItem value="Morning">Morning</SelectItem>
+                                    <SelectItem value="Afternoon">Afternoon</SelectItem>
+                                    <SelectItem value="Evening">Evening</SelectItem>
+                                    <SelectItem value="Do Not Contact">
+                                      Do Not Contact
+                                    </SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Prefered Time
+                              </label>
+                            </div>
+                            <div className="relative mt-3">
+                              <Select name="typeOfContact">
+                                <SelectTrigger className="w-full  border border-border bg-background text-foreground">
+                                  <SelectValue defaultValue={finance.typeOfContact} />
+                                </SelectTrigger>
+                                <SelectContent className=" border border-border bg-background text-foreground">
+                                  <SelectGroup>
+                                    <SelectLabel>Contact Method</SelectLabel>
+                                    <SelectItem value="Phone">Phone</SelectItem>
+                                    <SelectItem value="InPerson">In-Person</SelectItem>
+                                    <SelectItem value="SMS">SMS</SelectItem>
+                                    <SelectItem value="Email">Email</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Prefered Contact
+                              </label>
+                            </div>
+
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <div className="relative mt-3">
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-full justify-start  text-center  font-normal",
+                                      !dateCal && "text-muted-foreground"
+                                    )}
+                                  >
+                                    <CalendarIcon className="mr-2 h-4 w-4 " />
+                                    {dateCal ? (
+                                      format(dateCal, "PPP")
+                                    ) : (
+                                      <span>Pick a date</span>
+                                    )}
+                                  </Button>
+                                  <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                    Pick A Date
+                                  </label>
+                                </div>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-auto bg-background p-0 text-foreground border-border"
+                                align="start"
+                              >
+                                <Calendar
+                                  className="bg-background text-foreground"
+                                  mode="single"
+                                  selected={dateCal}
+                                  onSelect={setDate}
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <input
+                              type="hidden"
+                              value={String(dateCal)}
+                              name="pickedDate"
+                            />
+
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <div className="relative mt-3">
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      "w-full justify-start text-right font-normal",
+                                      !dateCal && "text-muted-foreground"
+                                    )}
+                                  >
+                                    <ClockIcon className="mr-2 h-4 w-4 " />
+                                    {currentTime ? time : <span>Pick a Time</span>}
+                                  </Button>
+                                  <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                    Pick A Time
+                                  </label>
+                                </div>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-auto bg-background p-0 text-foreground"
+                                align="start"
+                              >
+                                <div className="flex items-center">
+                                  <Select
+                                    name="pickHour"
+                                    value={hour}
+                                    onValueChange={setHour}
+                                  >
+                                    <SelectTrigger className="m-3 w-auto">
+                                      <SelectValue placeholder="hour" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-background text-foreground">
+                                      <SelectGroup>
+                                        <SelectLabel>Hour</SelectLabel>
+                                        <SelectItem value="09">09</SelectItem>
+                                        <SelectItem value="10">10</SelectItem>
+                                        <SelectItem value="11">11</SelectItem>
+                                        <SelectItem value="12">12</SelectItem>
+                                        <SelectItem value="13">13</SelectItem>
+                                        <SelectItem value="14">14</SelectItem>
+                                        <SelectItem value="15">15</SelectItem>
+                                        <SelectItem value="16">16</SelectItem>
+                                        <SelectItem value="17">17</SelectItem>
+                                        <SelectItem value="18">18</SelectItem>
+                                      </SelectGroup>
+                                    </SelectContent>
+                                  </Select>
+
+                                  <Select
+                                    name="pickMin"
+                                    value={min}
+                                    onValueChange={setMin}
+                                  >
+                                    <SelectTrigger className="m-3 w-auto">
+                                      <SelectValue placeholder="min" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-background text-foreground">
+                                      <SelectGroup>
+                                        <SelectLabel>Minute</SelectLabel>
+                                        <SelectItem value="00">00</SelectItem>
+                                        <SelectItem value="10">10</SelectItem>
+                                        <SelectItem value="20">20</SelectItem>
+                                        <SelectItem value="30">30</SelectItem>
+                                        <SelectItem value="40">40</SelectItem>
+                                        <SelectItem value="50">50</SelectItem>
+                                      </SelectGroup>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                          </div>
+
+                          <DrawerFooter>
+                            <DrawerClose asChild>
+                              <Button variant="outline">Close</Button>
+                            </DrawerClose>
+                          </DrawerFooter>
+                        </div>
+                      </DrawerContent>
+                    </Drawer>
+                    <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                    <div className="font-semibold">Total</div>
+                    <ul className="grid gap-3">
+                      {perDiscountGiven > 0 && (
+                        <>
+                          <li className="mt-3 flex items-center justify-between">
+                            <span className="text-[#8a8a93]">
+                              Total Before Discount
+                            </span>
+                            <span>${beforeDiscount}</span>
+                          </li>
+                        </>
+                      )}
+                      {perDiscountGiven > 0 && (
+                        <>
+                          <li className="mt-3 flex items-center justify-between">
+                            <span className="text-[#8a8a93]">
+                              Discount (MSRP only)
+                            </span>
+                            <span> ${perDiscountGiven}</span>
+                          </li>
+                        </>
+                      )}
+                      {mainButton === "payments" && (
+                        <div>
+                          {subButton === "withoutOptions" && (
+                            <>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Total</span>
+                                <span>${total}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">With taxes</span>
+                                <span> ${onTax}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">
+                                  After Deposit
+                                </span>
+                                <span> ${onTax - deposit}</span>
+                              </li>
+                            </>
+                          )}
+                          {subButton === "withOptions" && (
+                            <>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Total</span>
+                                <span>${totalWithOptions}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">With taxes</span>
+                                <span> ${qcTax}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">
+                                  After Deposit
+                                </span>
+                                <span> ${qcTax - deposit}</span>
+                              </li>
+                            </>
+                          )}
+                        </div>
+                      )}
+                      {mainButton === "noTax" && (
+                        <div>
+                          {subButton === "withoutOptions" && (
+                            <>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Total</span>
+                                <span>${total}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">With taxes</span>
+                                <span> ${native}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">
+                                  After Deposit
+                                </span>
+                                <span> ${native - deposit}</span>
+                              </li>
+                            </>
+                          )}
+                          {subButton === "withOptions" && (
+                            <>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Total</span>
+                                <span>${totalWithOptions}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">With taxes</span>
+                                <span> ${totalWithOptions}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">
+                                  After Deposit
+                                </span>
+                                <span> ${totalWithOptions - deposit}</span>
+                              </li>
+                            </>
+                          )}
+                        </div>
+                      )}
+                      {mainButton === "customTax" && (
+                        <div>
+                          {subButton === "withoutOptions" && (
+                            <>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Total</span>
+                                <span>${total}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">With taxes</span>
+                                <span> ${otherTax}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">
+                                  After Deposit
+                                </span>
+                                <span> ${otherTax - deposit}</span>
+                              </li>
+                            </>
+                          )}
+                          {subButton === "withOptions" && (
+                            <>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Total</span>
+                                <span>${totalWithOptions}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">With taxes</span>
+                                <span> ${otherTaxWithOptions}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">
+                                  After Deposit
+                                </span>
+                                <span> ${otherTaxWithOptions - deposit}</span>
+                              </li>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </ul>
+                  </CardContent>
+                </>
+              )}
+              {firstPage && (
+                <>
+                  <CardContent className="bg-background p-6  text-sm  max-h-[700px] overflow-y-auto h-[700px]">
+                    <div className="grid gap-3">
+                      <div className="font-semibold">Payment Details</div>
+                      <ul className="grid gap-3">
                         <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">
-                            Total Before Discount
-                          </span>
-                          <span>${beforeDiscount}</span>
+                          <span className="text-[#8a8a93]">Brand</span>
+                          <span>{finance.brand}</span>
                         </li>
-                      </>
-                    )}
-                    {perDiscountGiven > 0 && (
-                      <>
                         <li className="flex items-center justify-between">
-                          <span className="text-[#8a8a93]">
-                            Discount (MSRP only)
-                          </span>
-                          <span> ${perDiscountGiven}</span>
+                          <span className="text-[#8a8a93]">Model</span>
+                          <span> {finance.model}</span>
                         </li>
-                      </>
-                    )}
+                        {finance.brand !== "BMW-Motorrad" && (
+                          <>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Color</span>
+                              <span>{finance.color}</span>
+                            </li>
+                          </>
+                        )}
+                        {finance.modelCode !== null && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">Model Code</span>
+                            <span>{finance.modelCode}</span>
+                          </li>
+                        )}
+                        {finance.modelCode !== null && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">Year</span>
+                            <span>{finance.year}</span>
+                          </li>
+                        )}
+                        {finance.stockNum !== null && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">Stock Number</span>
+                            <span>{finance.stockNum}</span>
+                          </li>
+                        )}
+                      </ul>
+                      <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                      <div className="font-semibold">Price</div>
+                      <ul className="grid gap-3">
+                        <li className="flex items-center justify-between">
+                          <span className="text-[#8a8a93]">MSRP</span>
+                          <span> ${formData.msrp}</span>
+                        </li>
+                        {formData.freight > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">Freight</span>
+                            <span>${formData.freight}</span>
+                          </li>
+                        )}
+
+                        {formData.pdi > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">PDI</span>
+                            <span>${formData.pdi}</span>
+                          </li>
+                        )}
+                        {formData.admin > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">Admin</span>
+                            <span>${formData.admin}</span>
+                          </li>
+                        )}
+                        {formData.commodity > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">Commodity</span>
+                            <span>${formData.commodity}</span>
+                          </li>
+                        )}
+                        <li className="flex items-center justify-between">
+                          <span className="text-[#8a8a93]">Accessories</span>
+                          <span>${accessories}</span>
+                        </li>
+                        <li className="flex items-center justify-between">
+                          <span className="text-[#8a8a93]">Labour Hours</span>
+                          <span>${formData.labour}</span>
+                        </li>
+                        <li className="flex items-center justify-between font-semibold">
+                          <span className="text-[#8a8a93]">Licensing</span>
+                          <span>${licensing}</span>
+                        </li>
+
+                        {finance.brand === "Sea-Doo" && modelData.trailer > 0 && (
+                          <li className="flex items-center justify-between font-semibold">
+                            <span className="text-[#8a8a93]">Trailer</span>
+                            <span>${modelData.trailer}</span>
+                          </li>
+                        )}
+                        {finance.brand === "Triumph" &&
+                          modelData.painPrem > 0 && (
+                            <li className="flex items-center justify-between font-semibold">
+                              <span className="text-[#8a8a93]">
+                                Paint Premium
+                              </span>
+                              <span> ${modelData.painPrem}</span>
+                            </li>
+                          )}
+                      </ul>
+                      <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                      <div className="font-semibold">Fees</div>
+                      <ul className="grid gap-3">
+                        {deFees.userAirTax > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">Air Tax</span>
+                            <span>${deFees.userAirTax}</span>
+                          </li>
+                        )}
+                        {deFees.userTireTax > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">Tire Tax</span>
+                            <span> ${deFees.userTireTax}</span>
+                          </li>
+                        )}
+                        {deFees.userGovern > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">
+                              Government Fees
+                            </span>
+                            <span> ${deFees.userGovern}</span>
+                          </li>
+                        )}
+                        {deFees.userFinance > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">Finance Fees</span>
+                            <span> ${deFees.userFinance}</span>
+                          </li>
+                        )}
+                        {deFees.destinationCharge > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">
+                              Destination Charge
+                            </span>
+                            <span>${deFees.destinationCharge}</span>
+                          </li>
+                        )}
+                        {deFees.userGasOnDel > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">
+                              Gas On Delivery
+                            </span>
+                            <span>${deFees.userGasOnDel}</span>
+                          </li>
+                        )}
+                        {deFees.userMarketAdj > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">
+                              Market Adjustment
+                            </span>
+                            <span> ${deFees.userMarketAdj}</span>
+                          </li>
+                        )}
+                        {deFees.userDemo > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">
+                              Demonstrate features or walkaround
+                            </span>
+                            <span>${deFees.userDemo}</span>
+                          </li>
+                        )}
+                        {deFees.userOMVIC > 0 && (
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">
+                              OMVIC / Other GV Fees
+                            </span>
+                            <span> ${deFees.userOMVIC}</span>
+                          </li>
+                        )}
+                      </ul>
+                    </div>
+                    <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                    <div className="font-semibold">Standard Terms</div>
+                    <div className="mt-3">
+                      <div className="main-button-group flex justify-between ">
+                        <Badge
+                          id="myButton"
+                          className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
+                            ? "active bg-[#c72323] text-foreground"
+                            : "bg-[#0a0a0a] text-foreground"
+                            }`}
+                          onClick={() => handleMainButtonClick("payments")}
+                        >
+                          Payments
+                        </Badge>
+
+                        <Badge
+                          id="myButton1"
+                          className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
+                            ? "active bg-[#c72323] text-foreground "
+                            : "bg-[#0a0a0a] text-foreground"
+                            }`}
+                          onClick={() => handleMainButtonClick("noTax")}
+                        >
+                          No Tax
+                        </Badge>
+
+                        <Badge
+                          id="myButton2"
+                          className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
+                            ? "active bg-[#c72323] text-foreground"
+                            : "bg-[#0a0a0a] text-foreground"
+                            }`}
+                          onClick={() => handleMainButtonClick("customTax")}
+                        >
+                          Custom Tax
+                        </Badge>
+                      </div>
+                      <div className="sub-button-group mt-2 flex justify-between">
+                        <Badge
+                          id="myButton3"
+                          className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
+                            ? "active bg-[#c72323] text-foreground"
+                            : "bg-[#0a0a0a] text-foreground"
+                            }`}
+                          onClick={() => handleSubButtonClick("withoutOptions")}
+                        >
+                          W/O Options
+                        </Badge>
+
+                        <Badge
+                          id="myButton5"
+                          className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
+                            ? "active bg-[#c72323] text-foreground"
+                            : "bg-[#0a0a0a] text-foreground"
+                            }`}
+                          onClick={() => handleSubButtonClick("withOptions")}
+                        >
+                          W/ Options
+                        </Badge>
+                      </div>
+                    </div>
                     {mainButton === "payments" && (
-                      <div>
+                      <div className="">
                         {subButton === "withoutOptions" && (
-                          <>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Total</span>
-                              <span>${total}</span>
+                          <ul className="mt-3 grid gap-3">
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Monthly</span>
+                              <span> ${on60}</span>
                             </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">With taxes</span>
-                              <span> ${onTax}</span>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Bi-weekly</span>
+                              <span> ${biweekly}</span>
                             </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">
-                                After Deposit
-                              </span>
-                              <span> ${onTax - deposit}</span>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Weekly</span>
+                              <span> ${weekly}</span>
                             </li>
-                          </>
+                          </ul>
                         )}
                         {subButton === "withOptions" && (
                           <>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Total</span>
-                              <span>${totalWithOptions}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">With taxes</span>
-                              <span> ${qcTax}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">
-                                After Deposit
-                              </span>
-                              <span> ${qcTax - deposit}</span>
-                            </li>
+                            <div className="mt-3 font-semibold">
+                              Options Include
+                            </div>
+                            <DealerOptionsAmounts />
+                            <ul className="grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Monthly</span>
+                                <span> ${qc60}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Bi-weekly</span>
+                                <span> ${biweeklyqc}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Weekly</span>
+                                <span> ${weeklyqc}</span>
+                              </li>
+                            </ul>
                           </>
                         )}
                       </div>
                     )}
+
                     {mainButton === "noTax" && (
-                      <div>
+                      <div className="">
                         {subButton === "withoutOptions" && (
-                          <>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Total</span>
-                              <span>${total}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">With taxes</span>
-                              <span> ${native}</span>
-                            </li>
-                            <li className="flex mt-3 items-center justify-between">
-                              <span className="text-[#8a8a93]">
-                                After Deposit
-                              </span>
-                              <span> ${native - deposit}</span>
-                            </li>
-                          </>
+                          <div>
+                            <ul className="mt-3 grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Monthly</span>
+                                <span> ${nat60}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Bi-weekly</span>
+                                <span> ${biweeklNat}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Weekly</span>
+                                <span> ${weeklylNat}</span>
+                              </li>
+                            </ul>
+                          </div>
                         )}
                         {subButton === "withOptions" && (
-                          <>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Total</span>
-                              <span>${totalWithOptions}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">With taxes</span>
-                              <span> ${totalWithOptions}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">
-                                After Deposit
-                              </span>
-                              <span> ${totalWithOptions - deposit}</span>
-                            </li>
-                          </>
+                          <div>
+                            <div className="mt-3 font-semibold">
+                              Options Include
+                            </div>
+                            <DealerOptionsAmounts />
+                            <ul className="grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Monthly</span>
+                                <span> ${nat60WOptions}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Bi-weekly</span>
+                                <span> ${biweeklNatWOptions}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Weekly</span>
+                                <span> ${weeklylNatWOptions}</span>
+                              </li>
+                            </ul>
+                          </div>
                         )}
                       </div>
                     )}
+
                     {mainButton === "customTax" && (
-                      <div>
+                      <div className="">
                         {subButton === "withoutOptions" && (
-                          <>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Total</span>
-                              <span>${total}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">With taxes</span>
-                              <span> ${otherTax}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">
-                                After Deposit
-                              </span>
-                              <span> ${otherTax - deposit}</span>
-                            </li>
-                          </>
+                          <div className=" ">
+                            <ul className="mt-3 grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Monthly</span>
+                                <span> ${oth60}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Bi-weekly</span>
+                                <span> ${biweekOth}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Weekly</span>
+                                <span> ${weeklyOth}</span>
+                              </li>
+                            </ul>
+                          </div>
                         )}
                         {subButton === "withOptions" && (
-                          <>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">Total</span>
-                              <span>${totalWithOptions}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">With taxes</span>
-                              <span> ${otherTaxWithOptions}</span>
-                            </li>
-                            <li className="mt-3 flex items-center justify-between">
-                              <span className="text-[#8a8a93]">
-                                After Deposit
-                              </span>
-                              <span> ${otherTaxWithOptions - deposit}</span>
-                            </li>
-                          </>
+                          <div>
+                            <div className="mt-3 font-semibold">
+                              Options Include
+                            </div>
+                            <DealerOptionsAmounts />
+                            <ul className="grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Monthly</span>
+                                <span> ${oth60WOptions}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Bi-weekly</span>
+                                <span> ${biweekOthWOptions}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Weekly</span>
+                                <span> ${weeklyOthWOptions}</span>
+                              </li>
+                            </ul>
+                          </div>
                         )}
                       </div>
                     )}
-                  </ul>
-                </CardContent>
-              </>
-            )}
-            <Input type="hidden" defaultValue={on60} name="on60" />
-            <Input type="hidden" defaultValue={biweekly} name="biweekly" />
-            <Input type="hidden" defaultValue={weekly} name="weekly" />
-            <Input type="hidden" defaultValue={weeklyOth} name="weeklyOth" />
-            <Input type="hidden" defaultValue={biweekOth} name="biweekOth" />
-            <Input type="hidden" defaultValue={oth60} name="oth60" />
-            <Input type="hidden" defaultValue={weeklyqc} name="weeklyqc" />
-            <Input type="hidden" defaultValue={biweeklyqc} name="biweeklyqc" />
-            <Input type="hidden" defaultValue={qc60} name="qc60" />
-            <Input type="hidden" defaultValue={brand} name="brand" />
-            <Input type="hidden" defaultValue={formData.userExtWarr} name="userExtWarr" />
-            <Input type="hidden" defaultValue={formData.userGap} name="userGap" />
-            <Input type="hidden" defaultValue={formData.userServicespkg} name="userServicespkg" />
-            <Input type="hidden" defaultValue={formData.vinE} name="vinE" />
-            <Input type="hidden" defaultValue={formData.rustProofing} name="rustProofing" />
-            <Input type="hidden" defaultValue={formData.userLoanProt} name="userLoanProt" />
-            <Input type="hidden" defaultValue={formData.userTireandRim} name="userTireandRim" />
-            <Input type="hidden" defaultValue={formData.userOther} name="userOther" />
-            <Input type="hidden" defaultValue={formData.lifeDisability} name="lifeDisability" />
-            <Input type="hidden" defaultValue={formData.discount} name="discount" />
-            <Input type="hidden" defaultValue={formData.deliveryCharge} name="deliveryCharge" />
-            <Input type="hidden" defaultValue={formData.discountPer} name="discountPer" />
-            <Input type="hidden" defaultValue={total} name="total" />
-            <Input type="hidden" defaultValue={msrp} name="msrp" />
-            <Input type="hidden" defaultValue={modelData.color} name="color" />
-            <Input type="hidden" defaultValue={modelData.model1} name="model1" />
-            <Input type="hidden" defaultValue={modelData.modelCode} name="modelCode" />
-            <Input type="hidden" defaultValue={onTax} name="onTax" />
-            <Input type="hidden" defaultValue={qcTax} name="qcTax" />
-            <Input type="hidden" defaultValue={otherTax} name="otherTax" />
-            <Input type="hidden" defaultValue={otherTaxWithOptions} name="otherTaxWithOptions" />
-            <Input type="hidden" defaultValue={totalWithOptions} name="totalWithOptions" />
-            <Input type="hidden" defaultValue={formData.freight} name="freight" />
-            <Input type="hidden" defaultValue={formData.admin} name="admin" />
-            <Input type="hidden" defaultValue={formData.pdi} name="pdi" />
-            <Input type="hidden" defaultValue={formData.commodity} name="commodity" />
-            <Input type="hidden" defaultValue={weeklyOthWOptions} name="weeklyOthWOptions" />
-            <Input type="hidden" defaultValue={biweekOthWOptions} name="biweekOthWOptions" />
-            <Input type="hidden" defaultValue={oth60WOptions} name="oth60WOptions" />
-            <Input type="hidden" defaultValue={formData.accessories} name="accessories" />
-            <Input type="hidden" defaultValue={formData.labour} name="labour" />
-            <Input type="hidden" defaultValue={formData.financeId} name="id" />
-            <Input type="hidden" defaultValue={formData.msrp} name="msrp" />
-            <Input type="hidden" defaultValue={weeklylNat} name="weeklylNat" />
-            <Input type="hidden" defaultValue={deposit} name="deposit" />
-            <Input type="hidden" defaultValue={biweeklNat} name="biweeklNat" />
-            <Input type="hidden" defaultValue={biweeklNatWOptions} name="biweeklNatWOptions" />
-            <Input type="hidden" defaultValue={nat60WOptions} name="nat60WOptions" />
-            <Input type="hidden" defaultValue={weeklylNatWOptions} name="weeklylNatWOptions" />
-            <Input type="hidden" defaultValue={nat60} name="nat60" />
-            <Input type="hidden" defaultValue={licensing} name="licensing" />
-            <Input type="hidden" defaultValue={desiredPayments} name="desiredPayments" />
-            <Input type="hidden" defaultValue="Reached" name="customerState" />
-            <Input type="hidden" defaultValue="Active" name="status" />
-            <Input type="hidden" defaultValue={outletSize} name="sliderWidth" />
-            <Input type="hidden" defaultValue={finance.id} name="financeId" />
-            <Input type="hidden" defaultValue={finance.userEmail} name="userEmail" />
-            <Input type="hidden" defaultValue="TBD" name="nextAppointment" />
-            {secPage && (
-              <div className="flex justify-between">
-                <div></div>
-                <input
-                  type="hidden"
-                  name="financeId"
-                  defaultValue={finance.id}
-                />
-                <ButtonLoading
-                  size="sm"
-                  value="updateFinance"
-                  className="mb-5 mr-5   mt-5 w-auto cursor-pointer bg-primary"
-                  name="intent"
-                  type="submit"
-                  isSubmitting={isSubmitting}
-                  onClick={() => {
-                    setSaved(true);
-                    toast.success(`${finance.firstName}'s customer file is updated...`)
-                  }}
-                  loadingText={`${finance.firstName}'s customer file is updated...`}
-                >
-                  Save
-                  <PaperPlaneIcon className="ml-2 h-4 w-4" />
-                </ButtonLoading>
-              </div>
-            )}
-          </Form>
+
+                    <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                    <div className="font-semibold">Contract Variables</div>
+                    <ul className="mt-3 grid gap-3">
+                      <li className="flex items-center justify-between">
+                        <span className="text-[#8a8a93]">Term</span>
+                        <span>{months} / months</span>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-[#8a8a93]">Rate</span>
+                        <span>{iRate}%</span>
+                      </li>
+                      {finance.deposit > 0 && (
+                        <li className="flex items-center justify-between">
+                          <span className="text-[#8a8a93]">Deposit</span>
+                          <span>${finance.deposit}</span>
+                        </li>
+                      )}
+                      <li className="flex items-center justify-between">
+                        <span className="text-[#8a8a93]">Trade Value</span>
+                        <span>${tradeValue}</span>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-[#8a8a93]">Lien</span>
+                        <span>${lien}</span>
+                      </li>
+                    </ul>
+
+                    <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                    <div className="font-semibold">Total</div>
+                    <ul className="grid gap-3">
+                      {perDiscountGiven > 0 && (
+                        <>
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">
+                              Total Before Discount
+                            </span>
+                            <span>${beforeDiscount}</span>
+                          </li>
+                        </>
+                      )}
+                      {perDiscountGiven > 0 && (
+                        <>
+                          <li className="flex items-center justify-between">
+                            <span className="text-[#8a8a93]">
+                              Discount (MSRP only)
+                            </span>
+                            <span> ${perDiscountGiven}</span>
+                          </li>
+                        </>
+                      )}
+                      {mainButton === "payments" && (
+                        <div>
+                          {subButton === "withoutOptions" && (
+                            <>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Total</span>
+                                <span>${total}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">With taxes</span>
+                                <span> ${onTax}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">
+                                  After Deposit
+                                </span>
+                                <span> ${onTax - deposit}</span>
+                              </li>
+                            </>
+                          )}
+                          {subButton === "withOptions" && (
+                            <>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Total</span>
+                                <span>${totalWithOptions}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">With taxes</span>
+                                <span> ${qcTax}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">
+                                  After Deposit
+                                </span>
+                                <span> ${qcTax - deposit}</span>
+                              </li>
+                            </>
+                          )}
+                        </div>
+                      )}
+                      {mainButton === "noTax" && (
+                        <div>
+                          {subButton === "withoutOptions" && (
+                            <>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Total</span>
+                                <span>${total}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">With taxes</span>
+                                <span> ${native}</span>
+                              </li>
+                              <li className="flex mt-3 items-center justify-between">
+                                <span className="text-[#8a8a93]">
+                                  After Deposit
+                                </span>
+                                <span> ${native - deposit}</span>
+                              </li>
+                            </>
+                          )}
+                          {subButton === "withOptions" && (
+                            <>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Total</span>
+                                <span>${totalWithOptions}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">With taxes</span>
+                                <span> ${totalWithOptions}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">
+                                  After Deposit
+                                </span>
+                                <span> ${totalWithOptions - deposit}</span>
+                              </li>
+                            </>
+                          )}
+                        </div>
+                      )}
+                      {mainButton === "customTax" && (
+                        <div>
+                          {subButton === "withoutOptions" && (
+                            <>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Total</span>
+                                <span>${total}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">With taxes</span>
+                                <span> ${otherTax}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">
+                                  After Deposit
+                                </span>
+                                <span> ${otherTax - deposit}</span>
+                              </li>
+                            </>
+                          )}
+                          {subButton === "withOptions" && (
+                            <>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Total</span>
+                                <span>${totalWithOptions}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">With taxes</span>
+                                <span> ${otherTaxWithOptions}</span>
+                              </li>
+                              <li className="mt-3 flex items-center justify-between">
+                                <span className="text-[#8a8a93]">
+                                  After Deposit
+                                </span>
+                                <span> ${otherTaxWithOptions - deposit}</span>
+                              </li>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </ul>
+                  </CardContent>
+                </>
+              )}
+              <Input type="hidden" defaultValue={on60} name="on60" />
+              <Input type="hidden" defaultValue={biweekly} name="biweekly" />
+              <Input type="hidden" defaultValue={weekly} name="weekly" />
+              <Input type="hidden" defaultValue={weeklyOth} name="weeklyOth" />
+              <Input type="hidden" defaultValue={biweekOth} name="biweekOth" />
+              <Input type="hidden" defaultValue={oth60} name="oth60" />
+              <Input type="hidden" defaultValue={weeklyqc} name="weeklyqc" />
+              <Input type="hidden" defaultValue={biweeklyqc} name="biweeklyqc" />
+              <Input type="hidden" defaultValue={qc60} name="qc60" />
+              <Input type="hidden" defaultValue={brand} name="brand" />
+              <Input type="hidden" defaultValue={formData.userExtWarr} name="userExtWarr" />
+              <Input type="hidden" defaultValue={formData.userGap} name="userGap" />
+              <Input type="hidden" defaultValue={formData.userServicespkg} name="userServicespkg" />
+              <Input type="hidden" defaultValue={formData.vinE} name="vinE" />
+              <Input type="hidden" defaultValue={formData.rustProofing} name="rustProofing" />
+              <Input type="hidden" defaultValue={formData.userLoanProt} name="userLoanProt" />
+              <Input type="hidden" defaultValue={formData.userTireandRim} name="userTireandRim" />
+              <Input type="hidden" defaultValue={formData.userOther} name="userOther" />
+              <Input type="hidden" defaultValue={formData.lifeDisability} name="lifeDisability" />
+              <Input type="hidden" defaultValue={formData.discount} name="discount" />
+              <Input type="hidden" defaultValue={formData.deliveryCharge} name="deliveryCharge" />
+              <Input type="hidden" defaultValue={formData.discountPer} name="discountPer" />
+              <Input type="hidden" defaultValue={total} name="total" />
+              <Input type="hidden" defaultValue={msrp} name="msrp" />
+              <Input type="hidden" defaultValue={modelData.color} name="color" />
+              <Input type="hidden" defaultValue={modelData.model1} name="model1" />
+              <Input type="hidden" defaultValue={modelData.modelCode} name="modelCode" />
+              <Input type="hidden" defaultValue={onTax} name="onTax" />
+              <Input type="hidden" defaultValue={qcTax} name="qcTax" />
+              <Input type="hidden" defaultValue={otherTax} name="otherTax" />
+              <Input type="hidden" defaultValue={otherTaxWithOptions} name="otherTaxWithOptions" />
+              <Input type="hidden" defaultValue={totalWithOptions} name="totalWithOptions" />
+              <Input type="hidden" defaultValue={formData.freight} name="freight" />
+              <Input type="hidden" defaultValue={formData.admin} name="admin" />
+              <Input type="hidden" defaultValue={formData.pdi} name="pdi" />
+              <Input type="hidden" defaultValue={formData.commodity} name="commodity" />
+              <Input type="hidden" defaultValue={weeklyOthWOptions} name="weeklyOthWOptions" />
+              <Input type="hidden" defaultValue={biweekOthWOptions} name="biweekOthWOptions" />
+              <Input type="hidden" defaultValue={oth60WOptions} name="oth60WOptions" />
+              <Input type="hidden" defaultValue={formData.accessories} name="accessories" />
+              <Input type="hidden" defaultValue={formData.labour} name="labour" />
+              <Input type="hidden" defaultValue={formData.financeId} name="id" />
+              <Input type="hidden" defaultValue={formData.msrp} name="msrp" />
+              <Input type="hidden" defaultValue={weeklylNat} name="weeklylNat" />
+              <Input type="hidden" defaultValue={deposit} name="deposit" />
+              <Input type="hidden" defaultValue={biweeklNat} name="biweeklNat" />
+              <Input type="hidden" defaultValue={biweeklNatWOptions} name="biweeklNatWOptions" />
+              <Input type="hidden" defaultValue={nat60WOptions} name="nat60WOptions" />
+              <Input type="hidden" defaultValue={weeklylNatWOptions} name="weeklylNatWOptions" />
+              <Input type="hidden" defaultValue={nat60} name="nat60" />
+              <Input type="hidden" defaultValue={licensing} name="licensing" />
+              <Input type="hidden" defaultValue={desiredPayments} name="desiredPayments" />
+              <Input type="hidden" defaultValue="Reached" name="customerState" />
+              <Input type="hidden" defaultValue="Active" name="status" />
+              <Input type="hidden" defaultValue={outletSize} name="sliderWidth" />
+              <Input type="hidden" defaultValue={finance.id} name="financeId" />
+              <Input type="hidden" defaultValue={finance.userEmail} name="userEmail" />
+              <Input type="hidden" defaultValue="TBD" name="nextAppointment" />
+              {secPage && (
+                <div className="flex justify-between">
+                  <div></div>
+                  <input
+                    type="hidden"
+                    name="financeId"
+                    defaultValue={finance.id}
+                  />
+                  <ButtonLoading
+                    size="sm"
+                    value="updateFinance"
+                    className="mb-5 mr-5   mt-5 w-auto cursor-pointer bg-primary"
+                    name="intent"
+                    type="submit"
+                    isSubmitting={isSubmitting}
+                    onClick={() => {
+                      setSaved(true);
+                      toast.success(`${finance.firstName}'s customer file is updated...`)
+                    }}
+                    loadingText={`${finance.firstName}'s customer file is updated...`}
+                  >
+                    Save
+                    <PaperPlaneIcon className="ml-2 h-4 w-4" />
+                  </ButtonLoading>
+                </div>
+              )}
+            </Form>
+          </CardContent>
           <CardFooter className="b-rounded-md  flex flex-row items-center border-t border-border  bg-muted/50  px-6  py-3">
             <div className="text-xs text-muted-foreground">
-              Updated <time dateTime="2023-11-23">November 23, 2023</time>
+
             </div>
             <Pagination className="ml-auto mr-0 w-auto">
               <PaginationContent>

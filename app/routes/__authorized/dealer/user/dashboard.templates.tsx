@@ -1645,10 +1645,10 @@ export default function Shight() {
             </p>
           </div>
           <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-            <aside className="-mx-4  lg:w-64 ">
+            <aside className="-mx-4 lg:w-64 lg:max-w-96">
               <SidebarNav items={templates} />
             </aside>
-            <div className="flex-1 lg:max-w-2xl">
+            <div className="flex-1 lg:max-w-3xl">
 
               {selectedScript && selectedRecord && (
                 <div className={`mx-2  transition delay-300 duration-1000 ease-in-out `}        >

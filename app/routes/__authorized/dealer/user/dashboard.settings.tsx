@@ -719,6 +719,7 @@ function ProfileForm({ user, deFees, statsData, comsRecords, getNewLook, automat
                                   </span>
                                   <span>
                                     <input
+                                      disabled
                                       className='scale-150 p-3'
                                       type='checkbox'
                                       id='necessary'
@@ -806,6 +807,7 @@ function ProfileForm({ user, deFees, statsData, comsRecords, getNewLook, automat
                                     Change looks?
                                   </span>
                                   <IndeterminateCheckbox
+                                    disabled
                                     className='  border-[#ff0202]'
                                     id='necessary'
                                     name='newLook'
@@ -859,99 +861,107 @@ function ProfileForm({ user, deFees, statsData, comsRecords, getNewLook, automat
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 gap-2">
-                      <div className="relative mt-4">
-                        <Input
-                          defaultValue={deFees?.dealerName}
-                          name="dealerName"
-                          className="border-border bg-background "
-                        />
+                    {user.plan === 'prod_OY8EMf7RNoJXhX' ? (
+                      <p className='text-center mt-5'>Dealer management will set the dealer fees for you.</p>
+                    ) : (
+                      <div className="grid grid-cols-1 gap-2">
+                        <div className="relative mt-4">
+                          <Input
+                            defaultValue={deFees?.dealerName}
+                            name="dealerName"
+                            className="border-border bg-background "
+                          />
 
-                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
+                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Name</label>
+                        </div>
+                        <div className="relative mt-4">
+                          <Input
+                            defaultValue={dealerAddress}
+                            name="dealerAddress"
+                            className="border-border bg-background "
+                          />
+                          {errors?.userLabour ? (
+                            <em className="text-[#ff0202]">{errors.userLabour}</em>
+                          ) : null}
+                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Address</label>
+                        </div>
+                        <div className="relative mt-4">
+                          <Input
+                            defaultValue={dealerCity}
+                            name="dealerCity"
+                            className="border-border bg-background "
+                          />
+                          {errors?.userLabour ? (
+                            <em className="text-[#ff0202]">{errors.userLabour}</em>
+                          ) : null}
+                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer City</label>
+                        </div>
+                        <div className="relative mt-4">
+                          <Input
+                            defaultValue={dealerProvince}
+                            name="dealerProv"
+                            className="border-border bg-background "
+                          />
+                          {errors?.userLabour ? (
+                            <em className="text-[#ff0202]">{errors.userLabour}</em>
+                          ) : null}
+                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Province</label>
+                        </div>
+                        <div className="relative mt-4">
+                          <Input
+                            defaultValue={dealerPostal}
+                            name="dealerPostal"
+                            className="border-border bg-background "
+                          />
+                          {errors?.userLabour ? (
+                            <em className="text-[#ff0202]">{errors.userLabour}</em>
+                          ) : null}
+                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Postal Code</label>
+                        </div>
+                        <div className="relative mt-4">
+                          <Input
+                            defaultValue={dealerPhone}
+                            name="dealerPhone"
+                            className="border-border bg-background "
+                          />
+                          {errors?.userLabour ? (
+                            <em className="text-[#ff0202]">{errors.userLabour}</em>
+                          ) : null}
+                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Phone</label>
+                        </div>
+                        <div className="relative mt-4">
+                          <Input
+                            defaultValue={omvicNumber}
+                            name="omvicNumber"
+                            className="border-border bg-background "
+                          />
+                          {errors?.userLabour ? (
+                            <em className="text-[#ff0202]">{errors.userLabour}</em>
+                          ) : null}
+                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">OMVIC / GOV Lic</label>
+                        </div>
+                        <Input type='hidden' defaultValue={user.email} name="userEmail" />
+                        <Input type='hidden' defaultValue={user.email} name="email" />
                       </div>
-                      <div className="relative mt-4">
-                        <Input
-                          defaultValue={dealerAddress}
-                          name="dealerAddress"
-                          className="border-border bg-background "
-                        />
-                        {errors?.userLabour ? (
-                          <em className="text-[#ff0202]">{errors.userLabour}</em>
-                        ) : null}
-                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Address</label>
-                      </div>
-                      <div className="relative mt-4">
-                        <Input
-                          defaultValue={dealerCity}
-                          name="dealerCity"
-                          className="border-border bg-background "
-                        />
-                        {errors?.userLabour ? (
-                          <em className="text-[#ff0202]">{errors.userLabour}</em>
-                        ) : null}
-                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer City</label>
-                      </div>
-                      <div className="relative mt-4">
-                        <Input
-                          defaultValue={dealerProvince}
-                          name="dealerProv"
-                          className="border-border bg-background "
-                        />
-                        {errors?.userLabour ? (
-                          <em className="text-[#ff0202]">{errors.userLabour}</em>
-                        ) : null}
-                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Province</label>
-                      </div>
-                      <div className="relative mt-4">
-                        <Input
-                          defaultValue={dealerPostal}
-                          name="dealerPostal"
-                          className="border-border bg-background "
-                        />
-                        {errors?.userLabour ? (
-                          <em className="text-[#ff0202]">{errors.userLabour}</em>
-                        ) : null}
-                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Postal Code</label>
-                      </div>
-                      <div className="relative mt-4">
-                        <Input
-                          defaultValue={dealerPhone}
-                          name="dealerPhone"
-                          className="border-border bg-background "
-                        />
-                        {errors?.userLabour ? (
-                          <em className="text-[#ff0202]">{errors.userLabour}</em>
-                        ) : null}
-                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Dealer Phone</label>
-                      </div>
-                      <div className="relative mt-4">
-                        <Input
-                          defaultValue={omvicNumber}
-                          name="omvicNumber"
-                          className="border-border bg-background "
-                        />
-                        {errors?.userLabour ? (
-                          <em className="text-[#ff0202]">{errors.userLabour}</em>
-                        ) : null}
-                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">OMVIC / GOV Lic</label>
-                      </div>
-                      <Input type='hidden' defaultValue={user.email} name="userEmail" />
-                      <Input type='hidden' defaultValue={user.email} name="email" />
-                    </div>
+                    )}
                   </CardContent>
                   <CardFooter className="px-6 py-4">
-                    <ButtonLoading
-                      size="sm"
-                      className="mr-auto cursor-pointer mb-5 mt-5 bg-primary"
-                      type="submit"
-                      name='intent'
-                      value='updateFees'
-                      isSubmitting={isSubmitting}
-                      onClick={() => toast.success(`Update complete.`)}
-                      loadingText="Updating information..."
-                    >
-                      Update
-                    </ButtonLoading>
+                    {user.plan === 'prod_OY8EMf7RNoJXhX' ? (
+                      <p className='text-center mt-5'> </p>
+                    ) : (
+                      <ButtonLoading
+                        size="sm"
+                        className="mr-auto cursor-pointer mb-5 mt-5 bg-primary"
+                        type="submit"
+                        name='intent'
+                        value='updateFees'
+                        isSubmitting={isSubmitting}
+                        onClick={() => toast.success(`Update complete.`)}
+                        loadingText="Updating information..."
+                      >
+                        Update
+                      </ButtonLoading>
+                    )}
                   </CardFooter>
 
                 </Form>

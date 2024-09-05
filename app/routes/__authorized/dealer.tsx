@@ -1619,7 +1619,7 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                         <DropdownMenuSub>
                           <DropdownMenuSubTrigger className='cursor-pointer'>Watercraft</DropdownMenuSubTrigger>
                           <DropdownMenuPortal>
-                            <DropdownMenuSubContent className="bg-background">
+                            <DropdownMenuSubContent className="bg-background border-border">
                               {my23Watercraft.map((item, index) => (
                                 <DropdownMenuItem
                                   key={index}
@@ -1644,7 +1644,7 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                         <DropdownMenuSub>
                           <DropdownMenuSubTrigger className='cursor-pointer'>Motorcycle</DropdownMenuSubTrigger>
                           <DropdownMenuPortal>
-                            <DropdownMenuSubContent className="bg-background">
+                            <DropdownMenuSubContent className="bg-background border-border">
                               {my23Moto.map((item, index) => (
                                 <DropdownMenuItem
                                   key={index}
@@ -1669,7 +1669,7 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                         <DropdownMenuSub>
                           <DropdownMenuSubTrigger className='cursor-pointer'>Off-Road</DropdownMenuSubTrigger>
                           <DropdownMenuPortal>
-                            <DropdownMenuSubContent className="bg-background">
+                            <DropdownMenuSubContent className="bg-background border-border">
                               {my23OffRoad.map((item, index) => (
                                 <DropdownMenuItem
                                   key={index}
@@ -1694,7 +1694,7 @@ export function MainDropwdown({ user, email, interruptionsData, loadNewLead, get
                         <DropdownMenuSub>
                           <DropdownMenuSubTrigger disabled className='cursor-pointer'>On-Road</DropdownMenuSubTrigger>
                           <DropdownMenuPortal>
-                            <DropdownMenuSubContent className="bg-background">
+                            <DropdownMenuSubContent className="bg-background border-border">
                               <DropdownMenuItem>Email</DropdownMenuItem>
                             </DropdownMenuSubContent>
                           </DropdownMenuPortal>
@@ -2154,7 +2154,7 @@ export const financeNavSidebarNav = [
 ]
 export const adminSidebarNav = [
   {
-    title: "Overview",
+    title: "Settings",
     to: "/dealer/admin/settings/general",
   },
   {

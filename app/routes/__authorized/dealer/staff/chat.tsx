@@ -154,9 +154,17 @@ export default function StaffChat({ content }) {
   const fetcher = useFetcher();
 
   const timerRef = useRef(0);
+  const [getDomain, setGetDomain] = useState("http://localhost:3000");
+
+  useEffect(() => {
+    const currentHost = typeof window !== "undefined" ? window.location.host : null;
+    if (currentHost === "dealersalesassistant.ca") {
+      setGetDomain("https://www.dealersalesassistant.ca")
+    }
+  }, []);
 
   const dataFetcher = (url) => fetch(url).then(res => res.json());
-  let { data: userMessages, error, isLoading, isValidating } = useSWR('http://localhost:3000/dealer/staff/getConvos', dataFetcher, { refreshInterval: 15000 })
+  let { data: userMessages, error, isLoading, isValidating } = useSWR(getDomain + '/dealer/staff/getConvos', dataFetcher, { refreshInterval: 15000 })
 
   useEffect(() => {
     if (Array.isArray(userMessages)) {
@@ -231,7 +239,7 @@ export default function StaffChat({ content }) {
       toast.success('Message Sent!');
       setIsSubmitting(false);
 
-      userMessages = useSWR('http://localhost:3000/dealer/staff/getConvos', dataFetcher)
+      userMessages = useSWR(getDomain + '/dealer/staff/getConvos', dataFetcher)
       const getMessage = userMessages()
       console.log(getMessage)
       setConversations(getMessage)
@@ -253,7 +261,7 @@ export default function StaffChat({ content }) {
   const staffChats = []
   return (
     <Card
-      className=" z-50 w-[715px] text-foreground max-h-[715px]"
+      className=" z-50 w-[715px] text-foreground max-h-[715px] bg-background"
       x-chunk="dashboard-05-chunk-4"
     >
 
@@ -275,7 +283,7 @@ export default function StaffChat({ content }) {
         </div>
 
         <div className="grid grid-cols-8 gap-3 ">
-          <Card className="col-span-2 max-h-[545px] h-[545px]">
+          <Card className="col-span-2 max-h-[545px] h-[545px] bg-background" >
             <CardContent className="flex-col overflow-y-auto mt-3">
               {labels.map((room, index) => (
                 <Button
@@ -332,7 +340,7 @@ export default function StaffChat({ content }) {
               )}
             </CardContent>
           </Card>
-          <Card className="col-span-6 max-h-[545px] h-[545px]" >
+          <Card className="col-span-6 max-h-[545px] h-[545px]  bg-background" >
             <CardContent className="flex-grow  overflow-x-clip overflow-y-auto rouned-b-md mt-3" ref={containerRef}>
               <div className="mt-5 h-auto  max-h-[450px] space-y-4">
                 {filtererdConversations.map((conversation) => (
@@ -435,7 +443,7 @@ export async function action({ request }: ActionFunction) {
         from: formData.userEmail || '',
       },
     })
-    return saveMessage;
+    return json({ saveMessage });
   }
   if (formData.intent === 'sendMessage') {
     const saveMessage = await prisma.staffChat.create({

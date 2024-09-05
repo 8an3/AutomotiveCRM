@@ -2358,14 +2358,37 @@ export default function Dashboard() {
     { name: 'address', value: finance.address, label: 'Address', },
     { name: 'city', value: finance.city, label: 'City', },
     { name: 'postal', value: finance.postal, label: 'Postal', },
+    { name: 'dl', value: finance.dl, label: 'Drivers Lic.', },
+  ];
+  let customerCardNonInput = [
+    { name: 'dob', value: finance.dob, label: 'DOB', },
+    { name: 'timeToContact', value: finance.timeToContact, label: 'Preferred Time', },
+    { name: 'typeOfContact', value: finance.typeOfContact, label: 'Preferred Contact', },
+  ];
+  let customerCardNoEdit = [
     { name: 'lastContact', value: finance.lastContact, label: 'Last Contact', },
+    { name: 'taxRate', value: finance.dob, label: 'Tax Rate', },
     { name: 'nextAppointment', value: finance.nextAppointment, label: 'Next Appointment', },
-    { name: 'deliveryDate', value: finance.deliveryDate, label: 'Delivery Date', },
-    { name: 'deliveredDate', value: finance.deliveredDate, label: 'Delivered Date', },
+    { name: 'deposit', value: finance.deposit, label: 'Deposit', },
     { name: 'depositMade', value: finance.depositMade, label: 'Deposit Made', },
     { name: 'userEmail', value: finance.userEmail, label: 'Sales person', },
     { name: 'financeManager', value: finance.financeManager, label: 'Finance manager', },
   ];
+  let vehCard = [
+    { name: 'year', value: finance.year, label: 'Year', },
+    { name: 'brand', value: finance.brand, label: 'Brand', },
+    { name: 'model', value: finance.model, label: 'Model', },
+    { name: 'color', value: finance.color, label: 'Color', },
+    { name: 'vin', value: finance.vin, label: 'Vin', },
+    { name: 'mileage', value: finance.mileage, label: 'Mileage', },
+    { name: 'stockNum', value: finance.stockNum, label: 'Stock Number', },
+    { name: 'modelCode', value: finance.modelCode, label: 'Model Code', },
+    { name: 'tag', value: finance.tag, label: 'tag', },
+    { name: 'deliveryDate', value: finance.deliveryDate, label: 'Delivery Date', },
+
+    { name: 'deliveredDate', value: finance.deliveredDate, label: 'Delivered Date', },
+  ];
+
 
   // -----------------------------finance dropdowns ---------------------------------//
   const email = [
@@ -2917,800 +2940,1808 @@ export default function Dashboard() {
   }, [serviceOrder]);
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background">
-      <aside className="fixed inset-y-0 left-0 z-10  sm:w-[50px] sm:flex-col sm:border-r sm:bg-background sm:flex sm:border-border">
-        <SidebarNav mergedFinanceList={mergedFinanceList} finance={finance} />
-      </aside>
-      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+    <div >
+      <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
+        <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-6">
+            <Card className="sm:col-span-2 text-foreground rounded-lg  flex flex-col h-full" x-chunk="dashboard-05-chunk-0"  >
+              <CardHeader className="flex flex-row items-start bg-muted/50 rounded-md">
+                <div className="grid">
+                  <CardTitle className="group flex items-center text-sm">
+                    Customer Info
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="grid gap-3 text-sm mt-2">
 
-        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
-          <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-6">
-              <Card className="sm:col-span-2 text-foreground rounded-lg  flex flex-col h-full" x-chunk="dashboard-05-chunk-0"  >
-                <CardHeader className="flex flex-row items-start bg-muted/50 rounded-md">
-                  <div className="grid">
-                    <CardTitle className="group flex items-center text-sm">
-                      Customer Info
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="grid gap-3 text-sm mt-2">
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        First Name
-                      </span>
-                      <span>{finance.firstName}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Last Name
-                      </span>
-                      <span> {finance.lastName}</span>
-                    </li>
-                    <li className=" group flex items-center justify-between">
+                  {customerCard.map((item, index) => (
+                    <li key={index} className=" group flex items-center justify-between">
                       <div className='flex'>
                         <span className="text-muted-foreground">
-                          Phone
+                          {item.name}
                         </span>
                         <Button
                           size="icon"
                           variant="outline"
-                          onClick={() => copyText(finance.phone)}
+                          onClick={() => copyText(item.value)}
                           className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
                         >
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance.phone && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+                        {copiedText === item.value && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
                       </div>
-                      <span>{finance.phone}  </span>
+                      <span>{item.value}  </span>
                     </li>
-                    <li className=" group flex items-center justify-between">
+                  ))}
+                  {customerCardNonInput.map((item, index) => (
+                    <li key={index} className=" group flex items-center justify-between">
                       <div className='flex'>
                         <span className="text-muted-foreground">
-                          Email
+                          {item.name}
                         </span>
                         <Button
                           size="icon"
                           variant="outline"
-                          onClick={() => copyText(finance.email)}
+                          onClick={() => copyText(item.value)}
                           className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
                         >
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance.email && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+                        {copiedText === item.value && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
                       </div>
-                      <span>{finance.email}  </span>
+                      <span>{item.value}  </span>
                     </li>
-                    <li className=" group flex items-center justify-between">
+                  ))}
+                  {customerCardNoEdit.map((item, index) => (
+                    <li key={index} className=" group flex items-center justify-between">
                       <div className='flex'>
                         <span className="text-muted-foreground">
-                          Address
+                          {item.name}
                         </span>
                         <Button
                           size="icon"
                           variant="outline"
-                          onClick={() => copyText(finance.address)}
+                          onClick={() => copyText(item.value)}
                           className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
                         >
                           <Copy className="h-3 w-3" />
                           <span className="sr-only">Copy</span>
                         </Button>
-                        {copiedText === finance.address && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+                        {copiedText === item.value && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
                       </div>
-                      <span>{finance.address}  </span>
+                      <span>{item.value}  </span>
                     </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        City
+                  ))}
+                </ul>
+              </CardContent>
+              <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted/50 px-6 py-3">
+                <div>
+                  <Badge >{finance.customerState}</Badge>
+                </div>
+                <Dialog  >
+                  <DialogTrigger asChild>
+                    <Button size="sm" variant="outline" className="h-8 gap-1 ml-auto">
+                      <CiEdit className="h-3.5 w-3.5" />
+                      <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                        Edit Customer Info
                       </span>
-                      <span>{finance.city}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Postal
-                      </span>
-                      <span>{finance.postal}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Drivers License
-                      </span>
-                      <span>{finance.dl}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        DOB
-                      </span>
-                      <span>{finance.dob}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Preferred Time
-                      </span>
-                      <span>{finance.timeToContact}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Preferred Contact
-                      </span>
-                      <span>{finance.typeOfContact}</span>
-                    </li>
-                  </ul>
-                </CardContent>
-                <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted/50 px-6 py-3">
-                  <div>
-                    <Badge >{finance.customerState}</Badge>
-                  </div>
-                  <Dialog  >
-                    <DialogTrigger asChild>
-                      <Button size="sm" variant="outline" className="h-8 gap-1 ml-auto">
-                        <CiEdit className="h-3.5 w-3.5" />
-                        <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                          Edit Customer Info
-                        </span>
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
-                      <Form method='post' className='mx-4 my-4'>
-                        <DialogHeader className="px-4 pb-4 pt-5">
-                          <DialogTitle>Edit Customer Profile Info</DialogTitle>
-                          <hr className=" text-muted-foreground w-[98%] mx-auto" />
-                        </DialogHeader>
-                        {customerCard.map((user, index) => (
-                          <div key={index} className="relative mt-4">
-
-                            <Input
-                              name={user.name}
-                              defaultValue={user.value}
-                              className={` bg-background text-foreground border border-border`}
-                            />
-                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
-                          </div>
-                        ))}
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-[100%] pl-3 text-left font-normal mt-4 ",
-                                !date && "text-muted-foreground"
-                              )}
-                            >
-                              {date ? (
-                                format(date, "PPP")
-                              ) : (
-                                <span>DOB</span>
-                              )}
-                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                            </Button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-auto p-0" align="start">
-                            <Calendar
-                              className='w-auto'
-                              mode="single"
-                              fromYear={1900}
-                              selected={date}
-                              onSelect={setDate}
-                              disabled={(date) =>
-                                date > new Date() || date < new Date("1900-01-01")
-                              }
-                              initialFocus
-                            />
-                          </PopoverContent>
-                        </Popover>
-                        <input type='hidden' value={String(date)} name='dob' />
-                        <div className="relative mt-4">
-                          <Select name='timeToContact' defaultValue={data.timeToContact}  >
-                            <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
-                              <SelectValue defaultValue={data.timeToContact} />
-                            </SelectTrigger>
-                            <SelectContent className=' bg-background text-foreground border border-border' >
-                              <SelectGroup>
-                                <SelectLabel>Best Time To Contact</SelectLabel>
-                                <SelectItem value="Morning">Morning</SelectItem>
-                                <SelectItem value="Afternoon">Afternoon</SelectItem>
-                                <SelectItem value="Evening">Evening</SelectItem>
-                                <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Time To Be Contacted</label>
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
+                    <Form method='post' className='mx-4 my-4'>
+                      <DialogHeader className="px-4 pb-4 pt-5">
+                        <DialogTitle>Edit Customer Profile Info</DialogTitle>
+                      </DialogHeader>
+                      {customerCard.map((user, index) => (
+                        <div key={index} className="relative mt-5">
+                          <Input
+                            name={user.name}
+                            defaultValue={user.value}
+                            className={` bg-background text-foreground border border-border`}
+                          />
+                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-muted-foreground">{user.label}</label>
                         </div>
-                        <div className="relative mt-4">
-                          <Select name='typeOfContact' defaultValue={data.typeOfContact} >
-                            <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
-                              <SelectValue defaultValue={data.typeOfContact} />
-                            </SelectTrigger>
-                            <SelectContent className=' bg-background text-foreground border border-border' >
-                              <SelectGroup>
-                                <SelectLabel>Contact Method</SelectLabel>
-                                <SelectItem value="Phone">Phone</SelectItem>
-                                <SelectItem value="InPerson">In-Person</SelectItem>
-                                <SelectItem value="SMS">SMS</SelectItem>
-                                <SelectItem value="Email">Email</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                          <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Type To Be Contacted</label>
-                        </div>
-                        <input type='hidden' name="financeId" defaultValue={finance.id} />
-                        <input type='hidden' name="clientfileId" defaultValue={clientFile.id} />
-
-                        <ButtonLoading
-                          size="sm"
-                          value="updateClientInfoFinance"
-                          className="w-auto cursor-pointer mt-5 ml-auto mr-3 bg-primary justify-end"
-                          name="intent"
-                          type="submit"
-                          isSubmitting={isSubmitting}
-                          onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
-                          loadingText={`${data.firstName}'s customer file is updated...`}
-                        >
-                          Continue
-                          <PaperPlaneIcon className="h-4 w-4 ml-2" />
-
-                        </ButtonLoading>
-
-                      </Form>
-
-                    </DialogContent>
-                  </Dialog>
-                </CardFooter>
-              </Card>
-              <Card x-chunk="dashboard-05-chunk-2" className="text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
-                <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                  <div className="grid">
-                    <CardTitle className="group flex items-center text-sm">
-                      Current Vehicle
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip mt-3">
-                  <div className="max-h-[20vh] h-auto">
-                    <ul className="grid gap-3 mt-3">
-
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">
-                          Year
-                        </span>
-                        <span>{finance.year}</span>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">
-                          Brand
-                        </span>
-                        <span>{finance.brand}</span>
-                      </li>
-                      <li className=" group flex items-center justify-between">
-                        <div className='flex'>
-                          <span className="text-muted-foreground">
-                            Model
-                          </span>
+                      ))}
+                      <Popover>
+                        <PopoverTrigger asChild>
                           <Button
-                            size="icon"
-                            variant="outline"
-                            onClick={() => copyText(finance.model)}
-                            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                            variant={"outline"}
+                            className={cn(
+                              "w-[100%] pl-3 text-left font-normal mt-4 ",
+                              !date && "text-muted-foreground"
+                            )}
                           >
-                            <Copy className="h-3 w-3" />
-                            <span className="sr-only">Copy</span>
+                            {date ? (
+                              format(date, "PPP")
+                            ) : (
+                              <span>DOB</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
-                          {copiedText === finance.model && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
-                        </div>
-                        <span>{finance.model}  </span>
-                      </li>
-
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">
-                          Color
-                        </span>
-                        <span>{finance.color}</span>
-                      </li>
-                      <li className=" group flex items-center justify-between">
-                        <div className='flex'>
-                          <span className="text-muted-foreground">
-                            VIN
-                          </span>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 border-border" align="start">
+                          <Calendar
+                            className='w-auto'
+                            mode="single"
+                            fromYear={1900}
+                            selected={date}
+                            onSelect={setDate}
+                            disabled={(date) =>
+                              date > new Date() || date < new Date("1900-01-01")
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <input type='hidden' value={String(date)} name='dob' />
+                      <div className="relative mt-4">
+                        <Select name='timeToContact' defaultValue={data.timeToContact}  >
+                          <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
+                            <SelectValue defaultValue={data.timeToContact} />
+                          </SelectTrigger>
+                          <SelectContent className=' bg-background text-foreground border border-border' >
+                            <SelectGroup>
+                              <SelectLabel>Best Time To Contact</SelectLabel>
+                              <SelectItem value="Morning">Morning</SelectItem>
+                              <SelectItem value="Afternoon">Afternoon</SelectItem>
+                              <SelectItem value="Evening">Evening</SelectItem>
+                              <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Time To Be Contacted</label>
+                      </div>
+                      <div className="relative mt-4">
+                        <Select name='typeOfContact' defaultValue={data.typeOfContact} >
+                          <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
+                            <SelectValue defaultValue={data.typeOfContact} />
+                          </SelectTrigger>
+                          <SelectContent className=' bg-background text-foreground border border-border' >
+                            <SelectGroup>
+                              <SelectLabel>Contact Method</SelectLabel>
+                              <SelectItem value="Phone">Phone</SelectItem>
+                              <SelectItem value="InPerson">In-Person</SelectItem>
+                              <SelectItem value="SMS">SMS</SelectItem>
+                              <SelectItem value="Email">Email</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Type To Be Contacted</label>
+                      </div>
+                      <Popover>
+                        <PopoverTrigger asChild>
                           <Button
-                            size="icon"
-                            variant="outline"
-                            onClick={() => copyText(finance.vin)}
-                            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                            variant={"outline"}
+                            className={cn(
+                              "w-[100%] pl-3 text-left font-normal mt-4 ",
+                              !date && "text-muted-foreground"
+                            )}
                           >
-                            <Copy className="h-3 w-3" />
-                            <span className="sr-only">Copy</span>
+                            {date ? (
+                              format(date, "PPP")
+                            ) : (
+                              <span>Delivery Date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
-                          {copiedText === finance.vin && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
-                        </div>
-                        <span>{finance.vin}  </span>
-                      </li>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 border-border" align="start">
+                          <Calendar
+                            className='w-auto'
+                            mode="single"
+                            fromYear={1900}
+                            selected={date}
+                            onSelect={setDate}
+                            disabled={(date) =>
+                              date > new Date() || date < new Date("1900-01-01")
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <input type='hidden' name="financeId" defaultValue={finance.id} />
+                      <input type='hidden' name="clientfileId" defaultValue={clientFile.id} />
 
+                      <ButtonLoading
+                        size="sm"
+                        value="updateClientInfoFinance"
+                        className="w-auto cursor-pointer mt-5 ml-auto mr-3 bg-primary justify-end"
+                        name="intent"
+                        type="submit"
+                        isSubmitting={isSubmitting}
+                        onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
+                        loadingText={`${data.firstName}'s customer file is updated...`}
+                      >
+                        Continue
+                        <PaperPlaneIcon className="h-4 w-4 ml-2" />
+
+                      </ButtonLoading>
+
+                    </Form>
+
+                  </DialogContent>
+                </Dialog>
+              </CardFooter>
+            </Card>
+            <Card x-chunk="dashboard-05-chunk-2" className="text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
+              <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                <div className="grid">
+                  <CardTitle className="group flex items-center text-sm">
+                    Current Vehicle
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip mt-3">
+                <div className="max-h-[20vh] h-auto">
+                  <ul className="grid gap-3 mt-3">
+
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">
+                        Year
+                      </span>
+                      <span>{finance.year}</span>
+                    </li>
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">
+                        Brand
+                      </span>
+                      <span>{finance.brand}</span>
+                    </li>
+                    <li className=" group flex items-center justify-between">
+                      <div className='flex'>
+                        <span className="text-muted-foreground">
+                          Model
+                        </span>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          onClick={() => copyText(finance.model)}
+                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span className="sr-only">Copy</span>
+                        </Button>
+                        {copiedText === finance.model && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+                      </div>
+                      <span>{finance.model}  </span>
+                    </li>
+
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">
+                        Color
+                      </span>
+                      <span>{finance.color}</span>
+                    </li>
+                    <li className=" group flex items-center justify-between">
+                      <div className='flex'>
+                        <span className="text-muted-foreground">
+                          VIN
+                        </span>
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          onClick={() => copyText(finance.vin)}
+                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span className="sr-only">Copy</span>
+                        </Button>
+                        {copiedText === finance.vin && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+                      </div>
+                      <span>{finance.vin}  </span>
+                    </li>
+
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">
+                        Current Mileage
+                      </span>
+                      <span>{finance.mileage}</span>
+                    </li>
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">
+                        Location
+                      </span>
+                      <span>{finance.location}</span>
+                    </li>
+                    {finance.stockNum && (
                       <li className="flex items-center justify-between">
                         <span className="text-muted-foreground">
-                          Current Mileage
+                          Stock Number
+                        </span>
+                        <span>{finance.stockNum}</span>
+                      </li>
+                    )}
+                    {finance.mileage && (
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground">
+                          Mileage
                         </span>
                         <span>{finance.mileage}</span>
                       </li>
+                    )}
+                    {finance.modelCode && (
                       <li className="flex items-center justify-between">
                         <span className="text-muted-foreground">
-                          Location
+                          Model Code
                         </span>
-                        <span>{finance.location}</span>
+                        <span>{finance.modelCode}</span>
                       </li>
-                      {finance.stockNum && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">
-                            Stock Number
-                          </span>
-                          <span>{finance.stockNum}</span>
-                        </li>
-                      )}
-                      {finance.mileage && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">
-                            Mileage
-                          </span>
-                          <span>{finance.mileage}</span>
-                        </li>
-                      )}
-                      {finance.modelCode && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">
-                            Model Code
-                          </span>
-                          <span>{finance.modelCode}</span>
-                        </li>
-                      )}
-                      {finance.tag && (
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">
-                            Tag
-                          </span>
-                          <span>{finance.tag}</span>
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
-                  {finance.stockNum && assignedUnit && (
-                    <>
-                      <UnitDialog data={assignedUnit} user={user} />
-                    </>
-                  )}
-                </CardFooter>
-              </Card>
-              <Card x-chunk="dashboard-05-chunk-2" className="text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
-                <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                  <div className="grid">
-                    <CardTitle className="group flex items-center text-sm">
-                      Customer Progress
-                    </CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip mt-3">
-                  <div className="max-h-[20vh] h-auto">
-                    {editProgress === true && (
-                      <Form method="post">
-                        {items && items.map((item) => {
-                          const isChecked =
-                            checkedItems2[item.name] !== undefined && checkedItems2[item.name] !== '';
-                          return (
-                            <div key={item.name} className="flex justify-between items-center mt-1 mr-1">
-                              <label htmlFor={item.name}>{item.label}</label>
-                              <IndeterminateCheckbox
-                                name={item.name}
-                                indeterminate={checkedItems2[item.name] === undefined && isChecked}
-                                checked={isChecked}
-                                onChange={(e) => handleCheckboxChange2(item.name, e.target.checked)}
-                                className="border-[#c72323]"
-                              />
-                              <input type="hidden" name={item.name} value={checkedItems2[item.name] ?? ''} />
-                            </div>
-                          );
-                        })}
-                        <input type="hidden" defaultValue={finance.id} name="financeId" />
-
-                        <ButtonLoading
-                          size="sm"
-                          value="updateClientInfoFinance"
-                          className="w-auto cursor-pointer ml-auto mt-5 mb-5 bg-primary"
-                          name="intent"
-                          type="submit"
-                          isSubmitting={isSubmitting}
-                          onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
-                          loadingText={`${data.firstName}'s customer file is updated...`}
-                        >
-                          Save
-                          <FaSave className="h-4 w-4 ml-2" />
-                        </ButtonLoading>
-                      </Form>
-                    )
-                    }
-                    {editProgress === false && (
-                      items && items
-                        .filter((item) => {
-                          const isChecked =
-                            item.value === 'on' ||
-                            (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'));
-                          return checkedItems[item.name] ?? isChecked;
-                        })
-                        .map((item) => {
-                          const isChecked =
-                            item.value === 'on' ||
-                            (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'));
-                          return (
-                            <div key={item.name} className="flex justify-between items-center mt-1 mr-1">
-                              <label className="text-muted-foreground" htmlFor={item.name}>{item.label}</label>
-                              <span>{formatDate2(item.value)}</span>
-
-                            </div>
-                          );
-                        })
                     )}
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
-                  <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => handleProgressUnits()}>
-                    <Truck className="h-3.5 w-3.5" />
-                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                      Edit Progress
-                    </span>
-                  </Button>
-                </CardFooter>
-              </Card>
+                    {finance.tag && (
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground">
+                          Tag
+                        </span>
+                        <span>{finance.tag}</span>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+                {finance.stockNum && assignedUnit && (
+                  <>
+                    <UnitDialog data={assignedUnit} user={user} />
+                  </>
+                )}
+              </CardFooter>
+            </Card>
+            <Card x-chunk="dashboard-05-chunk-2" className="text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
+              <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                <div className="grid">
+                  <CardTitle className="group flex items-center text-sm">
+                    Customer Progress
+                  </CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip mt-3">
+                <div className="max-h-[20vh] h-auto">
+                  {editProgress === true && (
+                    <Form method="post">
+                      {items && items.map((item) => {
+                        const isChecked =
+                          checkedItems2[item.name] !== undefined && checkedItems2[item.name] !== '';
+                        return (
+                          <div key={item.name} className="flex justify-between items-center mt-1 mr-1">
+                            <label htmlFor={item.name}>{item.label}</label>
+                            <IndeterminateCheckbox
+                              name={item.name}
+                              indeterminate={checkedItems2[item.name] === undefined && isChecked}
+                              checked={isChecked}
+                              onChange={(e) => handleCheckboxChange2(item.name, e.target.checked)}
+                              className="border-[#c72323]"
+                            />
+                            <input type="hidden" name={item.name} value={checkedItems2[item.name] ?? ''} />
+                          </div>
+                        );
+                      })}
+                      <input type="hidden" defaultValue={finance.id} name="financeId" />
+
+                      <ButtonLoading
+                        size="sm"
+                        value="updateClientInfoFinance"
+                        className="w-auto cursor-pointer ml-auto mt-5 mb-5 bg-primary"
+                        name="intent"
+                        type="submit"
+                        isSubmitting={isSubmitting}
+                        onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
+                        loadingText={`${data.firstName}'s customer file is updated...`}
+                      >
+                        Save
+                        <FaSave className="h-4 w-4 ml-2" />
+                      </ButtonLoading>
+                    </Form>
+                  )
+                  }
+                  {editProgress === false && (
+                    items && items
+                      .filter((item) => {
+                        const isChecked =
+                          item.value === 'on' ||
+                          (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'));
+                        return checkedItems[item.name] ?? isChecked;
+                      })
+                      .map((item) => {
+                        const isChecked =
+                          item.value === 'on' ||
+                          (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'));
+                        return (
+                          <div key={item.name} className="flex justify-between items-center mt-1 mr-1">
+                            <label className="text-muted-foreground" htmlFor={item.name}>{item.label}</label>
+                            <span>{formatDate2(item.value)}</span>
+
+                          </div>
+                        );
+                      })
+                  )}
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+                <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => handleProgressUnits()}>
+                  <Truck className="h-3.5 w-3.5" />
+                  <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                    Edit Progress
+                  </span>
+                </Button>
+              </CardFooter>
+            </Card>
+          </div>
+          <Tabs defaultValue="Sales">
+            <div className="flex items-center">
+              <TabsList >
+                <TabsTrigger value="Sales">Sales</TabsTrigger>
+                <TabsTrigger value="Finance">Finance</TabsTrigger>
+                <TabsTrigger value="Service">Service</TabsTrigger>
+                <TabsTrigger value="Accessories">Accessories/Parts</TabsTrigger>
+              </TabsList>
             </div>
-            <Tabs defaultValue="Sales">
-              <div className="flex items-center">
-                <TabsList >
-                  <TabsTrigger value="Sales">Sales</TabsTrigger>
-                  <TabsTrigger value="Finance">Finance</TabsTrigger>
-                  <TabsTrigger value="Service">Service</TabsTrigger>
-                  <TabsTrigger value="Accessories">Accessories/Parts</TabsTrigger>
-                </TabsList>
-              </div>
-              <TabsContent value="Sales" className="  text-foreground rounded-lg">
-                <div className='flex flex-col md:grid md:grid-cols-2' >
-                  <Card className="overflow-hidden  flex flex-col h-full  m-2 rounded-lg" x-chunk="dashboard-05-chunk-4"  >
-                    <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                      <div className="grid gap-0.5">
-                        <CardTitle className="group flex items-center gap-2 text-lg">
-                          Wanted Vehicle
-                          <Button
-                            size="icon"
-                            variant="outline"
-                            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                          >
-                            <Copy className="h-3 w-3" />
-                            <span className="sr-only">Upload customer docs such as contracts, warranties, etc.</span>
-                          </Button>
-                        </CardTitle>
-                      </div>
+            <TabsContent value="Sales" className="  text-foreground rounded-lg">
+              <div className='flex flex-col md:grid md:grid-cols-2' >
+                <Card className="overflow-hidden  flex flex-col h-full  m-2 rounded-lg" x-chunk="dashboard-05-chunk-4"  >
+                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                    <div className="grid gap-0.5">
+                      <CardTitle className="group flex items-center gap-2 text-lg">
+                        Wanted Vehicle
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span className="sr-only">Upload customer docs such as contracts, warranties, etc.</span>
+                        </Button>
+                      </CardTitle>
+                    </div>
 
-                    </CardHeader>
-                    <CardContent className="max-h-[500px] h-auto flex-grow !grow  p-6 text-sm  overflow-y-auto">
+                  </CardHeader>
+                  <CardContent className="max-h-[500px] h-auto flex-grow !grow  p-6 text-sm  overflow-y-auto">
 
-                      {editUnits === false && (
+                    {editUnits === false && (
+                      <ul className="grid gap-3">
+                        {WantedData.map((item, index) => (
+                          <li key={index} className="flex items-center justify-between">
+                            <span className="text-muted-foreground">
+                              {item.placeholder}
+                            </span>
+                            <span>{item.value}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {editUnits === true && (
+                      <fetcher.Form method='post' >
                         <ul className="grid gap-3">
+
                           {WantedData.map((item, index) => (
                             <li key={index} className="flex items-center justify-between">
                               <span className="text-muted-foreground">
                                 {item.placeholder}
                               </span>
-                              <span>{item.value}</span>
+                              <Input name={item.name} defaultValue={item.value} className='w-[200px] bg-background border-border' />
                             </li>
                           ))}
                         </ul>
-                      )}
-                      {editUnits === true && (
-                        <fetcher.Form method='post' >
-                          <ul className="grid gap-3">
-
-                            {WantedData.map((item, index) => (
-                              <li key={index} className="flex items-center justify-between">
-                                <span className="text-muted-foreground">
-                                  {item.placeholder}
-                                </span>
-                                <Input name={item.name} defaultValue={item.value} className='w-[200px] bg-background border-border' />
-                              </li>
-                            ))}
-                          </ul>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            name='intent'
-                            value='updateWantedUnit'
-                            className="h-8 gap-1 ml-auto bg-primary mt-3 "
-                            onClick={() => {
-                              toast.success(`Wanted unit saved!`)
-                            }}>
-                            <FaSave className="h-3.5 w-3.5" />
-                            <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                              Save Unit
-                            </span>
-                          </Button>
-                        </fetcher.Form>
-                      )}
-                    </CardContent>
-                    <CardFooter className=" items-end justify-end  flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
-                      <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => (handleEditUnits())}>
-                        <Truck className="h-3.5 w-3.5" />
-                        <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                          Edit Unit
-                        </span>
-                      </Button>
-                      <UnitPicker finance={finance} tableData={tableData} user={user} />
-                      {/** salesPeople, financeManagers */}
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="h-7 gap-1 text-sm text-foreground border-border"
-                          >
-                            <ListFilter className="h-3.5 w-3.5" />
-                            <span className="sr-only sm:not-sr-only">Agents</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="text-foreground bg-background border-border">
-                          <DropdownMenuGroup>
-                            <DropdownMenuLabel>Assigned Sales Person</DropdownMenuLabel>
-                            <DropdownMenuSub>
-                              <DropdownMenuSubTrigger>
-                                {finance.userName && finance.userName.length > 3 ? <p>{finance.userName}</p> : <p>Not yet assigned</p>}
-                              </DropdownMenuSubTrigger>
-                              <DropdownMenuPortal>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          name='intent'
+                          value='updateWantedUnit'
+                          className="h-8 gap-1 ml-auto bg-primary mt-3 "
+                          onClick={() => {
+                            toast.success(`Wanted unit saved!`)
+                          }}>
+                          <FaSave className="h-3.5 w-3.5" />
+                          <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                            Save Unit
+                          </span>
+                        </Button>
+                      </fetcher.Form>
+                    )}
+                  </CardContent>
+                  <CardFooter className=" items-end justify-end  flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+                    <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => (handleEditUnits())}>
+                      <Truck className="h-3.5 w-3.5" />
+                      <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                        Edit Unit
+                      </span>
+                    </Button>
+                    <UnitPicker finance={finance} tableData={tableData} user={user} />
+                    {/** salesPeople, financeManagers */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-7 gap-1 text-sm text-foreground border-border"
+                        >
+                          <ListFilter className="h-3.5 w-3.5" />
+                          <span className="sr-only sm:not-sr-only">Agents</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="text-foreground bg-background border-border">
+                        <DropdownMenuGroup>
+                          <DropdownMenuLabel>Assigned Sales Person</DropdownMenuLabel>
+                          <DropdownMenuSub>
+                            <DropdownMenuSubTrigger>
+                              {finance.userName && finance.userName.length > 3 ? <p>{finance.userName}</p> : <p>Not yet assigned</p>}
+                            </DropdownMenuSubTrigger>
+                            <DropdownMenuPortal>
+                              <DropdownMenuSubContent className='border border-border'>
+                                {salesPeople.map((sales) => (
+                                  <DropdownMenuItem onSelect={() => {
+                                    const formData = new FormData();
+                                    formData.append("financeId", finance.id);
+                                    formData.append("userEmail", sales.email);
+                                    formData.append("userName", sales.name);
+                                    formData.append("intent", 'changeSales');
+                                    submit(formData, { method: "post" });
+                                  }}
+                                    className="cursor-pointer rounded-md hover:bg-muted/50"
+                                    key={sales.id}
+                                    value={sales.email}
+                                  >
+                                    <p>{sales.name}</p>
+                                  </DropdownMenuItem>
+                                ))}
+                              </DropdownMenuSubContent>
+                            </DropdownMenuPortal>
+                          </DropdownMenuSub>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                          <DropdownMenuLabel>Assigned Finance Manager</DropdownMenuLabel>
+                          <DropdownMenuSub>
+                            <DropdownMenuSubTrigger>
+                              {finance.financeManager && finance.financeManager.length > 3 ? <p>{finance.financeManagerName}</p> : <p>Not yet assigned</p>}
+                            </DropdownMenuSubTrigger>
+                            <DropdownMenuPortal>
+                              <Form method="post">
                                 <DropdownMenuSubContent className='border border-border'>
-                                  {salesPeople.map((sales) => (
-                                    <DropdownMenuItem onSelect={() => {
-                                      const formData = new FormData();
-                                      formData.append("financeId", finance.id);
-                                      formData.append("userEmail", sales.email);
-                                      formData.append("userName", sales.name);
-                                      formData.append("intent", 'changeSales');
-                                      submit(formData, { method: "post" });
-                                    }}
+                                  {financeManagers.map((sales) => (
+                                    <DropdownMenuItem
+                                      onSelect={() => {
+                                        const formData = new FormData();
+                                        formData.append("financeId", finance.id);
+                                        formData.append("financeManager", sales.email);
+                                        formData.append("financeManagerName", sales.name);
+                                        formData.append("intent", 'changeFinance');
+                                        submit(formData, { method: "post" });
+                                      }}
                                       className="cursor-pointer rounded-md hover:bg-muted/50"
-                                      key={sales.id}
+                                      key={sales.id} // using sales.id instead of index for unique key
                                       value={sales.email}
                                     >
                                       <p>{sales.name}</p>
                                     </DropdownMenuItem>
                                   ))}
                                 </DropdownMenuSubContent>
-                              </DropdownMenuPortal>
-                            </DropdownMenuSub>
-                          </DropdownMenuGroup>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuGroup>
-                            <DropdownMenuLabel>Assigned Finance Manager</DropdownMenuLabel>
-                            <DropdownMenuSub>
-                              <DropdownMenuSubTrigger>
-                                {finance.financeManager && finance.financeManager.length > 3 ? <p>{finance.financeManagerName}</p> : <p>Not yet assigned</p>}
-                              </DropdownMenuSubTrigger>
-                              <DropdownMenuPortal>
-                                <Form method="post">
-                                  <DropdownMenuSubContent className='border border-border'>
-                                    {financeManagers.map((sales) => (
-                                      <DropdownMenuItem
-                                        onSelect={() => {
-                                          const formData = new FormData();
-                                          formData.append("financeId", finance.id);
-                                          formData.append("financeManager", sales.email);
-                                          formData.append("financeManagerName", sales.name);
-                                          formData.append("intent", 'changeFinance');
-                                          submit(formData, { method: "post" });
-                                        }}
-                                        className="cursor-pointer rounded-md hover:bg-muted/50"
-                                        key={sales.id} // using sales.id instead of index for unique key
-                                        value={sales.email}
-                                      >
-                                        <p>{sales.name}</p>
-                                      </DropdownMenuItem>
-                                    ))}
-                                  </DropdownMenuSubContent>
-                                </Form>
-                              </DropdownMenuPortal>
-                            </DropdownMenuSub>
-                          </DropdownMenuGroup>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </CardFooter>
-                  </Card>
-                  <Card className="overflow-hidden m-2  flex flex-col h-full rounded-lg" x-chunk="dashboard-05-chunk-4" >
-                    <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                      <div className="grid gap-0.5">
-                        <CardTitle className="group flex items-center gap-2 text-lg">
-                          Trade Vehicle
-                          <Button
-                            size="icon"
-                            variant="outline"
-                            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                          >
-                            <Copy className="h-3 w-3" />
-                            <span className="sr-only">Upload customer docs such as contracts, warranties, etc.</span>
-                          </Button>
-                        </CardTitle>
-                      </div>
+                              </Form>
+                            </DropdownMenuPortal>
+                          </DropdownMenuSub>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </CardFooter>
+                </Card>
+                <Card className="overflow-hidden m-2  flex flex-col h-full rounded-lg" x-chunk="dashboard-05-chunk-4" >
+                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                    <div className="grid gap-0.5">
+                      <CardTitle className="group flex items-center gap-2 text-lg">
+                        Trade Vehicle
+                        <Button
+                          size="icon"
+                          variant="outline"
+                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                        >
+                          <Copy className="h-3 w-3" />
+                          <span className="sr-only">Upload customer docs such as contracts, warranties, etc.</span>
+                        </Button>
+                      </CardTitle>
+                    </div>
 
-                    </CardHeader>
-                    <CardContent className="flex-grow !grow  p-6 text-sm  overflow-y-auto">
+                  </CardHeader>
+                  <CardContent className="flex-grow !grow  p-6 text-sm  overflow-y-auto">
 
-                      {editTradeUnits === false && (
+                    {editTradeUnits === false && (
+                      <ul className="grid gap-3">
+                        {TradeData.map((item, index) => (
+                          <li key={index} className="flex items-center justify-between">
+                            <span className="text-muted-foreground">
+                              {item.placeholder}
+                            </span>
+                            <span>{item.value}</span>
+
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {editTradeUnits === true && (
+                      <fetcher.Form method='post' >
                         <ul className="grid gap-3">
                           {TradeData.map((item, index) => (
                             <li key={index} className="flex items-center justify-between">
                               <span className="text-muted-foreground">
                                 {item.placeholder}
                               </span>
-                              <span>{item.value}</span>
-
+                              <Input name={item.name} defaultValue={item.value} className='w-[200px] bg-background border-border' />
                             </li>
                           ))}
                         </ul>
-                      )}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          name='intent'
+                          value='updateTrade'
+                          className="h-8 gap-1 ml-auto bg-primary mt-3 "
+                          onClick={() => {
+                            toast.success(`Trade unit saved!`)
+                          }}>
+                          <FaSave className="h-3.5 w-3.5" />
+                          <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                            Save Unit
+                          </span>
+                        </Button>
+                      </fetcher.Form>
+                    )}
+                  </CardContent>
+                  <CardFooter className=" items-end justify-end  flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+                    <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => (handleEditTradeUnits())}>
+                      <Truck className="h-3.5 w-3.5" />
+                      <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                        Edit Unit
+                      </span>
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </div>
+            </TabsContent>
+            <TabsContent value="Finance">
+              <div className="mx-auto mb-10 mt-10">
+                <Card className=" mx-auto w-[550px] rounded-md text-foreground">
+                  <CardHeader className="t-rounded-md flex flex-row items-start bg-muted/50 ">
+                    <div className="grid gap-0.5">
+                      <CardTitle className="group flex items-center gap-2 text-lg">
+                        Payment Calculator
+                      </CardTitle>
+                    </div>
+                    <div className="ml-auto flex items-center gap-1">
+                      <Select
+                        onValueChange={(value) => {
+                          setOpen(false);
+                          console.log("click");
+                          const selectedFramework = updatedEmailArray.find((framework) => framework.value === value);
 
-                      {editTradeUnits === true && (
-                        <fetcher.Form method='post' >
-                          <ul className="grid gap-3">
-                            {TradeData.map((item, index) => (
-                              <li key={index} className="flex items-center justify-between">
-                                <span className="text-muted-foreground">
-                                  {item.placeholder}
-                                </span>
-                                <Input name={item.name} defaultValue={item.value} className='w-[200px] bg-background border-border' />
-                              </li>
-                            ))}
-                          </ul>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            name='intent'
-                            value='updateTrade'
-                            className="h-8 gap-1 ml-auto bg-primary mt-3 "
-                            onClick={() => {
-                              toast.success(`Trade unit saved!`)
-                            }}>
-                            <FaSave className="h-3.5 w-3.5" />
-                            <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                              Save Unit
-                            </span>
-                          </Button>
-                        </fetcher.Form>
-                      )}
-                    </CardContent>
-                    <CardFooter className=" items-end justify-end  flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
-                      <Button size="sm" variant="outline" className="h-8 gap-1 mr-3" onClick={() => (handleEditTradeUnits())}>
-                        <Truck className="h-3.5 w-3.5" />
-                        <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                          Edit Unit
-                        </span>
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </div>
-              </TabsContent>
-              <TabsContent value="Finance">
-                <div className="mx-auto mb-10 mt-10">
-                  <Card className=" mx-auto w-[550px] rounded-md text-foreground">
-                    <CardHeader className="t-rounded-md flex flex-row items-start bg-muted/50 ">
-                      <div className="grid gap-0.5">
-                        <CardTitle className="group flex items-center gap-2 text-lg">
-                          Payment Calculator
-                        </CardTitle>
-                      </div>
-                      <div className="ml-auto flex items-center gap-1">
-                        <Select
-                          onValueChange={(value) => {
-                            setOpen(false);
-                            console.log("click");
-                            const selectedFramework = updatedEmailArray.find((framework) => framework.value === value);
+                          const newValue = value
+                          const financeId = finance.id
+                          const template = selectedFramework.template
+                          setEmailValue(value);
+                          setEmailDesiredPayments(finance.desiredPayments);
+                          setEmailTemplate(selectedFramework.template);
+                          setEmailFinanceId(finance.financeId);
+                          setEmailLabel(selectedFramework.label);
 
-                            const newValue = value
-                            const financeId = finance.id
-                            const template = selectedFramework.template
-                            setEmailValue(value);
-                            setEmailDesiredPayments(finance.desiredPayments);
-                            setEmailTemplate(selectedFramework.template);
-                            setEmailFinanceId(finance.financeId);
-                            setEmailLabel(selectedFramework.label);
-
-                            if (selectedFramework.template === "justPayments" || selectedFramework.template === "fullBreakdown" || selectedFramework.template === "justPaymentsCustom") {
-                              console.log(selectedFramework, 'selectedFramework')
+                          if (selectedFramework.template === "justPayments" || selectedFramework.template === "fullBreakdown" || selectedFramework.template === "justPaymentsCustom") {
+                            console.log(selectedFramework, 'selectedFramework')
+                            SubmitTheForm(newValue, template, financeId);
+                          } else
+                            if (selectedFramework.template === "justPaymentsCustom" || selectedFramework.template === "fullBreakdownCustom" || selectedFramework.template === "FullBreakdownWOptionsCustom") {
+                              console.log(selectedFramework, 'customEmail')
+                              setOpenEmail(true);
+                            } else {
                               SubmitTheForm(newValue, template, financeId);
-                            } else
-                              if (selectedFramework.template === "justPaymentsCustom" || selectedFramework.template === "fullBreakdownCustom" || selectedFramework.template === "FullBreakdownWOptionsCustom") {
-                                console.log(selectedFramework, 'customEmail')
-                                setOpenEmail(true);
-                              } else {
-                                SubmitTheForm(newValue, template, financeId);
-                              }
-                          }}
-                        >
-                          <SelectTrigger className="w-[180px] bg-background">
-                            <SelectValue className='bg-background' placeholder="Select email..." />
-                          </SelectTrigger>
-                          <SelectContent className='bg-background text-foreground border-border'>
-                            <SelectGroup>
-                              <SelectLabel>Emails</SelectLabel>
-                              {updatedEmailArray.map((framework) => (
-                                <SelectItem className="cursor-pointer   rounded-md  hover:bg-muted/50" key={framework.value} value={framework.value}>
-                                  {framework.label}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
+                            }
+                        }}
+                      >
+                        <SelectTrigger className="w-[180px] bg-background">
+                          <SelectValue className='bg-background' placeholder="Select email..." />
+                        </SelectTrigger>
+                        <SelectContent className='bg-background text-foreground border-border'>
+                          <SelectGroup>
+                            <SelectLabel>Emails</SelectLabel>
+                            {updatedEmailArray.map((framework) => (
+                              <SelectItem className="cursor-pointer   rounded-md  hover:bg-muted/50" key={framework.value} value={framework.value}>
+                                {framework.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
 
-                          </SelectContent>
-                        </Select>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button size="icon" variant="outline" className="h-8 w-8">
-                              <MoreVertical className="h-3.5 w-3.5" />
-                              <span className="sr-only">More</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="   w-[200px] rounded-md bg-background text-foreground border-border"                >
-                            <DropdownMenuItem onClick={() => setOpenTemplate(true)} className=" w-[100%] cursor-pointer rounded-md  text-foreground hover:bg-muted/50">
-                              Inspect Templated Emails
+                        </SelectContent>
+                      </Select>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="icon" variant="outline" className="h-8 w-8">
+                            <MoreVertical className="h-3.5 w-3.5" />
+                            <span className="sr-only">More</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="   w-[200px] rounded-md bg-background text-foreground border-border"                >
+                          <DropdownMenuItem onClick={() => setOpenTemplate(true)} className=" w-[100%] cursor-pointer rounded-md  text-foreground hover:bg-muted/50">
+                            Inspect Templated Emails
+                          </DropdownMenuItem>
+                          <a
+                            className="mx-auto w-[100%]"
+                            href="/dealer/leads/sales/dashboard"
+                            target="_blank"
+                          >
+                            <DropdownMenuItem className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50">
+                              Dashboard
                             </DropdownMenuItem>
-                            <a
-                              className="mx-auto w-[100%]"
-                              href="/dealer/leads/sales/dashboard"
-                              target="_blank"
-                            >
-                              <DropdownMenuItem className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50">
-                                Dashboard
-                              </DropdownMenuItem>
-                            </a>
-                            <a
-                              className="mx-auto w-[100%]"
-                              href={`/dealer/customer/${finance.clientfileId}/${finance.id}`}
-                              target="_blank"
-                            >
-                              <DropdownMenuItem className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50">
-                                Client File
-                              </DropdownMenuItem>
-                            </a>
-                            <DropdownMenuItem className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50" onClick={() => PrintReceipt(toReceipt)}>
-                              Print Receipt
+                          </a>
+                          <a
+                            className="mx-auto w-[100%]"
+                            href={`/dealer/customer/${finance.clientfileId}/${finance.id}`}
+                            target="_blank"
+                          >
+                            <DropdownMenuItem className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50">
+                              Client File
                             </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <Form method="post">
-                              <DropdownMenuItem
-                                className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50"
-                                onClick={() => {
-                                  toast.success(
-                                    `Informing finance managers of requested turnover...`
-                                  );
-                                  SubmitLocked()
-                                }}
+                          </a>
+                          <DropdownMenuItem className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50" onClick={() => PrintReceipt(toReceipt)}>
+                            Print Receipt
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <Form method="post">
+                            <DropdownMenuItem
+                              className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50"
+                              onClick={() => {
+                                toast.success(
+                                  `Informing finance managers of requested turnover...`
+                                );
+                                SubmitLocked()
+                              }}
+                            >
+                              Finance Turnover
+                            </DropdownMenuItem>
+                          </Form>
+                          <DropdownMenuItem className=" cursor-pointer border-border bg-muted-background text-foreground hover:bg-muted/50">
+                            <ClientOnly fallback={<SimplerStaticVersion />} >
+                              {() => (
+                                <PrintSpec />
+                              )}
+                            </ClientOnly>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className=" cursor-pointer border-border bg-muted-background text-foreground hover:bg-muted/50">
+                            <ModelPage />
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </CardHeader>
+                  <Form method="post">
+                    {secPage && (
+                      <>
+                        <CardContent className="bg-background p-6 text-sm max-h-[700px] overflow-y-auto h-[700px]">
+                          <div className="grid gap-3">
+                            <div className="font-semibold">Payment Details</div>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Brand</span>
+                              <span>{finance.brand}</span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Model</span>
+                              <span> {finance.model}</span>
+                            </li>
+                            {finance.brand !== "BMW-Motorrad" && (
+                              <>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Color</span>
+                                  <span>{finance.color}</span>
+                                </li>
+                              </>
+                            )}
+                            {finance.modelCode !== null && (
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Model Code</span>
+                                <span>{finance.modelCode}</span>
+                              </li>
+                            )}
+                            {finance.modelCode !== null && (
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Year</span>
+                                <span>{finance.year}</span>
+                              </li>
+                            )}
+                            {finance.stockNum !== null && (
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Stock Number</span>
+                                <span>{finance.stockNum}</span>
+                              </li>
+                            )}
+
+                            <ul className="grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">MSRP</span>
+                                <span>
+                                  <Input
+                                    name="msrp"
+                                    id="msrp"
+                                    className="h-8 w-20 border-border bg-background text-right "
+                                    autoComplete="msrp"
+                                    defaultValue={formData.msrp}
+                                    onChange={handleChange}
+                                  />
+                                </span>
+                              </li>
+                              {formData.freight > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Freight</span>
+                                  <span>
+                                    <Input
+                                      className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
+                                      defaultValue={formData.freight}
+                                      placeholder="freight"
+                                      type="text"
+                                      name="freight"
+                                      onChange={handleChange}
+                                    />
+                                  </span>
+                                </li>
+                              )}
+
+                              {formData.pdi > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">PDI</span>
+                                  <span>
+                                    <Input
+                                      className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
+                                      defaultValue={formData.pdi}
+                                      placeholder="pdi"
+                                      type="text"
+                                      name="pdi"
+                                      onChange={handleChange}
+                                    />
+                                  </span>
+                                </li>
+                              )}
+                              {formData.admin > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Admin</span>
+                                  <span>
+                                    <Input
+                                      className="mt-2 h-8 w-20 items-end justify-end  border-border  bg-background text-right "
+                                      defaultValue={formData.admin}
+                                      placeholder="admin"
+                                      type="text"
+                                      name="admin"
+                                      onChange={handleChange}
+                                    />
+                                  </span>
+                                </li>
+                              )}
+                              {formData.commodity > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Commodity</span>
+                                  <span>
+                                    <Input
+                                      className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
+                                      defaultValue={formData.commodity}
+                                      placeholder="commodity"
+                                      type="text"
+                                      name="commodity"
+                                      onChange={handleChange}
+                                    />
+                                  </span>
+                                </li>
+                              )}
+
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Accessories</span>
+                                <span>
+                                  <Input
+                                    name="accessories"
+                                    id="msrp"
+                                    className="h-8 w-20 border-border bg-background text-right "
+                                    autoComplete="msrp"
+                                    defaultValue={formData.accessories}
+                                    onChange={handleChange}
+                                  />
+                                </span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Labour Hours</span>
+                                <span>
+                                  <Input
+                                    name="labour"
+                                    id="msrp"
+                                    className="h-8 w-20 border-border bg-background text-right "
+                                    autoComplete="msrp"
+                                    defaultValue={formData.labour}
+                                    onChange={handleChange}
+                                  />
+                                </span>
+                              </li>
+                              <li className="flex items-center justify-between font-semibold">
+                                <span className="text-[#8a8a93]">Licensing</span>
+                                <span>
+                                  <Input
+                                    className="ml-auto mt-2 h-8 w-20  justify-end border-border bg-background text-right "
+                                    defaultValue={licensing}
+                                    placeholder="licensing"
+                                    type="text"
+                                    name="licensing"
+                                    onChange={handleChange}
+                                  />
+                                </span>
+                              </li>
+
+                              {modelData.trailer > 0 && (
+                                <li className="flex items-center justify-between font-semibold">
+                                  <span className="text-[#8a8a93]">Trailer</span>
+                                  <span>${modelData.trailer}</span>
+                                </li>
+                              )}
+                              {modelData.painPrem > 0 && (
+                                <li className="flex items-center justify-between font-semibold">
+                                  <span className="text-[#8a8a93]">Paint Premium</span>
+                                  <span> ${modelData.painPrem}</span>
+                                </li>
+                              )}
+                            </ul>
+                          </div>
+                          <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                          <div className="font-semibold">Standard Terms</div>
+                          <div className="my-4">
+                            <div className="main-button-group flex justify-between ">
+                              <Badge
+                                id="myButton"
+                                className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleMainButtonClick("payments")}
                               >
-                                Finance Turnover
-                              </DropdownMenuItem>
-                            </Form>
-                            <DropdownMenuItem className=" cursor-pointer border-border bg-muted-background text-foreground hover:bg-muted/50">
-                              <ClientOnly fallback={<SimplerStaticVersion />} >
-                                {() => (
-                                  <PrintSpec />
+                                Payments
+                              </Badge>
+
+                              <Badge
+                                id="myButton1"
+                                className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
+                                  ? "active bg-[#c72323] text-foreground "
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleMainButtonClick("noTax")}
+                              >
+                                No Tax
+                              </Badge>
+
+                              <Badge
+                                id="myButton2"
+                                className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleMainButtonClick("customTax")}
+                              >
+                                Custom Tax
+                              </Badge>
+                            </div>
+                            <div className="sub-button-group mt-2 flex justify-between">
+                              <Badge
+                                id="myButton3"
+                                className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleSubButtonClick("withoutOptions")}
+                              >
+                                W/O Options
+                              </Badge>
+
+                              <Badge
+                                id="myButton5"
+                                className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleSubButtonClick("withOptions")}
+                              >
+                                W/ Options
+                              </Badge>
+                            </div>
+                          </div>
+                          {mainButton === "payments" && (
+                            <div className="">
+                              {subButton === "withoutOptions" && (
+                                <ul className="grid gap-3">
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Monthly</span>
+                                    <span> ${on60}</span>
+                                  </li>
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Bi-weekly</span>
+                                    <span> ${biweekly}</span>
+                                  </li>
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Weekly</span>
+                                    <span> ${weekly}</span>
+                                  </li>
+                                </ul>
+                              )}
+                              {subButton === "withOptions" && (
+                                <>
+                                  <div className="font-semibold">Options Include</div>
+                                  <DealerOptionsAmounts />
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Monthly</span>
+                                      <span> ${qc60}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Bi-weekly</span>
+                                      <span> ${biweeklyqc}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Weekly</span>
+                                      <span> ${weeklyqc}</span>
+                                    </li>
+                                  </ul>
+                                </>
+                              )}
+                            </div>
+                          )}
+
+                          {mainButton === "noTax" && (
+                            <div className="">
+                              {subButton === "withoutOptions" && (
+                                <div>
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Monthly</span>
+                                      <span> ${nat60}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Bi-weekly</span>
+                                      <span> ${biweeklNat}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Weekly</span>
+                                      <span> ${weeklylNat}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                              {subButton === "withOptions" && (
+                                <div>
+                                  <div className="font-semibold">Options Include</div>
+                                  <DealerOptionsAmounts />
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Monthly</span>
+                                      <span> ${nat60WOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Bi-weekly</span>
+                                      <span> ${biweeklNatWOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Weekly</span>
+                                      <span> ${biweeklNatWOptions}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {mainButton === "customTax" && (
+                            <div className="">
+                              <ul className="grid gap-3">
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Other tax %</span>
+                                  <span>
+                                    <Input
+                                      name="othTax"
+                                      id="othTax"
+                                      className="h-8 w-20 border-border bg-background text-right "
+                                      autoComplete="othTax"
+                                      defaultValue={formData.othTax}
+                                      onChange={handleChange}
+                                    />
+                                  </span>
+                                </li>
+                              </ul>
+                              {subButton === "withoutOptions" && (
+                                <div className="mt-5 flex justify-between">
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Monthly</span>
+                                      <span> ${oth60}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Bi-weekly</span>
+                                      <span> ${biweekOth}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Weekly</span>
+                                      <span> ${weeklyOth}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                              {subButton === "withOptions" && (
+                                <div>
+                                  <div className="font-semibold">Options Include</div>
+                                  <DealerOptionsAmounts />
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Monthly</span>
+                                      <span> ${oth60WOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Bi-weekly</span>
+                                      <span> ${biweekOthWOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Weekly</span>
+                                      <span> ${weeklyOthWOptions}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                          <div className="font-semibold">Contract Variables</div>
+                          <ul className="grid gap-3">
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Term</span>
+                              <span>
+                                <Input
+                                  className="h-8 w-20 border-border bg-background text-right "
+                                  name="months"
+                                  id="months"
+                                  autoComplete="months"
+                                  defaultValue={months}
+                                  onChange={handleChange}
+                                  type="number"
+                                />
+                              </span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Rate</span>
+                              <span>
+                                <Input
+                                  className="h-8 w-20 items-end justify-end border-border bg-background text-right  "
+                                  name="iRate"
+                                  id="iRate"
+                                  autoComplete="iRate"
+                                  defaultValue={iRate}
+                                  onChange={handleChange}
+                                />
+                              </span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Deposit</span>
+                              <span>
+                                <Input
+                                  className="h-8 w-20 border-border bg-background text-right "
+                                  name="deposit"
+                                  id="deposit"
+                                  autoComplete="deposit"
+                                  defaultValue={deposit}
+                                  onChange={handleChange}
+                                  type="number"
+                                />
+                              </span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Trade Value</span>
+                              <span>
+                                <Input
+                                  className="ml-auto h-8 w-20 border-border bg-background text-right "
+                                  name="tradeValue"
+                                  id="tradeValue"
+                                  autoComplete="tradeValue"
+                                  defaultValue={tradeValue}
+                                  onChange={handleChange}
+                                />
+                              </span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Lien</span>
+                              <span>
+                                <Input
+                                  className="h-8 w-20 border-border bg-background text-right "
+                                  name="lien"
+                                  id="lien"
+                                  autoComplete="lien"
+                                  defaultValue={lien}
+                                  onChange={handleChange}
+                                  type="number"
+                                />
+                              </span>
+                            </li>
+                          </ul>
+
+                          <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                          <div className="font-semibold">
+                            Customer Detail Confirmation
+                          </div>
+                          <div className="mx-3 mb-3 grid grid-cols-2 justify-between gap-3">
+                            <div className="relative mt-5">
+                              <Input
+                                defaultValue={formData.firstName}
+                                name="firstName"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                First Name
+                              </label>
+                            </div>
+                            <div className="relative mt-5">
+                              <Input
+                                defaultValue={formData.lastName}
+                                name="lastName"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Last Name
+                              </label>
+                            </div>
+                            <div className="relative mt-3">
+                              <Input
+                                defaultValue={finance.phone}
+                                name="phone"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Phone
+                              </label>
+                            </div>
+                            <div className="relative mt-3">
+                              <Input
+                                defaultValue={finance.email}
+                                name="email"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Email
+                              </label>
+                            </div>
+                          </div>
+
+
+                          <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                          <div className="font-semibold">Trade Information</div>
+                          <div className="mx-3 mb-3 grid grid-cols-2 justify-between gap-3">
+                            <div className="relative mt-5">
+                              <Input
+                                defaultValue={finance.tradeYear}
+                                name="tradeYear"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Year
+                              </label>
+                            </div>
+                            <div className="relative mt-5">
+                              <Input
+                                defaultValue={finance.tradeMake}
+                                name="tradeMake"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Make
+                              </label>
+                            </div>
+                            <div className="relative mt-3">
+                              <Input
+                                defaultValue={finance.tradeDesc}
+                                name="tradeDesc"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Model
+                              </label>
+                            </div>
+                            <div className="relative mt-3">
+                              <Input
+                                defaultValue={finance.tradeColor}
+                                name="tradeColor"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Color
+                              </label>
+                            </div>
+                            <div className="relative mt-3">
+                              <Input
+                                defaultValue={finance.tradeVin}
+                                name="tradeVin"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                VIN
+                              </label>
+                            </div>
+                            <div className="relative mt-3">
+                              <Input
+                                defaultValue={finance.tradeMileage || ''}
+                                name="tradeMileage"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Mileage
+                              </label>
+                            </div>
+                            <div className="relative mt-3">
+                              <Input
+                                defaultValue={finance.tradeLocation}
+                                name="tradeLocation"
+                                type="text"
+                                className="w-full border-border bg-background "
+                              />
+                              <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                Trade Location
+                              </label>
+                            </div>
+                          </div>
+                          <Drawer direction="left">
+                            <DrawerTrigger asChild>
+                              <Button size="sm" className="ml-auto" variant="outline">
+                                Other Inputs
+                              </Button>
+                            </DrawerTrigger>
+                            <DrawerContent className="bg-background text-foreground border-border">
+                              <div className="mx-auto h-full w-full max-w-sm lg:w-[700px]">
+                                <DrawerHeader>
+                                  <DrawerTitle>Other Inputs</DrawerTitle>
+                                  <DrawerDescription>
+                                    Changes to discounts and such
+                                  </DrawerDescription>
+                                </DrawerHeader>
+                                <ul className="grid gap-3">
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Discount $</span>
+                                    <span>
+                                      <Input
+                                        name="discount"
+                                        className="h-8 w-20 border-border bg-background text-right "
+                                        defaultValue={discount}
+                                        onChange={handleChange}
+                                      />
+                                    </span>
+                                  </li>
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">
+                                      Discount (1.1-15)%
+                                    </span>
+                                    <span>
+                                      <Input
+                                        name="discountPer"
+                                        className="h-8 w-20 border-border bg-background text-right "
+                                        defaultValue={0}
+                                        onChange={handleChange}
+                                      />
+                                    </span>
+                                  </li>
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">
+                                      Delivery Charge
+                                    </span>
+                                    <span>
+                                      <Input
+                                        name="deliveryCharge"
+                                        id="msrp"
+                                        className="h-8 w-20 border-border bg-background text-right "
+                                        autoComplete="msrp"
+                                        defaultValue={deliveryCharge}
+                                        onChange={handleChange}
+                                      />
+                                    </span>
+                                  </li>
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Total Labour</span>
+                                    <span>${totalLabour}</span>
+                                  </li>
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Lien</span>
+                                    <span>
+                                      <Input
+                                        className="h-8 w-20 border-border bg-background text-right "
+                                        name="lien"
+                                        id="lien"
+                                        autoComplete="lien"
+                                        defaultValue={lien}
+                                        onChange={handleChange}
+                                      />
+                                    </span>
+                                  </li>
+                                </ul>
+                                <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                                <div className="font-semibold">
+                                  Customer Detail Confirmation
+                                </div>
+                                <div className="mb-3 grid grid-cols-2 justify-between gap-3">
+
+                                  <div className="relative mt-3">
+                                    <Input
+                                      defaultValue={finance.address}
+                                      name="address"
+                                      type="text"
+                                      className="w-full border-border bg-background "
+                                    />
+                                    <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                      Address
+                                    </label>
+                                  </div>
+                                  <div className="relative mt-3">
+                                    <Input
+                                      defaultValue={finance.city}
+                                      name="city"
+                                      type="text"
+                                      className="w-full border-border bg-background "
+                                    />
+                                    <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                      City
+                                    </label>
+                                  </div>
+                                  <div className="relative mt-3">
+                                    <Input
+                                      defaultValue={finance.province}
+                                      name="province"
+                                      type="text"
+                                      className="w-full border-border bg-background "
+                                    />
+                                    <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                      Province
+                                    </label>
+                                  </div>
+                                  <div className="relative mt-3">
+                                    <Input
+                                      defaultValue={finance.postal}
+                                      name="postal"
+                                      type="text"
+                                      className="w-full border-border bg-background "
+                                    />
+                                    <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                      Postal Code
+                                    </label>
+                                  </div>
+                                  <div className="relative mt-3">
+                                    <Input
+                                      defaultValue={finance.dl}
+                                      name="dl"
+                                      type="text"
+                                      className="w-full border-border bg-background "
+                                    />
+                                    <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                      Drivers Lic.
+                                    </label>
+                                  </div>
+                                </div>
+                                <div className=" mb-3 grid grid-cols-2 justify-between gap-3">
+                                  <div className="relative mt-3">
+                                    <Select name="timeToContact">
+                                      <SelectTrigger className="w-full  border border-border bg-background text-foreground">
+                                        <SelectValue defaultValue={finance.timeToContact} />
+                                      </SelectTrigger>
+                                      <SelectContent className=" border border-border bg-background text-foreground">
+                                        <SelectGroup>
+                                          <SelectLabel>Best Time To Contact</SelectLabel>
+                                          <SelectItem value="Morning">Morning</SelectItem>
+                                          <SelectItem value="Afternoon">Afternoon</SelectItem>
+                                          <SelectItem value="Evening">Evening</SelectItem>
+                                          <SelectItem value="Do Not Contact">
+                                            Do Not Contact
+                                          </SelectItem>
+                                        </SelectGroup>
+                                      </SelectContent>
+                                    </Select>
+                                    <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                      Prefered Time
+                                    </label>
+                                  </div>
+                                  <div className="relative mt-3">
+                                    <Select name="typeOfContact">
+                                      <SelectTrigger className="w-full  border border-border bg-background text-foreground">
+                                        <SelectValue defaultValue={finance.typeOfContact} />
+                                      </SelectTrigger>
+                                      <SelectContent className=" border border-border bg-background text-foreground">
+                                        <SelectGroup>
+                                          <SelectLabel>Contact Method</SelectLabel>
+                                          <SelectItem value="Phone">Phone</SelectItem>
+                                          <SelectItem value="InPerson">In-Person</SelectItem>
+                                          <SelectItem value="SMS">SMS</SelectItem>
+                                          <SelectItem value="Email">Email</SelectItem>
+                                        </SelectGroup>
+                                      </SelectContent>
+                                    </Select>
+                                    <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                      Prefered Contact
+                                    </label>
+                                  </div>
+
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <div className="relative mt-3">
+                                        <Button
+                                          variant={"outline"}
+                                          className={cn(
+                                            "w-full justify-start  text-center  font-normal",
+                                            !date && "text-muted-foreground"
+                                          )}
+                                        >
+                                          <CalendarIcon className="mr-2 h-4 w-4 " />
+                                          {date ? (
+                                            format(date, "PPP")
+                                          ) : (
+                                            <span>Pick a date</span>
+                                          )}
+                                        </Button>
+                                        <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                          Pick A Date
+                                        </label>
+                                      </div>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                      className="w-auto bg-background p-0 text-foreground border-border"
+                                      align="start"
+                                    >
+                                      <Calendar
+                                        className="bg-background text-foreground"
+                                        mode="single"
+                                        selected={date}
+                                        onSelect={setDate}
+                                        initialFocus
+                                      />
+                                    </PopoverContent>
+                                  </Popover>
+                                  <input
+                                    type="hidden"
+                                    value={String(date)}
+                                    name="pickedDate"
+                                  />
+
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <div className="relative mt-3">
+                                        <Button
+                                          variant={"outline"}
+                                          className={cn(
+                                            "w-full justify-start text-right font-normal",
+                                            !date && "text-muted-foreground"
+                                          )}
+                                        >
+                                          <ClockIcon className="mr-2 h-4 w-4 " />
+                                          {currentTime ? time : <span>Pick a Time</span>}
+                                        </Button>
+                                        <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
+                                          Pick A Time
+                                        </label>
+                                      </div>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                      className="w-auto bg-background p-0 text-foreground"
+                                      align="start"
+                                    >
+                                      <div className="flex items-center">
+                                        <Select
+                                          name="pickHour"
+                                          value={hour}
+                                          onValueChange={setHour}
+                                        >
+                                          <SelectTrigger className="m-3 w-auto">
+                                            <SelectValue placeholder="hour" />
+                                          </SelectTrigger>
+                                          <SelectContent className="bg-background text-foreground">
+                                            <SelectGroup>
+                                              <SelectLabel>Hour</SelectLabel>
+                                              <SelectItem value="09">09</SelectItem>
+                                              <SelectItem value="10">10</SelectItem>
+                                              <SelectItem value="11">11</SelectItem>
+                                              <SelectItem value="12">12</SelectItem>
+                                              <SelectItem value="13">13</SelectItem>
+                                              <SelectItem value="14">14</SelectItem>
+                                              <SelectItem value="15">15</SelectItem>
+                                              <SelectItem value="16">16</SelectItem>
+                                              <SelectItem value="17">17</SelectItem>
+                                              <SelectItem value="18">18</SelectItem>
+                                            </SelectGroup>
+                                          </SelectContent>
+                                        </Select>
+
+                                        <Select
+                                          name="pickMin"
+                                          value={min}
+                                          onValueChange={setMin}
+                                        >
+                                          <SelectTrigger className="m-3 w-auto">
+                                            <SelectValue placeholder="min" />
+                                          </SelectTrigger>
+                                          <SelectContent className="bg-background text-foreground">
+                                            <SelectGroup>
+                                              <SelectLabel>Minute</SelectLabel>
+                                              <SelectItem value="00">00</SelectItem>
+                                              <SelectItem value="10">10</SelectItem>
+                                              <SelectItem value="20">20</SelectItem>
+                                              <SelectItem value="30">30</SelectItem>
+                                              <SelectItem value="40">40</SelectItem>
+                                              <SelectItem value="50">50</SelectItem>
+                                            </SelectGroup>
+                                          </SelectContent>
+                                        </Select>
+                                      </div>
+                                    </PopoverContent>
+                                  </Popover>
+                                </div>
+
+                                <DrawerFooter>
+                                  <DrawerClose asChild>
+                                    <Button variant="outline">Close</Button>
+                                  </DrawerClose>
+                                </DrawerFooter>
+                              </div>
+                            </DrawerContent>
+                          </Drawer>
+                          <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                          <div className="font-semibold">Total</div>
+                          <ul className="grid gap-3">
+                            {perDiscountGiven > 0 && (
+                              <>
+                                <li className="mt-3 flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Total Before Discount
+                                  </span>
+                                  <span>${beforeDiscount}</span>
+                                </li>
+                              </>
+                            )}
+                            {perDiscountGiven > 0 && (
+                              <>
+                                <li className="mt-3 flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Discount (MSRP only)
+                                  </span>
+                                  <span> ${perDiscountGiven}</span>
+                                </li>
+                              </>
+                            )}
+                            {mainButton === "payments" && (
+                              <div>
+                                {subButton === "withoutOptions" && (
+                                  <>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${total}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">With taxes</span>
+                                      <span> ${onTax}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${onTax - deposit}</span>
+                                    </li>
+                                  </>
                                 )}
-                              </ClientOnly>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className=" cursor-pointer border-border bg-muted-background text-foreground hover:bg-muted/50">
-                              <ModelPage />
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </CardHeader>
-                    <Form method="post">
-                      {secPage && (
-                        <>
-                          <CardContent className="bg-background p-6 text-sm max-h-[700px] overflow-y-auto h-[700px]">
-                            <div className="grid gap-3">
-                              <div className="font-semibold">Payment Details</div>
+                                {subButton === "withOptions" && (
+                                  <>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${totalWithOptions}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">With taxes</span>
+                                      <span> ${qcTax}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${qcTax - deposit}</span>
+                                    </li>
+                                  </>
+                                )}
+                              </div>
+                            )}
+                            {mainButton === "noTax" && (
+                              <div>
+                                {subButton === "withoutOptions" && (
+                                  <>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${total}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">With taxes</span>
+                                      <span> ${native}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${native - deposit}</span>
+                                    </li>
+                                  </>
+                                )}
+                                {subButton === "withOptions" && (
+                                  <>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${totalWithOptions}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">With taxes</span>
+                                      <span> ${totalWithOptions}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${totalWithOptions - deposit}</span>
+                                    </li>
+                                  </>
+                                )}
+                              </div>
+                            )}
+                            {mainButton === "customTax" && (
+                              <div>
+                                {subButton === "withoutOptions" && (
+                                  <>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${total}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">With taxes</span>
+                                      <span> ${otherTax}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${otherTax - deposit}</span>
+                                    </li>
+                                  </>
+                                )}
+                                {subButton === "withOptions" && (
+                                  <>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${totalWithOptions}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">With taxes</span>
+                                      <span> ${otherTaxWithOptions}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${otherTaxWithOptions - deposit}</span>
+                                    </li>
+                                  </>
+                                )}
+                              </div>
+                            )}
+                          </ul>
+                        </CardContent>
+                      </>
+                    )}
+                    {firstPage && (
+                      <>
+                        <CardContent className="bg-background p-6  text-sm  max-h-[700px] overflow-y-auto h-[700px]">
+                          <div className="grid gap-3">
+                            <div className="font-semibold">Payment Details</div>
+                            <ul className="grid gap-3">
                               <li className="flex items-center justify-between">
                                 <span className="text-[#8a8a93]">Brand</span>
                                 <span>{finance.brand}</span>
@@ -3745,2383 +4776,889 @@ export default function Dashboard() {
                                   <span>{finance.stockNum}</span>
                                 </li>
                               )}
-
-                              <ul className="grid gap-3">
+                            </ul>
+                            <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                            <div className="font-semibold">Price</div>
+                            <ul className="grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">MSRP</span>
+                                <span> ${formData.msrp}</span>
+                              </li>
+                              {formData.freight > 0 && (
                                 <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">MSRP</span>
-                                  <span>
-                                    <Input
-                                      name="msrp"
-                                      id="msrp"
-                                      className="h-8 w-20 border-border bg-background text-right "
-                                      autoComplete="msrp"
-                                      defaultValue={formData.msrp}
-                                      onChange={handleChange}
-                                    />
-                                  </span>
+                                  <span className="text-[#8a8a93]">Freight</span>
+                                  <span>${formData.freight}</span>
                                 </li>
-                                {formData.freight > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Freight</span>
-                                    <span>
-                                      <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
-                                        defaultValue={formData.freight}
-                                        placeholder="freight"
-                                        type="text"
-                                        name="freight"
-                                        onChange={handleChange}
-                                      />
-                                    </span>
-                                  </li>
-                                )}
+                              )}
 
-                                {formData.pdi > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">PDI</span>
-                                    <span>
-                                      <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
-                                        defaultValue={formData.pdi}
-                                        placeholder="pdi"
-                                        type="text"
-                                        name="pdi"
-                                        onChange={handleChange}
-                                      />
-                                    </span>
-                                  </li>
-                                )}
-                                {formData.admin > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Admin</span>
-                                    <span>
-                                      <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  border-border  bg-background text-right "
-                                        defaultValue={formData.admin}
-                                        placeholder="admin"
-                                        type="text"
-                                        name="admin"
-                                        onChange={handleChange}
-                                      />
-                                    </span>
-                                  </li>
-                                )}
-                                {formData.commodity > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Commodity</span>
-                                    <span>
-                                      <Input
-                                        className="mt-2 h-8 w-20 items-end justify-end  border-border bg-background text-right "
-                                        defaultValue={formData.commodity}
-                                        placeholder="commodity"
-                                        type="text"
-                                        name="commodity"
-                                        onChange={handleChange}
-                                      />
-                                    </span>
-                                  </li>
-                                )}
+                              {formData.pdi > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">PDI</span>
+                                  <span>${formData.pdi}</span>
+                                </li>
+                              )}
+                              {formData.admin > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Admin</span>
+                                  <span>${formData.admin}</span>
+                                </li>
+                              )}
+                              {formData.commodity > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Commodity</span>
+                                  <span>${formData.commodity}</span>
+                                </li>
+                              )}
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Accessories</span>
+                                <span>${accessories}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Labour Hours</span>
+                                <span>${formData.labour}</span>
+                              </li>
+                              <li className="flex items-center justify-between font-semibold">
+                                <span className="text-[#8a8a93]">Licensing</span>
+                                <span>${licensing}</span>
+                              </li>
 
-                                <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">Accessories</span>
-                                  <span>
-                                    <Input
-                                      name="accessories"
-                                      id="msrp"
-                                      className="h-8 w-20 border-border bg-background text-right "
-                                      autoComplete="msrp"
-                                      defaultValue={formData.accessories}
-                                      onChange={handleChange}
-                                    />
-                                  </span>
-                                </li>
-                                <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">Labour Hours</span>
-                                  <span>
-                                    <Input
-                                      name="labour"
-                                      id="msrp"
-                                      className="h-8 w-20 border-border bg-background text-right "
-                                      autoComplete="msrp"
-                                      defaultValue={formData.labour}
-                                      onChange={handleChange}
-                                    />
-                                  </span>
-                                </li>
+                              {finance.brand === "Sea-Doo" && modelData.trailer > 0 && (
                                 <li className="flex items-center justify-between font-semibold">
-                                  <span className="text-[#8a8a93]">Licensing</span>
-                                  <span>
-                                    <Input
-                                      className="ml-auto mt-2 h-8 w-20  justify-end border-border bg-background text-right "
-                                      defaultValue={licensing}
-                                      placeholder="licensing"
-                                      type="text"
-                                      name="licensing"
-                                      onChange={handleChange}
-                                    />
-                                  </span>
+                                  <span className="text-[#8a8a93]">Trailer</span>
+                                  <span>${modelData.trailer}</span>
                                 </li>
-
-                                {modelData.trailer > 0 && (
+                              )}
+                              {finance.brand === "Triumph" &&
+                                modelData.painPrem > 0 && (
                                   <li className="flex items-center justify-between font-semibold">
-                                    <span className="text-[#8a8a93]">Trailer</span>
-                                    <span>${modelData.trailer}</span>
-                                  </li>
-                                )}
-                                {modelData.painPrem > 0 && (
-                                  <li className="flex items-center justify-between font-semibold">
-                                    <span className="text-[#8a8a93]">Paint Premium</span>
+                                    <span className="text-[#8a8a93]">
+                                      Paint Premium
+                                    </span>
                                     <span> ${modelData.painPrem}</span>
                                   </li>
                                 )}
-                              </ul>
-                            </div>
+                            </ul>
                             <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                            <div className="font-semibold">Standard Terms</div>
-                            <div className="my-4">
-                              <div className="main-button-group flex justify-between ">
-                                <Badge
-                                  id="myButton"
-                                  className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleMainButtonClick("payments")}
-                                >
-                                  Payments
-                                </Badge>
+                            <div className="font-semibold">Fees</div>
+                            <ul className="grid gap-3">
+                              {deFees.userAirTax > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Air Tax</span>
+                                  <span>${deFees.userAirTax}</span>
+                                </li>
+                              )}
+                              {deFees.userTireTax > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Tire Tax</span>
+                                  <span> ${deFees.userTireTax}</span>
+                                </li>
+                              )}
+                              {deFees.userGovern > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Government Fees
+                                  </span>
+                                  <span> ${deFees.userGovern}</span>
+                                </li>
+                              )}
+                              {deFees.userFinance > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">Finance Fees</span>
+                                  <span> ${deFees.userFinance}</span>
+                                </li>
+                              )}
+                              {deFees.destinationCharge > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Destination Charge
+                                  </span>
+                                  <span>${deFees.destinationCharge}</span>
+                                </li>
+                              )}
+                              {deFees.userGasOnDel > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Gas On Delivery
+                                  </span>
+                                  <span>${deFees.userGasOnDel}</span>
+                                </li>
+                              )}
+                              {deFees.userMarketAdj > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Market Adjustment
+                                  </span>
+                                  <span> ${deFees.userMarketAdj}</span>
+                                </li>
+                              )}
+                              {deFees.userDemo > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Demonstrate features or walkaround
+                                  </span>
+                                  <span>${deFees.userDemo}</span>
+                                </li>
+                              )}
+                              {deFees.userOMVIC > 0 && (
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    OMVIC / Other GV Fees
+                                  </span>
+                                  <span> ${deFees.userOMVIC}</span>
+                                </li>
+                              )}
+                            </ul>
+                          </div>
+                          <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                          <div className="font-semibold">Standard Terms</div>
+                          <div className="mt-3">
+                            <div className="main-button-group flex justify-between ">
+                              <Badge
+                                id="myButton"
+                                className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleMainButtonClick("payments")}
+                              >
+                                Payments
+                              </Badge>
 
-                                <Badge
-                                  id="myButton1"
-                                  className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
-                                    ? "active bg-[#c72323] text-foreground "
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleMainButtonClick("noTax")}
-                                >
-                                  No Tax
-                                </Badge>
+                              <Badge
+                                id="myButton1"
+                                className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
+                                  ? "active bg-[#c72323] text-foreground "
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleMainButtonClick("noTax")}
+                              >
+                                No Tax
+                              </Badge>
 
-                                <Badge
-                                  id="myButton2"
-                                  className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleMainButtonClick("customTax")}
-                                >
-                                  Custom Tax
-                                </Badge>
-                              </div>
-                              <div className="sub-button-group mt-2 flex justify-between">
-                                <Badge
-                                  id="myButton3"
-                                  className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleSubButtonClick("withoutOptions")}
-                                >
-                                  W/O Options
-                                </Badge>
-
-                                <Badge
-                                  id="myButton5"
-                                  className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleSubButtonClick("withOptions")}
-                                >
-                                  W/ Options
-                                </Badge>
-                              </div>
+                              <Badge
+                                id="myButton2"
+                                className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleMainButtonClick("customTax")}
+                              >
+                                Custom Tax
+                              </Badge>
                             </div>
-                            {mainButton === "payments" && (
-                              <div className="">
-                                {subButton === "withoutOptions" && (
+                            <div className="sub-button-group mt-2 flex justify-between">
+                              <Badge
+                                id="myButton3"
+                                className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleSubButtonClick("withoutOptions")}
+                              >
+                                W/O Options
+                              </Badge>
+
+                              <Badge
+                                id="myButton5"
+                                className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
+                                  ? "active bg-[#c72323] text-foreground"
+                                  : "bg-[#0a0a0a] text-foreground"
+                                  }`}
+                                onClick={() => handleSubButtonClick("withOptions")}
+                              >
+                                W/ Options
+                              </Badge>
+                            </div>
+                          </div>
+                          {mainButton === "payments" && (
+                            <div className="">
+                              {subButton === "withoutOptions" && (
+                                <ul className="mt-3 grid gap-3">
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Monthly</span>
+                                    <span> ${on60}</span>
+                                  </li>
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Bi-weekly</span>
+                                    <span> ${biweekly}</span>
+                                  </li>
+                                  <li className="flex items-center justify-between">
+                                    <span className="text-[#8a8a93]">Weekly</span>
+                                    <span> ${weekly}</span>
+                                  </li>
+                                </ul>
+                              )}
+                              {subButton === "withOptions" && (
+                                <>
+                                  <div className="mt-3 font-semibold">
+                                    Options Include
+                                  </div>
+                                  <DealerOptionsAmounts />
                                   <ul className="grid gap-3">
                                     <li className="flex items-center justify-between">
                                       <span className="text-[#8a8a93]">Monthly</span>
-                                      <span> ${on60}</span>
+                                      <span> ${qc60}</span>
                                     </li>
                                     <li className="flex items-center justify-between">
                                       <span className="text-[#8a8a93]">Bi-weekly</span>
-                                      <span> ${biweekly}</span>
+                                      <span> ${biweeklyqc}</span>
                                     </li>
                                     <li className="flex items-center justify-between">
                                       <span className="text-[#8a8a93]">Weekly</span>
-                                      <span> ${weekly}</span>
+                                      <span> ${weeklyqc}</span>
                                     </li>
                                   </ul>
-                                )}
-                                {subButton === "withOptions" && (
-                                  <>
-                                    <div className="font-semibold">Options Include</div>
-                                    <DealerOptionsAmounts />
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Monthly</span>
-                                        <span> ${qc60}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Bi-weekly</span>
-                                        <span> ${biweeklyqc}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Weekly</span>
-                                        <span> ${weeklyqc}</span>
-                                      </li>
-                                    </ul>
-                                  </>
-                                )}
-                              </div>
-                            )}
-
-                            {mainButton === "noTax" && (
-                              <div className="">
-                                {subButton === "withoutOptions" && (
-                                  <div>
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Monthly</span>
-                                        <span> ${nat60}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Bi-weekly</span>
-                                        <span> ${biweeklNat}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Weekly</span>
-                                        <span> ${weeklylNat}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
-                                )}
-                                {subButton === "withOptions" && (
-                                  <div>
-                                    <div className="font-semibold">Options Include</div>
-                                    <DealerOptionsAmounts />
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Monthly</span>
-                                        <span> ${nat60WOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Bi-weekly</span>
-                                        <span> ${biweeklNatWOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Weekly</span>
-                                        <span> ${biweeklNatWOptions}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-
-                            {mainButton === "customTax" && (
-                              <div className="">
-                                <ul className="grid gap-3">
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Other tax %</span>
-                                    <span>
-                                      <Input
-                                        name="othTax"
-                                        id="othTax"
-                                        className="h-8 w-20 border-border bg-background text-right "
-                                        autoComplete="othTax"
-                                        defaultValue={formData.othTax}
-                                        onChange={handleChange}
-                                      />
-                                    </span>
-                                  </li>
-                                </ul>
-                                {subButton === "withoutOptions" && (
-                                  <div className="mt-5 flex justify-between">
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Monthly</span>
-                                        <span> ${oth60}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Bi-weekly</span>
-                                        <span> ${biweekOth}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Weekly</span>
-                                        <span> ${weeklyOth}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
-                                )}
-                                {subButton === "withOptions" && (
-                                  <div>
-                                    <div className="font-semibold">Options Include</div>
-                                    <DealerOptionsAmounts />
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Monthly</span>
-                                        <span> ${oth60WOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Bi-weekly</span>
-                                        <span> ${biweekOthWOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Weekly</span>
-                                        <span> ${weeklyOthWOptions}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-
-                            <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                            <div className="font-semibold">Contract Variables</div>
-                            <ul className="grid gap-3">
-                              <li className="flex items-center justify-between">
-                                <span className="text-[#8a8a93]">Term</span>
-                                <span>
-                                  <Input
-                                    className="h-8 w-20 border-border bg-background text-right "
-                                    name="months"
-                                    id="months"
-                                    autoComplete="months"
-                                    defaultValue={months}
-                                    onChange={handleChange}
-                                    type="number"
-                                  />
-                                </span>
-                              </li>
-                              <li className="flex items-center justify-between">
-                                <span className="text-[#8a8a93]">Rate</span>
-                                <span>
-                                  <Input
-                                    className="h-8 w-20 items-end justify-end border-border bg-background text-right  "
-                                    name="iRate"
-                                    id="iRate"
-                                    autoComplete="iRate"
-                                    defaultValue={iRate}
-                                    onChange={handleChange}
-                                  />
-                                </span>
-                              </li>
-                              <li className="flex items-center justify-between">
-                                <span className="text-[#8a8a93]">Deposit</span>
-                                <span>
-                                  <Input
-                                    className="h-8 w-20 border-border bg-background text-right "
-                                    name="deposit"
-                                    id="deposit"
-                                    autoComplete="deposit"
-                                    defaultValue={deposit}
-                                    onChange={handleChange}
-                                    type="number"
-                                  />
-                                </span>
-                              </li>
-                              <li className="flex items-center justify-between">
-                                <span className="text-[#8a8a93]">Trade Value</span>
-                                <span>
-                                  <Input
-                                    className="ml-auto h-8 w-20 border-border bg-background text-right "
-                                    name="tradeValue"
-                                    id="tradeValue"
-                                    autoComplete="tradeValue"
-                                    defaultValue={tradeValue}
-                                    onChange={handleChange}
-                                  />
-                                </span>
-                              </li>
-                              <li className="flex items-center justify-between">
-                                <span className="text-[#8a8a93]">Lien</span>
-                                <span>
-                                  <Input
-                                    className="h-8 w-20 border-border bg-background text-right "
-                                    name="lien"
-                                    id="lien"
-                                    autoComplete="lien"
-                                    defaultValue={lien}
-                                    onChange={handleChange}
-                                    type="number"
-                                  />
-                                </span>
-                              </li>
-                            </ul>
-
-                            <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                            <div className="font-semibold">
-                              Customer Detail Confirmation
-                            </div>
-                            <div className="mx-3 mb-3 grid grid-cols-2 justify-between gap-3">
-                              <div className="relative mt-5">
-                                <Input
-                                  defaultValue={formData.firstName}
-                                  name="firstName"
-                                  type="text"
-                                  className="w-full border-border bg-background "
-                                />
-                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                  First Name
-                                </label>
-                              </div>
-                              <div className="relative mt-5">
-                                <Input
-                                  defaultValue={formData.lastName}
-                                  name="lastName"
-                                  type="text"
-                                  className="w-full border-border bg-background "
-                                />
-                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                  Last Name
-                                </label>
-                              </div>
-                              <div className="relative mt-3">
-                                <Input
-                                  defaultValue={finance.phone}
-                                  name="phone"
-                                  type="text"
-                                  className="w-full border-border bg-background "
-                                />
-                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                  Phone
-                                </label>
-                              </div>
-                              <div className="relative mt-3">
-                                <Input
-                                  defaultValue={finance.email}
-                                  name="email"
-                                  type="text"
-                                  className="w-full border-border bg-background "
-                                />
-                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                  Email
-                                </label>
-                              </div>
-                            </div>
-
-
-                            <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                            <div className="font-semibold">Trade Information</div>
-                            <div className="mx-3 mb-3 grid grid-cols-2 justify-between gap-3">
-                              <div className="relative mt-5">
-                                <Input
-                                  defaultValue={finance.tradeYear}
-                                  name="tradeYear"
-                                  type="text"
-                                  className="w-full border-border bg-background "
-                                />
-                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                  Year
-                                </label>
-                              </div>
-                              <div className="relative mt-5">
-                                <Input
-                                  defaultValue={finance.tradeMake}
-                                  name="tradeMake"
-                                  type="text"
-                                  className="w-full border-border bg-background "
-                                />
-                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                  Make
-                                </label>
-                              </div>
-                              <div className="relative mt-3">
-                                <Input
-                                  defaultValue={finance.tradeDesc}
-                                  name="tradeDesc"
-                                  type="text"
-                                  className="w-full border-border bg-background "
-                                />
-                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                  Model
-                                </label>
-                              </div>
-                              <div className="relative mt-3">
-                                <Input
-                                  defaultValue={finance.tradeColor}
-                                  name="tradeColor"
-                                  type="text"
-                                  className="w-full border-border bg-background "
-                                />
-                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                  Color
-                                </label>
-                              </div>
-                              <div className="relative mt-3">
-                                <Input
-                                  defaultValue={finance.tradeVin}
-                                  name="tradeVin"
-                                  type="text"
-                                  className="w-full border-border bg-background "
-                                />
-                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                  VIN
-                                </label>
-                              </div>
-                              <div className="relative mt-3">
-                                <Input
-                                  defaultValue={finance.tradeMileage || ''}
-                                  name="tradeMileage"
-                                  type="text"
-                                  className="w-full border-border bg-background "
-                                />
-                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                  Mileage
-                                </label>
-                              </div>
-                              <div className="relative mt-3">
-                                <Input
-                                  defaultValue={finance.tradeLocation}
-                                  name="tradeLocation"
-                                  type="text"
-                                  className="w-full border-border bg-background "
-                                />
-                                <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                  Trade Location
-                                </label>
-                              </div>
-                            </div>
-                            <Drawer direction="left">
-                              <DrawerTrigger asChild>
-                                <Button size="sm" className="ml-auto" variant="outline">
-                                  Other Inputs
-                                </Button>
-                              </DrawerTrigger>
-                              <DrawerContent className="bg-background text-foreground border-border">
-                                <div className="mx-auto h-full w-full max-w-sm lg:w-[700px]">
-                                  <DrawerHeader>
-                                    <DrawerTitle>Other Inputs</DrawerTitle>
-                                    <DrawerDescription>
-                                      Changes to discounts and such
-                                    </DrawerDescription>
-                                  </DrawerHeader>
-                                  <ul className="grid gap-3">
-                                    <li className="flex items-center justify-between">
-                                      <span className="text-[#8a8a93]">Discount $</span>
-                                      <span>
-                                        <Input
-                                          name="discount"
-                                          className="h-8 w-20 border-border bg-background text-right "
-                                          defaultValue={discount}
-                                          onChange={handleChange}
-                                        />
-                                      </span>
-                                    </li>
-                                    <li className="flex items-center justify-between">
-                                      <span className="text-[#8a8a93]">
-                                        Discount (1.1-15)%
-                                      </span>
-                                      <span>
-                                        <Input
-                                          name="discountPer"
-                                          className="h-8 w-20 border-border bg-background text-right "
-                                          defaultValue={0}
-                                          onChange={handleChange}
-                                        />
-                                      </span>
-                                    </li>
-                                    <li className="flex items-center justify-between">
-                                      <span className="text-[#8a8a93]">
-                                        Delivery Charge
-                                      </span>
-                                      <span>
-                                        <Input
-                                          name="deliveryCharge"
-                                          id="msrp"
-                                          className="h-8 w-20 border-border bg-background text-right "
-                                          autoComplete="msrp"
-                                          defaultValue={deliveryCharge}
-                                          onChange={handleChange}
-                                        />
-                                      </span>
-                                    </li>
-                                    <li className="flex items-center justify-between">
-                                      <span className="text-[#8a8a93]">Total Labour</span>
-                                      <span>${totalLabour}</span>
-                                    </li>
-                                    <li className="flex items-center justify-between">
-                                      <span className="text-[#8a8a93]">Lien</span>
-                                      <span>
-                                        <Input
-                                          className="h-8 w-20 border-border bg-background text-right "
-                                          name="lien"
-                                          id="lien"
-                                          autoComplete="lien"
-                                          defaultValue={lien}
-                                          onChange={handleChange}
-                                        />
-                                      </span>
-                                    </li>
-                                  </ul>
-                                  <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                                  <div className="font-semibold">
-                                    Customer Detail Confirmation
-                                  </div>
-                                  <div className="mb-3 grid grid-cols-2 justify-between gap-3">
-
-                                    <div className="relative mt-3">
-                                      <Input
-                                        defaultValue={finance.address}
-                                        name="address"
-                                        type="text"
-                                        className="w-full border-border bg-background "
-                                      />
-                                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                        Address
-                                      </label>
-                                    </div>
-                                    <div className="relative mt-3">
-                                      <Input
-                                        defaultValue={finance.city}
-                                        name="city"
-                                        type="text"
-                                        className="w-full border-border bg-background "
-                                      />
-                                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                        City
-                                      </label>
-                                    </div>
-                                    <div className="relative mt-3">
-                                      <Input
-                                        defaultValue={finance.province}
-                                        name="province"
-                                        type="text"
-                                        className="w-full border-border bg-background "
-                                      />
-                                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                        Province
-                                      </label>
-                                    </div>
-                                    <div className="relative mt-3">
-                                      <Input
-                                        defaultValue={finance.postal}
-                                        name="postal"
-                                        type="text"
-                                        className="w-full border-border bg-background "
-                                      />
-                                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                        Postal Code
-                                      </label>
-                                    </div>
-                                    <div className="relative mt-3">
-                                      <Input
-                                        defaultValue={finance.dl}
-                                        name="dl"
-                                        type="text"
-                                        className="w-full border-border bg-background "
-                                      />
-                                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                        Drivers Lic.
-                                      </label>
-                                    </div>
-                                  </div>
-                                  <div className=" mb-3 grid grid-cols-2 justify-between gap-3">
-                                    <div className="relative mt-3">
-                                      <Select name="timeToContact">
-                                        <SelectTrigger className="w-full  border border-border bg-background text-foreground">
-                                          <SelectValue defaultValue={finance.timeToContact} />
-                                        </SelectTrigger>
-                                        <SelectContent className=" border border-border bg-background text-foreground">
-                                          <SelectGroup>
-                                            <SelectLabel>Best Time To Contact</SelectLabel>
-                                            <SelectItem value="Morning">Morning</SelectItem>
-                                            <SelectItem value="Afternoon">Afternoon</SelectItem>
-                                            <SelectItem value="Evening">Evening</SelectItem>
-                                            <SelectItem value="Do Not Contact">
-                                              Do Not Contact
-                                            </SelectItem>
-                                          </SelectGroup>
-                                        </SelectContent>
-                                      </Select>
-                                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                        Prefered Time
-                                      </label>
-                                    </div>
-                                    <div className="relative mt-3">
-                                      <Select name="typeOfContact">
-                                        <SelectTrigger className="w-full  border border-border bg-background text-foreground">
-                                          <SelectValue defaultValue={finance.typeOfContact} />
-                                        </SelectTrigger>
-                                        <SelectContent className=" border border-border bg-background text-foreground">
-                                          <SelectGroup>
-                                            <SelectLabel>Contact Method</SelectLabel>
-                                            <SelectItem value="Phone">Phone</SelectItem>
-                                            <SelectItem value="InPerson">In-Person</SelectItem>
-                                            <SelectItem value="SMS">SMS</SelectItem>
-                                            <SelectItem value="Email">Email</SelectItem>
-                                          </SelectGroup>
-                                        </SelectContent>
-                                      </Select>
-                                      <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                        Prefered Contact
-                                      </label>
-                                    </div>
-
-                                    <Popover>
-                                      <PopoverTrigger asChild>
-                                        <div className="relative mt-3">
-                                          <Button
-                                            variant={"outline"}
-                                            className={cn(
-                                              "w-full justify-start  text-center  font-normal",
-                                              !date && "text-muted-foreground"
-                                            )}
-                                          >
-                                            <CalendarIcon className="mr-2 h-4 w-4 " />
-                                            {date ? (
-                                              format(date, "PPP")
-                                            ) : (
-                                              <span>Pick a date</span>
-                                            )}
-                                          </Button>
-                                          <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                            Pick A Date
-                                          </label>
-                                        </div>
-                                      </PopoverTrigger>
-                                      <PopoverContent
-                                        className="w-auto bg-background p-0 text-foreground border-border"
-                                        align="start"
-                                      >
-                                        <Calendar
-                                          className="bg-background text-foreground"
-                                          mode="single"
-                                          selected={date}
-                                          onSelect={setDate}
-                                          initialFocus
-                                        />
-                                      </PopoverContent>
-                                    </Popover>
-                                    <input
-                                      type="hidden"
-                                      value={String(date)}
-                                      name="pickedDate"
-                                    />
-
-                                    <Popover>
-                                      <PopoverTrigger asChild>
-                                        <div className="relative mt-3">
-                                          <Button
-                                            variant={"outline"}
-                                            className={cn(
-                                              "w-full justify-start text-right font-normal",
-                                              !date && "text-muted-foreground"
-                                            )}
-                                          >
-                                            <ClockIcon className="mr-2 h-4 w-4 " />
-                                            {currentTime ? time : <span>Pick a Time</span>}
-                                          </Button>
-                                          <label className=" peer-placeholder-shown:text-gray-400 peer-focus:text-blue-500 absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-3">
-                                            Pick A Time
-                                          </label>
-                                        </div>
-                                      </PopoverTrigger>
-                                      <PopoverContent
-                                        className="w-auto bg-background p-0 text-foreground"
-                                        align="start"
-                                      >
-                                        <div className="flex items-center">
-                                          <Select
-                                            name="pickHour"
-                                            value={hour}
-                                            onValueChange={setHour}
-                                          >
-                                            <SelectTrigger className="m-3 w-auto">
-                                              <SelectValue placeholder="hour" />
-                                            </SelectTrigger>
-                                            <SelectContent className="bg-background text-foreground">
-                                              <SelectGroup>
-                                                <SelectLabel>Hour</SelectLabel>
-                                                <SelectItem value="09">09</SelectItem>
-                                                <SelectItem value="10">10</SelectItem>
-                                                <SelectItem value="11">11</SelectItem>
-                                                <SelectItem value="12">12</SelectItem>
-                                                <SelectItem value="13">13</SelectItem>
-                                                <SelectItem value="14">14</SelectItem>
-                                                <SelectItem value="15">15</SelectItem>
-                                                <SelectItem value="16">16</SelectItem>
-                                                <SelectItem value="17">17</SelectItem>
-                                                <SelectItem value="18">18</SelectItem>
-                                              </SelectGroup>
-                                            </SelectContent>
-                                          </Select>
-
-                                          <Select
-                                            name="pickMin"
-                                            value={min}
-                                            onValueChange={setMin}
-                                          >
-                                            <SelectTrigger className="m-3 w-auto">
-                                              <SelectValue placeholder="min" />
-                                            </SelectTrigger>
-                                            <SelectContent className="bg-background text-foreground">
-                                              <SelectGroup>
-                                                <SelectLabel>Minute</SelectLabel>
-                                                <SelectItem value="00">00</SelectItem>
-                                                <SelectItem value="10">10</SelectItem>
-                                                <SelectItem value="20">20</SelectItem>
-                                                <SelectItem value="30">30</SelectItem>
-                                                <SelectItem value="40">40</SelectItem>
-                                                <SelectItem value="50">50</SelectItem>
-                                              </SelectGroup>
-                                            </SelectContent>
-                                          </Select>
-                                        </div>
-                                      </PopoverContent>
-                                    </Popover>
-                                  </div>
-
-                                  <DrawerFooter>
-                                    <DrawerClose asChild>
-                                      <Button variant="outline">Close</Button>
-                                    </DrawerClose>
-                                  </DrawerFooter>
-                                </div>
-                              </DrawerContent>
-                            </Drawer>
-                            <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                            <div className="font-semibold">Total</div>
-                            <ul className="grid gap-3">
-                              {perDiscountGiven > 0 && (
-                                <>
-                                  <li className="mt-3 flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Total Before Discount
-                                    </span>
-                                    <span>${beforeDiscount}</span>
-                                  </li>
                                 </>
                               )}
-                              {perDiscountGiven > 0 && (
-                                <>
-                                  <li className="mt-3 flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Discount (MSRP only)
-                                    </span>
-                                    <span> ${perDiscountGiven}</span>
-                                  </li>
-                                </>
-                              )}
-                              {mainButton === "payments" && (
-                                <div>
-                                  {subButton === "withoutOptions" && (
-                                    <>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${total}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">With taxes</span>
-                                        <span> ${onTax}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${onTax - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                  {subButton === "withOptions" && (
-                                    <>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${totalWithOptions}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">With taxes</span>
-                                        <span> ${qcTax}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${qcTax - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                              {mainButton === "noTax" && (
-                                <div>
-                                  {subButton === "withoutOptions" && (
-                                    <>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${total}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">With taxes</span>
-                                        <span> ${native}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${native - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                  {subButton === "withOptions" && (
-                                    <>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${totalWithOptions}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">With taxes</span>
-                                        <span> ${totalWithOptions}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${totalWithOptions - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                              {mainButton === "customTax" && (
-                                <div>
-                                  {subButton === "withoutOptions" && (
-                                    <>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${total}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">With taxes</span>
-                                        <span> ${otherTax}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${otherTax - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                  {subButton === "withOptions" && (
-                                    <>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${totalWithOptions}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">With taxes</span>
-                                        <span> ${otherTaxWithOptions}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${otherTaxWithOptions - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                            </ul>
-                          </CardContent>
-                        </>
-                      )}
-                      {firstPage && (
-                        <>
-                          <CardContent className="bg-background p-6  text-sm  max-h-[700px] overflow-y-auto h-[700px]">
-                            <div className="grid gap-3">
-                              <div className="font-semibold">Payment Details</div>
-                              <ul className="grid gap-3">
-                                <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">Brand</span>
-                                  <span>{finance.brand}</span>
-                                </li>
-                                <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">Model</span>
-                                  <span> {finance.model}</span>
-                                </li>
-                                {finance.brand !== "BMW-Motorrad" && (
-                                  <>
-                                    <li className="flex items-center justify-between">
-                                      <span className="text-[#8a8a93]">Color</span>
-                                      <span>{finance.color}</span>
-                                    </li>
-                                  </>
-                                )}
-                                {finance.modelCode !== null && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Model Code</span>
-                                    <span>{finance.modelCode}</span>
-                                  </li>
-                                )}
-                                {finance.modelCode !== null && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Year</span>
-                                    <span>{finance.year}</span>
-                                  </li>
-                                )}
-                                {finance.stockNum !== null && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Stock Number</span>
-                                    <span>{finance.stockNum}</span>
-                                  </li>
-                                )}
-                              </ul>
-                              <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                              <div className="font-semibold">Price</div>
-                              <ul className="grid gap-3">
-                                <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">MSRP</span>
-                                  <span> ${formData.msrp}</span>
-                                </li>
-                                {formData.freight > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Freight</span>
-                                    <span>${formData.freight}</span>
-                                  </li>
-                                )}
-
-                                {formData.pdi > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">PDI</span>
-                                    <span>${formData.pdi}</span>
-                                  </li>
-                                )}
-                                {formData.admin > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Admin</span>
-                                    <span>${formData.admin}</span>
-                                  </li>
-                                )}
-                                {formData.commodity > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Commodity</span>
-                                    <span>${formData.commodity}</span>
-                                  </li>
-                                )}
-                                <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">Accessories</span>
-                                  <span>${accessories}</span>
-                                </li>
-                                <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">Labour Hours</span>
-                                  <span>${formData.labour}</span>
-                                </li>
-                                <li className="flex items-center justify-between font-semibold">
-                                  <span className="text-[#8a8a93]">Licensing</span>
-                                  <span>${licensing}</span>
-                                </li>
-
-                                {finance.brand === "Sea-Doo" && modelData.trailer > 0 && (
-                                  <li className="flex items-center justify-between font-semibold">
-                                    <span className="text-[#8a8a93]">Trailer</span>
-                                    <span>${modelData.trailer}</span>
-                                  </li>
-                                )}
-                                {finance.brand === "Triumph" &&
-                                  modelData.painPrem > 0 && (
-                                    <li className="flex items-center justify-between font-semibold">
-                                      <span className="text-[#8a8a93]">
-                                        Paint Premium
-                                      </span>
-                                      <span> ${modelData.painPrem}</span>
-                                    </li>
-                                  )}
-                              </ul>
-                              <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                              <div className="font-semibold">Fees</div>
-                              <ul className="grid gap-3">
-                                {deFees.userAirTax > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Air Tax</span>
-                                    <span>${deFees.userAirTax}</span>
-                                  </li>
-                                )}
-                                {deFees.userTireTax > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Tire Tax</span>
-                                    <span> ${deFees.userTireTax}</span>
-                                  </li>
-                                )}
-                                {deFees.userGovern > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Government Fees
-                                    </span>
-                                    <span> ${deFees.userGovern}</span>
-                                  </li>
-                                )}
-                                {deFees.userFinance > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">Finance Fees</span>
-                                    <span> ${deFees.userFinance}</span>
-                                  </li>
-                                )}
-                                {deFees.destinationCharge > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Destination Charge
-                                    </span>
-                                    <span>${deFees.destinationCharge}</span>
-                                  </li>
-                                )}
-                                {deFees.userGasOnDel > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Gas On Delivery
-                                    </span>
-                                    <span>${deFees.userGasOnDel}</span>
-                                  </li>
-                                )}
-                                {deFees.userMarketAdj > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Market Adjustment
-                                    </span>
-                                    <span> ${deFees.userMarketAdj}</span>
-                                  </li>
-                                )}
-                                {deFees.userDemo > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Demonstrate features or walkaround
-                                    </span>
-                                    <span>${deFees.userDemo}</span>
-                                  </li>
-                                )}
-                                {deFees.userOMVIC > 0 && (
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      OMVIC / Other GV Fees
-                                    </span>
-                                    <span> ${deFees.userOMVIC}</span>
-                                  </li>
-                                )}
-                              </ul>
                             </div>
-                            <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                            <div className="font-semibold">Standard Terms</div>
-                            <div className="mt-3">
-                              <div className="main-button-group flex justify-between ">
-                                <Badge
-                                  id="myButton"
-                                  className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${mainButton === "payments"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleMainButtonClick("payments")}
-                                >
-                                  Payments
-                                </Badge>
+                          )}
 
-                                <Badge
-                                  id="myButton1"
-                                  className={`button  transform cursor-pointer bg-primary shadow   hover:text-foreground ${mainButton === "noTax"
-                                    ? "active bg-[#c72323] text-foreground "
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleMainButtonClick("noTax")}
-                                >
-                                  No Tax
-                                </Badge>
-
-                                <Badge
-                                  id="myButton2"
-                                  className={`button  transform cursor-pointer bg-primary   shadow hover:text-foreground ${mainButton === "customTax"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleMainButtonClick("customTax")}
-                                >
-                                  Custom Tax
-                                </Badge>
-                              </div>
-                              <div className="sub-button-group mt-2 flex justify-between">
-                                <Badge
-                                  id="myButton3"
-                                  className={`button  transform cursor-pointer bg-primary shadow hover:text-foreground ${subButton === "withoutOptions"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleSubButtonClick("withoutOptions")}
-                                >
-                                  W/O Options
-                                </Badge>
-
-                                <Badge
-                                  id="myButton5"
-                                  className={`button  transform cursor-pointer bg-primary  shadow hover:text-foreground  ${subButton === "withOptions"
-                                    ? "active bg-[#c72323] text-foreground"
-                                    : "bg-[#0a0a0a] text-foreground"
-                                    }`}
-                                  onClick={() => handleSubButtonClick("withOptions")}
-                                >
-                                  W/ Options
-                                </Badge>
-                              </div>
-                            </div>
-                            {mainButton === "payments" && (
-                              <div className="">
-                                {subButton === "withoutOptions" && (
+                          {mainButton === "noTax" && (
+                            <div className="">
+                              {subButton === "withoutOptions" && (
+                                <div>
                                   <ul className="mt-3 grid gap-3">
                                     <li className="flex items-center justify-between">
                                       <span className="text-[#8a8a93]">Monthly</span>
-                                      <span> ${on60}</span>
+                                      <span> ${nat60}</span>
                                     </li>
                                     <li className="flex items-center justify-between">
                                       <span className="text-[#8a8a93]">Bi-weekly</span>
-                                      <span> ${biweekly}</span>
+                                      <span> ${biweeklNat}</span>
                                     </li>
                                     <li className="flex items-center justify-between">
                                       <span className="text-[#8a8a93]">Weekly</span>
-                                      <span> ${weekly}</span>
+                                      <span> ${weeklylNat}</span>
                                     </li>
                                   </ul>
+                                </div>
+                              )}
+                              {subButton === "withOptions" && (
+                                <div>
+                                  <div className="mt-3 font-semibold">
+                                    Options Include
+                                  </div>
+                                  <DealerOptionsAmounts />
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Monthly</span>
+                                      <span> ${nat60WOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Bi-weekly</span>
+                                      <span> ${biweeklNatWOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Weekly</span>
+                                      <span> ${weeklylNatWOptions}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {mainButton === "customTax" && (
+                            <div className="">
+                              {subButton === "withoutOptions" && (
+                                <div className=" ">
+                                  <ul className="mt-3 grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Monthly</span>
+                                      <span> ${oth60}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Bi-weekly</span>
+                                      <span> ${biweekOth}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Weekly</span>
+                                      <span> ${weeklyOth}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                              {subButton === "withOptions" && (
+                                <div>
+                                  <div className="mt-3 font-semibold">
+                                    Options Include
+                                  </div>
+                                  <DealerOptionsAmounts />
+                                  <ul className="grid gap-3">
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Monthly</span>
+                                      <span> ${oth60WOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Bi-weekly</span>
+                                      <span> ${biweekOthWOptions}</span>
+                                    </li>
+                                    <li className="flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Weekly</span>
+                                      <span> ${weeklyOthWOptions}</span>
+                                    </li>
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                          <div className="font-semibold">Contract Variables</div>
+                          <ul className="mt-3 grid gap-3">
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Term</span>
+                              <span>{months} / months</span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Rate</span>
+                              <span>{iRate}%</span>
+                            </li>
+                            {finance.deposit > 0 && (
+                              <li className="flex items-center justify-between">
+                                <span className="text-[#8a8a93]">Deposit</span>
+                                <span>${finance.deposit}</span>
+                              </li>
+                            )}
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Trade Value</span>
+                              <span>${tradeValue}</span>
+                            </li>
+                            <li className="flex items-center justify-between">
+                              <span className="text-[#8a8a93]">Lien</span>
+                              <span>${lien}</span>
+                            </li>
+                          </ul>
+
+                          <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
+                          <div className="font-semibold">Total</div>
+                          <ul className="grid gap-3">
+                            {perDiscountGiven > 0 && (
+                              <>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Total Before Discount
+                                  </span>
+                                  <span>${beforeDiscount}</span>
+                                </li>
+                              </>
+                            )}
+                            {perDiscountGiven > 0 && (
+                              <>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-[#8a8a93]">
+                                    Discount (MSRP only)
+                                  </span>
+                                  <span> ${perDiscountGiven}</span>
+                                </li>
+                              </>
+                            )}
+                            {mainButton === "payments" && (
+                              <div>
+                                {subButton === "withoutOptions" && (
+                                  <>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${total}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">With taxes</span>
+                                      <span> ${onTax}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${onTax - deposit}</span>
+                                    </li>
+                                  </>
                                 )}
                                 {subButton === "withOptions" && (
                                   <>
-                                    <div className="mt-3 font-semibold">
-                                      Options Include
-                                    </div>
-                                    <DealerOptionsAmounts />
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Monthly</span>
-                                        <span> ${qc60}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Bi-weekly</span>
-                                        <span> ${biweeklyqc}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Weekly</span>
-                                        <span> ${weeklyqc}</span>
-                                      </li>
-                                    </ul>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${totalWithOptions}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">With taxes</span>
+                                      <span> ${qcTax}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${qcTax - deposit}</span>
+                                    </li>
                                   </>
                                 )}
                               </div>
                             )}
-
                             {mainButton === "noTax" && (
-                              <div className="">
+                              <div>
                                 {subButton === "withoutOptions" && (
-                                  <div>
-                                    <ul className="mt-3 grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Monthly</span>
-                                        <span> ${nat60}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Bi-weekly</span>
-                                        <span> ${biweeklNat}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Weekly</span>
-                                        <span> ${weeklylNat}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
+                                  <>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${total}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">With taxes</span>
+                                      <span> ${native}</span>
+                                    </li>
+                                    <li className="flex mt-3 items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${native - deposit}</span>
+                                    </li>
+                                  </>
                                 )}
                                 {subButton === "withOptions" && (
-                                  <div>
-                                    <div className="mt-3 font-semibold">
-                                      Options Include
-                                    </div>
-                                    <DealerOptionsAmounts />
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Monthly</span>
-                                        <span> ${nat60WOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Bi-weekly</span>
-                                        <span> ${biweeklNatWOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Weekly</span>
-                                        <span> ${weeklylNatWOptions}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
+                                  <>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${totalWithOptions}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">With taxes</span>
+                                      <span> ${totalWithOptions}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${totalWithOptions - deposit}</span>
+                                    </li>
+                                  </>
                                 )}
                               </div>
                             )}
-
                             {mainButton === "customTax" && (
-                              <div className="">
+                              <div>
                                 {subButton === "withoutOptions" && (
-                                  <div className=" ">
-                                    <ul className="mt-3 grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Monthly</span>
-                                        <span> ${oth60}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Bi-weekly</span>
-                                        <span> ${biweekOth}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Weekly</span>
-                                        <span> ${weeklyOth}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
+                                  <>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${total}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">With taxes</span>
+                                      <span> ${otherTax}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${otherTax - deposit}</span>
+                                    </li>
+                                  </>
                                 )}
                                 {subButton === "withOptions" && (
-                                  <div>
-                                    <div className="mt-3 font-semibold">
-                                      Options Include
-                                    </div>
-                                    <DealerOptionsAmounts />
-                                    <ul className="grid gap-3">
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Monthly</span>
-                                        <span> ${oth60WOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Bi-weekly</span>
-                                        <span> ${biweekOthWOptions}</span>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Weekly</span>
-                                        <span> ${weeklyOthWOptions}</span>
-                                      </li>
-                                    </ul>
-                                  </div>
+                                  <>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">Total</span>
+                                      <span>${totalWithOptions}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">With taxes</span>
+                                      <span> ${otherTaxWithOptions}</span>
+                                    </li>
+                                    <li className="mt-3 flex items-center justify-between">
+                                      <span className="text-[#8a8a93]">
+                                        After Deposit
+                                      </span>
+                                      <span> ${otherTaxWithOptions - deposit}</span>
+                                    </li>
+                                  </>
                                 )}
                               </div>
                             )}
-
-                            <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                            <div className="font-semibold">Contract Variables</div>
-                            <ul className="mt-3 grid gap-3">
-                              <li className="flex items-center justify-between">
-                                <span className="text-[#8a8a93]">Term</span>
-                                <span>{months} / months</span>
-                              </li>
-                              <li className="flex items-center justify-between">
-                                <span className="text-[#8a8a93]">Rate</span>
-                                <span>{iRate}%</span>
-                              </li>
-                              {finance.deposit > 0 && (
-                                <li className="flex items-center justify-between">
-                                  <span className="text-[#8a8a93]">Deposit</span>
-                                  <span>${finance.deposit}</span>
-                                </li>
-                              )}
-                              <li className="flex items-center justify-between">
-                                <span className="text-[#8a8a93]">Trade Value</span>
-                                <span>${tradeValue}</span>
-                              </li>
-                              <li className="flex items-center justify-between">
-                                <span className="text-[#8a8a93]">Lien</span>
-                                <span>${lien}</span>
-                              </li>
-                            </ul>
-
-                            <Separator className="mx-auto my-4 w-[95%] text-muted-foreground" />
-                            <div className="font-semibold">Total</div>
-                            <ul className="grid gap-3">
-                              {perDiscountGiven > 0 && (
-                                <>
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Total Before Discount
-                                    </span>
-                                    <span>${beforeDiscount}</span>
-                                  </li>
-                                </>
-                              )}
-                              {perDiscountGiven > 0 && (
-                                <>
-                                  <li className="flex items-center justify-between">
-                                    <span className="text-[#8a8a93]">
-                                      Discount (MSRP only)
-                                    </span>
-                                    <span> ${perDiscountGiven}</span>
-                                  </li>
-                                </>
-                              )}
-                              {mainButton === "payments" && (
-                                <div>
-                                  {subButton === "withoutOptions" && (
-                                    <>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${total}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">With taxes</span>
-                                        <span> ${onTax}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${onTax - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                  {subButton === "withOptions" && (
-                                    <>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${totalWithOptions}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">With taxes</span>
-                                        <span> ${qcTax}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${qcTax - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                              {mainButton === "noTax" && (
-                                <div>
-                                  {subButton === "withoutOptions" && (
-                                    <>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${total}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">With taxes</span>
-                                        <span> ${native}</span>
-                                      </li>
-                                      <li className="flex mt-3 items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${native - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                  {subButton === "withOptions" && (
-                                    <>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${totalWithOptions}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">With taxes</span>
-                                        <span> ${totalWithOptions}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${totalWithOptions - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                              {mainButton === "customTax" && (
-                                <div>
-                                  {subButton === "withoutOptions" && (
-                                    <>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${total}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">With taxes</span>
-                                        <span> ${otherTax}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${otherTax - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                  {subButton === "withOptions" && (
-                                    <>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">Total</span>
-                                        <span>${totalWithOptions}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">With taxes</span>
-                                        <span> ${otherTaxWithOptions}</span>
-                                      </li>
-                                      <li className="mt-3 flex items-center justify-between">
-                                        <span className="text-[#8a8a93]">
-                                          After Deposit
-                                        </span>
-                                        <span> ${otherTaxWithOptions - deposit}</span>
-                                      </li>
-                                    </>
-                                  )}
-                                </div>
-                              )}
-                            </ul>
-                          </CardContent>
-                        </>
-                      )}
-                      <Input type="hidden" defaultValue={on60} name="on60" />
-                      <Input type="hidden" defaultValue={biweekly} name="biweekly" />
-                      <Input type="hidden" defaultValue={weekly} name="weekly" />
-                      <Input type="hidden" defaultValue={weeklyOth} name="weeklyOth" />
-                      <Input type="hidden" defaultValue={biweekOth} name="biweekOth" />
-                      <Input type="hidden" defaultValue={oth60} name="oth60" />
-                      <Input type="hidden" defaultValue={weeklyqc} name="weeklyqc" />
-                      <Input type="hidden" defaultValue={biweeklyqc} name="biweeklyqc" />
-                      <Input type="hidden" defaultValue={qc60} name="qc60" />
-                      <Input type="hidden" defaultValue={brand} name="brand" />
-                      <Input type="hidden" defaultValue={formData.userExtWarr} name="userExtWarr" />
-                      <Input type="hidden" defaultValue={formData.userGap} name="userGap" />
-                      <Input type="hidden" defaultValue={formData.userServicespkg} name="userServicespkg" />
-                      <Input type="hidden" defaultValue={formData.vinE} name="vinE" />
-                      <Input type="hidden" defaultValue={formData.rustProofing} name="rustProofing" />
-                      <Input type="hidden" defaultValue={formData.userLoanProt} name="userLoanProt" />
-                      <Input type="hidden" defaultValue={formData.userTireandRim} name="userTireandRim" />
-                      <Input type="hidden" defaultValue={formData.userOther} name="userOther" />
-                      <Input type="hidden" defaultValue={formData.lifeDisability} name="lifeDisability" />
-                      <Input type="hidden" defaultValue={formData.discount} name="discount" />
-                      <Input type="hidden" defaultValue={formData.deliveryCharge} name="deliveryCharge" />
-                      <Input type="hidden" defaultValue={formData.discountPer} name="discountPer" />
-                      <Input type="hidden" defaultValue={total} name="total" />
-                      <Input type="hidden" defaultValue={msrp} name="msrp" />
-                      <Input type="hidden" defaultValue={modelData.color} name="color" />
-                      <Input type="hidden" defaultValue={modelData.model1} name="model1" />
-                      <Input type="hidden" defaultValue={modelData.modelCode} name="modelCode" />
-                      <Input type="hidden" defaultValue={onTax} name="onTax" />
-                      <Input type="hidden" defaultValue={qcTax} name="qcTax" />
-                      <Input type="hidden" defaultValue={otherTax} name="otherTax" />
-                      <Input type="hidden" defaultValue={otherTaxWithOptions} name="otherTaxWithOptions" />
-                      <Input type="hidden" defaultValue={totalWithOptions} name="totalWithOptions" />
-                      <Input type="hidden" defaultValue={formData.freight} name="freight" />
-                      <Input type="hidden" defaultValue={formData.admin} name="admin" />
-                      <Input type="hidden" defaultValue={formData.pdi} name="pdi" />
-                      <Input type="hidden" defaultValue={formData.commodity} name="commodity" />
-                      <Input type="hidden" defaultValue={weeklyOthWOptions} name="weeklyOthWOptions" />
-                      <Input type="hidden" defaultValue={biweekOthWOptions} name="biweekOthWOptions" />
-                      <Input type="hidden" defaultValue={oth60WOptions} name="oth60WOptions" />
-                      <Input type="hidden" defaultValue={formData.accessories} name="accessories" />
-                      <Input type="hidden" defaultValue={formData.labour} name="labour" />
-                      <Input type="hidden" defaultValue={formData.financeId} name="id" />
-                      <Input type="hidden" defaultValue={formData.msrp} name="msrp" />
-                      <Input type="hidden" defaultValue={weeklylNat} name="weeklylNat" />
-                      <Input type="hidden" defaultValue={deposit} name="deposit" />
-                      <Input type="hidden" defaultValue={biweeklNat} name="biweeklNat" />
-                      <Input type="hidden" defaultValue={biweeklNatWOptions} name="biweeklNatWOptions" />
-                      <Input type="hidden" defaultValue={nat60WOptions} name="nat60WOptions" />
-                      <Input type="hidden" defaultValue={weeklylNatWOptions} name="weeklylNatWOptions" />
-                      <Input type="hidden" defaultValue={nat60} name="nat60" />
-                      <Input type="hidden" defaultValue={licensing} name="licensing" />
-                      <Input type="hidden" defaultValue={desiredPayments} name="desiredPayments" />
-                      <Input type="hidden" defaultValue="Reached" name="customerState" />
-                      <Input type="hidden" defaultValue="Active" name="status" />
-                      <Input type="hidden" defaultValue={finance.id} name="financeId" />
-                      <Input type="hidden" defaultValue={finance.userEmail} name="userEmail" />
-                      <Input type="hidden" defaultValue="TBD" name="nextAppointment" />
-                      {secPage && (
-                        <div className="flex justify-between">
-                          <div></div>
-                          <input
-                            type="hidden"
-                            name="financeId"
-                            defaultValue={finance.id}
-                          />
-                          <ButtonLoading
-                            size="sm"
-                            value="updateFinance"
-                            className="mb-5 mr-5   mt-5 w-auto cursor-pointer bg-primary"
-                            name="intent"
-                            type="submit"
-                            isSubmitting={isSubmitting}
-                            onClick={() => {
-                              setSaved(true);
-                              toast.success(`${finance.firstName}'s customer file is updated...`)
-                            }}
-                            loadingText={`${finance.firstName}'s customer file is updated...`}
+                          </ul>
+                        </CardContent>
+                      </>
+                    )}
+                    <Input type="hidden" defaultValue={on60} name="on60" />
+                    <Input type="hidden" defaultValue={biweekly} name="biweekly" />
+                    <Input type="hidden" defaultValue={weekly} name="weekly" />
+                    <Input type="hidden" defaultValue={weeklyOth} name="weeklyOth" />
+                    <Input type="hidden" defaultValue={biweekOth} name="biweekOth" />
+                    <Input type="hidden" defaultValue={oth60} name="oth60" />
+                    <Input type="hidden" defaultValue={weeklyqc} name="weeklyqc" />
+                    <Input type="hidden" defaultValue={biweeklyqc} name="biweeklyqc" />
+                    <Input type="hidden" defaultValue={qc60} name="qc60" />
+                    <Input type="hidden" defaultValue={brand} name="brand" />
+                    <Input type="hidden" defaultValue={formData.userExtWarr} name="userExtWarr" />
+                    <Input type="hidden" defaultValue={formData.userGap} name="userGap" />
+                    <Input type="hidden" defaultValue={formData.userServicespkg} name="userServicespkg" />
+                    <Input type="hidden" defaultValue={formData.vinE} name="vinE" />
+                    <Input type="hidden" defaultValue={formData.rustProofing} name="rustProofing" />
+                    <Input type="hidden" defaultValue={formData.userLoanProt} name="userLoanProt" />
+                    <Input type="hidden" defaultValue={formData.userTireandRim} name="userTireandRim" />
+                    <Input type="hidden" defaultValue={formData.userOther} name="userOther" />
+                    <Input type="hidden" defaultValue={formData.lifeDisability} name="lifeDisability" />
+                    <Input type="hidden" defaultValue={formData.discount} name="discount" />
+                    <Input type="hidden" defaultValue={formData.deliveryCharge} name="deliveryCharge" />
+                    <Input type="hidden" defaultValue={formData.discountPer} name="discountPer" />
+                    <Input type="hidden" defaultValue={total} name="total" />
+                    <Input type="hidden" defaultValue={msrp} name="msrp" />
+                    <Input type="hidden" defaultValue={modelData.color} name="color" />
+                    <Input type="hidden" defaultValue={modelData.model1} name="model1" />
+                    <Input type="hidden" defaultValue={modelData.modelCode} name="modelCode" />
+                    <Input type="hidden" defaultValue={onTax} name="onTax" />
+                    <Input type="hidden" defaultValue={qcTax} name="qcTax" />
+                    <Input type="hidden" defaultValue={otherTax} name="otherTax" />
+                    <Input type="hidden" defaultValue={otherTaxWithOptions} name="otherTaxWithOptions" />
+                    <Input type="hidden" defaultValue={totalWithOptions} name="totalWithOptions" />
+                    <Input type="hidden" defaultValue={formData.freight} name="freight" />
+                    <Input type="hidden" defaultValue={formData.admin} name="admin" />
+                    <Input type="hidden" defaultValue={formData.pdi} name="pdi" />
+                    <Input type="hidden" defaultValue={formData.commodity} name="commodity" />
+                    <Input type="hidden" defaultValue={weeklyOthWOptions} name="weeklyOthWOptions" />
+                    <Input type="hidden" defaultValue={biweekOthWOptions} name="biweekOthWOptions" />
+                    <Input type="hidden" defaultValue={oth60WOptions} name="oth60WOptions" />
+                    <Input type="hidden" defaultValue={formData.accessories} name="accessories" />
+                    <Input type="hidden" defaultValue={formData.labour} name="labour" />
+                    <Input type="hidden" defaultValue={formData.financeId} name="id" />
+                    <Input type="hidden" defaultValue={formData.msrp} name="msrp" />
+                    <Input type="hidden" defaultValue={weeklylNat} name="weeklylNat" />
+                    <Input type="hidden" defaultValue={deposit} name="deposit" />
+                    <Input type="hidden" defaultValue={biweeklNat} name="biweeklNat" />
+                    <Input type="hidden" defaultValue={biweeklNatWOptions} name="biweeklNatWOptions" />
+                    <Input type="hidden" defaultValue={nat60WOptions} name="nat60WOptions" />
+                    <Input type="hidden" defaultValue={weeklylNatWOptions} name="weeklylNatWOptions" />
+                    <Input type="hidden" defaultValue={nat60} name="nat60" />
+                    <Input type="hidden" defaultValue={licensing} name="licensing" />
+                    <Input type="hidden" defaultValue={desiredPayments} name="desiredPayments" />
+                    <Input type="hidden" defaultValue="Reached" name="customerState" />
+                    <Input type="hidden" defaultValue="Active" name="status" />
+                    <Input type="hidden" defaultValue={finance.id} name="financeId" />
+                    <Input type="hidden" defaultValue={finance.userEmail} name="userEmail" />
+                    <Input type="hidden" defaultValue="TBD" name="nextAppointment" />
+                    {secPage && (
+                      <div className="flex justify-between">
+                        <div></div>
+                        <input
+                          type="hidden"
+                          name="financeId"
+                          defaultValue={finance.id}
+                        />
+                        <ButtonLoading
+                          size="sm"
+                          value="updateFinance"
+                          className="mb-5 mr-5   mt-5 w-auto cursor-pointer bg-primary"
+                          name="intent"
+                          type="submit"
+                          isSubmitting={isSubmitting}
+                          onClick={() => {
+                            setSaved(true);
+                            toast.success(`${finance.firstName}'s customer file is updated...`)
+                          }}
+                          loadingText={`${finance.firstName}'s customer file is updated...`}
+                        >
+                          Save
+                          <PaperPlaneIcon className="ml-2 h-4 w-4" />
+                        </ButtonLoading>
+                      </div>
+                    )}
+                  </Form>
+                  <CardFooter className="b-rounded-md  flex flex-row items-center border-t border-border  bg-muted/50  px-6  py-3">
+                    <div className="text-xs text-muted-foreground">
+                      Updated <time dateTime="2023-11-23">November 23, 2023</time>
+                    </div>
+                    <Pagination className="ml-auto mr-0 w-auto">
+                      <PaginationContent>
+                        <PaginationItem>
+                          <Button
+                            onClick={() => handlePrevPage()}
+                            size="icon"
+                            variant="outline"
+                            className="h-6 w-6"
                           >
-                            Save
+                            <ChevronLeft className="h-3.5 w-3.5" />
+                            <span className="sr-only">Previous Order</span>
+                          </Button>
+                        </PaginationItem>
+                        <PaginationItem>
+                          <Button
+                            onClick={() => handleNextPage()}
+                            size="icon"
+                            variant="outline"
+                            className="h-6 w-6"
+                          >
+                            <ChevronRight className="h-3.5 w-3.5" />
+                            <span className="sr-only">Next Order</span>
+                          </Button>
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  </CardFooter>
+                </Card>
+                <div className="flex justify-center">
+                  <Dialog open={openEmail} onOpenChange={setOpenEmail}>
+                    <DialogContent className=" max-w-[700px] w-[650px]  gap-0 border-border p-0 text-foreground outline-none mx-auto">
+
+                      <DialogHeader className="px-4 pb-4 pt-5">
+                        <DialogTitle>
+                          Sending {emailLabel && emailLabel} w/{" "}
+                          {emailDesiredPayments && emailDesiredPayments}
+                        </DialogTitle>
+                      </DialogHeader>
+                      <hr className="mx-auto my-3 w-[98%] text-muted-foreground" />
+                      <div className="mx-3 mb-3 grid gap-3">
+                        <div className="relative mt-3">
+
+                          <TextArea
+                            name="body"
+                            defaultValue={formData.body}
+                            className="w-full border-border bg-background "
+                            onChange={handleChange}
+                          />
+                          <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                            Email Message
+                          </label>
+
+                        </div>
+                      </div>
+                      <div>
+                        <div className="relative mt-4">
+                          <EmailPreview modelData={modelData} finance={finance} user={user} formData={formData} />
+                          <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                            Email Preview
+                          </label>
+                        </div>
+                      </div>
+                      <DialogFooter className=" border-t border-border p-4  ">
+                        <div className="flex justify-center">
+                          <Button
+                            size="icon"
+                            type="submit"
+                            onClick={() => {
+                              toast.success(`Email sent!`);
+                              SubmitTheSecondForm();
+                              // SubmitTheForm( );
+
+                            }}
+                            className="ml-auto bg-primary "
+                          >
                             <PaperPlaneIcon className="ml-2 h-4 w-4" />
-                          </ButtonLoading>
+                          </Button>
                         </div>
-                      )}
-                    </Form>
-                    <CardFooter className="b-rounded-md  flex flex-row items-center border-t border-border  bg-muted/50  px-6  py-3">
-                      <div className="text-xs text-muted-foreground">
-                        Updated <time dateTime="2023-11-23">November 23, 2023</time>
+                      </DialogFooter>
+
+                    </DialogContent>
+                  </Dialog>
+                  <Dialog open={openTemplate} onOpenChange={setOpenTemplate}>
+                    <DialogContent className=" emailDialog gap-0 border-border p-0 text-foreground outline-none ">
+                      <DialogHeader className="px-4 pb-4 pt-5">
+                        <DialogTitle>
+                          Preview Email Templates
+                        </DialogTitle>
+                      </DialogHeader>
+                      <hr className="mx-auto my-3 w-[98%] text-muted-foreground" />
+                      <div>
+                        <div className="relative mt-4">
+                          <TemplatePreview finance={finance} modelData={modelData} deFees={deFees} user={user} formData={formData} />
+                          <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                            Email Preview
+                          </label>
+                        </div>
                       </div>
-                      <Pagination className="ml-auto mr-0 w-auto">
-                        <PaginationContent>
-                          <PaginationItem>
-                            <Button
-                              onClick={() => handlePrevPage()}
-                              size="icon"
-                              variant="outline"
-                              className="h-6 w-6"
-                            >
-                              <ChevronLeft className="h-3.5 w-3.5" />
-                              <span className="sr-only">Previous Order</span>
-                            </Button>
-                          </PaginationItem>
-                          <PaginationItem>
-                            <Button
-                              onClick={() => handleNextPage()}
-                              size="icon"
-                              variant="outline"
-                              className="h-6 w-6"
-                            >
-                              <ChevronRight className="h-3.5 w-3.5" />
-                              <span className="sr-only">Next Order</span>
-                            </Button>
-                          </PaginationItem>
-                        </PaginationContent>
-                      </Pagination>
-                    </CardFooter>
-                  </Card>
-                  <div className="flex justify-center">
-                    <Dialog open={openEmail} onOpenChange={setOpenEmail}>
-                      <DialogContent className=" max-w-[700px] w-[650px]  gap-0 border-border p-0 text-foreground outline-none mx-auto">
-
-                        <DialogHeader className="px-4 pb-4 pt-5">
-                          <DialogTitle>
-                            Sending {emailLabel && emailLabel} w/{" "}
-                            {emailDesiredPayments && emailDesiredPayments}
-                          </DialogTitle>
-                        </DialogHeader>
-                        <hr className="mx-auto my-3 w-[98%] text-muted-foreground" />
-                        <div className="mx-3 mb-3 grid gap-3">
-                          <div className="relative mt-3">
-
-                            <TextArea
-                              name="body"
-                              defaultValue={formData.body}
-                              className="w-full border-border bg-background "
-                              onChange={handleChange}
-                            />
-                            <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
-                              Email Message
-                            </label>
-
-                          </div>
+                      <hr className="mx-auto my-3 w-[98%] text-muted-foreground" />
+                      <div>
+                        <div className="relative mt-4">
+                          <TemplatePreviewTwo finance={finance} modelData={modelData} deFees={deFees} user={user} />
+                          <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                            Email Preview
+                          </label>
                         </div>
-                        <div>
-                          <div className="relative mt-4">
-                            <EmailPreview modelData={modelData} finance={finance} user={user} formData={formData} />
-                            <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
-                              Email Preview
-                            </label>
-                          </div>
-                        </div>
-                        <DialogFooter className=" border-t border-border p-4  ">
-                          <div className="flex justify-center">
-                            <Button
-                              size="icon"
-                              type="submit"
-                              onClick={() => {
-                                toast.success(`Email sent!`);
-                                SubmitTheSecondForm();
-                                // SubmitTheForm( );
+                      </div>
+                      <hr className="mx-auto my-3 w-[98%] text-muted-foreground" />
+                      <div>
+                        <div className="relative mt-4"> finance,
 
-                              }}
-                              className="ml-auto bg-primary "
-                            >
-                              <PaperPlaneIcon className="ml-2 h-4 w-4" />
-                            </Button>
-                          </div>
-                        </DialogFooter>
-
-                      </DialogContent>
-                    </Dialog>
-                    <Dialog open={openTemplate} onOpenChange={setOpenTemplate}>
-                      <DialogContent className=" emailDialog gap-0 border-border p-0 text-foreground outline-none ">
-                        <DialogHeader className="px-4 pb-4 pt-5">
-                          <DialogTitle>
-                            Preview Email Templates
-                          </DialogTitle>
-                        </DialogHeader>
-                        <hr className="mx-auto my-3 w-[98%] text-muted-foreground" />
-                        <div>
-                          <div className="relative mt-4">
-                            <TemplatePreview finance={finance} modelData={modelData} deFees={deFees} user={user} formData={formData} />
-                            <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
-                              Email Preview
-                            </label>
-                          </div>
+                          <TemplatePreviewThree finance={finance} modelData={modelData} deFees={deFees} user={user} />
+                          <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                            Email Preview
+                          </label>
                         </div>
-                        <hr className="mx-auto my-3 w-[98%] text-muted-foreground" />
-                        <div>
-                          <div className="relative mt-4">
-                            <TemplatePreviewTwo finance={finance} modelData={modelData} deFees={deFees} user={user} />
-                            <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
-                              Email Preview
-                            </label>
-                          </div>
-                        </div>
-                        <hr className="mx-auto my-3 w-[98%] text-muted-foreground" />
-                        <div>
-                          <div className="relative mt-4"> finance,
-
-                            <TemplatePreviewThree finance={finance} modelData={modelData} deFees={deFees} user={user} />
-                            <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
-                              Email Preview
-                            </label>
-                          </div>
-                        </div>
-                        <DialogFooter className=" border-t border-border p-4  ">
-                          <DialogClose className="flex justify-center">
-                            <Button size="icon" className="ml-auto bg-primary "  >
-                              <X className="ml-2 h-4 w-4" />
-                            </Button>
-                          </DialogClose>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
+                      </div>
+                      <DialogFooter className=" border-t border-border p-4  ">
+                        <DialogClose className="flex justify-center">
+                          <Button size="icon" className="ml-auto bg-primary "  >
+                            <X className="ml-2 h-4 w-4" />
+                          </Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </div>
-              </TabsContent>
-              <TabsContent value="Service">
-                <main className="grid flex-1 items-start  lg:grid-cols-2 xl:grid-cols-2">
-                  {serviceOrder && (
-                    <Tabs defaultValue="week" className='mr-2'>
-                      <div className="flex items-center">
-                        <TabsList>
-                          <TabsTrigger value="week"> <File className="h-5 w-5" /></TabsTrigger>
-                          <TabsTrigger value="Parts"> <Wrench className="h-5 w-5" /></TabsTrigger>
-                        </TabsList>
-                      </div>
-                      <TabsContent value="week">
-                        <Card x-chunk="dashboard-05-chunk-3">
-                          <CardHeader className="px-7 bg-muted/50 text-lg">
-                            <CardTitle>Work Order</CardTitle>
-                            <CardDescription>
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent className=" h-auto max-h-[700px] overflow-y-auto">
-                            <div className=' grid grid-cols-1'>
-                              <Accordion type="single" collapsible className="w-full border-border">
-                                <AccordionItem value="item-1" className='border-border'>
-                                  <AccordionTrigger>Unit</AccordionTrigger>
-                                  <AccordionContent>
-                                    <div className='grid grid-cols-1'>
-                                      <Table>
-                                        <TableHeader>
-                                          <TableRow className='border-border'>
-                                            <TableHead>
-                                              Unit
-                                            </TableHead>
-                                            <TableHead>
-                                              Color
-                                            </TableHead>
-                                            <TableHead className="hidden md:table-cell">
-                                              Mileage
-                                            </TableHead>
-                                            <TableHead className="hidden md:table-cell">
-                                              VIN
-                                            </TableHead>
-                                            <TableHead className="hidden md:table-cell">
-                                              Motor
-                                            </TableHead>
-                                            <TableHead className="hidden md:table-cell">
-                                              Dept
-                                            </TableHead>
-                                          </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                          {serviceOrder && serviceOrder.Clientfile.ServiceUnit && serviceOrder.Clientfile.ServiceUnit.map((result, index) => (
-                                            <TableRow key={index} className="hover:bg-accent border-border rounded-[6px] cursor-pointer" onClick={() => {
-                                              const formData = new FormData();
-                                              formData.append("unit", (`${result.year} ${result.brand} ${result.model}`));
-                                              formData.append("mileage", result.mileage);
-                                              formData.append("vin", result.vin);
-                                              formData.append("tag", result.tag);
-                                              formData.append("motor", result.motor);
-                                              formData.append("color", result.color);
-                                              formData.append("workOrderId", serviceOrder.workOrderId);
-                                              formData.append("intent", 'addUnit');
-                                              submit(formData, { method: "post", });
-                                            }}>
-                                              <TableCell>
-                                                <p>{result.year} {result.brand} {result.model}</p>
-                                              </TableCell>
-                                              <TableCell className="hidden md:table-cell">
-                                                {result.mileage}
-                                              </TableCell>
-                                              <TableCell className="hidden md:table-cell">
-                                                {result.vin}
-                                              </TableCell>
-                                              <TableCell className="hidden md:table-cell">
-                                                {result.tag}
-                                              </TableCell>
-                                              <TableCell className="hidden md:table-cell">
-                                                {result.motor}
-                                              </TableCell>
-                                              <TableCell className="hidden md:table-cell">
-                                                <p>Service Units</p>
-                                              </TableCell>
-                                            </TableRow>
-                                          ))}
-                                          {serviceOrder && serviceOrder.Clientfile.Finance && serviceOrder.Clientfile.Finance.map((result, index) => (
-                                            <TableRow key={index} className="hover:bg-accent border-border  rounded-[6px] cursor-pointer" onClick={() => {
-                                              const formData = new FormData();
-                                              formData.append("unit", (`${result.year} ${result.brand} ${result.model}`));
-                                              formData.append("mileage", result.mileage);
-                                              formData.append("vin", result.vin);
-                                              formData.append("tag", result.tag);
-                                              formData.append("motor", result.motor);
-                                              formData.append("color", result.color);
-                                              formData.append("workOrderId", order.workOrderId);
-                                              formData.append("intent", 'addUnit');
-                                              submit(formData, { method: "post", });
-                                            }}>
-                                              <TableCell>
-                                                <p>{result.year} {result.brand} {result.model}</p>
-                                              </TableCell>
-                                              <TableCell className="hidden md:table-cell">
-                                                {result.mileage}
-                                              </TableCell>
-                                              <TableCell className="hidden md:table-cell">
-                                                {result.vin}
-                                              </TableCell>
-                                              <TableCell className="hidden md:table-cell">
-                                                {result.tag && (result.tag)}
-                                              </TableCell>
-                                              <TableCell className="hidden md:table-cell">
-                                                {result.motor && (result.motor)}
-                                              </TableCell>
-                                              <TableCell className="hidden md:table-cell">
-                                                <p>Finance Units</p>
-                                              </TableCell>
-                                            </TableRow>
-                                          ))}
-                                        </TableBody>
-                                      </Table>
-                                      <Dialog>
-                                        <DialogTrigger>
-                                          <Button size='sm' className='text-foreground mt-4 w-[75px]' >
-                                            New Unit
-                                          </Button>
-                                        </DialogTrigger>
-                                        <DialogContent className='border-border'>
-                                          <DialogHeader>
-                                            <DialogTitle>Add New Unit To Client File</DialogTitle>
-                                            <DialogDescription>
-                                            </DialogDescription>
-                                          </DialogHeader>
-                                          <>
-                                            <Form method='post' >
-                                              <input type='hidden' name='clientfileId' value={clientFile.id} />
-                                              {serviceOrder && (
-                                                <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
-
-                                              )}
-                                              <div className='grid grid-cols-1'>
-                                                {unitCard.map((user, index) => (
-                                                  <div key={index} className="relative mt-4">
-                                                    <Input
-                                                      name={user.name}
-                                                      className={` bg-background text-foreground border border-border`}
-                                                    />
-                                                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
-                                                  </div>
-                                                ))}
-                                                <Button size='sm' className='text-foreground mt-4'
-                                                  type='submit'
-                                                  name='intent'
-                                                  value='addNewServiceUnit' >
-                                                  Submit
-                                                </Button>
-                                              </div>
-                                            </Form>
-                                          </>
-                                        </DialogContent>
-                                      </Dialog>
-                                    </div>
-                                  </AccordionContent>
-                                </AccordionItem>
-                              </Accordion>
-                              <p className='mt-4 mb-5'></p>
-                              <div className="grid gap-3">
-                                <div className="font-semibold">Work Order Services</div>
-                                <ul className="grid gap-3">
-                                  {serviceOrder && serviceOrder.ServicesOnWorkOrders && serviceOrder.ServicesOnWorkOrders.map((result, index) => {
-                                    const hours = result.hr || result.service.estHr || 0.00;
-                                    return (
-                                      <li key={index} className="flex items-center justify-between">
-                                        <div>
-                                          <ContextMenu>
-                                            <ContextMenuTrigger>
-                                              <div className='grid grid-cols-1'>
-                                                <div className='flex items-center group '>
-                                                  <div className="font-medium flex-col">
-                                                    <p>{result.service.service}</p>
-                                                    <p className='text-muted-foreground'>{result.service.description}</p>
-                                                  </div>
-                                                  <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                                                    <input type="hidden" name="id" value={result.id} />
-                                                    <input type='hidden' name='total' value={total} />
-                                                    <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
-                                                    <Button
-                                                      size="icon"
-                                                      variant="outline"
-                                                      name="intent" value='deleteServiceItem'
-                                                      className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                                                      type='submit'
-                                                    >
-                                                      <X className="h-4 w-4 text-foreground" />
-                                                    </Button>
-                                                  </addProduct.Form>
-                                                </div>
-                                                <div className="hidden text-sm text-muted-foreground md:inline">
-                                                  <div className='flex items-center'>
-                                                    <div className="font-medium">
-                                                      <EditableText
-                                                        value={hours}
-                                                        fieldName="name"
-                                                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
-                                                        buttonClassName="text-center py-1 px-2 text-muted-foreground"
-                                                        buttonLabel={`Edit name`}
-                                                        inputLabel={`Edit name`}
-                                                      >
-                                                        <input type="hidden" name="intent" value='updateHr' />
-                                                        <input type="hidden" name="id" value={result.id} />
-                                                        <input type="hidden" name="colName" value='hr' />
-                                                      </EditableText>
-
-                                                    </div>
-                                                    <p>/hrs{" "}{" "}@{" "}${tax.userLabour}</p>
-                                                  </div>
-                                                </div>
-                                                {result.status && (
-                                                  <div>
-                                                    <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
-                                                  </div>
-                                                )}
-                                              </div>
-                                            </ContextMenuTrigger>
-                                            <ContextMenuContent className='border-border'>
-                                              <ContextMenuSub>
-                                                <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
-                                                <ContextMenuSubContent className="w-48 border-border">
-                                                  <ContextMenuItem>{result.service.service}</ContextMenuItem>
-                                                  <ContextMenuItem>{result.service.description}</ContextMenuItem>
-                                                  <ContextMenuSeparator />
-                                                  <ContextMenuItem>
-                                                    Est. Hours
-                                                    <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
-                                                  </ContextMenuItem>
-                                                  <ContextMenuItem>
-                                                    Price
-                                                    <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
-                                                  </ContextMenuItem>
-                                                </ContextMenuSubContent>
-                                              </ContextMenuSub>
-                                              <ContextMenuSeparator />
-                                              <ContextMenuCheckboxItem
-                                                checked={result.status === 'In Stock'}
-                                                onSelect={() => {
-                                                  const formData = new FormData();
-                                                  formData.append("id", result.id);
-                                                  formData.append("status", 'In Stock');
-                                                  formData.append("intent", 'updateServiceOnOrders');
-                                                  submit(formData, { method: "post", });
-                                                }}
-                                              >In Stock</ContextMenuCheckboxItem>
-                                              <ContextMenuCheckboxItem
-                                                checked={result.status === 'On Order'}
-                                                onSelect={() => {
-                                                  const formData = new FormData();
-                                                  formData.append("id", result.id);
-                                                  formData.append("status", 'On Order');
-                                                  formData.append("intent", 'updateServiceOnOrders');
-                                                  submit(formData, { method: "post", });
-                                                }}
-                                              >On Order</ContextMenuCheckboxItem>
-                                              <ContextMenuCheckboxItem
-                                                checked={result.status === 'Completed'}
-                                                onSelect={() => {
-                                                  const formData = new FormData();
-                                                  formData.append("id", result.id);
-                                                  formData.append("status", 'Completed');
-                                                  formData.append("intent", 'updateServiceOnOrders');
-                                                  submit(formData, { method: "post", });
-                                                }}
-                                              >Completed</ContextMenuCheckboxItem>
-                                              <ContextMenuCheckboxItem
-                                                checked={result.status === 'Back Order'}
-                                                onSelect={() => {
-                                                  const formData = new FormData();
-                                                  formData.append("id", result.id);
-                                                  formData.append("status", 'Back Order');
-                                                  formData.append("intent", 'updateServiceOnOrders');
-                                                  submit(formData, { method: "post", });
-                                                }}
-                                              >Back Order</ContextMenuCheckboxItem>
-                                            </ContextMenuContent>
-                                          </ContextMenu>
-                                        </div>
-                                        <span>
-                                          x{" "}{" "}{result.quantity}
-                                        </span>
-                                      </li>
-                                    )
-                                  })}
-                                </ul>
-                              </div>
-                              <Separator className="my-4" />
-                              <div className="font-semibold">Services</div>
-                              <div className='mx-4 flex-col'>
-                                <Accordion type="single" collapsible className="w-full border-border">
-                                  <AccordionItem value="item-1" className='border-border'>
-                                    <AccordionTrigger>Add New Service</AccordionTrigger>
-                                    <AccordionContent>
-                                      <fetcher.Form method='post'>
-                                        <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
-                                        <div className='flex'>
-                                          <div className="flex-col" >
-                                            <div className="relative mt-4">
-                                              <Input name='name' className='w-[250px] mr-3' />
-                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Name</label>
-                                            </div>
-                                            <div className="relative mt-4">
-                                              <TextArea name='description' className='w-[250px] mr-3' />
-                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Description</label>
-                                            </div>
-
-                                            <div className="relative mt-4">
-                                              <Input name='hr' className='w-[100px] mr-3' />
-                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Hr's</label>
-                                            </div>
-                                            <div className="relative mt-4">
-                                              <Input name='quantity' className='w-[100px] mr-3' defaultValue={1} />
-                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Quantity</label>
-                                            </div>
-
-                                            <Button
-                                              className='mt-4'
-                                              size='icon'
-                                              type='submit'
-                                              name='intent'
-                                              value='addNewServiceToWorkOrder'
-                                            ><Plus /></Button>
-                                          </div>
-                                        </div>
-                                      </fetcher.Form>
-                                    </AccordionContent>
-                                  </AccordionItem>
-                                </Accordion>
-
-                              </div>
-                              <div className='flex-col mt-4'>
-                                <div className='mx-4'>
-                                  <div className="font-semibold">Select Service</div>
-                                  <search.Form method="get" action='/dealer/service/search/services'>
-                                    <div className="relative ml-auto flex-1 md:grow-0 ">
-                                      <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                      <Input
-                                        ref={ref}
-                                        type="search"
-                                        name="q"
-                                        onChange={e => {
-                                          search.submit(e.currentTarget.form);
-                                        }}
-                                        autoFocus
-                                        placeholder="Search..."
-                                        className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-                                      />
-                                    </div>
-                                  </search.Form>
-                                  <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
-                                    {search.data && search.data.map((result, index) => {
-                                      return (
-                                        <li key={index} className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]" onClick={() => {
-                                          const formData = new FormData();
-                                          formData.append("hr", result.estHr);
-                                          formData.append("workOrderId", serviceOrder.workOrderId);
-                                          formData.append("serviceId", result.id);
-                                          formData.append("intent", 'addServiceToWorkOrder');
-                                          submit(formData, { method: "post", });
-                                        }}>
-                                          <div className="font-medium flex-col">
-                                            <p className=' text-left'>{result.service}</p>
-                                            <p className='text-muted-foreground text-left'>{result.description}</p>
-                                            <p className='text-muted-foreground text-left'>{result.estHr}/hrs{" "}{" "}@{" "}${tax.userLabour}</p>
-                                          </div>
-                                        </li>
-                                      )
-                                    })}
-                                  </ul>
-
-                                </div>
-
-                              </div>
-
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </TabsContent>
-                      <TabsContent value="Parts">
-                        <Card x-chunk="dashboard-05-chunk-3 " className='mx-5 w-[95%] '>
-                          <CardHeader className="px-7">
-                            <CardTitle>
-                              <div className='flex justify-between items-center'>
-                                <p>Accessories</p>
-                              </div>
-                            </CardTitle>
-                            <CardDescription className='flex items-center'>
-                              <product.Form method="get" action='/dealer/accessories/products/search'>
-                                <div className="relative ml-auto flex-1 md:grow-0 ">
-                                  <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                  <Input
-                                    ref={ref}
-                                    type="search"
-                                    name="q"
-                                    onChange={e => {
-                                      //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
-                                      product.submit(e.currentTarget.form);
-                                    }}
-                                    autoFocus
-                                    placeholder="Search..."
-                                    className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-                                  />
-                                </div>
-                              </product.Form>
-                            </CardDescription>
-                          </CardHeader>
-                          <CardContent>
-                            <Table>
-                              <TableHeader>
-                                <TableRow className='border-border'>
-                                  <TableHead>
-                                    Brand & Name
-                                  </TableHead>
-                                  <TableHead className="hidden sm:table-cell">
-                                    Description
-                                  </TableHead>
-                                  <TableHead className="hidden sm:table-cell">
-                                    Category
-                                  </TableHead>
-                                  <TableHead className="hidden sm:table-cell">
-                                    Sub Category
-                                  </TableHead>
-                                  <TableHead className="hidden sm:table-cell">
-                                    On Order
-                                  </TableHead>
-                                  <TableHead className="hidden sm:table-cell">
-                                    Distributer
-                                  </TableHead>
-                                  <TableHead className="hidden sm:table-cell">
-                                    Location
-                                  </TableHead>
-                                  <TableHead className="hidden md:table-cell">
-                                    Cost
-                                  </TableHead>
-                                  <TableHead className="hidden sm:table-cell">
-                                    Price
-                                  </TableHead>
-                                  <TableHead className="text-right">
-                                    Quantity
-                                  </TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody className='max-h-[700px] h-auto overflow-y-auto'>
-                                {product.data &&
-                                  product.data.map((result, index) => (
-                                    <TableRow key={index} className="hover:bg-accent border-border rounded-[6px] cursor-pointer" onClick={() => {
-                                      const formData = new FormData();
-                                      formData.append("accessoryId", result.id);
-                                      formData.append("workOrderId", serviceOrder.workOrderId);
-                                      formData.append("accOrderId", serviceOrder.AccOrders[0].id);
-                                      formData.append("intent", 'addAccToWorkOrder');
-                                      submit(formData, { method: "post", });
-                                    }}>
-                                      <TableCell className='flex-col'>
-                                        <p className="font-medium">
-                                          {result.name}
-                                        </p>
-                                        <p className="text-sm text-muted-foreground ">
-                                          {result.brand}
-                                        </p>
-                                      </TableCell>
-                                      <TableCell className="hidden sm:table-cell">
-                                        {result.description}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.category}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.subCategory}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.onOrder}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.distributer}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.location}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.cost}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.price}
-                                      </TableCell>
-                                      <TableCell className="hidden md:table-cell">
-                                        {result.quantity}
-                                      </TableCell>
-                                    </TableRow>
-                                  ))}
-                              </TableBody>
-                            </Table>
-                          </CardContent>
-                        </Card>
-                      </TabsContent>
-                      <TabsContent value="Calendar">
-                      </TabsContent>
-                    </Tabs>
-                  )}
-                  <div>
-                    <Card className="overflow-hidden mt-[35px] ml-2" x-chunk="dashboard-05-chunk-4"          >
-                      <CardHeader className="flex flex-row items-start bg-muted/50">
-                        <div className="grid gap-0.5">
-                          <CardTitle className="group flex items-center gap-2 text-lg">
-                            W / O #{serviceOrder && (serviceOrder.workOrderId)}
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                            >
-                              <Copy className="h-3 w-3" />
-                              <span className="sr-only">Copy Order ID</span>
-                            </Button>
-                          </CardTitle>
-                          {serviceOrder && serviceOrder.status && (
-                            <div>
-                              <div className="relative mt-4">
-                                <Select
-                                  name='status'
-                                  defaultValue={serviceOrder.status}
-                                  onValueChange={(value) => {
-                                    const formData = new FormData();
-                                    formData.append("id", order.workOrderId);
-                                    formData.append("total", total);
-                                    formData.append("intent", 'updateStatus');
-                                    formData.append("status", value);
-                                    console.log(formData, 'formData');
-                                    workOrder.submit(formData, { method: "post" });
-                                  }}>
-                                  <SelectTrigger className="w-[200px] " >
-                                    <SelectValue defaultValue={serviceOrder.status} />
-                                  </SelectTrigger>
-                                  <SelectContent className='border-border'>
-                                    <SelectGroup>
-                                      <SelectLabel>Status</SelectLabel>
-                                      <SelectItem value="Quote">Quote</SelectItem>
-                                      <SelectItem value="Sales">Sales</SelectItem>
-                                      <SelectItem value="Open">Open / Scheduled</SelectItem>
-                                      <SelectItem value="Waiting On Parts">Waiting On Parts</SelectItem>
-                                      <SelectItem value="Waiter">Waiter</SelectItem>
-                                      <SelectItem value="In Works">In Works</SelectItem>
-                                      <SelectItem value="Work Completed">Work Completed</SelectItem>
-                                      <SelectItem value="Closed">Closed</SelectItem>
-                                    </SelectGroup>
-                                  </SelectContent>
-                                </Select>
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-muted/50 transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Status</label>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        <div className="ml-auto flex items-center gap-1">
-                          {serviceOrder && (
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button size="icon" variant="outline" className="h-8 w-8">
-                                  <MoreVertical className="h-3.5 w-3.5" />
-                                  <span className="sr-only">More</span>
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent
-                                align="end"
-                                className="border border-border"
-                              >
-                                <DropdownMenuItem
-                                  onSelect={() => {
-                                    navigate(`/dealer/service/workOrder/${serviceOrder.workOrderId}`)
-                                  }}>
-                                  Go To Order
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onSelect={() => {
-                                    console.log(toReceipt)
-                                    PrintReceipt(toReceipt)
-                                  }}>
-                                  Reprint Receipt
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>
-                                  Show Discount
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  onSelect={() => {
-                                    setShowPrev(false)
-                                    setorder(null)
-                                  }}>
-                                  Back
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  onSelect={() => {
-                                    const formData = new FormData();
-                                    formData.append("workOrderId", serviceOrder.workOrderId);
-                                    formData.append("intent", 'deleteOrder');
-                                    submit(formData, { method: "post", });
-                                  }}>
-                                  Delete
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          )}
-                        </div>
-                      </CardHeader>
-                      <CardContent className="p-6 text-sm h-auto max-h-[700px] overflow-y-auto">
-                        {secPageService && (
-                          <>
-
-                            <Accordion type="single" collapsible className="w-full border-border mt-3">
+              </div>
+            </TabsContent>
+            <TabsContent value="Service">
+              <main className="grid flex-1 items-start  lg:grid-cols-2 xl:grid-cols-2">
+                {serviceOrder && (
+                  <Tabs defaultValue="week" className='mr-2'>
+                    <div className="flex items-center">
+                      <TabsList>
+                        <TabsTrigger value="week"> <File className="h-5 w-5" /></TabsTrigger>
+                        <TabsTrigger value="Parts"> <Wrench className="h-5 w-5" /></TabsTrigger>
+                      </TabsList>
+                    </div>
+                    <TabsContent value="week">
+                      <Card x-chunk="dashboard-05-chunk-3">
+                        <CardHeader className="px-7 bg-muted/50 text-lg">
+                          <CardTitle>Work Order</CardTitle>
+                          <CardDescription>
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className=" h-auto max-h-[700px] overflow-y-auto">
+                          <div className=' grid grid-cols-1'>
+                            <Accordion type="single" collapsible className="w-full border-border">
                               <AccordionItem value="item-1" className='border-border'>
-                                <AccordionTrigger>Work Order Notes</AccordionTrigger>
+                                <AccordionTrigger>Unit</AccordionTrigger>
                                 <AccordionContent>
-                                  <div className="grid gap-3">
-                                    <Form method='post'>
-                                      <div className="relative mt-4">
-                                        <TextArea className='w-full mt-4' name='note' defaultValue={serviceOrder.notes} />
-                                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note</label>
-                                      </div>
-                                      <input type='hidden' name='id' defaultValue={serviceOrder.workOrderId} />
-                                      <Button type='submit' name='intent' value='updateNote' className='mt-4 text-foreground' size='sm'>
-                                        Submit
-                                      </Button>
-                                    </Form>
+                                  <div className='grid grid-cols-1'>
+                                    <Table>
+                                      <TableHeader>
+                                        <TableRow className='border-border'>
+                                          <TableHead>
+                                            Unit
+                                          </TableHead>
+                                          <TableHead>
+                                            Color
+                                          </TableHead>
+                                          <TableHead className="hidden md:table-cell">
+                                            Mileage
+                                          </TableHead>
+                                          <TableHead className="hidden md:table-cell">
+                                            VIN
+                                          </TableHead>
+                                          <TableHead className="hidden md:table-cell">
+                                            Motor
+                                          </TableHead>
+                                          <TableHead className="hidden md:table-cell">
+                                            Dept
+                                          </TableHead>
+                                        </TableRow>
+                                      </TableHeader>
+                                      <TableBody>
+                                        {serviceOrder && serviceOrder.Clientfile.ServiceUnit && serviceOrder.Clientfile.ServiceUnit.map((result, index) => (
+                                          <TableRow key={index} className="hover:bg-accent border-border rounded-[6px] cursor-pointer" onClick={() => {
+                                            const formData = new FormData();
+                                            formData.append("unit", (`${result.year} ${result.brand} ${result.model}`));
+                                            formData.append("mileage", result.mileage);
+                                            formData.append("vin", result.vin);
+                                            formData.append("tag", result.tag);
+                                            formData.append("motor", result.motor);
+                                            formData.append("color", result.color);
+                                            formData.append("workOrderId", serviceOrder.workOrderId);
+                                            formData.append("intent", 'addUnit');
+                                            submit(formData, { method: "post", });
+                                          }}>
+                                            <TableCell>
+                                              <p>{result.year} {result.brand} {result.model}</p>
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                              {result.mileage}
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                              {result.vin}
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                              {result.tag}
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                              {result.motor}
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                              <p>Service Units</p>
+                                            </TableCell>
+                                          </TableRow>
+                                        ))}
+                                        {serviceOrder && serviceOrder.Clientfile.Finance && serviceOrder.Clientfile.Finance.map((result, index) => (
+                                          <TableRow key={index} className="hover:bg-accent border-border  rounded-[6px] cursor-pointer" onClick={() => {
+                                            const formData = new FormData();
+                                            formData.append("unit", (`${result.year} ${result.brand} ${result.model}`));
+                                            formData.append("mileage", result.mileage);
+                                            formData.append("vin", result.vin);
+                                            formData.append("tag", result.tag);
+                                            formData.append("motor", result.motor);
+                                            formData.append("color", result.color);
+                                            formData.append("workOrderId", order.workOrderId);
+                                            formData.append("intent", 'addUnit');
+                                            submit(formData, { method: "post", });
+                                          }}>
+                                            <TableCell>
+                                              <p>{result.year} {result.brand} {result.model}</p>
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                              {result.mileage}
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                              {result.vin}
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                              {result.tag && (result.tag)}
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                              {result.motor && (result.motor)}
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                              <p>Finance Units</p>
+                                            </TableCell>
+                                          </TableRow>
+                                        ))}
+                                      </TableBody>
+                                    </Table>
+                                    <Dialog>
+                                      <DialogTrigger>
+                                        <Button size='sm' className='text-foreground mt-4 w-[75px]' >
+                                          New Unit
+                                        </Button>
+                                      </DialogTrigger>
+                                      <DialogContent className='border-border'>
+                                        <DialogHeader>
+                                          <DialogTitle>Add New Unit To Client File</DialogTitle>
+                                          <DialogDescription>
+                                          </DialogDescription>
+                                        </DialogHeader>
+                                        <>
+                                          <Form method='post' >
+                                            <input type='hidden' name='clientfileId' value={clientFile.id} />
+                                            {serviceOrder && (
+                                              <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
+
+                                            )}
+                                            <div className='grid grid-cols-1'>
+                                              {unitCard.map((user, index) => (
+                                                <div key={index} className="relative mt-4">
+                                                  <Input
+                                                    name={user.name}
+                                                    className={` bg-background text-foreground border border-border`}
+                                                  />
+                                                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">{user.label}</label>
+                                                </div>
+                                              ))}
+                                              <Button size='sm' className='text-foreground mt-4'
+                                                type='submit'
+                                                name='intent'
+                                                value='addNewServiceUnit' >
+                                                Submit
+                                              </Button>
+                                            </div>
+                                          </Form>
+                                        </>
+                                      </DialogContent>
+                                    </Dialog>
                                   </div>
                                 </AccordionContent>
                               </AccordionItem>
                             </Accordion>
-
-                            <div className="grid gap-3 mt-3">
+                            <p className='mt-4 mb-5'></p>
+                            <div className="grid gap-3">
                               <div className="font-semibold">Work Order Services</div>
                               <ul className="grid gap-3">
-                                {serviceOrder.ServicesOnWorkOrders && serviceOrder.ServicesOnWorkOrders.map((result, index) => {
+                                {serviceOrder && serviceOrder.ServicesOnWorkOrders && serviceOrder.ServicesOnWorkOrders.map((result, index) => {
                                   const hours = result.hr || result.service.estHr || 0.00;
                                   return (
                                     <li key={index} className="flex items-center justify-between">
@@ -6130,8 +5667,9 @@ export default function Dashboard() {
                                           <ContextMenuTrigger>
                                             <div className='grid grid-cols-1'>
                                               <div className='flex items-center group '>
-                                                <div className="font-medium">
-                                                  {result.service.service}
+                                                <div className="font-medium flex-col">
+                                                  <p>{result.service.service}</p>
+                                                  <p className='text-muted-foreground'>{result.service.description}</p>
                                                 </div>
                                                 <addProduct.Form method="post" ref={formRef} className='mr-auto'>
                                                   <input type="hidden" name="id" value={result.id} />
@@ -6165,7 +5703,7 @@ export default function Dashboard() {
                                                     </EditableText>
 
                                                   </div>
-                                                  <p>{" "}hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                                                  <p>/hrs{" "}{" "}@{" "}${tax.userLabour}</p>
                                                 </div>
                                               </div>
                                               {result.status && (
@@ -6238,761 +5776,279 @@ export default function Dashboard() {
                                       </div>
                                       <span>
                                         x{" "}{" "}{result.quantity}
-
                                       </span>
                                     </li>
                                   )
                                 })}
                               </ul>
-                              <Separator className="my-4" />
-                              <div className="font-semibold">Work Order Parts</div>
-                              <ul className="grid gap-3">
-                                {serviceOrder?.AccOrders?.length > 0 ? (
-                                  serviceOrder.AccOrders.map((accOrder, accOrderIndex) => (
-                                    <div key={accOrderIndex}>
-                                      {accOrder?.AccessoriesOnOrders?.length > 0 ? (
-                                        accOrder.AccessoriesOnOrders.map((accessoryOnOrder, accessoryIndex) => (
-                                          <li key={accessoryIndex} className="flex items-center justify-between">
-                                            <div>
-                                              <ContextMenu>
-                                                <ContextMenuTrigger>
-                                                  <div className='grid grid-cols-1'>
-                                                    <div className='flex items-center group '>
-                                                      <div className="font-medium">
-
-                                                        {accessoryOnOrder.accessory.name}
-                                                      </div>
-                                                      <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                                                        <input type="hidden" name="id" value={accessoryOnOrder.id} />
-                                                        <input type='hidden' name='total' value={accessoryOnOrder.accessory.price * accessoryOnOrder.quantity} />
-                                                        <input type='hidden' name='accOrderId' value={accOrder.id} />
-                                                        <Button
-                                                          size="icon"
-                                                          variant="outline"
-                                                          name="intent" value='deleteOrderItem'
-                                                          className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                                                          type='submit'
-                                                        >
-                                                          <X className="h-4 w-4 text-foreground" />
-                                                        </Button>
-                                                      </addProduct.Form>
-                                                    </div>
-                                                    <div className="hidden text-sm text-muted-foreground md:inline">
-                                                      {accessoryOnOrder.accessory.brand}
-                                                    </div>
-                                                    <div>
-                                                      <Badge className='text-sm  px-2 py-1 '>{accessoryOnOrder.status}</Badge>
-                                                    </div>
-                                                  </div>
-                                                </ContextMenuTrigger>
-                                                <ContextMenuContent className='border-border'>
-                                                  <ContextMenuSub>
-                                                    <ContextMenuSubTrigger inset>Part Details</ContextMenuSubTrigger>
-                                                    <ContextMenuSubContent className="w-48 border-border">
-                                                      <ContextMenuItem>{accessoryOnOrder.accessory.partNumber}</ContextMenuItem>
-                                                      <ContextMenuItem>{accessoryOnOrder.accessory.brand} </ContextMenuItem>
-                                                      <ContextMenuItem>{accessoryOnOrder.accessory.name} </ContextMenuItem>
-                                                      <ContextMenuItem>{accessoryOnOrder.accessory.description} </ContextMenuItem>
-                                                      <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
-                                                      <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
-                                                      <ContextMenuSeparator />
-                                                      <ContextMenuItem>
-                                                        Cost
-                                                        <ContextMenuShortcut>${accessoryOnOrder.accessory.cost}</ContextMenuShortcut>
-                                                      </ContextMenuItem>
-                                                      <ContextMenuItem>
-                                                        Price
-                                                        <ContextMenuShortcut>${accessoryOnOrder.accessory.price}</ContextMenuShortcut>
-                                                      </ContextMenuItem>
-                                                      <ContextMenuItem>
-                                                        In Stock
-                                                        <ContextMenuShortcut>{accessoryOnOrder.accessory.quantity}</ContextMenuShortcut>
-                                                      </ContextMenuItem>
-                                                      <ContextMenuItem>
-                                                        On Order
-                                                        <ContextMenuShortcut>{accessoryOnOrder.accessory.onOrder}</ContextMenuShortcut>
-                                                      </ContextMenuItem>
-                                                      <ContextMenuItem>
-                                                        Location
-                                                        <ContextMenuShortcut>{accessoryOnOrder.accessory.location}</ContextMenuShortcut>
-                                                      </ContextMenuItem>
-                                                    </ContextMenuSubContent>
-                                                  </ContextMenuSub>
-                                                  <ContextMenuCheckboxItem
-                                                    checked={accessoryOnOrder.status === 'In Stock'}
-                                                    onSelect={() => {
-                                                      const formData = new FormData();
-                                                      formData.append("id", accessoryOnOrder.id);
-                                                      formData.append("status", 'In Stock');
-                                                      formData.append("intent", 'updateAccOnOrders');
-                                                      submit(formData, { method: "post", });
-                                                    }}
-                                                  >In Stock</ContextMenuCheckboxItem>
-                                                  <ContextMenuCheckboxItem
-                                                    checked={accessoryOnOrder.status === 'On Order'}
-                                                    onSelect={() => {
-                                                      const formData = new FormData();
-                                                      formData.append("id", accessoryOnOrder.id);
-                                                      formData.append("status", 'On Order');
-                                                      formData.append("intent", 'updateAccOnOrders');
-                                                      submit(formData, { method: "post", });
-                                                    }}
-                                                  >On Order</ContextMenuCheckboxItem>
-                                                  <ContextMenuCheckboxItem
-                                                    checked={accessoryOnOrder.status === 'Back Order'}
-                                                    onSelect={() => {
-                                                      const formData = new FormData();
-                                                      formData.append("id", accessoryOnOrder.id);
-                                                      formData.append("status", 'Back Order');
-                                                      formData.append("intent", 'updateAccOnOrders');
-                                                      submit(formData, { method: "post", });
-                                                    }}
-                                                  >Back Order</ContextMenuCheckboxItem>
-                                                </ContextMenuContent>
-                                              </ContextMenu>
-                                            </div>
-                                            <span>${accessoryOnOrder.accessory.price} x {accessoryOnOrder.quantity}</span>
-                                          </li>
-                                        ))
-                                      ) : (
-                                        <p>No Accessories On Orders available.</p>
-                                      )}
-                                    </div>
-                                  ))
-                                ) : (
-                                  <p>No Orders available.</p>
-                                )}
-                              </ul>
-
-
-                              <Separator className="my-2" />
-                              <ul className="grid gap-3">
-                                <li className="flex items-center justify-between">
-                                  <span className="text-muted-foreground">Service Subtotal</span>
-                                  <span>${serviceSubTotal}</span>
-                                </li>
-                                <li className="flex items-center justify-between">
-                                  <span className="text-muted-foreground">Parts Subtotal</span>
-                                  <span>${partsSubTotal}</span>
-                                </li>
-                                <li className="flex items-center justify-between">
-                                  <span className="text-muted-foreground">Subtotal</span>
-                                  <span>${totalPreTax}</span>
-                                </li>
-                                <li className="flex items-center justify-between">
-                                  <span className="text-muted-foreground">Tax</span>
-                                  <span>{tax.userTax}%</span>
-                                </li>
-                                <li className="flex items-center justify-between">
-                                  <span className="text-muted-foreground">Total</span>
-                                  <span>${totalService}</span>
-                                </li>
-                              </ul>
                             </div>
                             <Separator className="my-4" />
-                            <div className='gap-3'>
-                              <div className="font-semibold">Staff</div>
-
-                              <ul className="grid gap-3">
-                                <li className="flex items-center justify-between">
-                                  <span className="text-muted-foreground">
-                                    Technician
-                                  </span>
-                                  <span>{serviceOrder.tech}</span>
-                                </li>
-                                <li className="flex items-center justify-between">
-                                  <span className="text-muted-foreground">
-                                    Service Writer
-                                  </span>
-                                  <span>{serviceOrder.writer}</span>
-                                </li>
-                              </ul>
-                            </div>
-                          </>
-                        )}
-                        {firstPageService && (
-                          <>
-                            <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
-                              {orders && orders.map((result, index) => {
-                                return (
-                                  <li
-                                    onClick={() => {
-                                      handleNextPage()
-                                      setServiceOrder(result)
-                                    }}
-                                    key={index}
-                                    className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]">
-                                    <div className='flex-col'>
-                                      <div className='flex justify-between items-center'>
-                                        <p className='font-medium text-left'>W / O #{result.workOrderId}</p>
-                                        <p className='text-muted-foreground font-medium text-right'>{result.status}</p>
-                                      </div>
-                                      <div className='flex justify-between items-center'>
-                                        <p className='text-muted-foreground text-left'>Writer: {result.writer}</p>
-                                        <p className='text-muted-foreground text-right'>Tech: {result.tech}</p>
-                                      </div>
-                                      <p className='text-muted-foreground text-left'>{new Date(result.createdAt).toLocaleDateString("en-US", options2)}</p>
-                                    </div>
-                                  </li>
-                                )
-                              })}
-                            </ul>
-                          </>
-                        )}
-                      </CardContent>
-                      <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3 border-border">
-                        <Button size='sm' variant='outline'>
-                          Create New Work Order
-                        </Button>
-                        <Pagination className="ml-auto mr-0 w-auto">
-                          <PaginationContent>
-                            <PaginationItem>
-                              <Button size="icon"
-                                variant="outline"
-                                className="h-6 w-6"
-                                onClick={() => {
-                                  handlePrevPage()
-                                }}>
-                                <ChevronLeft className="h-3.5 w-3.5" />
-                                <span className="sr-only">Previous Order</span>
-                              </Button>
-                            </PaginationItem>
-                            <PaginationItem>
-                              <Button size="icon"
-                                variant="outline"
-                                className="h-6 w-6"
-                                onClick={() => {
-                                  handleNextPage()
-                                }}>
-                                <ChevronRight className="h-3.5 w-3.5" />
-                                <span className="sr-only">Next Order</span>
-                              </Button>
-                            </PaginationItem>
-                          </PaginationContent>
-                        </Pagination>
-                      </CardFooter>
-                    </Card>
-                  </div>
-
-                </main >
-              </TabsContent>
-              <TabsContent value="Accessories">
-                <div className='grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4'>
-                  <Card x-chunk="dashboard-07-chunk-3" className="sm:col-span-2 m-4 ">
-                    <CardHeader className=' bg-muted/50'>
-                      <CardTitle>  Customers Acc Orders/Quotes</CardTitle>
-                      <CardDescription>
-                        Review quote and orders the customer has looked at or purchased.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className='flex-grow !grow  h-auto  overflow-y-auto'>
-                      <div className="grid h-auto max-h-[273px]">
-                        <div className="font-semibold mt-4 flex justify-between items-center">
-                          <p>
-                            Orders With Unit
-                          </p>
-                          <Button
-                            size='sm'
-                            className='bg-primary'
-                            onClick={() => {
-                              const formData = new FormData();
-                              formData.append("financeId", finance.id);
-                              formData.append("userEmail", user.email);
-                              formData.append("userName", user.name);
-                              formData.append("clientfileId", clientFile.id);
-                              formData.append("intent", 'createAccQuote');
-                              submit(formData, { method: "post", });
-                            }} >
-                            Create Quote
-                          </Button>
-                        </div>
-                        <Table className='w-[95%] mx-auto'>
-                          <TableHeader>
-                            <TableRow className='border-border'>
-                              <TableHead>
-                                Dept
-                              </TableHead>
-                              <TableHead className="hidden md:table-cell">
-                                Employee
-                              </TableHead>
-                              <TableHead className="hidden md:table-cell">
-                                Status
-                              </TableHead>
-                              <TableHead className="hidden md:table-cell">
-                                Total
-                              </TableHead>
-                              <TableHead className="">
-                                Actions
-                              </TableHead>
-
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {attachedToFinance &&
-                              attachedToFinance.map((result, index) => {
-                                const isCompleted = result.AccHandoff.sendToCompleted === 'true';
-                                console.log(isCompleted, result.AccHandoff.sendTo, ' is completed')
-                                return (
-                                  <TableRow key={index} className="hover:bg-accent border-border">
-                                    <TableCell>
-                                      <div>
-                                        {result.dept}
-                                      </div>
-                                    </TableCell>
-                                    <TableCell className="hidden md:table-cell">
-                                      {result.userName}
-                                    </TableCell>
-                                    <TableCell className="hidden md:table-cell">
-                                      <Badge>
-                                        {result.status}
-                                      </Badge>
-                                    </TableCell>
-                                    <TableCell className="hidden md:table-cell">
-                                      {result.total}
-                                    </TableCell>
-                                    <TableCell className='flex items-center gap-3'>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <Button
-                                            size="icon"
-                                            variant="ghost"
-                                            className="bg-primary"
-                                            onClick={() => {
-                                              setShowOrder(result)
-                                            }}
-                                          >
-                                            <Eye className="h-5 w-5" />
-                                          </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent side="bottom">
-                                          Preview Details
-                                        </TooltipContent>
-                                      </Tooltip>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <Button
-                                            size="icon"
-                                            variant="ghost"
-                                            className="bg-primary"
-                                            onClick={() => {
-                                              const formData = new FormData();
-                                              formData.append("orderId", result.id);
-                                              formData.append("intent", 'syncAccOrder');
-                                              submit(formData, { method: "post", });
-                                            }}
-                                          >
-                                            <FileText className="h-5 w-5" />
-                                          </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent side="bottom">
-                                          Go To Order
-                                        </TooltipContent>
-                                      </Tooltip>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <Button
-                                            size="icon"
-                                            variant="ghost"
-                                            className={`${isCompleted ? 'bg-[#30A46C]' : 'bg-primary'
-                                              }`} disabled={result.AccHandoff.sendTo === 'Accessories'}
-                                            onClick={() => {
-                                              const formData = new FormData();
-                                              formData.append("AccOrderId", result.id);
-                                              formData.append("handOffTime", new Date().toLocaleDateString("en-US", options2));
-                                              formData.append("intent", 'sendToAcc');
-                                              submit(formData, { method: "post", });
-                                              // AccHandoff
-                                              //  sendTo          String?
-                                              //  handOffTime   DateTime?
-                                              //  status        String?
-                                              //  sendToCompleted String?  @default("false")
-                                              //  completedTime DateTime?
-                                              //  notes         String?
-                                              //  AccOrderId
-                                              // new Date(result.paidDate).toLocaleDateString("en-US", options2
-                                            }}
-                                          >
-                                            <Shirt className="h-5 w-5" />
-                                          </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent side="bottom">
-                                          Send To Accessories
-                                        </TooltipContent>
-                                      </Tooltip>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <Button
-                                            size="icon"
-                                            variant="ghost"
-                                            className={` ${result.AccHandoff.sendToCompleted === 'true' ? 'bg-[#30A46C]' : 'bg-primary'}`}
-
-                                            disabled={result.AccHandoff.sendTo === 'Parts'}
-                                            onClick={() => {
-                                              const formData = new FormData();
-                                              formData.append("AccOrderId", result.id);
-                                              formData.append("handOffTime", new Date().toLocaleDateString("en-US", options2));
-                                              formData.append("intent", 'sendToParts');
-                                              submit(formData, { method: "post", });
-                                            }}
-                                          >
-                                            <Wrench className="h-5 w-5" />
-                                          </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent side="bottom">
-                                          Send To Parts
-                                        </TooltipContent>
-                                      </Tooltip>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <Button
-                                            size="icon"
-                                            variant="ghost"
-                                            className="bg-primary"
-                                            onClick={() => {
-                                              PrintReceiptAcc(toReceiptAcc)
-                                            }}
-                                          >
-                                            <Receipt className="h-5 w-5" />
-                                          </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent side="bottom">
-                                          Print Receipt
-                                        </TooltipContent>
-                                      </Tooltip>
-                                    </TableCell>
-                                  </TableRow>
-                                )
-                              })}
-
-                          </TableBody>
-                        </Table>
-                        <Separator className='my-5' />
-                        <div className="font-semibold mt-4">Other Orders Under Clients File</div>
-                        <Table className='w-[95%] mx-auto'>
-                          <TableHeader>
-                            <TableRow className='border-border'>
-
-                              <TableHead>
-                                Dept
-                              </TableHead>
-                              <TableHead className="hidden md:table-cell">
-                                Employee
-                              </TableHead>
-                              <TableHead className="hidden md:table-cell">
-                                Status
-                              </TableHead>
-                              <TableHead className="hidden md:table-cell">
-                                Total
-                              </TableHead>
-                              <TableHead className="">
-                                Actions
-                              </TableHead>
-
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-
-                            {notAttachedToFinance &&
-                              notAttachedToFinance.map((result, index) => {
-                                console.log(result, 'in table')
-
-                                return (
-                                  <TableRow key={index} className="hover:bg-accent border-border">
-                                    <TableCell>
-                                      <div>
-                                        {result.dept}
-                                      </div>
-                                    </TableCell>
-                                    <TableCell className="hidden md:table-cell">
-                                      {result.userName}
-                                    </TableCell>
-                                    <TableCell className="hidden md:table-cell">
-                                      <Badge>
-                                        {result.status}
-                                      </Badge>
-                                    </TableCell>
-                                    <TableCell className="hidden md:table-cell">
-                                      {result.total}
-                                    </TableCell>
-
-                                    <TableCell className='flex items-center gap-3'>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <Button
-                                            size="icon"
-                                            variant="ghost"
-                                            className="bg-primary"
-                                            onClick={() => {
-                                              console.log('Setting showOrder with:', result);
-                                              setShowOrder(result);
-                                              console.log('Current showOrder:', showOrder);
-
-                                            }}
-                                          >
-                                            <Eye className="h-5 w-5" />
-                                          </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent side="right">
-                                          Preview Details
-                                        </TooltipContent>
-                                      </Tooltip>
-                                      <Tooltip>
-                                        <TooltipTrigger asChild>
-                                          <Button
-                                            size="icon"
-                                            variant="ghost"
-                                            className="bg-primary"
-                                            onClick={() => {
-                                              const formData = new FormData();
-                                              formData.append("orderId", result.id);
-                                              formData.append("intent", 'syncAccOrder');
-                                              submit(formData, { method: "post", });
-                                            }}
-                                          >
-                                            <FileText className="h-5 w-5" />
-                                          </Button>
-                                        </TooltipTrigger>
-                                        <TooltipContent side="right">
-                                          Go To Order
-                                        </TooltipContent>
-                                      </Tooltip>
-
-
-                                    </TableCell>
-                                  </TableRow>
-                                )
-                              })}
-                          </TableBody>
-                        </Table>
-                      </div>
-                    </CardContent>
-                    <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
-                      <div className="text-xs text-muted-foreground flex items-center justify-between mb-5">
-
-
-                      </div>
-                    </CardFooter>
-                  </Card>
-                  {showOrder && (
-                    <Card className='sm:col-span-2 m-4' x-chunk="dashboard-07-chunk-3">
-                      <CardHeader className=' bg-muted/50'>
-                        <CardTitle> Order Details </CardTitle>
-                      </CardHeader>
-                      <CardContent className=' !grow !flex-grow h-auto max-h-[300px] overflow-y-auto'>
-                        <div className="grid gap-6 mt-1">
-                          <div className="font-semibold"></div>
-                          <ul className="grid gap-3 max-h-[300px] h-auto overflow-y-auto">
-                            {showOrder?.AccessoriesOnOrders && (
-                              <ul>
-                                {showOrder.AccessoriesOnOrders.map((result, index) => {
-                                  console.log(result, 'kjhkhkhkj'); // Check the data here
-                                  return (
-                                    <li className="flex items-center justify-between" key={index}>
-                                      <div>
-                                        <div className='flex items-center group'>
-                                          <div className="font-medium">
-                                            {result.accessory.brand} {result.accessory.name}
+                            <div className="font-semibold">Services</div>
+                            <div className='mx-4 flex-col'>
+                              <Accordion type="single" collapsible className="w-full border-border">
+                                <AccordionItem value="item-1" className='border-border'>
+                                  <AccordionTrigger>Add New Service</AccordionTrigger>
+                                  <AccordionContent>
+                                    <fetcher.Form method='post'>
+                                      <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
+                                      <div className='flex'>
+                                        <div className="flex-col" >
+                                          <div className="relative mt-4">
+                                            <Input name='name' className='w-[250px] mr-3' />
+                                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Name</label>
                                           </div>
-                                          <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                                            <input type="hidden" name="id" value={result.id} />
-                                            <input type='hidden' name='total' value={pacTotal} />
-                                            <input type='hidden' name='accOrderId' value={showOrder.id} />
-                                            <Button
-                                              size="icon"
-                                              variant="outline"
-                                              name="intent" value='deleteOrderItem'
-                                              className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                                              type='submit'
-                                            >
-                                              <X className="h-4 w-4 text-foreground" />
-                                            </Button>
-                                          </addProduct.Form>
-                                        </div>
+                                          <div className="relative mt-4">
+                                            <TextArea name='description' className='w-[250px] mr-3' />
+                                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Description</label>
+                                          </div>
 
-                                        <div className="hidden text-sm text-muted-foreground md:inline">
-                                          {result.accessory.category}
-                                        </div>
-                                        <div className="hidden text-sm text-muted-foreground md:inline">
-                                          {result.accessory.description}
+                                          <div className="relative mt-4">
+                                            <Input name='hr' className='w-[100px] mr-3' />
+                                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Hr's</label>
+                                          </div>
+                                          <div className="relative mt-4">
+                                            <Input name='quantity' className='w-[100px] mr-3' defaultValue={1} />
+                                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Quantity</label>
+                                          </div>
+
+                                          <Button
+                                            className='mt-4'
+                                            size='icon'
+                                            type='submit'
+                                            name='intent'
+                                            value='addNewServiceToWorkOrder'
+                                          ><Plus /></Button>
                                         </div>
                                       </div>
-                                      <span>${result.accessory.price} x {result.quantity}</span>
-                                    </li>
-                                  );
-                                })}
-                              </ul>
-                            )}
-                          </ul>
-                          <Separator className="my-2" />
-                          <ul className="grid gap-3">
-                            <li className="flex items-center justify-between">
-                              <span className="text-muted-foreground">Subtotal</span>
-                              <span>${totalAccessoriesCost}</span>
-                            </li>
-                            {showOrder.discount === 0 && (
-                              <li className="flex items-center justify-between">
-                                <span className="text-muted-foreground">Discount</span>
-                                <span>${showOrder.discount}</span>
-                              </li>
-                            )}
-                            {showOrder.discPer === 0 && (
-                              <li className="flex items-center justify-between">
-                                <span className="text-muted-foreground">Discount</span>
-                                <span>{showOrder.discPer}%</span>
-                              </li>
-                            )}
-                            {discount !== 0 && (
-                              <>
-                                <li className="flex items-center justify-between">
-                                  <span className="text-muted-foreground">Discount $</span>
-                                  <fetcher.Form
-                                    method="post"
-                                    onSubmit={() => {
-                                      buttonRef.current?.focus();
-                                    }}
-                                    preventScrollReset
-                                  >
-                                    <input
-                                      name='accOrderId'
-                                      defaultValue={showOrder.id}
-                                      type='hidden'
-                                    />
-                                    <input
-                                      name='intent'
-                                      defaultValue='updateDiscount'
-                                      type='hidden'
-                                    />
-                                    <input
-                                      name='total'
-                                      defaultValue={totalAccessoriesCost}
-                                      type='hidden'
-                                    />
-                                    <div className="relative ml-auto flex-1 md:grow-0 ">
-                                      <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-foreground" />
-                                      <Input
-                                        ref={inputRef}
-                                        name='discDollar'
-                                        className='text-right pr-10 w-[100px]'
-                                        defaultValue={discDollar}
-                                        onChange={(event) => setDiscDollar(event.target.value)}
-                                        onKeyDown={(event) => {
-                                          if (event.key === "Escape") {
-                                            buttonRef.current?.focus();
-                                          }
-                                        }}
-                                        onBlur={(event) => {
-                                          if (
-                                            inputRef.current?.value !== discDollar &&
-                                            inputRef.current?.value.trim() !== ""
-                                          ) {
-                                            fetcher.submit(event.currentTarget);
-                                          }
-                                        }}
-                                      />
-                                      <Button
-                                        type="submit"
-                                        size="icon"
+                                    </fetcher.Form>
+                                  </AccordionContent>
+                                </AccordionItem>
+                              </Accordion>
 
-                                        disabled={!discDollar}
-                                        className='bg-primary mr-2 absolute right-1.5 top-2.5 h-4 w-4 text-foreground '>
-                                        <PaperPlaneIcon className="h-4 w-4" />
-                                        <span className="sr-only">Cash</span>
-                                      </Button>
-                                    </div>
-                                  </fetcher.Form>
-                                </li>
-                                <li className="flex items-center justify-between">
-                                  <span className="text-muted-foreground">Discount %</span>
-                                  <fetcher.Form
-                                    method="post"
-                                    onSubmit={() => {
-                                      buttonRef.current?.focus();
-                                    }}
-                                    preventScrollReset
-                                  >
-                                    <input
-                                      name='accOrderId'
-                                      defaultValue={showOrder.id}
-                                      type='hidden'
-                                    />
-                                    <input
-                                      name='intent'
-                                      defaultValue='updateDiscPerc'
-                                      type='hidden'
-                                    />
-                                    <input
-                                      name='total'
-                                      defaultValue={totalAccessoriesCost}
-                                      type='hidden'
-                                    />
-                                    <div className="relative ml-auto flex-1 md:grow-0 ">
-                                      <Input
-                                        ref={inputRef}
-                                        name='discPer'
-                                        className='text-right pr-[43px] w-[100px]'
-                                        value={discPer}
-                                        onChange={(event) => setDiscPer(event.target.value)}
-                                        onKeyDown={(event) => {
-                                          if (event.key === "Escape") {
-                                            buttonRef.current?.focus();
-                                          }
-                                        }}
-                                        onBlur={(event) => {
-                                          if (
-                                            inputRef.current?.value !== discPer &&
-                                            inputRef.current?.value.trim() !== ""
-                                          ) {
-                                            fetcher.submit(event.currentTarget);
-                                          }
-                                        }}
-                                      />
-                                      <Percent className="absolute right-10 top-[8px] h-4 w-4 text-foreground" />
-                                      <Button
-                                        type="submit"
-                                        size="icon"
-
-                                        disabled={!discPer}
-                                        className='bg-primary mr-2 absolute right-1.5 top-[8px] h-4 w-4 text-foreground '>
-                                        <PaperPlaneIcon className="h-4 w-4" />
-                                        <span className="sr-only">Cash</span>
-                                      </Button>
-                                    </div>
-                                  </fetcher.Form>
-
-                                </li>
-                              </>
-                            )}
-                            <li className="flex items-center justify-between">
-                              <span className="text-muted-foreground">Tax</span>
-                              <span>{deFees.userTax}%</span>
-                            </li>
-                            <li className="flex items-center justify-between font-semibold">
-                              <span className="text-muted-foreground">Total</span>
-                              <span>${pacTotal}</span>
-                            </li>
-                          </ul>
-                          <Form method='post' >
-                            <input type='hidden' name='orderId' value={showOrder.id} />
-                            <div className="relative mt-4">
-                              <TextArea className='w-full' defaultValue={showOrder.note} name='note' />
-                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Order Notes</label>
                             </div>
-                            <Button
-                              type='submit'
-                              name='intent'
-                              value='submitNote'
-                              size='sm'
-                              className='mt-4 ml-auto'
-                            >Save</Button>
-                          </Form>
-                        </div>
+                            <div className='flex-col mt-4'>
+                              <div className='mx-4'>
+                                <div className="font-semibold">Select Service</div>
+                                <search.Form method="get" action='/dealer/service/search/services'>
+                                  <div className="relative ml-auto flex-1 md:grow-0 ">
+                                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                      ref={ref}
+                                      type="search"
+                                      name="q"
+                                      onChange={e => {
+                                        search.submit(e.currentTarget.form);
+                                      }}
+                                      autoFocus
+                                      placeholder="Search..."
+                                      className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                                    />
+                                  </div>
+                                </search.Form>
+                                <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
+                                  {search.data && search.data.map((result, index) => {
+                                    return (
+                                      <li key={index} className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]" onClick={() => {
+                                        const formData = new FormData();
+                                        formData.append("hr", result.estHr);
+                                        formData.append("workOrderId", serviceOrder.workOrderId);
+                                        formData.append("serviceId", result.id);
+                                        formData.append("intent", 'addServiceToWorkOrder');
+                                        submit(formData, { method: "post", });
+                                      }}>
+                                        <div className="font-medium flex-col">
+                                          <p className=' text-left'>{result.service}</p>
+                                          <p className='text-muted-foreground text-left'>{result.description}</p>
+                                          <p className='text-muted-foreground text-left'>{result.estHr}/hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                                        </div>
+                                      </li>
+                                    )
+                                  })}
+                                </ul>
 
+                              </div>
 
+                            </div>
 
-                      </CardContent>
-                      <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
-
-                        <div className="ml-auto flex items-center gap-1">
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                    <TabsContent value="Parts">
+                      <Card x-chunk="dashboard-05-chunk-3 " className='mx-5 w-[95%] '>
+                        <CardHeader className="px-7">
+                          <CardTitle>
+                            <div className='flex justify-between items-center'>
+                              <p>Accessories</p>
+                            </div>
+                          </CardTitle>
+                          <CardDescription className='flex items-center'>
+                            <product.Form method="get" action='/dealer/accessories/products/search'>
+                              <div className="relative ml-auto flex-1 md:grow-0 ">
+                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                  ref={ref}
+                                  type="search"
+                                  name="q"
+                                  onChange={e => {
+                                    //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
+                                    product.submit(e.currentTarget.form);
+                                  }}
+                                  autoFocus
+                                  placeholder="Search..."
+                                  className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                                />
+                              </div>
+                            </product.Form>
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <Table>
+                            <TableHeader>
+                              <TableRow className='border-border'>
+                                <TableHead>
+                                  Brand & Name
+                                </TableHead>
+                                <TableHead className="hidden sm:table-cell">
+                                  Description
+                                </TableHead>
+                                <TableHead className="hidden sm:table-cell">
+                                  Category
+                                </TableHead>
+                                <TableHead className="hidden sm:table-cell">
+                                  Sub Category
+                                </TableHead>
+                                <TableHead className="hidden sm:table-cell">
+                                  On Order
+                                </TableHead>
+                                <TableHead className="hidden sm:table-cell">
+                                  Distributer
+                                </TableHead>
+                                <TableHead className="hidden sm:table-cell">
+                                  Location
+                                </TableHead>
+                                <TableHead className="hidden md:table-cell">
+                                  Cost
+                                </TableHead>
+                                <TableHead className="hidden sm:table-cell">
+                                  Price
+                                </TableHead>
+                                <TableHead className="text-right">
+                                  Quantity
+                                </TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody className='max-h-[700px] h-auto overflow-y-auto'>
+                              {product.data &&
+                                product.data.map((result, index) => (
+                                  <TableRow key={index} className="hover:bg-accent border-border rounded-[6px] cursor-pointer" onClick={() => {
+                                    const formData = new FormData();
+                                    formData.append("accessoryId", result.id);
+                                    formData.append("workOrderId", serviceOrder.workOrderId);
+                                    formData.append("accOrderId", serviceOrder.AccOrders[0].id);
+                                    formData.append("intent", 'addAccToWorkOrder');
+                                    submit(formData, { method: "post", });
+                                  }}>
+                                    <TableCell className='flex-col'>
+                                      <p className="font-medium">
+                                        {result.name}
+                                      </p>
+                                      <p className="text-sm text-muted-foreground ">
+                                        {result.brand}
+                                      </p>
+                                    </TableCell>
+                                    <TableCell className="hidden sm:table-cell">
+                                      {result.description}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.category}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.subCategory}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.onOrder}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.distributer}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.location}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.cost}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.price}
+                                    </TableCell>
+                                    <TableCell className="hidden md:table-cell">
+                                      {result.quantity}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                            </TableBody>
+                          </Table>
+                        </CardContent>
+                      </Card>
+                    </TabsContent>
+                    <TabsContent value="Calendar">
+                    </TabsContent>
+                  </Tabs>
+                )}
+                <div>
+                  <Card className="overflow-hidden mt-[35px] ml-2" x-chunk="dashboard-05-chunk-4"          >
+                    <CardHeader className="flex flex-row items-start bg-muted/50">
+                      <div className="grid gap-0.5">
+                        <CardTitle className="group flex items-center gap-2 text-lg">
+                          W / O #{serviceOrder && (serviceOrder.workOrderId)}
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                          >
+                            <Copy className="h-3 w-3" />
+                            <span className="sr-only">Copy Order ID</span>
+                          </Button>
+                        </CardTitle>
+                        {serviceOrder && serviceOrder.status && (
+                          <div>
+                            <div className="relative mt-4">
+                              <Select
+                                name='status'
+                                defaultValue={serviceOrder.status}
+                                onValueChange={(value) => {
+                                  const formData = new FormData();
+                                  formData.append("id", order.workOrderId);
+                                  formData.append("total", total);
+                                  formData.append("intent", 'updateStatus');
+                                  formData.append("status", value);
+                                  console.log(formData, 'formData');
+                                  workOrder.submit(formData, { method: "post" });
+                                }}>
+                                <SelectTrigger className="w-[200px] " >
+                                  <SelectValue defaultValue={serviceOrder.status} />
+                                </SelectTrigger>
+                                <SelectContent className='border-border'>
+                                  <SelectGroup>
+                                    <SelectLabel>Status</SelectLabel>
+                                    <SelectItem value="Quote">Quote</SelectItem>
+                                    <SelectItem value="Sales">Sales</SelectItem>
+                                    <SelectItem value="Open">Open / Scheduled</SelectItem>
+                                    <SelectItem value="Waiting On Parts">Waiting On Parts</SelectItem>
+                                    <SelectItem value="Waiter">Waiter</SelectItem>
+                                    <SelectItem value="In Works">In Works</SelectItem>
+                                    <SelectItem value="Work Completed">Work Completed</SelectItem>
+                                    <SelectItem value="Closed">Closed</SelectItem>
+                                  </SelectGroup>
+                                </SelectContent>
+                              </Select>
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-muted/50 transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Status</label>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <div className="ml-auto flex items-center gap-1">
+                        {serviceOrder && (
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button size="icon" variant="outline" className="h-8 w-8">
@@ -7005,901 +6061,1851 @@ export default function Dashboard() {
                               className="border border-border"
                             >
                               <DropdownMenuItem
-                                onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>Show Discount</DropdownMenuItem>
-
+                                onSelect={() => {
+                                  navigate(`/dealer/service/workOrder/${serviceOrder.workOrderId}`)
+                                }}>
+                                Go To Order
+                              </DropdownMenuItem>
                               <DropdownMenuItem
                                 onSelect={() => {
-                                  PrintReceiptAcc(toReceiptAcc)
-                                }}
-                              >Print Receipt</DropdownMenuItem>
+                                  console.log(toReceipt)
+                                  PrintReceipt(toReceipt)
+                                }}>
+                                Reprint Receipt
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>
+                                Show Discount
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
                               <DropdownMenuItem
                                 onSelect={() => {
-                                  const formData = new FormData();
-                                  formData.append("financeId", finance.id);
-                                  formData.append("subTotal", totalAccessoriesCost);
-                                  formData.append("intent", 'pushSubtotal');
-                                  submit(formData, { method: "post", });
-                                }}
-                              >Push Sub Total to Finance</DropdownMenuItem>
+                                  setShowPrev(false)
+                                  setorder(null)
+                                }}>
+                                Back
+                              </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
                                 onSelect={() => {
                                   const formData = new FormData();
-                                  formData.append("orderId", showOrder.id);
-                                  formData.append("financeId", finance.id);
-                                  formData.append("intent", 'claimAccOrder');
+                                  formData.append("workOrderId", serviceOrder.workOrderId);
+                                  formData.append("intent", 'deleteOrder');
                                   submit(formData, { method: "post", });
-                                }}
-                              >Claim for Finance File</DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                onSelect={() => {
-                                  const formData = new FormData();
-                                  formData.append("orderId", showOrder.id);
-                                  formData.append("intent", 'deleteAccOrder');
-                                  submit(formData, { method: "post", });
-                                }}>Delete</DropdownMenuItem>
+                                }}>
+                                Delete
+                              </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
+                        )}
+                      </div>
+                    </CardHeader>
+                    <CardContent className="p-6 text-sm h-auto max-h-[700px] overflow-y-auto">
+                      {secPageService && (
+                        <>
 
-                        </div>
-                      </CardFooter>
-                    </Card>
-                  )}
+                          <Accordion type="single" collapsible className="w-full border-border mt-3">
+                            <AccordionItem value="item-1" className='border-border'>
+                              <AccordionTrigger>Work Order Notes</AccordionTrigger>
+                              <AccordionContent>
+                                <div className="grid gap-3">
+                                  <Form method='post'>
+                                    <div className="relative mt-4">
+                                      <TextArea className='w-full mt-4' name='note' defaultValue={serviceOrder.notes} />
+                                      <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note</label>
+                                    </div>
+                                    <input type='hidden' name='id' defaultValue={serviceOrder.workOrderId} />
+                                    <Button type='submit' name='intent' value='updateNote' className='mt-4 text-foreground' size='sm'>
+                                      Submit
+                                    </Button>
+                                  </Form>
+                                </div>
+                              </AccordionContent>
+                            </AccordionItem>
+                          </Accordion>
+
+                          <div className="grid gap-3 mt-3">
+                            <div className="font-semibold">Work Order Services</div>
+                            <ul className="grid gap-3">
+                              {serviceOrder.ServicesOnWorkOrders && serviceOrder.ServicesOnWorkOrders.map((result, index) => {
+                                const hours = result.hr || result.service.estHr || 0.00;
+                                return (
+                                  <li key={index} className="flex items-center justify-between">
+                                    <div>
+                                      <ContextMenu>
+                                        <ContextMenuTrigger>
+                                          <div className='grid grid-cols-1'>
+                                            <div className='flex items-center group '>
+                                              <div className="font-medium">
+                                                {result.service.service}
+                                              </div>
+                                              <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                                <input type="hidden" name="id" value={result.id} />
+                                                <input type='hidden' name='total' value={total} />
+                                                <input type='hidden' name='workOrderId' value={serviceOrder.workOrderId} />
+                                                <Button
+                                                  size="icon"
+                                                  variant="outline"
+                                                  name="intent" value='deleteServiceItem'
+                                                  className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                                  type='submit'
+                                                >
+                                                  <X className="h-4 w-4 text-foreground" />
+                                                </Button>
+                                              </addProduct.Form>
+                                            </div>
+                                            <div className="hidden text-sm text-muted-foreground md:inline">
+                                              <div className='flex items-center'>
+                                                <div className="font-medium">
+                                                  <EditableText
+                                                    value={hours}
+                                                    fieldName="name"
+                                                    inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
+                                                    buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                                                    buttonLabel={`Edit name`}
+                                                    inputLabel={`Edit name`}
+                                                  >
+                                                    <input type="hidden" name="intent" value='updateHr' />
+                                                    <input type="hidden" name="id" value={result.id} />
+                                                    <input type="hidden" name="colName" value='hr' />
+                                                  </EditableText>
+
+                                                </div>
+                                                <p>{" "}hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                                              </div>
+                                            </div>
+                                            {result.status && (
+                                              <div>
+                                                <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                                              </div>
+                                            )}
+                                          </div>
+                                        </ContextMenuTrigger>
+                                        <ContextMenuContent className='border-border'>
+                                          <ContextMenuSub>
+                                            <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
+                                            <ContextMenuSubContent className="w-48 border-border">
+                                              <ContextMenuItem>{result.service.service}</ContextMenuItem>
+                                              <ContextMenuItem>{result.service.description}</ContextMenuItem>
+                                              <ContextMenuSeparator />
+                                              <ContextMenuItem>
+                                                Est. Hours
+                                                <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
+                                              </ContextMenuItem>
+                                              <ContextMenuItem>
+                                                Price
+                                                <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
+                                              </ContextMenuItem>
+                                            </ContextMenuSubContent>
+                                          </ContextMenuSub>
+                                          <ContextMenuSeparator />
+                                          <ContextMenuCheckboxItem
+                                            checked={result.status === 'In Stock'}
+                                            onSelect={() => {
+                                              const formData = new FormData();
+                                              formData.append("id", result.id);
+                                              formData.append("status", 'In Stock');
+                                              formData.append("intent", 'updateServiceOnOrders');
+                                              submit(formData, { method: "post", });
+                                            }}
+                                          >In Stock</ContextMenuCheckboxItem>
+                                          <ContextMenuCheckboxItem
+                                            checked={result.status === 'On Order'}
+                                            onSelect={() => {
+                                              const formData = new FormData();
+                                              formData.append("id", result.id);
+                                              formData.append("status", 'On Order');
+                                              formData.append("intent", 'updateServiceOnOrders');
+                                              submit(formData, { method: "post", });
+                                            }}
+                                          >On Order</ContextMenuCheckboxItem>
+                                          <ContextMenuCheckboxItem
+                                            checked={result.status === 'Completed'}
+                                            onSelect={() => {
+                                              const formData = new FormData();
+                                              formData.append("id", result.id);
+                                              formData.append("status", 'Completed');
+                                              formData.append("intent", 'updateServiceOnOrders');
+                                              submit(formData, { method: "post", });
+                                            }}
+                                          >Completed</ContextMenuCheckboxItem>
+                                          <ContextMenuCheckboxItem
+                                            checked={result.status === 'Back Order'}
+                                            onSelect={() => {
+                                              const formData = new FormData();
+                                              formData.append("id", result.id);
+                                              formData.append("status", 'Back Order');
+                                              formData.append("intent", 'updateServiceOnOrders');
+                                              submit(formData, { method: "post", });
+                                            }}
+                                          >Back Order</ContextMenuCheckboxItem>
+                                        </ContextMenuContent>
+                                      </ContextMenu>
+                                    </div>
+                                    <span>
+                                      x{" "}{" "}{result.quantity}
+
+                                    </span>
+                                  </li>
+                                )
+                              })}
+                            </ul>
+                            <Separator className="my-4" />
+                            <div className="font-semibold">Work Order Parts</div>
+                            <ul className="grid gap-3">
+                              {serviceOrder?.AccOrders?.length > 0 ? (
+                                serviceOrder.AccOrders.map((accOrder, accOrderIndex) => (
+                                  <div key={accOrderIndex}>
+                                    {accOrder?.AccessoriesOnOrders?.length > 0 ? (
+                                      accOrder.AccessoriesOnOrders.map((accessoryOnOrder, accessoryIndex) => (
+                                        <li key={accessoryIndex} className="flex items-center justify-between">
+                                          <div>
+                                            <ContextMenu>
+                                              <ContextMenuTrigger>
+                                                <div className='grid grid-cols-1'>
+                                                  <div className='flex items-center group '>
+                                                    <div className="font-medium">
+
+                                                      {accessoryOnOrder.accessory.name}
+                                                    </div>
+                                                    <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                                      <input type="hidden" name="id" value={accessoryOnOrder.id} />
+                                                      <input type='hidden' name='total' value={accessoryOnOrder.accessory.price * accessoryOnOrder.quantity} />
+                                                      <input type='hidden' name='accOrderId' value={accOrder.id} />
+                                                      <Button
+                                                        size="icon"
+                                                        variant="outline"
+                                                        name="intent" value='deleteOrderItem'
+                                                        className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                                        type='submit'
+                                                      >
+                                                        <X className="h-4 w-4 text-foreground" />
+                                                      </Button>
+                                                    </addProduct.Form>
+                                                  </div>
+                                                  <div className="hidden text-sm text-muted-foreground md:inline">
+                                                    {accessoryOnOrder.accessory.brand}
+                                                  </div>
+                                                  <div>
+                                                    <Badge className='text-sm  px-2 py-1 '>{accessoryOnOrder.status}</Badge>
+                                                  </div>
+                                                </div>
+                                              </ContextMenuTrigger>
+                                              <ContextMenuContent className='border-border'>
+                                                <ContextMenuSub>
+                                                  <ContextMenuSubTrigger inset>Part Details</ContextMenuSubTrigger>
+                                                  <ContextMenuSubContent className="w-48 border-border">
+                                                    <ContextMenuItem>{accessoryOnOrder.accessory.partNumber}</ContextMenuItem>
+                                                    <ContextMenuItem>{accessoryOnOrder.accessory.brand} </ContextMenuItem>
+                                                    <ContextMenuItem>{accessoryOnOrder.accessory.name} </ContextMenuItem>
+                                                    <ContextMenuItem>{accessoryOnOrder.accessory.description} </ContextMenuItem>
+                                                    <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
+                                                    <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
+                                                    <ContextMenuSeparator />
+                                                    <ContextMenuItem>
+                                                      Cost
+                                                      <ContextMenuShortcut>${accessoryOnOrder.accessory.cost}</ContextMenuShortcut>
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem>
+                                                      Price
+                                                      <ContextMenuShortcut>${accessoryOnOrder.accessory.price}</ContextMenuShortcut>
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem>
+                                                      In Stock
+                                                      <ContextMenuShortcut>{accessoryOnOrder.accessory.quantity}</ContextMenuShortcut>
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem>
+                                                      On Order
+                                                      <ContextMenuShortcut>{accessoryOnOrder.accessory.onOrder}</ContextMenuShortcut>
+                                                    </ContextMenuItem>
+                                                    <ContextMenuItem>
+                                                      Location
+                                                      <ContextMenuShortcut>{accessoryOnOrder.accessory.location}</ContextMenuShortcut>
+                                                    </ContextMenuItem>
+                                                  </ContextMenuSubContent>
+                                                </ContextMenuSub>
+                                                <ContextMenuCheckboxItem
+                                                  checked={accessoryOnOrder.status === 'In Stock'}
+                                                  onSelect={() => {
+                                                    const formData = new FormData();
+                                                    formData.append("id", accessoryOnOrder.id);
+                                                    formData.append("status", 'In Stock');
+                                                    formData.append("intent", 'updateAccOnOrders');
+                                                    submit(formData, { method: "post", });
+                                                  }}
+                                                >In Stock</ContextMenuCheckboxItem>
+                                                <ContextMenuCheckboxItem
+                                                  checked={accessoryOnOrder.status === 'On Order'}
+                                                  onSelect={() => {
+                                                    const formData = new FormData();
+                                                    formData.append("id", accessoryOnOrder.id);
+                                                    formData.append("status", 'On Order');
+                                                    formData.append("intent", 'updateAccOnOrders');
+                                                    submit(formData, { method: "post", });
+                                                  }}
+                                                >On Order</ContextMenuCheckboxItem>
+                                                <ContextMenuCheckboxItem
+                                                  checked={accessoryOnOrder.status === 'Back Order'}
+                                                  onSelect={() => {
+                                                    const formData = new FormData();
+                                                    formData.append("id", accessoryOnOrder.id);
+                                                    formData.append("status", 'Back Order');
+                                                    formData.append("intent", 'updateAccOnOrders');
+                                                    submit(formData, { method: "post", });
+                                                  }}
+                                                >Back Order</ContextMenuCheckboxItem>
+                                              </ContextMenuContent>
+                                            </ContextMenu>
+                                          </div>
+                                          <span>${accessoryOnOrder.accessory.price} x {accessoryOnOrder.quantity}</span>
+                                        </li>
+                                      ))
+                                    ) : (
+                                      <p>No Accessories On Orders available.</p>
+                                    )}
+                                  </div>
+                                ))
+                              ) : (
+                                <p>No Orders available.</p>
+                              )}
+                            </ul>
+
+
+                            <Separator className="my-2" />
+                            <ul className="grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">Service Subtotal</span>
+                                <span>${serviceSubTotal}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">Parts Subtotal</span>
+                                <span>${partsSubTotal}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">Subtotal</span>
+                                <span>${totalPreTax}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">Tax</span>
+                                <span>{tax.userTax}%</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">Total</span>
+                                <span>${totalService}</span>
+                              </li>
+                            </ul>
+                          </div>
+                          <Separator className="my-4" />
+                          <div className='gap-3'>
+                            <div className="font-semibold">Staff</div>
+
+                            <ul className="grid gap-3">
+                              <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">
+                                  Technician
+                                </span>
+                                <span>{serviceOrder.tech}</span>
+                              </li>
+                              <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">
+                                  Service Writer
+                                </span>
+                                <span>{serviceOrder.writer}</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </>
+                      )}
+                      {firstPageService && (
+                        <>
+                          <ul className="grid gap-3 mt-3 h-auto max-h-[600px] overflow-y-auto">
+                            {orders && orders.map((result, index) => {
+                              return (
+                                <li
+                                  onClick={() => {
+                                    handleNextPage()
+                                    setServiceOrder(result)
+                                  }}
+                                  key={index}
+                                  className="p-3 cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-[6px]">
+                                  <div className='flex-col'>
+                                    <div className='flex justify-between items-center'>
+                                      <p className='font-medium text-left'>W / O #{result.workOrderId}</p>
+                                      <p className='text-muted-foreground font-medium text-right'>{result.status}</p>
+                                    </div>
+                                    <div className='flex justify-between items-center'>
+                                      <p className='text-muted-foreground text-left'>Writer: {result.writer}</p>
+                                      <p className='text-muted-foreground text-right'>Tech: {result.tech}</p>
+                                    </div>
+                                    <p className='text-muted-foreground text-left'>{new Date(result.createdAt).toLocaleDateString("en-US", options2)}</p>
+                                  </div>
+                                </li>
+                              )
+                            })}
+                          </ul>
+                        </>
+                      )}
+                    </CardContent>
+                    <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3 border-border">
+                      <Button size='sm' variant='outline'>
+                        Create New Work Order
+                      </Button>
+                      <Pagination className="ml-auto mr-0 w-auto">
+                        <PaginationContent>
+                          <PaginationItem>
+                            <Button size="icon"
+                              variant="outline"
+                              className="h-6 w-6"
+                              onClick={() => {
+                                handlePrevPage()
+                              }}>
+                              <ChevronLeft className="h-3.5 w-3.5" />
+                              <span className="sr-only">Previous Order</span>
+                            </Button>
+                          </PaginationItem>
+                          <PaginationItem>
+                            <Button size="icon"
+                              variant="outline"
+                              className="h-6 w-6"
+                              onClick={() => {
+                                handleNextPage()
+                              }}>
+                              <ChevronRight className="h-3.5 w-3.5" />
+                              <span className="sr-only">Next Order</span>
+                            </Button>
+                          </PaginationItem>
+                        </PaginationContent>
+                      </Pagination>
+                    </CardFooter>
+                  </Card>
                 </div>
-              </TabsContent>
-            </Tabs>
-          </div>
-          <div>
-            <Tabs defaultValue="Timeline">
-              <TabsList >
-                <TabsTrigger value="Timeline">Timeline</TabsTrigger>
-                <TabsTrigger value="Notes">Notes</TabsTrigger>
-                <TabsTrigger value="Apt History">Apt History</TabsTrigger>
-                <TabsTrigger value="Communications">Communications</TabsTrigger>
-                <TabsTrigger value="Upload">Upload</TabsTrigger>
-                <TabsTrigger value="Deposits">Deposits</TabsTrigger>
-              </TabsList>
-              <TabsContent value="Timeline">
-                <Card className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"                >
-                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                    <div className="grid gap-0.5">
-                      <CardTitle className="group flex items-center gap-2 text-lg">
-                        Timeline
+
+              </main >
+            </TabsContent>
+            <TabsContent value="Accessories">
+              <div className='grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4'>
+                <Card x-chunk="dashboard-07-chunk-3" className="sm:col-span-2 m-4 ">
+                  <CardHeader className=' bg-muted/50'>
+                    <CardTitle>  Customers Acc Orders/Quotes</CardTitle>
+                    <CardDescription>
+                      Review quote and orders the customer has looked at or purchased.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className='flex-grow !grow  h-auto  overflow-y-auto'>
+                    <div className="grid h-auto max-h-[273px]">
+                      <div className="font-semibold mt-4 flex justify-between items-center">
+                        <p>
+                          Orders With Unit
+                        </p>
                         <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                        >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">Snap shot on customer interactions, whether they are buying something or a sales person following up to make a sale.</span>
+                          size='sm'
+                          className='bg-primary'
+                          onClick={() => {
+                            const formData = new FormData();
+                            formData.append("financeId", finance.id);
+                            formData.append("userEmail", user.email);
+                            formData.append("userName", user.name);
+                            formData.append("clientfileId", clientFile.id);
+                            formData.append("intent", 'createAccQuote');
+                            submit(formData, { method: "post", });
+                          }} >
+                          Create Quote
                         </Button>
-                      </CardTitle>
+                      </div>
+                      <Table className='w-[95%] mx-auto'>
+                        <TableHeader>
+                          <TableRow className='border-border'>
+                            <TableHead>
+                              Dept
+                            </TableHead>
+                            <TableHead className="hidden md:table-cell">
+                              Employee
+                            </TableHead>
+                            <TableHead className="hidden md:table-cell">
+                              Status
+                            </TableHead>
+                            <TableHead className="hidden md:table-cell">
+                              Total
+                            </TableHead>
+                            <TableHead className="">
+                              Actions
+                            </TableHead>
+
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {attachedToFinance &&
+                            attachedToFinance.map((result, index) => {
+                              const isCompleted = result.AccHandoff.sendToCompleted === 'true';
+                              console.log(isCompleted, result.AccHandoff.sendTo, ' is completed')
+                              return (
+                                <TableRow key={index} className="hover:bg-accent border-border">
+                                  <TableCell>
+                                    <div>
+                                      {result.dept}
+                                    </div>
+                                  </TableCell>
+                                  <TableCell className="hidden md:table-cell">
+                                    {result.userName}
+                                  </TableCell>
+                                  <TableCell className="hidden md:table-cell">
+                                    <Badge>
+                                      {result.status}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="hidden md:table-cell">
+                                    {result.total}
+                                  </TableCell>
+                                  <TableCell className='flex items-center gap-3'>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button
+                                          size="icon"
+                                          variant="ghost"
+                                          className="bg-primary"
+                                          onClick={() => {
+                                            setShowOrder(result)
+                                          }}
+                                        >
+                                          <Eye className="h-5 w-5" />
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="bottom">
+                                        Preview Details
+                                      </TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button
+                                          size="icon"
+                                          variant="ghost"
+                                          className="bg-primary"
+                                          onClick={() => {
+                                            const formData = new FormData();
+                                            formData.append("orderId", result.id);
+                                            formData.append("intent", 'syncAccOrder');
+                                            submit(formData, { method: "post", });
+                                          }}
+                                        >
+                                          <FileText className="h-5 w-5" />
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="bottom">
+                                        Go To Order
+                                      </TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button
+                                          size="icon"
+                                          variant="ghost"
+                                          className={`${isCompleted ? 'bg-[#30A46C]' : 'bg-primary'
+                                            }`} disabled={result.AccHandoff.sendTo === 'Accessories'}
+                                          onClick={() => {
+                                            const formData = new FormData();
+                                            formData.append("AccOrderId", result.id);
+                                            formData.append("handOffTime", new Date().toLocaleDateString("en-US", options2));
+                                            formData.append("intent", 'sendToAcc');
+                                            submit(formData, { method: "post", });
+                                            // AccHandoff
+                                            //  sendTo          String?
+                                            //  handOffTime   DateTime?
+                                            //  status        String?
+                                            //  sendToCompleted String?  @default("false")
+                                            //  completedTime DateTime?
+                                            //  notes         String?
+                                            //  AccOrderId
+                                            // new Date(result.paidDate).toLocaleDateString("en-US", options2
+                                          }}
+                                        >
+                                          <Shirt className="h-5 w-5" />
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="bottom">
+                                        Send To Accessories
+                                      </TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button
+                                          size="icon"
+                                          variant="ghost"
+                                          className={` ${result.AccHandoff.sendToCompleted === 'true' ? 'bg-[#30A46C]' : 'bg-primary'}`}
+
+                                          disabled={result.AccHandoff.sendTo === 'Parts'}
+                                          onClick={() => {
+                                            const formData = new FormData();
+                                            formData.append("AccOrderId", result.id);
+                                            formData.append("handOffTime", new Date().toLocaleDateString("en-US", options2));
+                                            formData.append("intent", 'sendToParts');
+                                            submit(formData, { method: "post", });
+                                          }}
+                                        >
+                                          <Wrench className="h-5 w-5" />
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="bottom">
+                                        Send To Parts
+                                      </TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button
+                                          size="icon"
+                                          variant="ghost"
+                                          className="bg-primary"
+                                          onClick={() => {
+                                            PrintReceiptAcc(toReceiptAcc)
+                                          }}
+                                        >
+                                          <Receipt className="h-5 w-5" />
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="bottom">
+                                        Print Receipt
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TableCell>
+                                </TableRow>
+                              )
+                            })}
+
+                        </TableBody>
+                      </Table>
+                      <Separator className='my-5' />
+                      <div className="font-semibold mt-4">Other Orders Under Clients File</div>
+                      <Table className='w-[95%] mx-auto'>
+                        <TableHeader>
+                          <TableRow className='border-border'>
+
+                            <TableHead>
+                              Dept
+                            </TableHead>
+                            <TableHead className="hidden md:table-cell">
+                              Employee
+                            </TableHead>
+                            <TableHead className="hidden md:table-cell">
+                              Status
+                            </TableHead>
+                            <TableHead className="hidden md:table-cell">
+                              Total
+                            </TableHead>
+                            <TableHead className="">
+                              Actions
+                            </TableHead>
+
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+
+                          {notAttachedToFinance &&
+                            notAttachedToFinance.map((result, index) => {
+                              console.log(result, 'in table')
+
+                              return (
+                                <TableRow key={index} className="hover:bg-accent border-border">
+                                  <TableCell>
+                                    <div>
+                                      {result.dept}
+                                    </div>
+                                  </TableCell>
+                                  <TableCell className="hidden md:table-cell">
+                                    {result.userName}
+                                  </TableCell>
+                                  <TableCell className="hidden md:table-cell">
+                                    <Badge>
+                                      {result.status}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell className="hidden md:table-cell">
+                                    {result.total}
+                                  </TableCell>
+
+                                  <TableCell className='flex items-center gap-3'>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button
+                                          size="icon"
+                                          variant="ghost"
+                                          className="bg-primary"
+                                          onClick={() => {
+                                            console.log('Setting showOrder with:', result);
+                                            setShowOrder(result);
+                                            console.log('Current showOrder:', showOrder);
+
+                                          }}
+                                        >
+                                          <Eye className="h-5 w-5" />
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="right">
+                                        Preview Details
+                                      </TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <Button
+                                          size="icon"
+                                          variant="ghost"
+                                          className="bg-primary"
+                                          onClick={() => {
+                                            const formData = new FormData();
+                                            formData.append("orderId", result.id);
+                                            formData.append("intent", 'syncAccOrder');
+                                            submit(formData, { method: "post", });
+                                          }}
+                                        >
+                                          <FileText className="h-5 w-5" />
+                                        </Button>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="right">
+                                        Go To Order
+                                      </TooltipContent>
+                                    </Tooltip>
+
+
+                                  </TableCell>
+                                </TableRow>
+                              )
+                            })}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </CardContent>
+                  <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+                    <div className="text-xs text-muted-foreground flex items-center justify-between mb-5">
+
 
                     </div>
+                  </CardFooter>
+                </Card>
+                {showOrder && (
+                  <Card className='sm:col-span-2 m-4' x-chunk="dashboard-07-chunk-3">
+                    <CardHeader className=' bg-muted/50'>
+                      <CardTitle> Order Details </CardTitle>
+                    </CardHeader>
+                    <CardContent className=' !grow !flex-grow h-auto max-h-[300px] overflow-y-auto'>
+                      <div className="grid gap-6 mt-1">
+                        <div className="font-semibold"></div>
+                        <ul className="grid gap-3 max-h-[300px] h-auto overflow-y-auto">
+                          {showOrder?.AccessoriesOnOrders && (
+                            <ul>
+                              {showOrder.AccessoriesOnOrders.map((result, index) => {
+                                console.log(result, 'kjhkhkhkj'); // Check the data here
+                                return (
+                                  <li className="flex items-center justify-between" key={index}>
+                                    <div>
+                                      <div className='flex items-center group'>
+                                        <div className="font-medium">
+                                          {result.accessory.brand} {result.accessory.name}
+                                        </div>
+                                        <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                          <input type="hidden" name="id" value={result.id} />
+                                          <input type='hidden' name='total' value={pacTotal} />
+                                          <input type='hidden' name='accOrderId' value={showOrder.id} />
+                                          <Button
+                                            size="icon"
+                                            variant="outline"
+                                            name="intent" value='deleteOrderItem'
+                                            className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                            type='submit'
+                                          >
+                                            <X className="h-4 w-4 text-foreground" />
+                                          </Button>
+                                        </addProduct.Form>
+                                      </div>
 
-                  </CardHeader>
-                  <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
-                    <div className="grid gap-3 max-h-[65vh] h-auto">
-                      <div className="rightbox">
-                        <div className="rb-container">
-                          <ul className="rb">
-                            {sortedEvents.reverse().map((event, index) => (
-                              <li key={index} className="rb-item grid-grid-cols-1 bg-muted-background rounded-lg px-3 py-2 ">
-                                <div className="timestamp flex justify-between text-primary">
-                                  <p>{event.date}</p>
-                                  <p className='text-right'>{event.type}</p>
-                                </div>
-                                <div className="timestamp flex justify-between">
-                                  <div className="item-title">{event.title}</div>
-                                  {event.type === 'Communication' ? (
-                                    <><p className="item-title text-right">{event.direction}</p></>
-                                  ) : null}
-                                </div>
-                                <p>{event.userName}</p>
+                                      <div className="hidden text-sm text-muted-foreground md:inline">
+                                        {result.accessory.category}
+                                      </div>
+                                      <div className="hidden text-sm text-muted-foreground md:inline">
+                                        {result.accessory.description}
+                                      </div>
+                                    </div>
+                                    <span>${result.accessory.price} x {result.quantity}</span>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          )}
+                        </ul>
+                        <Separator className="my-2" />
+                        <ul className="grid gap-3">
+                          <li className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Subtotal</span>
+                            <span>${totalAccessoriesCost}</span>
+                          </li>
+                          {showOrder.discount === 0 && (
+                            <li className="flex items-center justify-between">
+                              <span className="text-muted-foreground">Discount</span>
+                              <span>${showOrder.discount}</span>
+                            </li>
+                          )}
+                          {showOrder.discPer === 0 && (
+                            <li className="flex items-center justify-between">
+                              <span className="text-muted-foreground">Discount</span>
+                              <span>{showOrder.discPer}%</span>
+                            </li>
+                          )}
+                          {discount !== 0 && (
+                            <>
+                              <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">Discount $</span>
+                                <fetcher.Form
+                                  method="post"
+                                  onSubmit={() => {
+                                    buttonRef.current?.focus();
+                                  }}
+                                  preventScrollReset
+                                >
+                                  <input
+                                    name='accOrderId'
+                                    defaultValue={showOrder.id}
+                                    type='hidden'
+                                  />
+                                  <input
+                                    name='intent'
+                                    defaultValue='updateDiscount'
+                                    type='hidden'
+                                  />
+                                  <input
+                                    name='total'
+                                    defaultValue={totalAccessoriesCost}
+                                    type='hidden'
+                                  />
+                                  <div className="relative ml-auto flex-1 md:grow-0 ">
+                                    <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-foreground" />
+                                    <Input
+                                      ref={inputRef}
+                                      name='discDollar'
+                                      className='text-right pr-10 w-[100px]'
+                                      defaultValue={discDollar}
+                                      onChange={(event) => setDiscDollar(event.target.value)}
+                                      onKeyDown={(event) => {
+                                        if (event.key === "Escape") {
+                                          buttonRef.current?.focus();
+                                        }
+                                      }}
+                                      onBlur={(event) => {
+                                        if (
+                                          inputRef.current?.value !== discDollar &&
+                                          inputRef.current?.value.trim() !== ""
+                                        ) {
+                                          fetcher.submit(event.currentTarget);
+                                        }
+                                      }}
+                                    />
+                                    <Button
+                                      type="submit"
+                                      size="icon"
+
+                                      disabled={!discDollar}
+                                      className='bg-primary mr-2 absolute right-1.5 top-2.5 h-4 w-4 text-foreground '>
+                                      <PaperPlaneIcon className="h-4 w-4" />
+                                      <span className="sr-only">Cash</span>
+                                    </Button>
+                                  </div>
+                                </fetcher.Form>
                               </li>
-                            ))}
-                          </ul>
-                        </div>
+                              <li className="flex items-center justify-between">
+                                <span className="text-muted-foreground">Discount %</span>
+                                <fetcher.Form
+                                  method="post"
+                                  onSubmit={() => {
+                                    buttonRef.current?.focus();
+                                  }}
+                                  preventScrollReset
+                                >
+                                  <input
+                                    name='accOrderId'
+                                    defaultValue={showOrder.id}
+                                    type='hidden'
+                                  />
+                                  <input
+                                    name='intent'
+                                    defaultValue='updateDiscPerc'
+                                    type='hidden'
+                                  />
+                                  <input
+                                    name='total'
+                                    defaultValue={totalAccessoriesCost}
+                                    type='hidden'
+                                  />
+                                  <div className="relative ml-auto flex-1 md:grow-0 ">
+                                    <Input
+                                      ref={inputRef}
+                                      name='discPer'
+                                      className='text-right pr-[43px] w-[100px]'
+                                      value={discPer}
+                                      onChange={(event) => setDiscPer(event.target.value)}
+                                      onKeyDown={(event) => {
+                                        if (event.key === "Escape") {
+                                          buttonRef.current?.focus();
+                                        }
+                                      }}
+                                      onBlur={(event) => {
+                                        if (
+                                          inputRef.current?.value !== discPer &&
+                                          inputRef.current?.value.trim() !== ""
+                                        ) {
+                                          fetcher.submit(event.currentTarget);
+                                        }
+                                      }}
+                                    />
+                                    <Percent className="absolute right-10 top-[8px] h-4 w-4 text-foreground" />
+                                    <Button
+                                      type="submit"
+                                      size="icon"
+
+                                      disabled={!discPer}
+                                      className='bg-primary mr-2 absolute right-1.5 top-[8px] h-4 w-4 text-foreground '>
+                                      <PaperPlaneIcon className="h-4 w-4" />
+                                      <span className="sr-only">Cash</span>
+                                    </Button>
+                                  </div>
+                                </fetcher.Form>
+
+                              </li>
+                            </>
+                          )}
+                          <li className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Tax</span>
+                            <span>{deFees.userTax}%</span>
+                          </li>
+                          <li className="flex items-center justify-between font-semibold">
+                            <span className="text-muted-foreground">Total</span>
+                            <span>${pacTotal}</span>
+                          </li>
+                        </ul>
+                        <Form method='post' >
+                          <input type='hidden' name='orderId' value={showOrder.id} />
+                          <div className="relative mt-4">
+                            <TextArea className='w-full' defaultValue={showOrder.note} name='note' />
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Order Notes</label>
+                          </div>
+                          <Button
+                            type='submit'
+                            name='intent'
+                            value='submitNote'
+                            size='sm'
+                            className='mt-4 ml-auto'
+                          >Save</Button>
+                        </Form>
+                      </div>
+
+
+
+                    </CardContent>
+                    <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+
+                      <div className="ml-auto flex items-center gap-1">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button size="icon" variant="outline" className="h-8 w-8">
+                              <MoreVertical className="h-3.5 w-3.5" />
+                              <span className="sr-only">More</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent
+                            align="end"
+                            className="border border-border"
+                          >
+                            <DropdownMenuItem
+                              onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>Show Discount</DropdownMenuItem>
+
+                            <DropdownMenuItem
+                              onSelect={() => {
+                                PrintReceiptAcc(toReceiptAcc)
+                              }}
+                            >Print Receipt</DropdownMenuItem>
+                            <DropdownMenuItem
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("financeId", finance.id);
+                                formData.append("subTotal", totalAccessoriesCost);
+                                formData.append("intent", 'pushSubtotal');
+                                submit(formData, { method: "post", });
+                              }}
+                            >Push Sub Total to Finance</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("orderId", showOrder.id);
+                                formData.append("financeId", finance.id);
+                                formData.append("intent", 'claimAccOrder');
+                                submit(formData, { method: "post", });
+                              }}
+                            >Claim for Finance File</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("orderId", showOrder.id);
+                                formData.append("intent", 'deleteAccOrder');
+                                submit(formData, { method: "post", });
+                              }}>Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+
+                      </div>
+                    </CardFooter>
+                  </Card>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+        <div>
+          <Tabs defaultValue="Timeline">
+            <TabsList >
+              <TabsTrigger value="Timeline">Timeline</TabsTrigger>
+              <TabsTrigger value="Notes">Notes</TabsTrigger>
+              <TabsTrigger value="Apt History">Apt History</TabsTrigger>
+              <TabsTrigger value="Communications">Communications</TabsTrigger>
+              <TabsTrigger value="Upload">Upload</TabsTrigger>
+              <TabsTrigger value="Deposits">Deposits</TabsTrigger>
+            </TabsList>
+            <TabsContent value="Timeline">
+              <Card className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"                >
+                <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                  <div className="grid gap-0.5">
+                    <CardTitle className="group flex items-center gap-2 text-lg">
+                      Timeline
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                      >
+                        <Copy className="h-3 w-3" />
+                        <span className="sr-only">Snap shot on customer interactions, whether they are buying something or a sales person following up to make a sale.</span>
+                      </Button>
+                    </CardTitle>
+
+                  </div>
+
+                </CardHeader>
+                <CardContent className="flex-grow !grow overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
+                  <div className="grid gap-3 max-h-[65vh] h-auto">
+                    <div className="rightbox">
+                      <div className="rb-container">
+                        <ul className="rb">
+                          {sortedEvents.reverse().map((event, index) => (
+                            <li key={index} className="rb-item grid-grid-cols-1 bg-muted-background rounded-lg px-3 py-2 ">
+                              <div className="timestamp flex justify-between text-primary">
+                                <p>{event.date}</p>
+                                <p className='text-right'>{event.type}</p>
+                              </div>
+                              <div className="timestamp flex justify-between">
+                                <div className="item-title">{event.title}</div>
+                                {event.type === 'Communication' ? (
+                                  <><p className="item-title text-right">{event.direction}</p></>
+                                ) : null}
+                              </div>
+                              <p>{event.userName}</p>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
+                  </div>
 
-                  </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
-                    <div className="text-xs text-muted-foreground">
-                      Updated <time dateTime="2023-11-23">November 23, 2023</time>
-                    </div>
+                </CardContent>
+                <CardFooter className="flex flex-row items-center border-t border-border   bg-muted/50  px-6 py-3">
+                  <div className="text-xs text-muted-foreground">
+                    {new Date(finance.updatedAt).toLocaleDateString("en-US", options2)}
+                  </div>
 
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-              <TabsContent value="Notes">
-                <Card className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"                >
-                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                    <div className="grid gap-0.5">
-                      <CardTitle className="group flex items-center gap-2 text-lg">
-                        Notes
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                        >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">To leave yourself or your colleagues notes regarding the customer.</span>
-                        </Button>
-                      </CardTitle>
-                    </div>
-                    <div className="ml-auto flex items-center gap-1">
-                      <TooltipProvider delayDuration={0}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="ml-auto rounded-full"
-                              onClick={() => setOpen(true)}
-                            >
-                              <PlusIcon className="h-4 w-4" />
-                              <span className="sr-only">CC Employee</span>
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent sideOffset={10} className='bg-primary'>CC Employee</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex-grow !grow  overflow-x-clip p-6 text-sm bg-background">
-                    <div className="grid gap-3 ">
-                      <Card className=" flex flex-col-reverse  max-h-[50vh] h-auto overflow-y-auto">
-                        <CardContent>
-                          <div className="space-y-4 mt-5">
-
-                            {financeNotes.slice().reverse().map((message, index) => (
-                              <div
-                                key={index}
-                                className={cn(
-                                  "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                                  message.userEmail === user.email
-                                    ? "ml-auto bg-primary text-foreground"
-                                    : "bg-[#262626]"
-                                )}
-                              >
-                                <div className='grid grid-cols-1'>
-                                  {message.userEmail !== user.email && (
-                                    <p className='text-[#8c8c8c]'>
-                                      {message.userName}
-                                    </p>
-                                  )}
-                                  {message.body}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </CardContent>
-
-                      </Card>
-                      <Dialog open={open} onOpenChange={setOpen}>
-                        <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
-                          <DialogHeader className="px-4 pb-4 pt-5">
-                            <DialogTitle>CC Employee</DialogTitle>
-                            <DialogDescription>
-                              Invite a user to this thread.
-                            </DialogDescription>
-                          </DialogHeader>
-                          <Command className="overflow-hidden rounded-t-none border-t border-border bg-transparent">
-                            <CommandInput placeholder="Search user..." className=' bg-muted/50  text-foreground' />
-                            <CommandList>
-                              <CommandEmpty>No users found.</CommandEmpty>
-                              <CommandGroup className="p-2">
-                                {users.map((user) => (
-                                  <CommandItem
-                                    key={user.email}
-                                    className="flex items-center px-2"
-                                    onSelect={() => {
-                                      if (selectedUsers.includes(user)) {
-                                        return setSelectedUsers(
-                                          selectedUsers.filter(
-                                            (selectedUser) => selectedUser !== user
-                                          )
-                                        )
-                                      }
-
-                                      return setSelectedUsers(
-                                        [...users].filter((u) =>
-                                          [...selectedUsers, user].includes(u)
-                                        )
-                                      )
-                                    }}
-                                  >
-                                    <Avatar>
-                                      <AvatarImage src={user.avatar} alt="Image" />
-                                      <AvatarFallback>{user.name[0]}</AvatarFallback>
-                                    </Avatar>
-                                    <div className="ml-2">
-                                      <p className="text-sm font-medium leading-none">
-                                        {user.name}
-                                      </p>
-                                      <p className="text-sm text-muted-foreground">
-                                        {user.email}
-                                      </p>
-                                    </div>
-                                    {selectedUsers.includes(user) ? (
-                                      <CheckIcon className="ml-auto flex h-5 w-5 text-primary" />
-                                    ) : null}
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                          <DialogFooter className="flex items-center border-t border-border p-4 sm:justify-between">
-                            {selectedUsers.length > 0 ? (
-                              <div className="flex -space-x-2 overflow-hidden">
-                                {selectedUsers.map((user) => (
-                                  <Avatar
-                                    key={user.email}
-                                    className="inline-block border-2 border-background border-border"
-                                  >
-                                    <AvatarImage src={user.avatar} />
-                                    <AvatarFallback>{user.name[0]}</AvatarFallback>
-                                  </Avatar>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="text-sm text-muted-foreground">
-                                Select users to add to this thread.
-                              </p>
-                            )}
-                            <Button
-                              disabled={selectedUsers.length < 2}
-                              onClick={() => {
-                                setOpen(false)
-                              }}
-                            >
-                              Continue
-                            </Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
-
-                    <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2" >
-                      <input type='hidden' name='financeId' defaultValue={finance.id} />
-                      <input type='hidden' name='userEmail' defaultValue={user.email} />
-                      <input type='hidden' name='clientfileId' defaultValue={finance.clientfileId} />
-                      <input type='hidden' name='userName' defaultValue={user.name} />
-                      <Input
-                        id="message"
-                        placeholder="Type your message..."
-                        className="flex-1  bg-muted/50  border-border"
-                        autoComplete="off"
-                        value={input}
-                        onChange={(event) => setInput(event.target.value)}
-                        name="body"
-                      />
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Notes">
+              <Card className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"                >
+                <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                  <div className="grid gap-0.5">
+                    <CardTitle className="group flex items-center gap-2 text-lg">
+                      Notes
                       <Button
-                        value="saveFinanceNote"
-                        type="submit"
-                        name="intent"
                         size="icon"
-                        onClick={() => {
-                          toast.success(`Note saved`)
-                        }}
-                        disabled={inputLength === 0}
-                        className='bg-primary '>
-                        <PaperPlaneIcon className="h-4 w-4" />
-                        <span className="sr-only">Send</span>
+                        variant="outline"
+                        className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                      >
+                        <Copy className="h-3 w-3" />
+                        <span className="sr-only">To leave yourself or your colleagues notes regarding the customer.</span>
                       </Button>
+                    </CardTitle>
+                  </div>
+                  <div className="ml-auto flex items-center gap-1">
+                    <TooltipProvider delayDuration={0}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="ml-auto rounded-full"
+                            onClick={() => setOpen(true)}
+                          >
+                            <PlusIcon className="h-4 w-4" />
+                            <span className="sr-only">CC Employee</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent sideOffset={10} className='bg-primary'>CC Employee</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow !grow  overflow-x-clip p-6 text-sm bg-background">
+                  <div className="grid gap-3 ">
+                    <Card className=" flex flex-col-reverse  max-h-[50vh] h-auto overflow-y-auto">
+                      <CardContent>
+                        <div className="space-y-4 mt-5">
 
-                    </fetcher.Form>
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-              <TabsContent value="Apt History">
-                <Card className="overflow-hidden text-foreground  rounded-lg" x-chunk="dashboard-05-chunk-4"                >
-                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                    <div className="grid gap-0.5">
-                      <CardTitle className="group flex items-center gap-2 text-lg">
-                        Appointments
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                        >
-                          <Copy className="h-3 w-3" />
-
-                        </Button>
-                      </CardTitle>
-                    </div>
-                    <div className="ml-auto flex items-center gap-1">
-                      <TooltipProvider delayDuration={0}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="ml-auto rounded-full"
-                              onClick={() => setOpenAppt(true)}
-                            >
-                              <PlusIcon className="h-4 w-4" />
-                              <span className="sr-only">CC Employee</span>
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent sideOffset={10} className='bg-primary'>Add Appointment</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip p-6 text-sm bg-background">
-                    <div className="grid gap-3 max-h-[20vh] h-auto">
-                      <div className="space-y-4 mt-5">
-
-                        {aptFinance3.map((message, index) => {
-                          const options = {
-                            weekday: 'short',
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
-                          };
-                          const isValidDate = message.start && message.start !== '1969-12-31 19:00';
-                          const date = new Date(message.start);
-                          const formattedDateAppt = isValidDate ? date.toLocaleDateString('en-US', options) : 'TBD';
-                          return (
+                          {financeNotes.slice().reverse().map((message, index) => (
                             <div
                               key={index}
-                              className={cn("flex w-[95%] flex-col gap-2 rounded-lg px-3 py-2 text-sm bg-[#262626] mx-auto")} >
-                              <div className='grid grid-cols-1'>
-                                <div className='flex justify-between '>
-                                  {message.completed === 'yes' ? (
-                                    <Badge className="text-xs bg-[#1e9b3d]" variant="secondary">
-                                      Completed!
-                                    </Badge>
-                                  ) : (
-                                    <Badge className="text-xs bg-primary" variant="secondary">
-                                      Incomplete
-                                    </Badge>
-                                  )}
-                                  <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                      <Button size="icon" variant="outline" className="h-8 w-8 bg-transparent">
-                                        <MoreVertical className="h-3.5 w-3.5" />
-                                        <span className="sr-only">Menu</span>
-                                      </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end" className=' bg-blackground  text-foreground border border-border'>
-                                      <Form method='post'>
-                                        <DropdownMenuItem
-                                          onSelect={() => {
-                                            const formData = new FormData();
-                                            formData.append("aptId", item.message);
-                                            formData.append("userEmail", user.email);
-                                            formData.append("userName", user.name);
-                                            formData.append("intent", 'deleteApt');
-                                            submit(formData, { method: "post" });
-                                          }}>
-                                          Delete
-                                        </DropdownMenuItem>
-                                        <input type='hidden' name='financeId' defaultValue={finance.id} />
-                                      </Form>
-                                      <DropdownMenuItem>Edit</DropdownMenuItem>
-                                      <DropdownMenuSeparator />
-                                      <DropdownMenuItem>Trash</DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                  </DropdownMenu>
-
-                                </div>
-                                <div className='flex justify-between mt-1'>
-                                  <p className='text-muted-foreground'>{formattedDateAppt}</p>
-                                  <p>{message.contactMethod}</p>
-                                </div>
-                                <p className='mt-1'> {message.title}</p>
-                              </div>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
-                    <div className="text-xs text-muted-foreground">
-                      Updated <time dateTime="2023-11-23">November 23, 2023</time>
-                    </div>
-                  </CardFooter>
-                </Card>
-                <Dialog open={openAppt} onOpenChange={setOpenAppt}>
-                  <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
-                    <Form method='post'>
-                      <DialogHeader className="px-4 pb-4 pt-5 mb-3">
-                        <DialogTitle>Add Appointment</DialogTitle>
-
-                      </DialogHeader>
-                      <div className="grid gap-3 mx-3 mb-3">
-                        <div className="relative mt-3">
-                          <Input
-                            name="title"
-                            type="text"
-                            className="w-full bg-background border-border "
-                          />
-                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Title</label>
-                        </div>
-                        <div className="relative mt-3">
-                          <Select name='note' defaultValue="No Answer / Left Message">
-                            <SelectTrigger className="w-full  border-border  ">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className='bg-background text-foreground bg-background'>
-                              <SelectGroup>
-                                <SelectLabel>Message examples</SelectLabel>
-                                <SelectItem value="">-- Moving Forward --</SelectItem>
-                                <SelectItem value="Wants to move forward, got deposit">Wants to move forward, got deposit</SelectItem>
-                                <SelectItem value="Wants to move forward, did not have credit card on him">Wants to move forward, did not have credit card on him</SelectItem>
-                                <SelectItem value="Wants to get finance approval before moving forward">Wants to get approval before moving forward</SelectItem>
-                                <SelectItem value="Sent BOS to sign off on">Sent BOS to sign off on deal</SelectItem>
-                                <SelectItem value="Wants to come back in to view and negotiate">Wants to come back in to view and negotiate</SelectItem>
-
-                                <SelectItem value="">-- Stand Still --</SelectItem>
-                                <SelectItem value="Talked to spouse, client was not home">Talked to wife, husband was not home</SelectItem>
-                                <SelectItem value="Got ahold of the client, was busy, need to call back">Got ahold of the client, was busy need to call back</SelectItem>
-                                <SelectItem value="Gave pricing, need to follow up">Gave pricing, need to follow up</SelectItem>
-                                <SelectItem value="Needs to discuss with spouse">Needs to discuss with spouse</SelectItem>
-                                <SelectItem value="No Answer / Left Message">No Answer / Left Message</SelectItem>
-
-                                <SelectItem value="">-- Not Moving Forward --</SelectItem>
-                                <SelectItem value="Does not want to move forward right now wants me to call in the future">Does not want to move forward right now wants me to call in the future</SelectItem>
-                                <SelectItem value="Bought else where, set to lost">Bought else where</SelectItem>
-                                <SelectItem value="Does not want to move forward, set to lost">Does not want to move forward, set to lost</SelectItem>
-                                <SelectItem value=""></SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note Examples</label>
-                        </div>
-                        <div className="relative mt-3">
-                          <Input
-                            type="text"
-                            className="w-full bg-background border-border"
-                          />
-                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Or Write A Custom Note...</label>
-                        </div>
-                        <div className="relative mt-3">
-                          <Select name='contactMethod' defaultValue="SMS">
-                            <SelectTrigger className="w-full    bg-background border-border">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className='bg-background text-foreground bg-background'>
-                              <SelectGroup>
-                                <SelectLabel>Contact Method</SelectLabel>
-                                <SelectItem value="Phone">Phone</SelectItem>
-                                <SelectItem value="In Person">In-Person</SelectItem>
-                                <SelectItem value="SMS">SMS</SelectItem>
-                                <SelectItem value="Email">Email</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
-                        </div>
-                        <div className="relative mt-3">
-                          <Select name='resourceId' defaultValue="1">
-                            <SelectTrigger className="w-full    bg-background border-border">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className='bg-background text-foreground bg-background'>
-                              <SelectGroup>
-                                <SelectLabel>Type of Appointment</SelectLabel>
-                                <SelectItem value="1">Sales Calls</SelectItem>
-                                <SelectItem value="2">Sales Appointments</SelectItem>
-                                <SelectItem value="3">Deliveries</SelectItem>
-                                <SelectItem value="4">F & I Appointments</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Type of Appointment</label>
-                        </div>
-                        <div className="relative mt-3">
-                          <Select name='resultOfcall' defaultValue="Attempted">
-                            <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent className='bg-background text-foreground bg-background'>
-                              <SelectGroup>
-                                <SelectLabel>Result of call</SelectLabel>
-                                <SelectItem value="Reached">Reached</SelectItem>
-                                <SelectItem value="N/A">N/A</SelectItem>
-                                <SelectItem value="Attempted">Left Message</SelectItem>
-                                <SelectItem value="Completed">Completed</SelectItem>
-                                <SelectItem value="Rescheduled">Rescheduled</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Result of call</label>
-                        </div>
-                        <div className="relative mt-3">
-                          <Select name='direction' defaultValue="Outgoing">
-                            <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
-                              <SelectValue placeholder="" />
-                            </SelectTrigger>
-                            <SelectContent className='bg-background text-foreground bg-background'>
-                              <SelectGroup>
-                                <SelectLabel>Direction of call</SelectLabel>
-                                <SelectItem value="Incoming">Incoming</SelectItem>
-                                <SelectItem value="Outgoing">Outgoing</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Direction of call</label>
-                        </div>
-                        <div className=' flex-col mx-auto justify-center'>
-                          <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary border-border",
-                                    !date && " text-foreground"
-                                  )}
-                                >
-                                  <div className=' text-foreground  mx-auto flex justify-center  '>
-                                    <CalendarIcon className="mr-2 size-8 " />
-                                    {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
-                                  </div>
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-[275px] bg-muted/40 p-0 text-foreground border-border" align="start">
-                                <div className='align-center my-3 flex justify-center   '>
-                                  <SmallCalendar
-                                    className='mx-auto w-auto   bg-background text-foreground'
-                                    mode="single"
-                                    selected={date}
-                                    onSelect={setDate}
-                                    initialFocus
-                                  />
-                                </div>
-                              </PopoverContent>
-                            </Popover>
-                          </div>
-                        </div>
-                        <div className=' flex-col mx-auto justify-center' >
-                          <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
-
-                            <input type='hidden' value={String(date)} name='value' />
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary border-border",
-                                    !date && " text-foreground"
-                                  )}
-                                >
-                                  <div className=' text-foreground  mx-auto flex justify-center  '>
-                                    <ClockIcon className="mr-2 size-8 " />
-                                    {currentTime ? (time) : <span>Pick a Time</span>}
-                                  </div>
-                                </Button>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-[275px] bg-muted/40 p-0 text-foreground border-border" align="start">
-                                <div className='align-center my-3 flex justify-center   '>
-                                  <Select name='pickHour'  >
-                                    <SelectTrigger className="m-3 w-auto mx-auto bg-transparent hover:bg-transparent hover:text-primary border-border" >
-                                      <SelectValue defaultValue='09' />
-                                    </SelectTrigger>
-                                    <SelectContent className='bg-white text-black' >
-                                      <SelectGroup>
-                                        <SelectLabel>Hour</SelectLabel>
-                                        <SelectItem value="09">09</SelectItem>
-                                        <SelectItem value="10">10</SelectItem>
-                                        <SelectItem value="11">11</SelectItem>
-                                        <SelectItem value="12">12</SelectItem>
-                                        <SelectItem value="13">13</SelectItem>
-                                        <SelectItem value="14">14</SelectItem>
-                                        <SelectItem value="15">15</SelectItem>
-                                        <SelectItem value="16">16</SelectItem>
-                                        <SelectItem value="17">17</SelectItem>
-                                        <SelectItem value="18">18</SelectItem>
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                  <Select name='pickMin'   >
-                                    <SelectTrigger className="m-3 w-auto" >
-                                      <SelectValue defaultValue='10' />
-                                    </SelectTrigger>
-                                    <SelectContent className='bg-white text-black'  >
-                                      <SelectGroup>
-                                        <SelectLabel>Minute</SelectLabel>
-                                        <SelectItem value="10">10</SelectItem>
-                                        <SelectItem value="20">20</SelectItem>
-                                        <SelectItem value="30">30</SelectItem>
-                                        <SelectItem value="40">40</SelectItem>
-                                        <SelectItem value="50">50</SelectItem>
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                              </PopoverContent>
-                            </Popover>
-                          </div>
-                        </div>
-                      </div>
-                      <input type='hidden' name='phone' defaultValue={finance.phone} />
-                      <input type='hidden' name='email' defaultValue={finance.email} />
-                      <input type='hidden' name='lastName' defaultValue={finance.lastName} />
-                      <input type='hidden' name='firstName' defaultValue={finance.firstName} />
-                      <input type='hidden' name='brand' defaultValue={finance.brand} />
-                      <input type='hidden' name='unit' defaultValue={finance.model} />
-                      <input type='hidden' name='brand' defaultValue={finance.brand} />
-                      <input type='hidden' name='financeId' defaultValue={finance.id} />
-                      <input type='hidden' name='userId' defaultValue={user.id} />
-                      <input type='hidden' name='apptType' defaultValue='sales' />
-                      <input type='hidden' name='min' defaultValue={minForm} />
-                      <input type='hidden' name='hour' defaultValue={hourForm} />
-                      <DialogFooter className=" p-4  ">
-                        <div className='flex justify-center' >
-                          <Button
-                            size='sm'
-                            value="addAppt"
-                            type="submit"
-                            name="intent"
-                            onClick={() => {
-                              toast.success(`Appointment Added!`)
-                            }}
-                            className='bg-primary ml-auto  mr-auto'>
-                            Add Appointment
-                            <PaperPlaneIcon className="h-4 w-4 ml-2" />
-                          </Button>
-                        </div>
-                      </DialogFooter>
-                    </Form>
-
-                  </DialogContent>
-                </Dialog>
-              </TabsContent>
-              <TabsContent value="Communications">
-                <Card className=" text-foreground  rounded-lg" x-chunk="dashboard-05-chunk-4"                >
-                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                    <div className="grid gap-0.5">
-                      <CardTitle className="group flex items-center gap-2 text-lg">
-                        Communications
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                        >
-                          <Copy className="h-3 w-3" />
-                        </Button>
-                      </CardTitle>
-                    </div>
-                    <div className="ml-auto flex items-center gap-1">
-                      <TooltipProvider delayDuration={0}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="ml-auto rounded-full"
-                              onClick={() => setOpenComms(true)}
+                              className={cn(
+                                "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                                message.userEmail === user.email
+                                  ? "ml-auto bg-primary text-foreground"
+                                  : "bg-[#262626]"
+                              )}
                             >
-                              <PlusIcon className="h-4 w-4" />
-                              <span className="sr-only">Add Communication</span>
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent sideOffset={10} className='bg-primary'>Add Communication</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip p-6 text-sm bg-background">
-                    <div className="grid gap-3 max-h-[40vh] h-auto">
-                      <div className="space-y-4 mt-5">
-
-                        {Coms.map((message, index) => (
-                          <div
-                            key={index}
-                            className={cn(
-                              "flex  max-w-[75%]   w-[65%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                              message.direction === 'Outgoing'
-                                ? "ml-auto bg-primary text-foreground"
-                                : "bg-[#262626]"
-                            )}
-                          >
-                            <div className='grid grid-cols-1'>
-                              <div className='flex justify-between'>
-                                <p>{message.direction}</p>
-                                <p className='text-right'>{message.type}</p>
-                              </div>
-                              <div className='flex justify-between'>
-                                <p>{message.result}</p>
-                                {message.userEmail === 'Outgoing' && (
-                                  <p className='text-[#8c8c8c] text-right'>
+                              <div className='grid grid-cols-1'>
+                                {message.userEmail !== user.email && (
+                                  <p className='text-[#8c8c8c]'>
                                     {message.userName}
                                   </p>
                                 )}
+                                {message.body}
                               </div>
-                              <p className='text-[#8c8c8c]'>
-                                {message.createdAt}
-                              </p>
-                              <p>{message.subject}</p>
-                              <p>{message.body}</p>
                             </div>
-                          </div>
-                        ))}
-                      </div>
+                          ))}
+                        </div>
+                      </CardContent>
 
-                    </div>
-                    <Dialog open={openComms} onOpenChange={setOpenComms}>
+                    </Card>
+                    <Dialog open={open} onOpenChange={setOpen}>
                       <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
-                        <Form method='post'>
-                          <DialogHeader className="px-4 pb-4 pt-5">
-                            <DialogTitle>Add Communication</DialogTitle>
-                          </DialogHeader>
-                          <div className="grid gap-3 mx-3 mb-3">
-                            <div className="relative mt-3">
-                              <Input
-                                id="title"
-                                type="text"
-                                className="w-full bg-background border-border "
-                              />
-                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Title</label>
-                            </div>
-                            <div className="relative mt-3">
-                              <Select name='note' defaultValue="Gave pricing, need to follow up">
-                                <SelectTrigger className="w-full  border-border  ">
-                                  <SelectValue placeholder="Message examples" />
-                                </SelectTrigger>
-                                <SelectContent className='bg-background text-foreground bg-background border-border'>
-                                  <SelectGroup>
-                                    <SelectLabel>Message examples</SelectLabel>
-                                    <SelectItem value="">-- Moving Forward --</SelectItem>
-                                    <SelectItem value="Wants to move forward, got deposit">Wants to move forward, got deposit</SelectItem>
-                                    <SelectItem value="Wants to move forward, did not have credit card on him">Wants to move forward, did not have credit card on him</SelectItem>
-                                    <SelectItem value="Wants to get finance approval before moving forward">Wants to get approval before moving forward</SelectItem>
-                                    <SelectItem value="Sent BOS to sign off on">Sent BOS to sign off on deal</SelectItem>
-                                    <SelectItem value="Wants to come back in to view and negotiate">Wants to come back in to view and negotiate</SelectItem>
+                        <DialogHeader className="px-4 pb-4 pt-5">
+                          <DialogTitle>CC Employee</DialogTitle>
+                          <DialogDescription>
+                            Invite a user to this thread.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <Command className="overflow-hidden rounded-t-none border-t border-border bg-transparent">
+                          <CommandInput placeholder="Search user..." className=' bg-muted/50  text-foreground' />
+                          <CommandList>
+                            <CommandEmpty>No users found.</CommandEmpty>
+                            <CommandGroup className="p-2">
+                              {users.map((user) => (
+                                <CommandItem
+                                  key={user.email}
+                                  className="flex items-center px-2"
+                                  onSelect={() => {
+                                    if (selectedUsers.includes(user)) {
+                                      return setSelectedUsers(
+                                        selectedUsers.filter(
+                                          (selectedUser) => selectedUser !== user
+                                        )
+                                      )
+                                    }
 
-                                    <SelectItem value="">-- Stand Still --</SelectItem>
-                                    <SelectItem value="Talked to spouse, client was not home">Talked to wife, husband was not home</SelectItem>
-                                    <SelectItem value="Got ahold of the client, was busy, need to call back">Got ahold of the client, was busy need to call back</SelectItem>
-                                    <SelectItem value="Gave pricing, need to follow up">Gave pricing, need to follow up</SelectItem>
-                                    <SelectItem value="Needs to discuss with spouse">Needs to discuss with spouse</SelectItem>
-                                    <SelectItem value="No Answer / Left Message">No Answer / Left Message</SelectItem>
-
-                                    <SelectItem value="">-- Not Moving Forward --</SelectItem>
-                                    <SelectItem value="Does not want to move forward right now wants me to call in the future">Does not want to move forward right now wants me to call in the future</SelectItem>
-                                    <SelectItem value="Bought else where, set to lost">Bought else where</SelectItem>
-                                    <SelectItem value="Does not want to move forward, set to lost">Does not want to move forward, set to lost</SelectItem>
-                                    <SelectItem value=""></SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note Examples</label>
+                                    return setSelectedUsers(
+                                      [...users].filter((u) =>
+                                        [...selectedUsers, user].includes(u)
+                                      )
+                                    )
+                                  }}
+                                >
+                                  <Avatar>
+                                    <AvatarImage src={user.avatar} alt="Image" />
+                                    <AvatarFallback>{user.name[0]}</AvatarFallback>
+                                  </Avatar>
+                                  <div className="ml-2">
+                                    <p className="text-sm font-medium leading-none">
+                                      {user.name}
+                                    </p>
+                                    <p className="text-sm text-muted-foreground">
+                                      {user.email}
+                                    </p>
+                                  </div>
+                                  {selectedUsers.includes(user) ? (
+                                    <CheckIcon className="ml-auto flex h-5 w-5 text-primary" />
+                                  ) : null}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                        <DialogFooter className="flex items-center border-t border-border p-4 sm:justify-between">
+                          {selectedUsers.length > 0 ? (
+                            <div className="flex -space-x-2 overflow-hidden">
+                              {selectedUsers.map((user) => (
+                                <Avatar
+                                  key={user.email}
+                                  className="inline-block border-2 border-background border-border"
+                                >
+                                  <AvatarImage src={user.avatar} />
+                                  <AvatarFallback>{user.name[0]}</AvatarFallback>
+                                </Avatar>
+                              ))}
                             </div>
-                            <div className="relative mt-3">
-                              <Input
-                                id="name"
-                                type="text"
-
-                                className="w-full bg-background border-border  "
-                              />
-                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Or Write A Custom Note...</label>
-                            </div>
-                            <div className="relative mt-3">
-                              <Select name='contactMethod' defaultValue="Phone">
-                                <SelectTrigger className="w-full    bg-background border-border">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className='bg-background text-foreground bg-background  border-border'>
-                                  <SelectGroup>
-                                    <SelectLabel>Contact Method</SelectLabel>
-                                    <SelectItem value="Phone">Phone</SelectItem>
-                                    <SelectItem value="In Person">In-Person</SelectItem>
-                                    <SelectItem value="SMS">SMS</SelectItem>
-                                    <SelectItem value="Email">Email</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
-                            </div>
-                            <div className="relative mt-3">
-                              <Select name='resultOfcall' defaultValue="Reached">
-                                <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className='bg-background text-foreground  border-border'>
-                                  <SelectGroup>
-                                    <SelectLabel>Result of call</SelectLabel>
-                                    <SelectItem value="Reached">Reached</SelectItem>
-                                    <SelectItem value="N/A">N/A</SelectItem>
-                                    <SelectItem value="Attempted">Left Message</SelectItem>
-                                    <SelectItem value="Completed">Completed</SelectItem>
-                                    <SelectItem value="Rescheduled">Rescheduled</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Result of call</label>
-                            </div>
-                            <div className="relative mt-3">
-                              <Select name='direction' defaultValue="Incoming">
-                                <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className='bg-background text-foreground  border-border'>
-                                  <SelectGroup>
-                                    <SelectLabel>Direction of call</SelectLabel>
-                                    <SelectItem value="Incoming">Incoming</SelectItem>
-                                    <SelectItem value="Outgoing">Outgoing</SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                              <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Direction of call</label>
-                            </div>
-
-                          </div>
-                          <DialogFooter className="flex items-center  p-4 sm:justify-between">
-                            <input type='hidden' name='financeId' defaultValue={finance.id} />
-                            <input type='hidden' name='userId' defaultValue={user.id} />
-
-                            <Button
-                              value="addComms"
-                              type="submit"
-                              name="intent"
-                              onClick={() => {
-                                toast.success(`Communication Added!`)
-                              }}
-                              className='bg-primary ml-auto '>
-                              Add Communication
-                              <PaperPlaneIcon className=" ml-2 h-4 w-4" />
-                            </Button>
-                          </DialogFooter>
-                        </Form>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">
+                              Select users to add to this thread.
+                            </p>
+                          )}
+                          <Button
+                            disabled={selectedUsers.length < 2}
+                            onClick={() => {
+                              setOpen(false)
+                            }}
+                          >
+                            Continue
+                          </Button>
+                        </DialogFooter>
                       </DialogContent>
                     </Dialog>
-                  </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50  px-6 py-3">
-                    <div className="text-xs text-muted/50">
-                      Updated <time dateTime="2023-11-23">November 23, 2023</time>
-                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
 
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-              <TabsContent value="Upload">
-                <Card
-                  className="overflow-hidden text-foreground  rounded-lg" x-chunk="dashboard-05-chunk-4"
-                >
-                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                    <div className="grid gap-0.5">
-                      <CardTitle className="group flex items-center gap-2 text-lg">
-                        Docs
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                        >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">Upload customer docs such as contracts, warranties, etc.</span>
-                        </Button>
-                      </CardTitle>
-                    </div>
-                    <div className="ml-auto flex items-center gap-1">
-                      <Button onClick={() => navigate('/dealer/document/builder')} size="sm" variant="outline" className="h-8 gap-1">
-                        <File className="h-3.5 w-3.5" />
-                        <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                          Document Builder
-                        </span>
+                  <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2" >
+                    <input type='hidden' name='financeId' defaultValue={finance.id} />
+                    <input type='hidden' name='userEmail' defaultValue={user.email} />
+                    <input type='hidden' name='clientfileId' defaultValue={finance.clientfileId} />
+                    <input type='hidden' name='userName' defaultValue={user.name} />
+                    <Input
+                      id="message"
+                      placeholder="Type your message..."
+                      className="flex-1  bg-muted/50  border-border"
+                      autoComplete="off"
+                      value={input}
+                      onChange={(event) => setInput(event.target.value)}
+                      name="body"
+                    />
+                    <Button
+                      value="saveFinanceNote"
+                      type="submit"
+                      name="intent"
+                      size="icon"
+                      onClick={() => {
+                        toast.success(`Note saved`)
+                      }}
+                      disabled={inputLength === 0}
+                      className='bg-primary '>
+                      <PaperPlaneIcon className="h-4 w-4" />
+                      <span className="sr-only">Send</span>
+                    </Button>
+
+                  </fetcher.Form>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Apt History">
+              <Card className="overflow-hidden text-foreground  rounded-lg" x-chunk="dashboard-05-chunk-4"                >
+                <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                  <div className="grid gap-0.5">
+                    <CardTitle className="group flex items-center gap-2 text-lg">
+                      Appointments
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                      >
+                        <Copy className="h-3 w-3" />
+
                       </Button>
+                    </CardTitle>
+                  </div>
+                  <div className="ml-auto flex items-center gap-1">
+                    <TooltipProvider delayDuration={0}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="ml-auto rounded-full"
+                            onClick={() => setOpenAppt(true)}
+                          >
+                            <PlusIcon className="h-4 w-4" />
+                            <span className="sr-only">CC Employee</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent sideOffset={10} className='bg-primary'>Add Appointment</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip p-6 text-sm bg-background">
+                  <div className="grid gap-3 max-h-[20vh] h-auto">
+                    <div className="space-y-4 mt-5">
 
+                      {aptFinance3.map((message, index) => {
+                        const options = {
+                          weekday: 'short',
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                          second: '2-digit',
+                        };
+                        const isValidDate = message.start && message.start !== '1969-12-31 19:00';
+                        const date = new Date(message.start);
+                        const formattedDateAppt = isValidDate ? date.toLocaleDateString('en-US', options) : 'TBD';
+                        return (
+                          <div
+                            key={index}
+                            className={cn("flex w-[95%] flex-col gap-2 rounded-lg px-3 py-2 text-sm bg-[#262626] mx-auto")} >
+                            <div className='grid grid-cols-1'>
+                              <div className='flex justify-between '>
+                                {message.completed === 'yes' ? (
+                                  <Badge className="text-xs bg-[#1e9b3d]" variant="secondary">
+                                    Completed!
+                                  </Badge>
+                                ) : (
+                                  <Badge className="text-xs bg-primary" variant="secondary">
+                                    Incomplete
+                                  </Badge>
+                                )}
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button size="icon" variant="outline" className="h-8 w-8 bg-transparent">
+                                      <MoreVertical className="h-3.5 w-3.5" />
+                                      <span className="sr-only">Menu</span>
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end" className=' bg-blackground  text-foreground border border-border'>
+                                    <Form method='post'>
+                                      <DropdownMenuItem
+                                        onSelect={() => {
+                                          const formData = new FormData();
+                                          formData.append("aptId", item.message);
+                                          formData.append("userEmail", user.email);
+                                          formData.append("userName", user.name);
+                                          formData.append("intent", 'deleteApt');
+                                          submit(formData, { method: "post" });
+                                        }}>
+                                        Delete
+                                      </DropdownMenuItem>
+                                      <input type='hidden' name='financeId' defaultValue={finance.id} />
+                                    </Form>
+                                    <DropdownMenuItem>Edit</DropdownMenuItem>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem>Trash</DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+
+                              </div>
+                              <div className='flex justify-between mt-1'>
+                                <p className='text-muted-foreground'>{formattedDateAppt}</p>
+                                <p>{message.contactMethod}</p>
+                              </div>
+                              <p className='mt-1'> {message.title}</p>
+                            </div>
+                          </div>
+                        )
+                      })}
                     </div>
-                  </CardHeader>
-                  <CardContent className="flex-grow !grow max-h-[700px] h-[700px] overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
-                    <div className="parent-container">
-                      <MyIFrameComponent />
+                  </div>
+                </CardContent>
+                <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+                  <div className="text-xs text-muted-foreground">
+                    {new Date(finance.updatedAt).toLocaleDateString("en-US", options2)}
+                  </div>
+                </CardFooter>
+              </Card>
+              <Dialog open={openAppt} onOpenChange={setOpenAppt}>
+                <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
+                  <Form method='post'>
+                    <DialogHeader className="px-4 pb-4 pt-5 mb-3">
+                      <DialogTitle>Add Appointment</DialogTitle>
+
+                    </DialogHeader>
+                    <div className="grid gap-3 mx-3 mb-3">
+                      <div className="relative mt-3">
+                        <Input
+                          name="title"
+                          type="text"
+                          className="w-full bg-background border-border "
+                        />
+                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Title</label>
+                      </div>
+                      <div className="relative mt-3">
+                        <Select name='note' defaultValue="No Answer / Left Message">
+                          <SelectTrigger className="w-full  border-border  ">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className='bg-background text-foreground bg-background'>
+                            <SelectGroup>
+                              <SelectLabel>Message examples</SelectLabel>
+                              <SelectItem value="">-- Moving Forward --</SelectItem>
+                              <SelectItem value="Wants to move forward, got deposit">Wants to move forward, got deposit</SelectItem>
+                              <SelectItem value="Wants to move forward, did not have credit card on him">Wants to move forward, did not have credit card on him</SelectItem>
+                              <SelectItem value="Wants to get finance approval before moving forward">Wants to get approval before moving forward</SelectItem>
+                              <SelectItem value="Sent BOS to sign off on">Sent BOS to sign off on deal</SelectItem>
+                              <SelectItem value="Wants to come back in to view and negotiate">Wants to come back in to view and negotiate</SelectItem>
+
+                              <SelectItem value="">-- Stand Still --</SelectItem>
+                              <SelectItem value="Talked to spouse, client was not home">Talked to wife, husband was not home</SelectItem>
+                              <SelectItem value="Got ahold of the client, was busy, need to call back">Got ahold of the client, was busy need to call back</SelectItem>
+                              <SelectItem value="Gave pricing, need to follow up">Gave pricing, need to follow up</SelectItem>
+                              <SelectItem value="Needs to discuss with spouse">Needs to discuss with spouse</SelectItem>
+                              <SelectItem value="No Answer / Left Message">No Answer / Left Message</SelectItem>
+
+                              <SelectItem value="">-- Not Moving Forward --</SelectItem>
+                              <SelectItem value="Does not want to move forward right now wants me to call in the future">Does not want to move forward right now wants me to call in the future</SelectItem>
+                              <SelectItem value="Bought else where, set to lost">Bought else where</SelectItem>
+                              <SelectItem value="Does not want to move forward, set to lost">Does not want to move forward, set to lost</SelectItem>
+                              <SelectItem value=""></SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note Examples</label>
+                      </div>
+                      <div className="relative mt-3">
+                        <Input
+                          type="text"
+                          className="w-full bg-background border-border"
+                        />
+                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Or Write A Custom Note...</label>
+                      </div>
+                      <div className="relative mt-3">
+                        <Select name='contactMethod' defaultValue="SMS">
+                          <SelectTrigger className="w-full    bg-background border-border">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className='bg-background text-foreground bg-background'>
+                            <SelectGroup>
+                              <SelectLabel>Contact Method</SelectLabel>
+                              <SelectItem value="Phone">Phone</SelectItem>
+                              <SelectItem value="In Person">In-Person</SelectItem>
+                              <SelectItem value="SMS">SMS</SelectItem>
+                              <SelectItem value="Email">Email</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
+                      </div>
+                      <div className="relative mt-3">
+                        <Select name='resourceId' defaultValue="1">
+                          <SelectTrigger className="w-full    bg-background border-border">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className='bg-background text-foreground bg-background'>
+                            <SelectGroup>
+                              <SelectLabel>Type of Appointment</SelectLabel>
+                              <SelectItem value="1">Sales Calls</SelectItem>
+                              <SelectItem value="2">Sales Appointments</SelectItem>
+                              <SelectItem value="3">Deliveries</SelectItem>
+                              <SelectItem value="4">F & I Appointments</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Type of Appointment</label>
+                      </div>
+                      <div className="relative mt-3">
+                        <Select name='resultOfcall' defaultValue="Attempted">
+                          <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className='bg-background text-foreground bg-background'>
+                            <SelectGroup>
+                              <SelectLabel>Result of call</SelectLabel>
+                              <SelectItem value="Reached">Reached</SelectItem>
+                              <SelectItem value="N/A">N/A</SelectItem>
+                              <SelectItem value="Attempted">Left Message</SelectItem>
+                              <SelectItem value="Completed">Completed</SelectItem>
+                              <SelectItem value="Rescheduled">Rescheduled</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Result of call</label>
+                      </div>
+                      <div className="relative mt-3">
+                        <Select name='direction' defaultValue="Outgoing">
+                          <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
+                            <SelectValue placeholder="" />
+                          </SelectTrigger>
+                          <SelectContent className='bg-background text-foreground bg-background'>
+                            <SelectGroup>
+                              <SelectLabel>Direction of call</SelectLabel>
+                              <SelectItem value="Incoming">Incoming</SelectItem>
+                              <SelectItem value="Outgoing">Outgoing</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Direction of call</label>
+                      </div>
+                      <div className=' flex-col mx-auto justify-center'>
+                        <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary border-border",
+                                  !date && " text-foreground"
+                                )}
+                              >
+                                <div className=' text-foreground  mx-auto flex justify-center  '>
+                                  <CalendarIcon className="mr-2 size-8 " />
+                                  {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
+                                </div>
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[275px] bg-muted/40 p-0 text-foreground border-border" align="start">
+                              <div className='align-center my-3 flex justify-center   '>
+                                <SmallCalendar
+                                  className='mx-auto w-auto   bg-background text-foreground'
+                                  mode="single"
+                                  selected={date}
+                                  onSelect={setDate}
+                                  initialFocus
+                                />
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      </div>
+                      <div className=' flex-col mx-auto justify-center' >
+                        <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
+
+                          <input type='hidden' value={String(date)} name='value' />
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary border-border",
+                                  !date && " text-foreground"
+                                )}
+                              >
+                                <div className=' text-foreground  mx-auto flex justify-center  '>
+                                  <ClockIcon className="mr-2 size-8 " />
+                                  {currentTime ? (time) : <span>Pick a Time</span>}
+                                </div>
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[275px] bg-muted/40 p-0 text-foreground border-border" align="start">
+                              <div className='align-center my-3 flex justify-center   '>
+                                <Select name='pickHour'  >
+                                  <SelectTrigger className="m-3 w-auto mx-auto bg-transparent hover:bg-transparent hover:text-primary border-border" >
+                                    <SelectValue defaultValue='09' />
+                                  </SelectTrigger>
+                                  <SelectContent className='bg-white text-black' >
+                                    <SelectGroup>
+                                      <SelectLabel>Hour</SelectLabel>
+                                      <SelectItem value="09">09</SelectItem>
+                                      <SelectItem value="10">10</SelectItem>
+                                      <SelectItem value="11">11</SelectItem>
+                                      <SelectItem value="12">12</SelectItem>
+                                      <SelectItem value="13">13</SelectItem>
+                                      <SelectItem value="14">14</SelectItem>
+                                      <SelectItem value="15">15</SelectItem>
+                                      <SelectItem value="16">16</SelectItem>
+                                      <SelectItem value="17">17</SelectItem>
+                                      <SelectItem value="18">18</SelectItem>
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                                <Select name='pickMin'   >
+                                  <SelectTrigger className="m-3 w-auto" >
+                                    <SelectValue defaultValue='10' />
+                                  </SelectTrigger>
+                                  <SelectContent className='bg-white text-black'  >
+                                    <SelectGroup>
+                                      <SelectLabel>Minute</SelectLabel>
+                                      <SelectItem value="10">10</SelectItem>
+                                      <SelectItem value="20">20</SelectItem>
+                                      <SelectItem value="30">30</SelectItem>
+                                      <SelectItem value="40">40</SelectItem>
+                                      <SelectItem value="50">50</SelectItem>
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      </div>
                     </div>
-                    <div className="grid gap-3 max-h-[20vh] h-auto">
-                      {/*<Form method='post' className='flex items-center'>
+                    <input type='hidden' name='phone' defaultValue={finance.phone} />
+                    <input type='hidden' name='email' defaultValue={finance.email} />
+                    <input type='hidden' name='lastName' defaultValue={finance.lastName} />
+                    <input type='hidden' name='firstName' defaultValue={finance.firstName} />
+                    <input type='hidden' name='brand' defaultValue={finance.brand} />
+                    <input type='hidden' name='unit' defaultValue={finance.model} />
+                    <input type='hidden' name='brand' defaultValue={finance.brand} />
+                    <input type='hidden' name='financeId' defaultValue={finance.id} />
+                    <input type='hidden' name='userId' defaultValue={user.id} />
+                    <input type='hidden' name='apptType' defaultValue='sales' />
+                    <input type='hidden' name='min' defaultValue={minForm} />
+                    <input type='hidden' name='hour' defaultValue={hourForm} />
+                    <DialogFooter className=" p-4  ">
+                      <div className='flex justify-center' >
+                        <Button
+                          size='sm'
+                          value="addAppt"
+                          type="submit"
+                          name="intent"
+                          onClick={() => {
+                            toast.success(`Appointment Added!`)
+                          }}
+                          className='bg-primary ml-auto  mr-auto'>
+                          Add Appointment
+                          <PaperPlaneIcon className="h-4 w-4 ml-2" />
+                        </Button>
+                      </div>
+                    </DialogFooter>
+                  </Form>
+
+                </DialogContent>
+              </Dialog>
+            </TabsContent>
+            <TabsContent value="Communications">
+              <Card className=" text-foreground  rounded-lg" x-chunk="dashboard-05-chunk-4"                >
+                <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                  <div className="grid gap-0.5">
+                    <CardTitle className="group flex items-center gap-2 text-lg">
+                      Communications
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                      >
+                        <Copy className="h-3 w-3" />
+                      </Button>
+                    </CardTitle>
+                  </div>
+                  <div className="ml-auto flex items-center gap-1">
+                    <TooltipProvider delayDuration={0}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="ml-auto rounded-full"
+                            onClick={() => setOpenComms(true)}
+                          >
+                            <PlusIcon className="h-4 w-4" />
+                            <span className="sr-only">Add Communication</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent sideOffset={10} className='bg-primary'>Add Communication</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip p-6 text-sm bg-background">
+                  <div className="grid gap-3 max-h-[40vh] h-auto">
+                    <div className="space-y-4 mt-5">
+
+                      {Coms.map((message, index) => (
+                        <div
+                          key={index}
+                          className={cn(
+                            "flex  max-w-[75%]   w-[65%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                            message.direction === 'Outgoing'
+                              ? "ml-auto bg-primary text-foreground"
+                              : "bg-[#262626]"
+                          )}
+                        >
+                          <div className='grid grid-cols-1'>
+                            <div className='flex justify-between'>
+                              <p>{message.direction}</p>
+                              <p className='text-right'>{message.type}</p>
+                            </div>
+                            <div className='flex justify-between'>
+                              <p>{message.result}</p>
+                              {message.userEmail === 'Outgoing' && (
+                                <p className='text-[#8c8c8c] text-right'>
+                                  {message.userName}
+                                </p>
+                              )}
+                            </div>
+                            <p className='text-[#8c8c8c]'>
+                              {message.createdAt}
+                            </p>
+                            <p>{message.subject}</p>
+                            <p>{message.body}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                  </div>
+                  <Dialog open={openComms} onOpenChange={setOpenComms}>
+                    <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
+                      <Form method='post'>
+                        <DialogHeader className="px-4 pb-4 pt-5">
+                          <DialogTitle>Add Communication</DialogTitle>
+                        </DialogHeader>
+                        <div className="grid gap-3 mx-3 mb-3">
+                          <div className="relative mt-3">
+                            <Input
+                              id="title"
+                              type="text"
+                              className="w-full bg-background border-border "
+                            />
+                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Title</label>
+                          </div>
+                          <div className="relative mt-3">
+                            <Select name='note' defaultValue="Gave pricing, need to follow up">
+                              <SelectTrigger className="w-full  border-border  ">
+                                <SelectValue placeholder="Message examples" />
+                              </SelectTrigger>
+                              <SelectContent className='bg-background text-foreground bg-background border-border'>
+                                <SelectGroup>
+                                  <SelectLabel>Message examples</SelectLabel>
+                                  <SelectItem value="">-- Moving Forward --</SelectItem>
+                                  <SelectItem value="Wants to move forward, got deposit">Wants to move forward, got deposit</SelectItem>
+                                  <SelectItem value="Wants to move forward, did not have credit card on him">Wants to move forward, did not have credit card on him</SelectItem>
+                                  <SelectItem value="Wants to get finance approval before moving forward">Wants to get approval before moving forward</SelectItem>
+                                  <SelectItem value="Sent BOS to sign off on">Sent BOS to sign off on deal</SelectItem>
+                                  <SelectItem value="Wants to come back in to view and negotiate">Wants to come back in to view and negotiate</SelectItem>
+
+                                  <SelectItem value="">-- Stand Still --</SelectItem>
+                                  <SelectItem value="Talked to spouse, client was not home">Talked to wife, husband was not home</SelectItem>
+                                  <SelectItem value="Got ahold of the client, was busy, need to call back">Got ahold of the client, was busy need to call back</SelectItem>
+                                  <SelectItem value="Gave pricing, need to follow up">Gave pricing, need to follow up</SelectItem>
+                                  <SelectItem value="Needs to discuss with spouse">Needs to discuss with spouse</SelectItem>
+                                  <SelectItem value="No Answer / Left Message">No Answer / Left Message</SelectItem>
+
+                                  <SelectItem value="">-- Not Moving Forward --</SelectItem>
+                                  <SelectItem value="Does not want to move forward right now wants me to call in the future">Does not want to move forward right now wants me to call in the future</SelectItem>
+                                  <SelectItem value="Bought else where, set to lost">Bought else where</SelectItem>
+                                  <SelectItem value="Does not want to move forward, set to lost">Does not want to move forward, set to lost</SelectItem>
+                                  <SelectItem value=""></SelectItem>
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note Examples</label>
+                          </div>
+                          <div className="relative mt-3">
+                            <Input
+                              id="name"
+                              type="text"
+
+                              className="w-full bg-background border-border  "
+                            />
+                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Or Write A Custom Note...</label>
+                          </div>
+                          <div className="relative mt-3">
+                            <Select name='contactMethod' defaultValue="Phone">
+                              <SelectTrigger className="w-full    bg-background border-border">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className='bg-background text-foreground bg-background  border-border'>
+                                <SelectGroup>
+                                  <SelectLabel>Contact Method</SelectLabel>
+                                  <SelectItem value="Phone">Phone</SelectItem>
+                                  <SelectItem value="In Person">In-Person</SelectItem>
+                                  <SelectItem value="SMS">SMS</SelectItem>
+                                  <SelectItem value="Email">Email</SelectItem>
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
+                          </div>
+                          <div className="relative mt-3">
+                            <Select name='resultOfcall' defaultValue="Reached">
+                              <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className='bg-background text-foreground  border-border'>
+                                <SelectGroup>
+                                  <SelectLabel>Result of call</SelectLabel>
+                                  <SelectItem value="Reached">Reached</SelectItem>
+                                  <SelectItem value="N/A">N/A</SelectItem>
+                                  <SelectItem value="Attempted">Left Message</SelectItem>
+                                  <SelectItem value="Completed">Completed</SelectItem>
+                                  <SelectItem value="Rescheduled">Rescheduled</SelectItem>
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Result of call</label>
+                          </div>
+                          <div className="relative mt-3">
+                            <Select name='direction' defaultValue="Incoming">
+                              <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent className='bg-background text-foreground  border-border'>
+                                <SelectGroup>
+                                  <SelectLabel>Direction of call</SelectLabel>
+                                  <SelectItem value="Incoming">Incoming</SelectItem>
+                                  <SelectItem value="Outgoing">Outgoing</SelectItem>
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                            <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Direction of call</label>
+                          </div>
+
+                        </div>
+                        <DialogFooter className="flex items-center  p-4 sm:justify-between">
+                          <input type='hidden' name='financeId' defaultValue={finance.id} />
+                          <input type='hidden' name='userId' defaultValue={user.id} />
+
+                          <Button
+                            value="addComms"
+                            type="submit"
+                            name="intent"
+                            onClick={() => {
+                              toast.success(`Communication Added!`)
+                            }}
+                            className='bg-primary ml-auto '>
+                            Add Communication
+                            <PaperPlaneIcon className=" ml-2 h-4 w-4" />
+                          </Button>
+                        </DialogFooter>
+                      </Form>
+                    </DialogContent>
+                  </Dialog>
+                </CardContent>
+                <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50  px-6 py-3">
+                  <div className="text-xs text-muted">
+                    {new Date(finance.updatedAt).toLocaleDateString("en-US", options2)}
+                  </div>
+
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Upload">
+              <Card
+                className="overflow-hidden text-foreground  rounded-lg" x-chunk="dashboard-05-chunk-4"
+              >
+                <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                  <div className="grid gap-0.5">
+                    <CardTitle className="group flex items-center gap-2 text-lg">
+                      Docs
+                      <Button
+                        size="icon"
+                        variant="outline"
+                        className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                      >
+                        <Copy className="h-3 w-3" />
+                        <span className="sr-only">Upload customer docs such as contracts, warranties, etc.</span>
+                      </Button>
+                    </CardTitle>
+                  </div>
+                  <div className="ml-auto flex items-center gap-1">
+                    <Button onClick={() => navigate('/dealer/document/builder')} size="sm" variant="outline" className="h-8 gap-1">
+                      <File className="h-3.5 w-3.5" />
+                      <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                        Document Builder
+                      </span>
+                    </Button>
+
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow !grow max-h-[700px] h-[700px] overflow-y-scroll overflow-x-clip p-6 text-sm bg-background">
+                  <div className="parent-container">
+                    <MyIFrameComponent />
+                  </div>
+                  <div className="grid gap-3 max-h-[20vh] h-auto">
+                    {/*<Form method='post' className='flex items-center'>
                         <div className="relative mt-5">
                           <Input id="file" type="file" className='border-border button:border-border rounded-md text-foreground bg-background button:text-foreground  button:bg-background px-2 ' name='document' />
                           <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">File Upload</label>
@@ -7942,298 +7948,297 @@ export default function Dashboard() {
                         </li>
                       </ul>
                       */}
-                    </div>
-                    <hr className=' text-muted-foreground w-98 mx-auto] my-5' />
-                    <CustomerGen />
-                  </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t  bg-muted/50  px-6 py-3">
-                    <div className="text-xs text-muted-foreground">
-                      Updated <time dateTime="2023-11-23">November 23, 2023</time>
-                    </div>
-                    <Pagination className="ml-auto mr-0 w-auto">
-                      <PaginationContent>
-                        <PaginationItem>
-                          <Button size="icon" variant="outline" className="h-6 w-6">
-                            <ChevronLeft className="h-3.5 w-3.5" />
-                            <span className="sr-only">Previous Order</span>
-                          </Button>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <Button size="icon" variant="outline" className="h-6 w-6">
-                            <ChevronRight className="h-3.5 w-3.5" />
-                            <span className="sr-only">Next Order</span>
-                          </Button>
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-              <TabsContent value="Deposits">
-                <Card className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"                >
-                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                    <div className="grid gap-0.5">
-                      <CardTitle className="group flex items-center gap-2 text-lg">
-                        Deposits
-                      </CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex-grow !grow  overflow-x-clip p-6 text-sm bg-background">
-                    <div>
-                      <ul className="grid gap-3">
+                  </div>
+                  <hr className=' text-muted-foreground w-98 mx-auto] my-5' />
+                  <CustomerGen />
+                </CardContent>
+                <CardFooter className="flex flex-row items-center border-t  bg-muted/50  px-6 py-3">
+                  <div className="text-xs text-muted-foreground">
+                    {new Date(finance.updatedAt).toLocaleDateString("en-US", options2)}
+                  </div>
+                  <Pagination className="ml-auto mr-0 w-auto">
+                    <PaginationContent>
+                      <PaginationItem>
+                        <Button size="icon" variant="outline" className="h-6 w-6">
+                          <ChevronLeft className="h-3.5 w-3.5" />
+                          <span className="sr-only">Previous Order</span>
+                        </Button>
+                      </PaginationItem>
+                      <PaginationItem>
+                        <Button size="icon" variant="outline" className="h-6 w-6">
+                          <ChevronRight className="h-3.5 w-3.5" />
+                          <span className="sr-only">Next Order</span>
+                        </Button>
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Deposits">
+              <Card className="overflow-hidden text-foreground rounded-lg" x-chunk="dashboard-05-chunk-4"                >
+                <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                  <div className="grid gap-0.5">
+                    <CardTitle className="group flex items-center gap-2 text-lg">
+                      Deposits
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="flex-grow !grow  overflow-x-clip p-6 text-sm bg-background">
+                  <div>
+                    <ul className="grid gap-3">
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Subtotal</span>
+                        <span>${financeSubTotal}</span>
+                      </li>
+                      {discount && discount > 0.00 && (
                         <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Subtotal</span>
-                          <span>${financeSubTotal}</span>
+                          <span className="text-muted-foreground">Discount</span>
+                          <span>${discount}</span>
                         </li>
-                        {finance.discount !== 0 && (
-                          <li className="flex items-center justify-between">
-                            <span className="text-muted-foreground">Discount</span>
-                            <span>{finance.discount}</span>
-                          </li>
-                        )}
-                        {finance.discount !== 0 && (
-                          <li className="flex items-center justify-between">
-                            <span className="text-muted-foreground">Discount</span>
-                            <span>{finance.discount}</span>
-                          </li>
-                        )}
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Tax</span>
-                          <span>{deFees.userTax}%</span>
-                        </li>
-                        <li className="flex items-center justify-between font-semibold">
-                          <span className="text-muted-foreground">Total</span>
-                          <span>${financeTotal}</span>
-                        </li>
-                      </ul>
-                    </div>
-                    <Separator className="my-4" />
-                    <div className="grid gap-3">
-                      <div className="font-semibold">Payment</div>
-                      <dl className="grid gap-3">
-
-                        <div className="flex flex-col" >
-                          <div className='flex items-center justify-center text-foreground'>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className={cn('mr-2 bg-primary', paymentType === 'Visa' ? "bg-secondary" : "", "")}
-                              onClick={() => setPaymentType('Visa')}
-                            >
-                              <CreditCard className="h-4 w-4 text-foreground" />
-                              <p className="">Visa</p>
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className={cn('mr-2 bg-primary', paymentType === 'Mastercard' ? "bg-secondary" : "", "")}
-                              onClick={() => setPaymentType('Mastercard')}
-                            >
-                              <CreditCard className="h-4 w-4 text-foreground" />
-                              <p className="">Mastercard</p>
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => setPaymentType('Debit')}
-                              className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
-                            >
-                              <CreditCard className="h-4 w-4 text-foreground" />
-                              <p className="">Debit</p>
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => setPaymentType('Cheque')}
-                              className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
-                            >
-                              <CreditCard className="h-4 w-4 text-foreground" />
-                              <p className="">Cheque</p>
-                            </Button>
-                          </div>
-                          <div className='flex items-center justify-center text-foreground mt-2'>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className={cn('mr-2 bg-primary', paymentType === 'Cash' ? "bg-secondary" : "", "")}
-                              onClick={() => setPaymentType('Cash')}
-                            >
-                              <BanknoteIcon className="h-4 w-4 text-foreground" />
-                              <p className="">Cash</p>
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className={cn(' bg-primary mr-2', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
-                              onClick={() => setPaymentType('Online Transaction')}
-                            >
-                              <PanelTop className="h-4 w-4 text-foreground" />
-                              <p className="">Online Transaction</p>
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className={cn(' bg-primary', paymentType === 'E-Transfer' ? "bg-secondary" : "", "")}
-                              onClick={() => setPaymentType('E-Transfer')}
-                            >
-                              <PanelTop className="h-4 w-4 text-foreground" />
-                              <p className="">E-Transfer</p>
-                            </Button>
-                          </div>
-                        </div>
-                      </dl>
-                    </div>
-                    <div className="grid gap-3">
-                      <ul className="grid gap-3 mt-3">
-                        {finance.Payments && finance.Payments.map((result, index) => (
-                          <li className="flex items-center justify-between" key={index}                    >
-                            <span className="text-muted-foreground">{result.paymentType}</span>
-                            <span>${result.amountPaid}</span>
-                          </li>
-                        ))}
-                        <li className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Balance </span>
-                          <span>${Number(financeTotal).toFixed(2) - Number(totalAmountPaidFinance).toFixed(2)}</span>
-
-                        </li>
-                        {parseFloat(total) - parseFloat(totalAmountPaid) === 0 && (
-                          <input type='hidden' name='status' value='Fulfilled' />
-                        )}
-
-
-                      </ul>
-                      {paymentType !== '' && (
-                        <div className='mx-auto'>
-                          <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2 mt-3 mx-auto" >
-                            <input type='hidden' name='financeId' defaultValue={finance.id} />
-                            <input type='hidden' name='userEmail' defaultValue={user.email} />
-                            <input type='hidden' name='paymentType' value={paymentType} />
-                            <div className="relative mt-4">
-                              <Input
-                                name='cardNum'
-                                className=''
-
-                              />
-                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Card #</label>
-                            </div>
-
-
-                            <div className="relative mt-4">
-                              <Input
-                                name='receiptId'
-                                className=' '
-                              />
-                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Receipt Number</label>
-                            </div>
-
-
-                            <div className="relative ml-auto flex-1 md:grow-0 mt-4 ">
-                              <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                              <Input
-                                name='amountPaid'
-                                className='text-right pr-9 w-[150px] '
-                                value={input}
-                                onChange={(event) => setInput(event.target.value)}
-                              />
-
-                              <Button
-                                value="createFinancePayment"
-                                type="submit"
-                                name="intent"
-                                size="icon"
-                                onClick={() => {
-                                  toast.success(`Payment rendered!`)
-                                }}
-                                disabled={inputLength === 0}
-                                className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
-                                <PaperPlaneIcon className="h-4 w-4" />
-                                <span className="sr-only">Cash</span>
-                              </Button>
-                            </div>
-                          </fetcher.Form>
-                        </div>
                       )}
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
-                    <p className='text-muted-foreground'> {finance.updatedAt}</p>
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-              <TabsContent value="Phone">
-              </TabsContent>
-              <TabsContent value="SMS">
-                <Card className=""    >
-                  <CardHeader className="flex flex-row items-start bg-muted/50">
-                    <div className="grid gap-0.5">
-                      <CardTitle className="group flex items-center gap-2 text-lg">
-                        SMS
-                      </CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="mt-5 ">
-                    <div className=" ">
-                      <TextFunction
-                        customerMessages={customerMessages}
-                        customer={customer}
-                        data={data}
-                        user={user}
-                        smsDetails={smsDetails}
-                        latestNote={latestNote}
-                      />
-                    </div>
-                  </CardContent>
-                  <CardFooter className=" ">
-                  </CardFooter>
-                </Card>
+                      {discountPer && discountPer > 0.00 && (
+                        <li className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Discount</span>
+                          <span>{discountPer}%</span>
+                        </li>
+                      )}
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Tax</span>
+                        <span>{deFees.userTax}%</span>
+                      </li>
+                      <li className="flex items-center justify-between font-semibold">
+                        <span className="text-muted-foreground">Total</span>
+                        <span>${financeTotal}</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <Separator className="my-4" />
+                  <div className="grid gap-3">
+                    <div className="font-semibold">Payment</div>
+                    <dl className="grid gap-3">
 
-              </TabsContent>
-              <TabsContent value="Email">
-                <Card className="overflow-x-clip text-foreground rounded-lg  w-[95%] max-w-[600px]" x-chunk="dashboard-05-chunk-4"                >
-                  <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                    <div className="grid gap-0.5">
-                      <CardTitle className="group flex items-center gap-2 text-lg">
-                        Email
-                      </CardTitle>
-                    </div>
-                    <div className="ml-auto flex items-center gap-1">
-                      <TooltipProvider delayDuration={0}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
+                      <div className="flex flex-col" >
+                        <div className='flex items-center justify-center text-foreground'>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className={cn('mr-2 bg-primary', paymentType === 'Visa' ? "bg-secondary" : "", "")}
+                            onClick={() => setPaymentType('Visa')}
+                          >
+                            <CreditCard className="h-4 w-4 text-foreground" />
+                            <p className="">Visa</p>
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className={cn('mr-2 bg-primary', paymentType === 'Mastercard' ? "bg-secondary" : "", "")}
+                            onClick={() => setPaymentType('Mastercard')}
+                          >
+                            <CreditCard className="h-4 w-4 text-foreground" />
+                            <p className="">Mastercard</p>
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setPaymentType('Debit')}
+                            className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
+                          >
+                            <CreditCard className="h-4 w-4 text-foreground" />
+                            <p className="">Debit</p>
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setPaymentType('Cheque')}
+                            className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
+                          >
+                            <CreditCard className="h-4 w-4 text-foreground" />
+                            <p className="">Cheque</p>
+                          </Button>
+                        </div>
+                        <div className='flex items-center justify-center text-foreground mt-2'>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className={cn('mr-2 bg-primary', paymentType === 'Cash' ? "bg-secondary" : "", "")}
+                            onClick={() => setPaymentType('Cash')}
+                          >
+                            <BanknoteIcon className="h-4 w-4 text-foreground" />
+                            <p className="">Cash</p>
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className={cn(' bg-primary mr-2', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
+                            onClick={() => setPaymentType('Online Transaction')}
+                          >
+                            <PanelTop className="h-4 w-4 text-foreground" />
+                            <p className="">Online Transaction</p>
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className={cn(' bg-primary', paymentType === 'E-Transfer' ? "bg-secondary" : "", "")}
+                            onClick={() => setPaymentType('E-Transfer')}
+                          >
+                            <PanelTop className="h-4 w-4 text-foreground" />
+                            <p className="">E-Transfer</p>
+                          </Button>
+                        </div>
+                      </div>
+                    </dl>
+                  </div>
+                  <div className="grid gap-3">
+                    <ul className="grid gap-3 mt-3">
+                      {finance.Payments && finance.Payments.map((result, index) => (
+                        <li className="flex items-center justify-between" key={index}                    >
+                          <span className="text-muted-foreground">{result.paymentType}</span>
+                          <span>${result.amountPaid}</span>
+                        </li>
+                      ))}
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Balance </span>
+                        <span>${Number(financeTotal).toFixed(2) - Number(totalAmountPaidFinance).toFixed(2)}</span>
+
+                      </li>
+                      {parseFloat(total) - parseFloat(totalAmountPaid) === 0 && (
+                        <input type='hidden' name='status' value='Fulfilled' />
+                      )}
+
+
+                    </ul>
+                    {paymentType !== '' && (
+                      <div className='mx-auto'>
+                        <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2 mt-3 mx-auto" >
+                          <input type='hidden' name='financeId' defaultValue={finance.id} />
+                          <input type='hidden' name='userEmail' defaultValue={user.email} />
+                          <input type='hidden' name='paymentType' value={paymentType} />
+                          <div className="relative mt-4">
+                            <Input
+                              name='cardNum'
+                              className=''
+
+                            />
+                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Card #</label>
+                          </div>
+
+
+                          <div className="relative mt-4">
+                            <Input
+                              name='receiptId'
+                              className=' '
+                            />
+                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Receipt Number</label>
+                          </div>
+
+
+                          <div className="relative ml-auto flex-1 md:grow-0 mt-4 ">
+                            <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              name='amountPaid'
+                              className='text-right pr-9 w-[150px] '
+                              value={input}
+                              onChange={(event) => setInput(event.target.value)}
+                            />
+
                             <Button
+                              value="createFinancePayment"
+                              type="submit"
+                              name="intent"
                               size="icon"
-                              variant="outline"
-                              className="ml-auto rounded-full"
-                              onClick={() => setOpen(true)}
-                            >
-                              <PlusIcon className="h-4 w-4" />
-                              <span className="sr-only">CC Employee</span>
+                              onClick={() => {
+                                toast.success(`Payment rendered!`)
+                              }}
+                              disabled={inputLength === 0}
+                              className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                              <PaperPlaneIcon className="h-4 w-4" />
+                              <span className="sr-only">Cash</span>
                             </Button>
-                          </TooltipTrigger>
-                          <TooltipContent sideOffset={10} className='bg-primary'>CC Employee</TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  </CardHeader>
-                  <CardContent className=" p-6 text-sm bg-background ">
-                    <div className="grid gap-3 ">
-                      <MyIFrameComponentEmail />
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
-                  </CardFooter>
-                </Card>
+                          </div>
+                        </fetcher.Form>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+                <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+                  <p className='text-muted-foreground'> {new Date(finance.updatedAt).toLocaleDateString("en-US", options2)}</p>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Phone">
+            </TabsContent>
+            <TabsContent value="SMS">
+              <Card className=""    >
+                <CardHeader className="flex flex-row items-start bg-muted/50">
+                  <div className="grid gap-0.5">
+                    <CardTitle className="group flex items-center gap-2 text-lg">
+                      SMS
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="mt-5 ">
+                  <div className=" ">
+                    <TextFunction
+                      customerMessages={customerMessages}
+                      customer={customer}
+                      data={data}
+                      user={user}
+                      smsDetails={smsDetails}
+                      latestNote={latestNote}
+                    />
+                  </div>
+                </CardContent>
+                <CardFooter className=" ">
+                </CardFooter>
+              </Card>
 
-              </TabsContent>
-              <TabsList className='mt-2'>
-                <TabsTrigger value="Phone">Phone</TabsTrigger>
-                <TabsTrigger value="SMS">SMS</TabsTrigger>
-                <TabsTrigger value="Email">Email</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-        </main >
-      </div >
+            </TabsContent>
+            <TabsContent value="Email">
+              <Card className="overflow-x-clip text-foreground rounded-lg  w-[95%] max-w-[600px]" x-chunk="dashboard-05-chunk-4"                >
+                <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                  <div className="grid gap-0.5">
+                    <CardTitle className="group flex items-center gap-2 text-lg">
+                      Email
+                    </CardTitle>
+                  </div>
+                  <div className="ml-auto flex items-center gap-1">
+                    <TooltipProvider delayDuration={0}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            className="ml-auto rounded-full"
+                            onClick={() => setOpen(true)}
+                          >
+                            <PlusIcon className="h-4 w-4" />
+                            <span className="sr-only">CC Employee</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent sideOffset={10} className='bg-primary'>CC Employee</TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                </CardHeader>
+                <CardContent className=" p-6 text-sm bg-background ">
+                  <div className="grid gap-3 ">
+                    <MyIFrameComponentEmail />
+                  </div>
+                </CardContent>
+                <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+                </CardFooter>
+              </Card>
+
+            </TabsContent>
+            <TabsList className='mt-2'>
+              <TabsTrigger value="Phone">Phone</TabsTrigger>
+              <TabsTrigger value="SMS">SMS</TabsTrigger>
+              <TabsTrigger value="Email">Email</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+      </main >
       {lockData && (
         <AlertDialog key={key} open={openResponse} onOpenChange={setOpenResponse}>
           <AlertDialogContent className='border border-border bg-background text-foreground'>
@@ -8267,6 +8272,7 @@ export default function Dashboard() {
       )
       }
     </div >
+
   )
 }
 /** <Separator className="my-4" />

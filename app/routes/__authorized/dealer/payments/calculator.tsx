@@ -108,7 +108,15 @@ import {
 } from "~/components/ui/pagination";
 import { Separator } from "~/components/ui/separator";
 import { toast } from "sonner";
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select"
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: "/calculator.svg" },
 ];
@@ -953,7 +961,7 @@ export default function PaymentCalc() {
 
       return (
         <>
-          <hr className="my-4 text-border w-[95%] mx-auto" />
+          <Separator className="border-border bg-border my-4 text-border w-[95%] mx-auto" />
           <ul className="grid gap-3">
             {manSwitchAccArray.some((option) => manOptions[option] > 0) && (
               <>
@@ -1571,7 +1579,7 @@ export default function PaymentCalc() {
                  */}
                   </ul>
                 </div>
-                <hr className="my-4 text-border w-[95%] mx-auto" />
+                <Separator className="border-border bg-border my-4 text-border w-[95%] mx-auto" />
                 <div className="font-semibold">Standard Terms</div>
                 <div className="my-4">
                   <div className="main-button-group flex justify-between ">
@@ -1750,8 +1758,37 @@ export default function PaymentCalc() {
                             className="h-8 w-20 text-right bg-background border-border"
                             autoComplete="othTax"
                             defaultValue={formData.othTax}
-                            onChange={handleChange}
+                            onChange={(value) => {
+                              setFormData((prevFormData) => ({ ...prevFormData, 'othTax': parseFloat(value) }));
+                              value
+                            }}
                           />
+                          <Select
+                            defaultValue={String(formData.othTax)}
+                            onValueChange={(value) => {
+                              setFormData((prevFormData) => ({ ...prevFormData, 'othTax': parseFloat(value) }));
+                              value
+                            }}                               >
+                            <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                              <SelectValue placeholder='Status' />
+                            </SelectTrigger>
+                            <SelectContent className='bg-background text-foreground border border-border'>
+                              <SelectGroup>
+                                <SelectLabel>Province</SelectLabel>
+                                <SelectItem value='5' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>Alberta 5%</SelectItem>
+                                <SelectItem value='12' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>British Columbia 12%</SelectItem>
+                                <SelectItem value='12' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>Manitoba 12%</SelectItem>
+                                <SelectItem value='15' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>New Brunswick 15%</SelectItem>
+                                <SelectItem value='15' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>Newfoundland and Labrador 15%</SelectItem>
+                                <SelectItem value='15' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>Nova Scotia 15%</SelectItem>
+                                <SelectItem value='13' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>Ontario 13%</SelectItem>
+                                <SelectItem value='15' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>P.E.I. 15%</SelectItem>
+                                <SelectItem value='14.975' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>Quebec 14.975%</SelectItem>
+                                <SelectItem value='11' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>Saskatchewan 11%</SelectItem>
+                                <SelectItem value='5' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>Northwest Territories, Nunavut, Yukon 5%</SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
                         </span>
                       </li>
                     </ul>
@@ -1808,7 +1845,7 @@ export default function PaymentCalc() {
                   </div>
                 )}
 
-                <hr className="my-4 text-border w-[95%] mx-auto" />
+                <Separator className="border-border bg-border my-4 text-border w-[95%] mx-auto" />
                 <div className="font-semibold">Contract Variables</div>
                 <div className="grid grid-cols-2 ">
                   <div className=" mt-2 ">
@@ -1883,69 +1920,71 @@ export default function PaymentCalc() {
                   </div>
                 </div>
 
-                <hr className="my-4 text-border w-[95%] mx-auto" />
+                <Separator className="border-border bg-border my-4 text-border w-[95%] mx-auto" />
                 <Drawer>
                   <DrawerTrigger>Other Inputs</DrawerTrigger>
-                  <DrawerContent className='bg-background w-1/2 mb-5'>
-                    <DrawerHeader>
-                      <DrawerTitle>Changes to discounts and such</DrawerTitle>
-                    </DrawerHeader>
-                    <div className="grid  grid-cols-2">
-                      <div className=" mt-2 ">
-                        <div className="grid  max-w-sm items-center gap-1.5">
-                          <label htmlFor="discount">Discount $ </label>
-                          <Input
-                            className="h-8 w-20 bg-background border-border "
-                            name="discount"
-                            id="discount"
-                            autoComplete="discount"
-                            defaultValue={discount}
-                            onChange={handleChange}
-                            type="number"
-                          />
+                  <DrawerContent className='bg-background border-border'>
+                    <div className="mx-auto w-full max-w-sm">
+                      <DrawerHeader>
+                        <DrawerTitle>Changes to discounts and such</DrawerTitle>
+                      </DrawerHeader>
+                      <div className="grid  grid-cols-2 p-4 pb-0">
+                        <div className=" mt-2 ">
+                          <div className="grid  max-w-sm items-center gap-1.5">
+                            <label htmlFor="discount">Discount $ </label>
+                            <Input
+                              className="h-8 w-20 bg-background border-border "
+                              name="discount"
+                              id="discount"
+                              autoComplete="discount"
+                              defaultValue={discount}
+                              onChange={handleChange}
+                              type="number"
+                            />
+                          </div>
                         </div>
-                      </div>
-                      <div className="ml-auto mt-2">
-                        <div className="grid  max-w-sm items-center gap-1.5">
-                          <label htmlFor="discountPer">
-                            Discount (1.1-15)%
-                          </label>
-                          <Input
-                            className="ml-auto h-8 w-20 text-right bg-background border-border "
-                            name="discountPer"
-                            id="discountPer"
-                            autoComplete="discountPer"
-                            defaultValue={0}
-                            onChange={handleChange}
-                          />
+                        <div className="ml-auto mt-2">
+                          <div className="grid  max-w-sm items-center gap-1.5">
+                            <label htmlFor="discountPer">
+                              Discount (1.1-15)%
+                            </label>
+                            <Input
+                              className="ml-auto h-8 w-20 text-right bg-background border-border "
+                              name="discountPer"
+                              id="discountPer"
+                              autoComplete="discountPer"
+                              defaultValue={0}
+                              onChange={handleChange}
+                            />
+                          </div>
                         </div>
-                      </div>
-                      <div className=" mt-2 ">
-                        <div className="grid  max-w-sm items-center gap-1.5">
-                          <label htmlFor="discountPer">Delivery Charge</label>
-                          <Input
-                            className="h-8 w-20 bg-background border-border "
-                            name="deliveryCharge"
-                            id="deliveryCharge"
-                            autoComplete="deliveryCharge"
-                            defaultValue={deliveryCharge}
-                            onChange={handleChange}
-                          />
+                        <div className=" mt-2 ">
+                          <div className="grid  max-w-sm items-center gap-1.5">
+                            <label htmlFor="discountPer">Delivery Charge</label>
+                            <Input
+                              className="h-8 w-20 bg-background border-border "
+                              name="deliveryCharge"
+                              id="deliveryCharge"
+                              autoComplete="deliveryCharge"
+                              defaultValue={deliveryCharge}
+                              onChange={handleChange}
+                            />
+                          </div>
                         </div>
+                        {totalLabour > 0 && (
+                          <>
+                            <p className="mt-3  basis-2/4">Total Labour</p>
+                            <p className="flex basis-2/4 items-end justify-end  ">
+                              ${totalLabour}
+                            </p>
+                          </>
+                        )}
                       </div>
-                      {totalLabour > 0 && (
-                        <>
-                          <p className="mt-3  basis-2/4">Total Labour</p>
-                          <p className="flex basis-2/4 items-end justify-end  ">
-                            ${totalLabour}
-                          </p>
-                        </>
-                      )}
                     </div>
                   </DrawerContent>
                 </Drawer>
 
-                <hr className="my-4 text-border w-[95%] mx-auto" />
+                <Separator className="border-border bg-border my-4 text-border w-[95%] mx-auto" />
                 <div className="font-semibold">Total</div>
                 <ul className="grid gap-3">
                   {perDiscountGiven > 0 && (
@@ -2147,7 +2186,7 @@ export default function PaymentCalc() {
                 )}
                     */}
                   </ul>
-                  <hr className="my-4 text-border w-[95%] mx-auto" />
+                  <Separator className="border-border bg-border my-4 text-border w-[95%] mx-auto" />
                   <div className="font-semibold">Price</div>
                   <ul className="grid gap-3">
                     <li className="flex items-center justify-between">
@@ -2208,7 +2247,7 @@ export default function PaymentCalc() {
                 )}
                  */}
                   </ul>
-                  <hr className="my-4 text-border w-[95%] mx-auto" />
+                  <Separator className="border-border bg-border my-4 text-border w-[95%] mx-auto" />
                   <div className="font-semibold">Fees</div>
                   <ul className="grid gap-3">
                     {deFees.userAirTax > 0 && (
@@ -2281,7 +2320,7 @@ export default function PaymentCalc() {
                     )}
                   </ul>
                 </div>
-                <hr className="my-4 text-border w-[95%] mx-auto" />
+                <Separator className="border-border bg-border my-4 text-border w-[95%] mx-auto" />
                 <div className="font-semibold">Standard Terms</div>
                 <div className="mt-3">
                   <div className="main-button-group flex justify-between ">
@@ -2499,7 +2538,7 @@ export default function PaymentCalc() {
                   </div>
                 )}
 
-                <hr className="my-4 text-border w-[95%] mx-auto" />
+                <Separator className="border-border bg-border my-4 text-border w-[95%] mx-auto" />
                 <div className="font-semibold">Contract Variables</div>
                 <ul className="grid gap-3">
                   <li className="flex items-center justify-between">
@@ -2535,7 +2574,7 @@ export default function PaymentCalc() {
                 </ul>
 
 
-                <hr className="my-4 text-border w-[95%] mx-auto" />
+                <Separator className="border-border bg-border my-4 text-border w-[95%] mx-auto" />
                 <div className="font-semibold">Total</div>
                 <ul className="grid gap-3">
                   {perDiscountGiven > 0 && (
@@ -2695,7 +2734,7 @@ export default function PaymentCalc() {
             </>
           )}
 
-          <CardFooter className="bg-muted-background  flex flex-row items-center border-t px-6 py-3  b-rounded-md">
+          <CardFooter className="bg-muted-background border-border  flex flex-row items-center border-t px-6 py-3  b-rounded-md">
             <div className="text-[#8a8a93] text-xs">
               Updated <time dateTime="2023-11-23">November 23, 2023</time>
             </div>
