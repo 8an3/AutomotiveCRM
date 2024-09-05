@@ -259,7 +259,6 @@ export const headers = ({ loaderHeaders, parentHeaders }) => {
 
 export default function Dashboard() {
   const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown, salesPeople, financeManagers, services, dealerImage, tax, orders, assignedUnit, tableData } = useLoaderData();
-  // console.log(orders, tax, services, ' inside workordersales2222')
 
   const [financeIdState, setFinanceIdState] = useState();
   const fetcher = useFetcher();
@@ -7414,9 +7413,8 @@ export default function Dashboard() {
                 <Dialog open={openAppt} onOpenChange={setOpenAppt}>
                   <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
                     <Form method='post'>
-                      <DialogHeader className="px-4 pb-4 pt-5">
+                      <DialogHeader className="px-4 pb-4 pt-5 mb-3">
                         <DialogTitle>Add Appointment</DialogTitle>
-                        <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
 
                       </DialogHeader>
                       <div className="grid gap-3 mx-3 mb-3">
@@ -7639,7 +7637,7 @@ export default function Dashboard() {
                       <input type='hidden' name='apptType' defaultValue='sales' />
                       <input type='hidden' name='min' defaultValue={minForm} />
                       <input type='hidden' name='hour' defaultValue={hourForm} />
-                      <DialogFooter className=" border-t border-border p-4  ">
+                      <DialogFooter className=" p-4  ">
                         <div className='flex justify-center' >
                           <Button
                             size='sm'
@@ -7738,7 +7736,6 @@ export default function Dashboard() {
                           <DialogHeader className="px-4 pb-4 pt-5">
                             <DialogTitle>Add Communication</DialogTitle>
                           </DialogHeader>
-                          <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
                           <div className="grid gap-3 mx-3 mb-3">
                             <div className="relative mt-3">
                               <Input
@@ -7753,7 +7750,7 @@ export default function Dashboard() {
                                 <SelectTrigger className="w-full  border-border  ">
                                   <SelectValue placeholder="Message examples" />
                                 </SelectTrigger>
-                                <SelectContent className='bg-background text-foreground bg-background'>
+                                <SelectContent className='bg-background text-foreground bg-background border-border'>
                                   <SelectGroup>
                                     <SelectLabel>Message examples</SelectLabel>
                                     <SelectItem value="">-- Moving Forward --</SelectItem>
@@ -7794,7 +7791,7 @@ export default function Dashboard() {
                                 <SelectTrigger className="w-full    bg-background border-border">
                                   <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className='bg-background text-foreground bg-background'>
+                                <SelectContent className='bg-background text-foreground bg-background  border-border'>
                                   <SelectGroup>
                                     <SelectLabel>Contact Method</SelectLabel>
                                     <SelectItem value="Phone">Phone</SelectItem>
@@ -7811,7 +7808,7 @@ export default function Dashboard() {
                                 <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
                                   <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className='bg-background text-foreground bg-background'>
+                                <SelectContent className='bg-background text-foreground  border-border'>
                                   <SelectGroup>
                                     <SelectLabel>Result of call</SelectLabel>
                                     <SelectItem value="Reached">Reached</SelectItem>
@@ -7829,7 +7826,7 @@ export default function Dashboard() {
                                 <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
                                   <SelectValue />
                                 </SelectTrigger>
-                                <SelectContent className='bg-background text-foreground bg-background'>
+                                <SelectContent className='bg-background text-foreground  border-border'>
                                   <SelectGroup>
                                     <SelectLabel>Direction of call</SelectLabel>
                                     <SelectItem value="Incoming">Incoming</SelectItem>
@@ -7841,7 +7838,7 @@ export default function Dashboard() {
                             </div>
 
                           </div>
-                          <DialogFooter className="flex items-center border-t border-border p-4 sm:justify-between">
+                          <DialogFooter className="flex items-center  p-4 sm:justify-between">
                             <input type='hidden' name='financeId' defaultValue={finance.id} />
                             <input type='hidden' name='userId' defaultValue={user.id} />
 
