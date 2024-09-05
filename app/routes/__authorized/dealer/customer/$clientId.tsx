@@ -1,7 +1,7 @@
 /* eslint-disable tailwindcss/classnames-order */
 import { dashboardLoader, dashboardAction, } from "~/components/actions/dashboardCalls";
 import { getSession } from "~/sessions/auth-session.server";
-import { type DataFunctionArgs, type V2_MetaFunction,, json, redirect } from '@remix-run/node'
+import { type DataFunctionArgs, type V2_MetaFunction, json, redirect } from '@remix-run/node'
 import secondary from "~/styles/secondary.css";
 import { Form, Link, Outlet, useFetcher, useLoaderData, useSubmit, useNavigation, useParams, useNavigate } from "@remix-run/react";
 import React, { createContext, useEffect, useRef, useState } from "react";
