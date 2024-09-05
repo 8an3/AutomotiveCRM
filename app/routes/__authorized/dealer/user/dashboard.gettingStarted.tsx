@@ -20,7 +20,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card"
-import { Bell, ScrollText, Sheet, User2 } from 'lucide-react';
+import { Bell, ScrollText, Sheet, User2, Wrench, Database  } from 'lucide-react';
 import { PauseCircle } from 'lucide-react';
 import { Presentation } from 'iconoir-react';
 import { FileQuestion } from 'lucide-react';

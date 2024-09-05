@@ -60,12 +60,15 @@ export default function Welcome() {
       fetchUnreadCount();
     }
   }, []);
-
+  const [host, setHost] = useState("http://localhost:3000")
   let config
   useEffect(() => {
     const currentHost =
       typeof window !== "undefined" ? window.location.host : null;
     if (iFrameRef.current) {
+      if (currentHost !== "localhost:3000") {
+        setHost(`https://www.dealersalesassistant.ca`)
+      }
       config = {
         auth: {
           clientId: "0fa1346a-ab27-4b54-bffd-e76e9882fcfe",
