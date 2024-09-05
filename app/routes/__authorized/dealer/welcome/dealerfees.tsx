@@ -27,7 +27,7 @@ import { FileQuestion } from 'lucide-react';
 
 
 export const loader = async ({ request, params }) => {
-  redirect('/dealer/user/dashboard/gettingStarted')
+  return redirect('/dealer/user/dashboard/gettingStarted')
 }
 
 export const meta = () => {

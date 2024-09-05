@@ -69,12 +69,19 @@ import {
   Eye,
   PanelTop,
 } from "lucide-react"
+import kawasaki from '~/overviewUtils/images/kawa.png'
+import canamIndex from '~/logos/canamIndex.png'
+import manitouIndex from '~/logos/manitouIndex.png'
+
+import harleyDavidson from '~/logos/hd.png'
+
+
 export default function CustomerProfile() {
-  const { financeList, } = useLoaderData();
+  const { financeList, clientfile } = useLoaderData();
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
       <aside className="fixed inset-y-0 left-0 z-10  sm:w-[50px] sm:flex-col sm:border-r sm:bg-background sm:flex sm:border-border">
-        <SidebarNav financeList={financeList} />
+        <SidebarNav financeList={financeList} clientfile={clientfile} />
       </aside>
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
         <Outlet />
@@ -100,7 +107,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
       email: clientfile.email
     }
   })
-  return json({ financeList, })
+  return json({ financeList, clientfile })
 }
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: secondary },
@@ -135,27 +142,93 @@ function SidebarNav({ financeList, clientfile }) {
 
         {financeList && financeList.map((item, index) => {
           const brand = item.brand
+          let modelImage;
+          switch (brand) {
+            case 'Harley-Davidson':
+              modelImage = harleyDavidson
+              break;
+            case 'Ski-Doo-MY24':
+              modelImage = canamIndex
+              break;
+            case 'Can-Am-SXS-MY24':
+              modelImage = canamIndex
+              break;
+            case 'Kawasaki':
+              modelImage = kawasaki
+              break;
+            case 'Manitou':
+              modelImage = manitouIndex
+              break;
+            case 'Sea-Doo':
+              modelImage = "https://searchlogovector.com/wp-content/uploads/2020/04/sea-doo-logo-vector.png"
+              break;
+            case 'Switch':
+              modelImage = canamIndex
+              break;
+            case 'Can-Am':
+              modelImage = canamIndex
+              break;
+            case 'Can-Am-SXS':
+              modelImage = canamIndex
+              break;
+            case 'KTM':
+              modelImage = null
+              break;
+            case 'Ski-Doo':
+              modelImage = canamIndex
+              break;
+            case 'Suzuki':
+              modelImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Suzuki_logo_2.svg/500px-Suzuki_logo_2.svg.png"
+              break;
+            case 'Triumph':
+              modelImage = "https://media.triumphmotorcycles.co.uk/image/upload/f_auto/q_auto/SitecoreMediaLibrary//_images/apple-touch-icon-180x180.png"
+              break;
+            case 'BMW-Motorrad':
+              modelImage = "https://www.bmw-motorrad.ca/content/dam/bmwmotorradnsc/common/mnm/graphics/bmw_motorrad_logo.svg.asset.1585209612412.svg"
+              break;
+            case 'Indian':
+              modelImage = null
+              break;
+            case 'Yamaha':
+              modelImage = null
+              break;
+            case 'Spyder':
+              modelImage = canamIndex
+              break;
+            default:
+              modelImage = null
+          }
           return (
             <Tooltip key={index}>
               <TooltipTrigger asChild>
                 <Link
                   to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 "
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <Button variant="ghost" className="bg-transparent    hover:bg-transparent">
+                  <Button variant="ghost" className="bg-transparent hover:bg-transparent">
                     <div className="h-5 w-5 flex justify-center">
-                      <FaMotorcycle className='text-foreground text-3xl mx-auto' />
-
+                      {modelImage ? (
+                        <img
+                          alt={brand}
+                          src={modelImage}
+                          className="object-contain"
+                        />
+                      ) : (
+                        <FaMotorcycle className="text-foreground text-3xl mx-auto" />
+                      )}
                     </div>
                   </Button>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">  <div className='m-4'>
-                <p>{item.year} {item.brand}</p>
-                <p>{item.model.toString().slice(0, 28)}</p>
-                <Badge className="">{item.customerState}</Badge>
-              </div></TooltipContent>
+              <TooltipContent side="right">
+                <div className="m-4">
+                  <p>{item.year} {item.brand}</p>
+                  <p>{item.model.toString().slice(0, 28)}</p>
+                  <Badge>{item.customerState}</Badge>
+                </div>
+              </TooltipContent>
             </Tooltip>
+
 
           );
         })}
@@ -164,6 +237,62 @@ function SidebarNav({ financeList, clientfile }) {
         className={cn(" sm:hidden flex  items-center gap-4 px-2 sm:py-4 mt-[10px] ml-[50px] ",)}    >
         {financeList && financeList.map((item, index) => {
           const brand = item.brand
+          let modelImage;
+          switch (brand) {
+            case 'Harley-Davidson':
+              modelImage = harleyDavidson
+              break;
+            case 'Ski-Doo-MY24':
+              modelImage = canamIndex
+              break;
+            case 'Can-Am-SXS-MY24':
+              modelImage = canamIndex
+              break;
+            case 'Kawasaki':
+              modelImage = kawasaki
+              break;
+            case 'Manitou':
+              modelImage = manitouIndex
+              break;
+            case 'Sea-Doo':
+              modelImage = "https://searchlogovector.com/wp-content/uploads/2020/04/sea-doo-logo-vector.png"
+              break;
+            case 'Switch':
+              modelImage = canamIndex
+              break;
+            case 'Can-Am':
+              modelImage = canamIndex
+              break;
+            case 'Can-Am-SXS':
+              modelImage = canamIndex
+              break;
+            case 'KTM':
+              modelImage = null
+              break;
+            case 'Ski-Doo':
+              modelImage = canamIndex
+              break;
+            case 'Suzuki':
+              modelImage = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Suzuki_logo_2.svg/500px-Suzuki_logo_2.svg.png"
+              break;
+            case 'Triumph':
+              modelImage = "https://media.triumphmotorcycles.co.uk/image/upload/f_auto/q_auto/SitecoreMediaLibrary//_images/apple-touch-icon-180x180.png"
+              break;
+            case 'BMW-Motorrad':
+              modelImage = "https://www.bmw-motorrad.ca/content/dam/bmwmotorradnsc/common/mnm/graphics/bmw_motorrad_logo.svg.asset.1585209612412.svg"
+              break;
+            case 'Indian':
+              modelImage = null
+              break;
+            case 'Yamaha':
+              modelImage = null
+              break;
+            case 'Spyder':
+              modelImage = canamIndex
+              break;
+            default:
+              modelImage = null
+          }
           return (
             <Tooltip key={index}>
               <TooltipTrigger asChild>
@@ -173,8 +302,16 @@ function SidebarNav({ financeList, clientfile }) {
                 >
                   <Button variant="ghost" className="bg-transparent    hover:bg-transparent">
                     <div className="h-5 w-5 flex justify-center">
-                      <FaMotorcycle className='text-foreground text-3xl mx-auto' />
 
+                      {modelImage ? (
+                        <img
+                          alt={brand}
+                          src={modelImage}
+                          className="object-contain"
+                        />
+                      ) : (
+                        <FaMotorcycle className="text-foreground text-3xl mx-auto" />
+                      )}
                     </div>
                   </Button>
                 </Link>

@@ -28,75 +28,84 @@ export async function loader({ request, params, req }: LoaderFunction) {
 export default function Root() {
   const { PROD_CALLBACK_URL } = useLoaderData()
 
-  const config = {
-    auth: {
-      clientId: "0fa1346a-ab27-4b54-bffd-e76e9882fcfe",
-      clientSecret: '4hN8Q~RtcN.b9c.1LTCnHtY0UurShP1PIIFQGakw',
-      tenantId: 'fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6',
-      redirectUri: PROD_CALLBACK_URL,
-      authority: `https://login.microsoftonline.com/common`,
-      postLogoutRedirectUri: "/",
-      prompt: "login",
-      scopes: [
-        'User.Read',
-        'Mail.ReadWrite',
-        'Mail.send',
-        'email',
-        'openid',
-        'profile',
-        "Calendars.ReadWrite",
-        "Notes.ReadWrite.All",
-        "Calendars.ReadWrite.Shared",
-        "Contacts.ReadWrite",
-        "Contacts.ReadWrite.Shared",
-        "Files.ReadWrite.All",
-        "Files.ReadWrite.AppFolder",
-        "Files.ReadWrite.Selected",
-        "Mail.ReadWrite.Shared",
-        "Mail.Send.Shared",
-        "Mail.Send",
-        "Mail.ReadWrite",
-        "MailboxSettings.ReadWrite",
-        "Notes.Create",
-        "Notes.ReadWrite.All",
-        "Schedule.ReadWrite.All",
-        "Tasks.ReadWrite.Shared",
-        "User.Read",
-        "User.ReadWrite.All",
-        "User.ReadWrite",
-      ],
-    },
-    cache: {
-      cacheLocation: 'localStorage',
-      temporaryCacheLocation: "localStorage",
-    },
-    system: {
-      loggerOptions: {
-        loggerCallback: (level, message, containsPii) => {
-          if (containsPii) {
-            return;
-          }
-          switch (level) {
-            case LogLevel.Error:
-              console.error(message);
-              return;
-            case LogLevel.Info:
-              console.info(message);
-              return;
-            case LogLevel.Verbose:
-              console.debug(message);
-              return;
-            case LogLevel.Warning:
-              console.warn(message);
-              return;
-            default:
-              return;
-          }
-        },
-      },
-    },
 
-  }
+  let config
+  useEffect(() => {
+    const currentHost =
+      typeof window !== "undefined" ? window.location.host : null;
+    if (iFrameRef.current) {
+      config = {
+        auth: {
+          clientId: "0fa1346a-ab27-4b54-bffd-e76e9882fcfe",
+          clientSecret: '4hN8Q~RtcN.b9c.1LTCnHtY0UurShP1PIIFQGakw',
+          tenantId: 'fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6',
+          redirectUri: currentHost === "localhost:3000" ? `http://localhost:3000/auth/login` : `https://www.dealersalesassistant.ca/auth/login`,
+          authority: `https://login.microsoftonline.com/common`,
+          postLogoutRedirectUri: "/",
+          prompt: "login",
+          scopes: [
+            'User.Read',
+            'Mail.ReadWrite',
+            'Mail.send',
+            'email',
+            'openid',
+            'profile',
+            "Calendars.ReadWrite",
+            "Notes.ReadWrite.All",
+            "Calendars.ReadWrite.Shared",
+            "Contacts.ReadWrite",
+            "Contacts.ReadWrite.Shared",
+            "Files.ReadWrite.All",
+            "Files.ReadWrite.AppFolder",
+            "Files.ReadWrite.Selected",
+            "Mail.ReadWrite.Shared",
+            "Mail.Send.Shared",
+            "Mail.Send",
+            "Mail.ReadWrite",
+            "MailboxSettings.ReadWrite",
+            "Notes.Create",
+            "Notes.ReadWrite.All",
+            "Schedule.ReadWrite.All",
+            "Tasks.ReadWrite.Shared",
+            "User.Read",
+            "User.ReadWrite.All",
+            "User.ReadWrite",
+          ],
+        },
+        cache: {
+          cacheLocation: 'localStorage',
+          temporaryCacheLocation: "localStorage",
+        },
+        system: {
+          loggerOptions: {
+            loggerCallback: (level, message, containsPii) => {
+              if (containsPii) {
+                return;
+              }
+              switch (level) {
+                case LogLevel.Error:
+                  console.error(message);
+                  return;
+                case LogLevel.Info:
+                  console.info(message);
+                  return;
+                case LogLevel.Verbose:
+                  console.debug(message);
+                  return;
+                case LogLevel.Warning:
+                  console.warn(message);
+                  return;
+                default:
+                  return;
+              }
+            },
+          },
+        },
+      }
+    }
+  }, []);
+
+
 
   const msalInstance = new PublicClientApplication(config);
 
