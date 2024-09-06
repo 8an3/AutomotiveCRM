@@ -2244,7 +2244,6 @@ export function MainDashbaord({ user }) {
 
     ]
 
-    //
     const [key, setKey] = useState(0);
     const [lockData, setLockData] = useState();
     const [financeData, setFinanceData] = useState();
@@ -2299,8 +2298,6 @@ export function MainDashbaord({ user }) {
         return json({ update })
     };
     /// -=--=-=-=-=-=-=-=-==-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-DATA TABLE-=--=-=-=-=-=-=-=-==-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-
-
-
 
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
         dl: false,

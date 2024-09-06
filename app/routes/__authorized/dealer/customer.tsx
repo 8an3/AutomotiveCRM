@@ -28,6 +28,8 @@ export const links: LinksFunction = () => [
 
 
 export function SidebarNav({ mergedFinanceList, }) {
+  const location = useLocation();
+  const pathname = location.pathname
   return (
     <nav
       className={cn(
@@ -39,6 +41,17 @@ export function SidebarNav({ mergedFinanceList, }) {
           key={item.to}
           to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
           className="justify-start py-3" >
+
+          <Button variant='ghost'
+            className={cn(
+              buttonVariants({ variant: "ghost" }),
+              pathname === item.to
+                ? "bg-[#232324] hover:bg-muted/50 w-[90%]     "
+                : "hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  ",
+              "justify-start w-[90%] "
+            )} >
+            {item.title}
+          </Button>
           <p variant='ghost' className="bg-muted hover:bg-muted hover:bg-transparent hover:underline" >
             <div>
               <p>

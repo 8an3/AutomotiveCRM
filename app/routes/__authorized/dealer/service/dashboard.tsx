@@ -917,21 +917,21 @@ export default function Dashboard() {
                                       <div className='flex'>
                                         <div className="flex-col" >
                                           <div className="relative mt-4">
-                                            <Input name='service' className='w-[250px] mr-3' defaultValue={result.service} />
+                                            <Input name='service' className='w-[250px] mr-3 text-foreground' defaultValue={result.service} />
                                             <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Name</label>
                                           </div>
                                           <div className="relative mt-4">
-                                            <TextArea name='description' className='w-[250px] mr-3' defaultValue={result.description} />
+                                            <TextArea name='description' className='w-[250px] mr-3 text-foreground' defaultValue={result.description} />
                                             <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Description</label>
                                           </div>
 
                                           <div className='flex justify-between items-center'>
                                             <div className="relative mt-4">
-                                              <Input name='hr' className='w-[100px] mr-3' defaultValue={result.estHr} />
+                                              <Input name='hr' className='w-[100px] mr-3 text-foreground' defaultValue={result.estHr} />
                                               <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Hr's</label>
                                             </div>
                                             <div className="relative mt-4">
-                                              <Input name='price' className='w-[100px] mr-3' defaultValue={result.price} />
+                                              <Input name='price' className='w-[100px] mr-3 text-foreground' defaultValue={result.price} />
                                               <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Price</label>
                                             </div>
                                           </div>

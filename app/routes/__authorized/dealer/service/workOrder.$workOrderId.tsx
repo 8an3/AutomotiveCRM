@@ -298,6 +298,7 @@ export default function Dashboard() {
 
   let formRef = useRef();
   let fetcher = useFetcher();
+  let addPart = useFetcher();
   let delTheAppointment = useFetcher();
   let workOrder = useFetcher();
   let ref = useRef();
@@ -779,7 +780,7 @@ export default function Dashboard() {
                                     formData.append("color", result.color);
                                     formData.append("workOrderId", order.workOrderId);
                                     formData.append("intent", 'addUnit');
-                                    submit(formData, { method: "post", });
+                                    addPart.submit(formData, { method: "post", });
                                   }}>
                                     <TableCell>
                                       <p>{result.year} {result.brand} {result.model}</p>
@@ -1388,7 +1389,7 @@ export default function Dashboard() {
                 </DropdownMenu>
               </div>
             </CardHeader>
-            <CardContent className="p-6 text-sm h-auto max-h-[850px] overflow-y-auto">
+            <CardContent className="p-6 text-sm h-auto max-h-[650px] overflow-y-auto">
               <Accordion type="single" collapsible className="w-full border-border mt-3">
                 <AccordionItem value="item-1" className='border-border'>
                   <AccordionTrigger>Customer Information</AccordionTrigger>
@@ -3236,7 +3237,7 @@ export async function action({ request, params }: ActionFunction) {
   if (intent === 'createPayment') {
     const payment = await prisma.payment.create({
       data: {
-        workOrderId: formPayload.workOrderId,
+        workOrderId: Number(formPayload.workOrderId),
         paymentType: formPayload.paymentType === 'Visa' || formPayload.paymentType === 'Mastercard' || formPayload.paymentType === 'AMEX' ? 'Credit Card' : formPayload.paymentType,
         cardType: formPayload.paymentType === 'Visa' || formPayload.paymentType === 'Mastercard' || formPayload.paymentType === 'AMEX' ? formPayload.paymentType : '',
         amountPaid: parseFloat(formPayload.amountPaid),
@@ -3265,7 +3266,7 @@ export async function action({ request, params }: ActionFunction) {
   }
   if (intent === "addUnit") {
     const update = await prisma.workOrder.update({
-      where: { workOrderId: formPayload.workOrderId },
+      where: { workOrderId: Number(formPayload.workOrderId) },
       data: {
         unit: formPayload.unit,
         mileage: formPayload.mileage,
@@ -3350,7 +3351,7 @@ export async function action({ request, params }: ActionFunction) {
           userName: user.username,
           dept: 'Service',
           status: 'Quote',
-          workOrderId: formPayload.workOrderId,
+          workOrderId: Number(formPayload.workOrderId),
         }
       })
 

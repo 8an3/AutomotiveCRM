@@ -8,7 +8,7 @@ import { type LinksFunction, type LoaderFunction, type ActionFunction, json, red
 import { useLoaderData, Link, useNavigate, useSubmit, useFetcher, useSearchParams, Form, useNavigation } from '@remix-run/react'
 import { prisma } from "~/libs";
 import { Text, } from '@radix-ui/themes';
-import { UserPlus, Gauge, CalendarPlus, ChevronsLeft, ChevronsRightLeft, ChevronsRight, Truck, Sheet } from 'lucide-react';
+import { UserPlus, Gauge, CalendarPlus, ArrowDownToDot, ChevronsLeft, ChevronsRightLeft, ChevronsRight, Truck, Sheet, ArrowLeft, ArrowRight } from 'lucide-react';
 import EventInfo from "~/components/serviceDept/EventInfo"
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import clsx from 'clsx'
@@ -200,7 +200,7 @@ export default function DnDResource() {
         <span className="ml-auto justify-end">
           <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(Navigate.PREVIOUS)}
           >
-            <ChevronsLeft size={20} strokeWidth={1.5} />
+            <ArrowLeft />
           </button>
           <button className='rounded-none  p-2 cursor-pointer hover:text-primary justify-center items-center '
             onClick={() => onNavigate(Navigate.TODAY)}
@@ -210,7 +210,7 @@ export default function DnDResource() {
           <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-primary justify-center items-center mr-3'
             onClick={() => onNavigate(Navigate.NEXT)}
           >
-            <ChevronsRight size={20} strokeWidth={1.5} />
+            <ArrowRight />
           </button>
         </span>
       </div>

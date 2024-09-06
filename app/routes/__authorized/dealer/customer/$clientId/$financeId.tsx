@@ -10524,7 +10524,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const dealerImage = await prisma.dealerLogo.findUnique({ where: { id: 1 } })
   const services = await prisma.services.findMany({})
   let assignedUnit
-  if (finance.stockNum.length > 1) {
+  if (finance.stockNum) {
     assignedUnit = await prisma.inventoryMotorcycle.findUnique({
       where: { id: finance.inventoryMotorcycleId },
     })
