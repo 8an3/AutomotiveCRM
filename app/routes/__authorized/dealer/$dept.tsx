@@ -117,6 +117,7 @@ export default function NavMenuAdminAndMan() {
         <Separator className="my-6 bg-border border-border text-border" />
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
           <aside className="-mx-4 lg:w-[250px]">
+          <p className='text-foreground'>Menu</p>
             <SidebarNav items={dashboards} />
             <Separator className='my-1 bg-border border-border text-border' />
             <SidebarNav items={inventorySide} />
@@ -197,23 +198,23 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
           {item.title === "Employees" && pathname.includes(`/dealer/${params.dept}/users`) && (
             <nav className="grid gap-4 text-sm text-muted-foreground ml-6">
               <NavLink
-                to={`/dealer/${params.dept}/users/all`}
+                to={`/dealer/${params.dept}/users/dashboard`}
                 className={`flex items-center gap-2 text-lg font-semibold md:text-base ml-6
-              ${pathname === `/dealer/${params.dept}/users/all` ? 'font-semibold text-primary' : 'text-foreground'}`}
+              ${pathname === `/dealer/${params.dept}/users/dashboard` ? 'font-semibold text-primary' : 'text-foreground'}`}
               >
                 Dashboard
               </NavLink>
               <NavLink
-                to={`/dealer/${params.dept}/users/all`}
+                to={`/dealer/${params.dept}/users/addUser`}
                 className={`flex items-center gap-2 text-lg font-semibold md:text-base ml-6
               ${pathname === "/dealer/admin/users/addUser" ? 'font-semibold text-primary' : 'text-foreground'}`}
-              >`/dealer/${params.dept}/users/all`
+              >
                 Add Employee
               </NavLink>
               <NavLink
-                to={`/dealer/${params.dept}/users/all`}
+                to={`/dealer/${params.dept}/users/userRoles`}
                 className={`flex items-center gap-2 text-lg font-semibold md:text-base ml-6
-              ${pathname === `/dealer/${params.dept}/users/all` ? 'font-semibold text-primary' : 'text-foreground'}`}
+              ${pathname === `/dealer/${params.dept}/users/userRoles` ? 'font-semibold text-primary' : 'text-foreground'}`}
               >
                 Employee Roles
               </NavLink>
@@ -243,11 +244,11 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
                 Service
               </NavLink>
               <NavLink
-                to={`/dealer/${params.dept}/depts/user-roles`}
+                to={`/dealer/${params.dept}/settings/general`}
                 className={`flex items-center gap-2 text-lg font-semibold md:text-base  ml-6
               ${pathname === `/dealer/${params.dept}/depts/user-roles` ? 'font-semibold text-primary' : 'text-foreground'}`}
               >
-                User Roles
+             Admin
               </NavLink>
             </nav>
           )}

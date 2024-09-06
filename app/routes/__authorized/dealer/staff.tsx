@@ -50,7 +50,7 @@ export default function Quote() {
 
   const sidebarNavItems = [
     {
-      title: "Staff Chat",
+      title: "Staff Messenger",
       to: "/dealer/staff/chat",
     },
     {
@@ -62,7 +62,7 @@ export default function Quote() {
     <>
       <div className=" space-y-6 p-10 pb-16 h-screen w-screen">
         <div className="space-y-0.5">
-          <h2 className="text-2xl font-bold tracking-tight text-foreground">Staff Area</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-foreground">Staff Lounge</h2>
           <hr className="text-border border-border bg-border w-[90%] mb-5" />
 
         </div>

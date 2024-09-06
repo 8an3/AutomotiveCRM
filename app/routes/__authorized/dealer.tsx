@@ -2035,13 +2035,14 @@ export const accNavSidebarNav = [
 ]
 export const serviceNavSidebarNav = [
   {
-    title: "Calendar",
-    to: "/dealer/service/calendar",
-  },
-  {
     title: "Service Dashboard",
     to: "/dealer/service/dashboard",
   },
+  {
+    title: "Calendar",
+    to: "/dealer/service/calendar",
+  },
+
   {
     title: "Waiters",
     to: "/dealer/service/waiters",
@@ -2057,7 +2058,7 @@ export const serviceNavSidebarNav = [
 ]
 export const userNavSidebarNav = [
   {
-    title: "Staff Area",
+    title: "Staff Lounge",
     to: "/dealer/staff/chat",
   },
   {
@@ -2088,12 +2089,12 @@ export const documentNavSidebarNav = [
 ]
 export const salesNavSidebarNav = [
   {
-    title: "Email Client",
-    to: "/dealer/email/client",
-  },
-  {
     title: "Dashboard",
     to: "/dealer/leads/sales/dashboard",
+  },
+  {
+    title: "Email Client",
+    to: "/dealer/email/client",
   },
   {
     title: "Calendar",

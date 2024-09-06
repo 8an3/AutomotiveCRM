@@ -183,6 +183,37 @@ export default function StaffChat({ content }) {
     }
   }, [userMessages]);
 
+  const navigation = useNavigation();
+  const submittingForm = navigation.state === "submitting" || navigation.state === "loading";
+  const { data: swrData } = useSWR(submittingForm ? getDomain + '/dealer/staff/getConvos' : null, dataFetcher, {})
+
+  useEffect(() => {
+      if (swrData) {
+        setConversations(swrData);
+          console.log('hitswr!! ', getDomain)
+      }
+      const filteredConversations = mergedLists.reduce((filtered, conv) => {
+        if (conv.dept === roomLabel) {
+          filtered.push(conv);
+        }
+        return filtered;
+      }, []);
+      setFilteredConversations(filteredConversations);
+  }, [swrData]);
+
+
+  useEffect(() => {
+    setConversations(conversationsList);
+    //   const filteredConversations = conversationsList.reduce((filtered, conv) => {
+    const filteredConversations = mergedLists.reduce((filtered, conv) => {
+      if (conv.dept === roomLabel) {
+        filtered.push(conv);
+      }
+      return filtered;
+    }, []);
+    setFilteredConversations(filteredConversations);
+  }, []);
+
   const handleRoomButtonClick = async (dept) => {
     setRoomLabel(dept);
     await delay(150);
@@ -267,7 +298,7 @@ export default function StaffChat({ content }) {
 
       <CardContent className=" p-6 text-sm rounded-t-[8px]">
         <div className="flex justify-between items-center gap-0.5 mb-5">
-          <p>Staff Chat {personAdded}</p>
+          <p>Staff Messenger {personAdded}</p>
           <Button
             size="icon"
             onClick={() => {
@@ -460,3 +491,19 @@ export async function action({ request }: ActionFunction) {
   return null
 
 }
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "Staff Messenger | Dealer Sales Assistant" },
+    {
+      property: "og:title",
+      content: "Your very own assistant!",
+    },
+    {
+      name: "description",
+      content:
+        "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
+      keywords: "Automotive Sales, dealership sales, automotive CRM",
+    },
+  ];
+};

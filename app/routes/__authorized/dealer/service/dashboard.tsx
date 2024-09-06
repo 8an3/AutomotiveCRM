@@ -831,6 +831,10 @@ export default function Dashboard() {
                                       <Input name='hr' className='w-[100px] mr-3' />
                                       <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Hr's</label>
                                     </div>
+                                    <div className="relative mt-4">
+                                      <Input name='price' className='w-[100px] mr-3' />
+                                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Price</label>
+                                    </div>
                                     <Button
                                       className='mt-4 ml-auto'
                                       size='sm'
@@ -904,7 +908,7 @@ export default function Dashboard() {
 
                                 </li>
                               </DialogTrigger>
-                              <DialogContent>
+                              <DialogContent className='border-border'>
                                 <DialogHeader>
                                   <DialogTitle>Edit Service</DialogTitle>
                                   <DialogDescription>
@@ -920,19 +924,30 @@ export default function Dashboard() {
                                             <TextArea name='description' className='w-[250px] mr-3' defaultValue={result.description} />
                                             <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Description</label>
                                           </div>
+
+                                          <div className='flex justify-between items-center'>
+                                            <div className="relative mt-4">
+                                              <Input name='hr' className='w-[100px] mr-3' defaultValue={result.estHr} />
+                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Hr's</label>
+                                            </div>
+                                            <div className="relative mt-4">
+                                              <Input name='price' className='w-[100px] mr-3' defaultValue={result.price} />
+                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Price</label>
+                                            </div>
+                                          </div>
+
+                                          <Button
+                                            className='mt-4'
+                                            size='sm'
+                                            type='submit'
+                                            name='intent'
+                                            value='updateService'
+                                          >Edit
+                                          </Button>
                                         </div>
 
-                                        <div className="relative mt-4">
-                                          <Input name='hr' className='w-[100px] mr-3' defaultValue={result.estHr} />
-                                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Hr's</label>
-                                        </div>
-                                        <Button
-                                          className='mt-4'
-                                          size='icon'
-                                          type='submit'
-                                          name='intent'
-                                          value='updateService'
-                                        ><Plus /></Button>
+
+
                                       </div>
                                     </fetcher.Form>
                                   </DialogDescription>
@@ -2383,6 +2398,7 @@ export async function action({ request, params }: ActionFunction) {
         description: formPayload.description,
         service: formPayload.name,
         estHr: parseFloat(formPayload.hr),
+        price: parseFloat(formPayload.price),
       }
     })
     return json({ service })

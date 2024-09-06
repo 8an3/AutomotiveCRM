@@ -2952,7 +2952,7 @@ export default function Dashboard() {
                   </CardTitle>
                 </div>
               </CardHeader>
-              <CardContent className='overflow-y-auto max-h-[450px] h-auto'>
+              <CardContent className='overflow-y-auto max-h-[300px] h-auto'>
                 <ul className="grid gap-3 text-sm mt-2">
 
                   {customerCard.map((item, index) => (

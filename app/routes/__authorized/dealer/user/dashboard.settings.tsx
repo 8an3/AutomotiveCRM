@@ -588,32 +588,8 @@ function ProfileForm({ user, deFees, statsData, comsRecords, getNewLook, automat
                             name="name"
                             className="border-border bg-background "
                           />
-                          {errors?.userLicensing ? (
-                            <em className="text-[#ff0202]">{errors.userLicensing}</em>
-                          ) : null}
-                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
-                        </div>
-                        <div className="relative mt-4">
-                          <Input
-                            defaultValue={phone}
-                            name="phone"
-                            className="border-border bg-background "
-                          />
-                          {errors?.userLicensing ? (
-                            <em className="text-[#ff0202]">{errors.userLicensing}</em>
-                          ) : null}
-                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
-                        </div>
-                        <div className="relative mt-4">
-                          <Input
-                            defaultValue={user.email}
-                            name="userEmail"
-                            className="border-border bg-background "
-                          />
-                          {errors?.userTax ? (
-                            <em className="text-[#ff0202]">{errors.userTax}</em>
-                          ) : null}
-                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+
+                          <label className="text-muted-foreground text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">First Name</label>
                         </div>
                         <div className="relative mt-4">
                           <Input
@@ -624,17 +600,46 @@ function ProfileForm({ user, deFees, statsData, comsRecords, getNewLook, automat
                           {errors?.userLabour ? (
                             <em className="text-[#ff0202]">{errors.userLabour}</em>
                           ) : null}
-                          <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Full Name</label>
+                          <label className="text-muted-foreground text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Full Name</label>
+                        </div>
+                        <div className="relative mt-4">
+                          <Input
+                            defaultValue={phone}
+                            name="phone"
+                            className="border-border bg-background "
+                          />
+
+                          <label className="text-muted-foreground text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Phone</label>
+                        </div>
+                        <div className="relative mt-4">
+                          <Input
+                            defaultValue={user.email}
+                            name="userEmail"
+                            className="border-border bg-background "
+                          />
+
+                          <label className="text-muted-foreground text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Email</label>
+                        </div>
+
+                        <div className="relative mt-4">
+                          <Input
+                            defaultValue={user.omvicNumber}
+                            name="omvicNumber"
+                            className="border-border bg-background "
+                          />
+
+                          <label className="text-muted-foreground text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">OMVIC Lic Number</label>
                         </div>
                       </div>
                     </CardContent>
                     <CardFooter className="px-6 py-4">
+                      <input type='hidden' name='id' value={user.id} />
                       <ButtonLoading
                         size="sm"
-                        className="mr-auto cursor-pointer mb-5 mt-5 bg-primary"
+                        className="mr-auto cursor-pointer mb-5 mt-5 bg-background  border-border text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
                         type="submit"
                         name='intent'
-                        value='updateFees'
+                        value='updateUserInfo'
                         isSubmitting={isSubmitting}
                         onClick={() => toast.success(`Update complete.`)}
                         loadingText="Updating information..."
@@ -658,7 +663,7 @@ function ProfileForm({ user, deFees, statsData, comsRecords, getNewLook, automat
                         <DrawerTrigger asChild>
                           <Button
                             size='sm'
-                            className="w-auto cursor-pointer mr-3  bg-primary text-foreground"
+                            className="w-auto cursor-pointer mr-3 bg-background border border-border text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
                           >
                             Downloads
                           </Button>
@@ -699,7 +704,7 @@ function ProfileForm({ user, deFees, statsData, comsRecords, getNewLook, automat
                         <DrawerTrigger asChild>
                           <Button
                             size='sm'
-                            className="w-auto cursor-pointer mr-3 text-foreground bg-primary"
+                            className="w-auto cursor-pointer mr-3 bg-background  border border-border text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
                           >
                             Integration Settings
                           </Button>
@@ -764,8 +769,9 @@ function ProfileForm({ user, deFees, statsData, comsRecords, getNewLook, automat
                                 </DrawerClose>
                                 <ButtonLoading
                                   size="sm"
-                                  className="w-auto cursor-pointer  bg-primary"
+                                  className="w-auto cursor-pointer"
                                   type="submit"
+                                  variant='outline'
                                   name='intent'
                                   value='activixActivated'
                                   isSubmitting={isSubmitting}
@@ -786,7 +792,7 @@ function ProfileForm({ user, deFees, statsData, comsRecords, getNewLook, automat
                         <DrawerTrigger asChild>
                           <Button
                             size='sm'
-                            className="w-auto cursor-pointer  text-foreground mr-3 bg-primary"
+                            className="w-auto cursor-pointer border  text-foreground mr-3 bg-background  border-border text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
                           >
                             Appearance
                           </Button>
@@ -824,11 +830,11 @@ function ProfileForm({ user, deFees, statsData, comsRecords, getNewLook, automat
                               </ul>
                               <div className='flex justify-between items-center mt-5 mb-5' >
                                 <DrawerClose asChild>
-                                  <Button variant="outline">Cancel</Button>
+                                  <Button size='sm' variant="outline">Cancel</Button>
                                 </DrawerClose>
                                 <ButtonLoading
                                   size="sm"
-                                  className="w-auto cursor-pointer mb-5 mt-5 bg-primary"
+                                  className="w-auto cursor-pointer mb-5 mt-5 bg-background  border-border text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
                                   type="submit"
                                   name='intent'
                                   value='appearance'
@@ -951,7 +957,7 @@ function ProfileForm({ user, deFees, statsData, comsRecords, getNewLook, automat
                     ) : (
                       <ButtonLoading
                         size="sm"
-                        className="mr-auto cursor-pointer mb-5 mt-5 bg-primary"
+                        className="mr-auto cursor-pointer mb-5 mt-5 bg-background  border-border text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
                         type="submit"
                         name='intent'
                         value='updateFees'
@@ -1015,7 +1021,7 @@ function ProfileForm({ user, deFees, statsData, comsRecords, getNewLook, automat
                   <CardFooter className="border-t px-6 py-4 border-border">
                     <ButtonLoading
                       size="sm"
-                      className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-primary"
+                      className="w-auto cursor-pointer mb-5 mt-5 mr-auto bg-background  border-border text-foreground hover:border-primary hover:bg-transparent hover:text-primary"
                       type="submit"
                       name='intent'
                       value='automations'
@@ -1060,6 +1066,22 @@ export const action: ActionFunction = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")
   let user = await GetUser(email)
+  if (intent === 'updateUserInfo') {
+    const saveDealer = await prisma.user.update({
+      where: {
+        id: Input.id
+      },
+      data: {
+        name: Input.name,
+        username: Input.username,
+        email: Input.userEmail,
+        phone: Input.phone,
+        omvicNumber: Input.omvicNumber,
+      },
+    });
+    return ({ saveDealer })
+
+  }
   if (intent === 'updateFees') {
     const saveDealer = await prisma.dealer.update({
       data: {

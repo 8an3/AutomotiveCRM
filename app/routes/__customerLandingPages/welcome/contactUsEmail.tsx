@@ -29,25 +29,32 @@ export default async function CheckingDealerPlan(customer) {
         <Head />
         <Preview>DSA Contact Us Email</Preview>
         <Tailwind>
-
           <Preview>DSA Contact Us Email</Preview>
           <Tailwind>
             <Body className="bg-white my-auto mx-auto font-sans px-2" >
               <Container className="border border-solid border-[#eaeaea] rounded-md my-[40px] mx-auto p-[20px] max-w-[465px]">
-                <Heading className="text-black text-[24px] font-normal text-center p-0 my-[30px] mx-0">
+                <Heading className="text-black text-[16px] font-normal text-center p-0 my-[30px] mx-0">
                   Someone is trying to reach out to us using one of our contact us forms
                 </Heading>
                 <Section>
+                <Hr className="border-b text-[#eaeaea] border-[#eaeaea]" />
+
+                <Text className="text-black text-[12px] leading-[24px]">
+                    {customer.reason}
+                    <br />
+                   Purchasing time frame: {customer.purchaseTime}
+                    <br />
+                  </Text>
                   <Hr className="border-b text-[#eaeaea] border-[#eaeaea]" />
                   <Row>
                     <Column className="flex">
-                      <Text className="text-black text-[14px] leading-[24px]">
+                      <Text className="text-black text-[12px] leading-[24px]">
                         {customer.message}
                       </Text>
                     </Column>
                   </Row>
                   <Hr className="border-b text-[#eaeaea] border-[#eaeaea]" />
-                  <Text className="text-black text-[14px] leading-[24px]">
+                  <Text className="text-black text-[12px] leading-[24px]">
                     {customer.firstName} {customer.lastName}
                     <br />
                     {customer.email}

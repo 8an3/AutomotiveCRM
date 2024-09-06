@@ -66,25 +66,16 @@ export default function WelcomeDealerFeesSection() {
 
 function DealerCard() {
   return (
-    <Card>
+    <Card className='bg-background'>
       <CardHeader className="pb-3">
         <CardTitle>Dealers</CardTitle>
         <CardDescription>
-          Some house keeping before you started.
+          Some house keeping before you get started.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-1">
-        <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
-          <Bell className="mt-px h-5 w-5" />
-          <div className="space-y-1">
-            <p className="text-sm font-medium leading-none">Other Steps</p>
-            <p className="text-sm text-muted-foreground">
-              All the steps in the sales card are needed to be completed for you as well.
-            </p>
-          </div>
-        </div>
-        <NavLink to='/dealer/admin/users/overview'>
-          <div className="-mx-2 flex items-start space-x-4 rounded-md bg-accent p-2 text-accent-foreground transition-all">
+      <NavLink to='/dealer/admin/users/overview'>
+          <div className="-mx-2 flex items-start space-x-4 rounded-md hover:bg-accent p-2 hover:text-accent-foreground transition-all">
             <User2 className="mt-px h-5 w-5" />
             <div className="space-y-1">
               <p className="text-sm font-medium leading-none">Adding Employees</p>
@@ -95,6 +86,16 @@ function DealerCard() {
           </div>
         </NavLink>
         <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+          <Bell className="mt-px h-5 w-5" />
+          <div className="space-y-1">
+            <p className="text-sm font-medium leading-none">Other Steps</p>
+            <p className="text-sm text-muted-foreground">
+              All the steps in the sales card are needed to be completed for you as well.
+            </p>
+          </div>
+        </div>
+
+        <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
           <Link className="mt-px h-5 w-5" />
           <div className="space-y-1">
             <p className="text-sm font-medium leading-none">Links</p>
@@ -103,16 +104,16 @@ function DealerCard() {
             </p>
             <div className='grid grid-cols-1 justify-center'>
 
-              <NavLink to='/dealer/admin/settings/general'>
+              <NavLink to='/dealer/admin/settings/general' className='hover:text-underline'>
                 Dealer Fees and Information - Admin / Manager
               </NavLink>
-              <NavLink to='/dealer/user/dashboard/templates'>
+              <NavLink to='/dealer/user/dashboard/templates'  className='hover:text-underline'>
                 Templates - Any
               </NavLink>
-              <NavLink to='/dealer/user/dashboard/board'>
+              <NavLink to='/dealer/user/dashboard/board'  className='hover:text-underline'>
                 Boards - Any
               </NavLink>
-              <NavLink to='/dealer/user/dashboard/scripts'>
+              <NavLink to='/dealer/user/dashboard/scripts'  className='hover:text-underline'>
                 Scripts - Any
               </NavLink>
             </div>
@@ -142,7 +143,7 @@ function SalesCard() {
       <CardHeader className="pb-3">
         <CardTitle>Sales People</CardTitle>
         <CardDescription>
-          Some house keeping before you started.
+          Some house keeping before you get started.
         </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-1">
@@ -158,40 +159,42 @@ function SalesCard() {
           </div>
         </NavLink>
         <NavLink to='/dealer/user/dashboard/settings'>
-          <div className="-mx-2 flex items-start space-x-4 rounded-md bg-accent p-2 text-accent-foreground transition-all">
-            <User2 className="mt-px h-5 w-5" />
+        <div className="-mx-2 flex items-start space-x-4 rounded-md hover:bg-accent p-2 hover:text-accent-foreground transition-all">
+        <User2 className="mt-px h-5 w-5" />
             <div className="space-y-1">
               <p className="text-sm font-medium leading-none">Profile</p>
               <p className="text-sm text-muted-foreground">
-                Update your profile information as much as you can.
+                Update your profile information.
               </p>
             </div>
           </div>
         </NavLink>
-        <NavLink to='/dealer/user/dashboard/templates'>
 
-          <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
-            <Sheet className="mt-px h-5 w-5" />
+        <NavLink to='/dealer/user/dashboard/templates'>
+          <div className="-mx-2 flex items-start space-x-4 rounded-md hover:bg-accent p-2 hover:text-accent-foreground transition-all">
+            <Sheet className="mt-px h-[40px] w-[40px]" />
             <div className="space-y-1">
               <p className="text-sm font-medium leading-none">Documents</p>
               <p className="text-sm text-muted-foreground">
-                Creating all of your templated documents ahead of time can you alot of it during the sales process, it is worth the initial investment setting everything up. Currently once your done your document you will have to email us the template to have it saved to your clients dashboard so it can be used for every sale. In the future this will be automatic and sending it to us will not be needed.
+              Creating all of your templated documents ahead of time can save you a lot of it during the sales process. Its worth the initial investment setting everything up. Currently once your done your documents you will have to email us the templates to have accessible on your clients dashboard so it can be used for every sale. In the future this will be automatic and sending it to us will not be needed.
               </p>
             </div>
           </div>
         </NavLink>
+
+
         <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
-          <PauseCircle className="mt-px h-5 w-5" />
+        <PauseCircle className="mt-px h-10 w-10" />
           <div className="space-y-1">
             <p className="text-sm font-medium leading-none">How to documentation</p>
             <p className="text-sm text-muted-foreground">
-              In your drop down, it will display documenation. No matter the page your on it will bring you to that pages video, explaining all the features and abilities that page has. That way you can learn as you go when needed, instead of sitting there for the next 4 hours and only retaining a portain of the information.
+              In your drop down menu, it will display 'how to documenation'. No matter the page your on it will bring you to that pages video, explaining all the features and abilities that page has. That way you can learn as you go, when needed. Instead of sitting there for the next 4 hours and only retaining a portain of the information.
             </p>
           </div>
         </div>
         <NavLink to='/dealer/user/dashboard/board'>
-          <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
-            <Presentation className="mt-px h-5 w-5" />
+        <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+        <Presentation className="mt-px h-10 w-10" />
             <div className="space-y-1">
               <p className="text-sm font-medium leading-none">The Board</p>
               <p className="text-sm text-muted-foreground">
@@ -201,28 +204,28 @@ function SalesCard() {
           </div>
         </NavLink>
         <NavLink to='/dealer/user/dashboard/scripts'>
-          <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
-            <ScrollText className="mt-px h-5 w-5" />
+        <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+        <ScrollText className="mt-px h-10 w-10" />
             <div className="space-y-1">
               <p className="text-sm font-medium leading-none">Scripts</p>
               <p className="text-sm text-muted-foreground">
-                Building your scripts library now and on the go will save you time when you can reuse that script with the next customer. They're accessible when emailing or texting people so they can come in handy to take care of calls.
+                Building your scripts library now and on the go will save you time when you reuse that script with the next customer. They're accessible when emailing or texting people so they can come in handy to take care of calls, or sending customers quotations in a second while they are still at the desk with you.
               </p>
             </div>
           </div>
         </NavLink>
         <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
-          <Wrench className="mt-px h-5 w-5" />
+        <Wrench className="mt-px h-10 w-10" />
           <div className="space-y-1">
-            <p className="text-sm font-medium leading-none">Preconfigured</p>
+            <p className="text-sm font-medium leading-none">Preconfigured options</p>
             <p className="text-sm text-muted-foreground">
-              Almost everything is pre configured to help you succeed. For example the dashbaord's are already set up to hit the ground running so you don't need to move / hide or display columns for it to be effecient to work with. It is there if you do want it to be different though. Same with scripts, there are already a number that you have access to. Along with a number of other pre configured systems.
+              Almost everything is pre configured and set up already to help you succeed. For example the dashbaord's are already set up to hit the ground running so you don't need to move / hide or display columns for it to be effecient to work with. It is there if you do want it, so make any changes you see fit. Same with scripts, there are already a number that you have access to. Along with a number of other pre configured systems.
             </p>
           </div>
         </div>
         <NavLink to='/dealer/user/dashboard/contact'>
-          <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
-            <FileQuestion className="mt-px h-5 w-5" />
+        <div className="-mx-2 flex items-start space-x-4 rounded-md p-2 transition-all hover:bg-accent hover:text-accent-foreground">
+        <FileQuestion className="mt-px h-5 w-5" />
             <div className="space-y-1">
               <p className="text-sm font-medium leading-none">Suggestions</p>
               <p className="text-sm text-muted-foreground">

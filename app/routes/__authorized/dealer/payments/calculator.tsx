@@ -1752,7 +1752,7 @@ export default function PaymentCalc() {
                           Other tax %
                         </span>
                         <span>
-                          <Input
+                          {/*    <Input
                             name="othTax"
                             id="othTax"
                             className="h-8 w-20 text-right bg-background border-border"
@@ -1762,13 +1762,18 @@ export default function PaymentCalc() {
                               setFormData((prevFormData) => ({ ...prevFormData, 'othTax': parseFloat(value) }));
                               value
                             }}
-                          />
-                          <Select
-                            defaultValue={String(formData.othTax)}
-                            onValueChange={(value) => {
+
+
+                              onValueChange={(value) => {
                               setFormData((prevFormData) => ({ ...prevFormData, 'othTax': parseFloat(value) }));
                               value
-                            }}                               >
+                            }}
+
+
+                          />*/}
+                          <Select
+                            defaultValue={String(othTax)}
+                            onValueChange={handleChange}                               >
                             <SelectTrigger className="w-full bg-background text-foreground border border-border">
                               <SelectValue placeholder='Status' />
                             </SelectTrigger>
@@ -2384,7 +2389,7 @@ export default function PaymentCalc() {
                 {mainButton === "payments" && (
                   <div className="">
                     {subButton === "withoutOptions" && (
-                      <ul className="grid gap-3">
+                      <ul className="grid gap-3 mt-3">
                         <li className="flex items-center justify-between">
                           <span className="text-[#8a8a93]">Monthly</span>
                           <span> ${on60}</span>
@@ -2405,7 +2410,7 @@ export default function PaymentCalc() {
                       <>
                         <div className="font-semibold">Options Include</div>
                         <DealerOptionsAmounts />
-                        <ul className="grid gap-3">
+                        <ul className="grid gap-3  mt-3">
                           <li className="flex items-center justify-between">
                             <span className="text-[#8a8a93]">
                               Monthly
@@ -2434,7 +2439,7 @@ export default function PaymentCalc() {
                   <div className="">
                     {subButton === "withoutOptions" && (
                       <div>
-                        <ul className="grid gap-3">
+                        <ul className="grid gap-3  mt-3">
                           <li className="flex items-center justify-between">
                             <span className="text-[#8a8a93]">
                               Monthly
@@ -2458,7 +2463,7 @@ export default function PaymentCalc() {
                     )}
                     {subButton === "withOptions" && (
                       <div>
-                        <div className="font-semibold">Options Include</div>
+                        <div className="font-semibold  mt-3">Options Include</div>
                         <DealerOptionsAmounts />
                         <ul className="grid gap-3">
                           <li className="flex items-center justify-between">
@@ -2488,7 +2493,7 @@ export default function PaymentCalc() {
                 {mainButton === "customTax" && (
                   <div className="">
                     {subButton === "withoutOptions" && (
-                      <ul className="grid gap-3">
+                      <ul className="grid gap-3  mt-3">
                         <li className="flex items-center justify-between">
                           <span className="text-[#8a8a93]">
                             Monthly
@@ -2511,7 +2516,7 @@ export default function PaymentCalc() {
                     )}
                     {subButton === "withOptions" && (
                       <div>
-                        <div className="font-semibold">Options Include</div>
+                        <div className="font-semibold  mt-3">Options Include</div>
                         <DealerOptionsAmounts />
                         <ul className="grid gap-3">
                           <li className="flex items-center justify-between">

@@ -133,7 +133,7 @@ function SidebarNav({ financeList, clientfile }) {
               </Button>
             </Link>
           </TooltipTrigger>
-          <TooltipContent side="right">
+          <TooltipContent side="right" className='text-foreground bg-background  border-border border'>
             <div className='m-4'>
               <p>Client Profile</p>
             </div>
@@ -220,7 +220,7 @@ function SidebarNav({ financeList, clientfile }) {
                   </Button>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">
+              <TooltipContent side="right"  className='text-foreground bg-background border-border border'>
                 <div className="m-4">
                   <p>{item.year} {item.brand}</p>
                   <p>{item.model.toString().slice(0, 28)}</p>
@@ -316,7 +316,8 @@ function SidebarNav({ financeList, clientfile }) {
                   </Button>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">  <div className='m-4'>
+              <TooltipContent side="right"  className='text-foreground bg-background  border-border border'>
+                 <div className='m-4'>
                 <p>{item.year} {item.brand}</p>
                 <p>{item.model.toString().slice(0, 28)}</p>
                 <Badge className="">{item.customerState}</Badge>

@@ -243,6 +243,7 @@ export async function loader({ request, params }: LoaderFunction) {
   return json({ orders, user, sevTotal, tax, filteredOrders30, thiryTotal, dealerImage });
 }
 
+
 export function playScanSound() {
   const audio = new Audio(ScanSound);
   audio.play();
@@ -1182,7 +1183,21 @@ export default function Purchase() {
   );
 }
 
+export const meta = () => {
 
+  return [
+    { title: `PAC Dashboard | Dealer Sales Assistant` },
+    {
+      property: "og:title",
+      content: "Your very own assistant!",
+    },
+    {
+      name: "description",
+      content: "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
+      keywords: 'Automotive Sales, dealership sales, automotive CRM',
+    },
+  ];
+};
 const calculateTotalAccessoriesCost = (order) => {
   if (!order || !order.AccessoriesOnOrders) { return 0; }
   return order.AccessoriesOnOrders.reduce((total, accessoryOnOrder) => {
@@ -1333,7 +1348,7 @@ const MySidebar = ({
               <ul className="grid gap-3">
                 <li className="flex items-center justify-between">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span>${totalAccessoriesCost}</span>
+                  <span>${totalAccessoriesCost.toFixed(2)}</span>
                 </li>
                 {discount && (
                   <>

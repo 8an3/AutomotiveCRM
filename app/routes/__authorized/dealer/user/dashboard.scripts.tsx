@@ -16,7 +16,7 @@ import { ChevronDown, ChevronUp, Copy } from 'lucide-react';
 import { ButtonLoading } from "~/components/ui/button-loading";
 import { Toaster, toast } from 'sonner'
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
-import { type ActionFunction, defer } from '@remix-run/node';
+import { type ActionFunction, defer,json } from '@remix-run/node';
 import { prisma } from '~/libs';
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area"
 import { cn } from '~/components/ui/utils';
@@ -55,16 +55,16 @@ export const action: ActionFunction = async ({ request }) => {
 
   const template = await prisma.emailTemplates.create({
     data: {
-      name: formData.name,
-      body: formData.body,
-      title: formData.title,
+      subject: formData.name,
+      body: formData.content,
       category: formData.category,
       userEmail: formData.userEmail,
       dept: formData.dept,
+      subCat: formData.subCat,
       type: 'text / email',
     },
   });
-  return template;
+  return json({template});
 }
 export default function Shight() {
   const { user, scripts } = useLoaderData();
@@ -318,11 +318,10 @@ export default function Shight() {
 
                                     <Form method='post'>
                                       <input type='hidden' name='name' value={selectedRecord.name} />
-                                      <input type='hidden' name='body' value={selectedRecord.content} />
+                                      <input type='hidden' name='content' value={selectedRecord.content} />
                                       <input type='hidden' name='category' value={selectedRecord.category} />
+                                      <input type='hidden' name='subCat' value={selectedRecord.subCat} />
                                       <input type='hidden' name='userEmail' value={user.email} />
-                                      <input type='hidden' name='subject' value='Copied from scripts' />
-                                      <input type='hidden' name='title' value='Copied from scripts' />
                                       <input type='hidden' name='dept' value='sales' />
                                       <ButtonLoading
                                         size="lg"

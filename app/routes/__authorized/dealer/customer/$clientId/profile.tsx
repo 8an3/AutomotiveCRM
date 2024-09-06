@@ -178,12 +178,8 @@ export default function SettingsLayout() {
           </aside>
           <div className="flex-1 lg:max-w-2xl">
             {tabState === 'Profile' && (
-
-
               <Form method='post' className='grid w-full max-w-sm space-y-8 items-center  gap-1.5'>
-
                 {customerCard.map((item, index) => (
-
                   <div key={index} className="relative mt-5">
                     <Input
                       name={item.name}

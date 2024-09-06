@@ -829,13 +829,13 @@ model EmailTemplates {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  subCat    String?
-  body      String?
-  userEmail String?
-  category  String?
-  type      String?
   subject   String?
+  body      String?
+  category  String?
+  userEmail String?
   dept      String?
+  subCat    String?
+  type      String?
 }
 
 model EmailTemplatesForDropdown {

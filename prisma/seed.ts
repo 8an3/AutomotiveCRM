@@ -6727,7 +6727,7 @@ export async function Board() {
   const getDoneNow = [
     { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
 
-    { board: "dev", column: "DONE NEEDS TESTING", item: "instead of input for tax on quotes do a drop down with actual provines taxes" },
+    { board: "dev", column: "DONE NEEDS TESTING", item: "instead of input for tax on quotes do a drop down with actual provines taxes done in payument calc only!!!!" },
     { board: "dev", column: "IDEAS", item: "service calendar - select mechanic and it only shows that mechanics appts" },
     { board: "dev", column: "IDEAS", item: "import / export allow to downlaod a template example so people can see the columns needed for that dataset" },
 
@@ -6760,14 +6760,20 @@ export async function Board() {
 
 
     { board: "dev", column: "ISSUE", item: "----- FINAL TESTING ON PROD SITE - COMPLETED -----" },
-    { board: "dev", column: "ROLES", item: "user staff chat - doesnt auto update chat after submiussion" },
-    { board: "dev", column: "ROLES", item: "user staff leaderboard - does not work in prod" },
-    { board: "dev", column: "ROLES", item: "user staff settings - account not saving" },
-    { board: "dev", column: "ROLES", item: "user staff roadmap " },
-    { board: "dev", column: "ROLES", item: "user staff board - board not saving" },
-    { board: "dev", column: "ROLES", item: "sales - payment calculator" },
-    { board: "dev", column: "ROLES", item: "sales - quote" },
-    { board: "dev", column: "ROLES", item: "sales - overview" },
+    { board: "dev", column: "ROLES", item: "----- STAFF AREA -----" },
+    { board: "dev", column: "ROLES", item: "staff chat - need to send out notifications regarding messages for pedople in that dept mor maybe just use a tag system so everyone doesnt get blown up with messages" },
+    { board: "dev", column: "ROLES", item: "staff leaderboard - does not work in prod" },
+
+    { board: "dev", column: "ROLES", item: "----- USER -----" },
+    { board: "dev", column: "ROLES", item: "payment calculator" },
+    { board: "dev", column: "ROLES", item: "quote" },
+    { board: "dev", column: "ROLES", item: "overview" },
+    { board: "dev", column: "ROLES", item: "settings" },
+    { board: "dev", column: "ROLES", item: "roadmap " },
+    { board: "dev", column: "ROLES", item: "scripts " },
+    { board: "dev", column: "ROLES", item: "templates " },
+    { board: "dev", column: "ROLES", item: "getting started - may need a few more for dealers " },
+    { board: "dev", column: "ROLES", item: "board - board not saving" },
 
 
 
