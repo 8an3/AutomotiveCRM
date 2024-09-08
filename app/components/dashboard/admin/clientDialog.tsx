@@ -143,7 +143,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table"
-import { EditableText } from "~/components/actions/shared";
+import { EditableText } from "~/components/shared/shared";
 import { Plus } from "lucide-react";
 import {
   Pagination,

@@ -6,7 +6,7 @@ import {
   CompleteLastAppt,
   TwoDays,
   FollowUpApt,
-} from "~/components/actions/shared";
+} from "~/components/shared/shared";
 
 import { createfinanceApt } from "~/utils/financeAppts/create.server";
 import { getLastAppointmentForFinance } from "~/utils/client/getLastApt.server";

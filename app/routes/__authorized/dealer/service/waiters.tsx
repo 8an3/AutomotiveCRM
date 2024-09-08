@@ -27,7 +27,7 @@ export default function Waiters() {
   };
 
   return (
-    <div className='grid grid-cols-3 text-foreground'>
+    <div className='grid grid-cols-3 text-foreground mt-[5px]'>
       <Card className='m-3 ml-5'>
         <CardHeader className="flex flex-row items-start bg-muted/50">
           <CardTitle className='flex-col'>

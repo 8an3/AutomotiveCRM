@@ -2,7 +2,7 @@ import { Outlet, useLoaderData } from "@remix-run/react";
 import { getSession } from '~/sessions/auth-session.server';
 import { prisma } from "~/libs";
 import { model } from "~/models";
-import Sidebar from "~/components/shared/sidebar";
+import Sidebar from "~/components/zRoutes/oldComps/sidebar";
 import { type LinksFunction, json, type LoaderFunction } from "@remix-run/node";
 import NotificationSystem from "~/routes/__authorized/dealer/notifications";
 

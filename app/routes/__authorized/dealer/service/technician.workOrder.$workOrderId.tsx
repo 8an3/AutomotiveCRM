@@ -131,7 +131,7 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "~/components/ui/context-menu"
-import { EditableText } from "~/components/actions/shared";
+import { EditableText } from "~/components/shared/shared";
 import { flushSync } from "react-dom";
 import {
   Accordion,

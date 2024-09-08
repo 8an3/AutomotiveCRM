@@ -33,10 +33,11 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip"
 import { Outlet, Link, useLoaderData, useFetcher, Form, useSubmit, useLocation, useNavigate } from "@remix-run/react";
-import { json, LoaderFunction, redirect } from "@remix-run/node";
+import { json, LinksFunction, LoaderFunction, redirect } from "@remix-run/node";
 import { GetUser } from "~/utils/loader.server";
 import { getSession } from "~/sessions/auth-session.server";
 import { Button } from "~/components";
+import wrench from '~/images/favicons/wrench.svg'
 
 
 export async function loader({ request, params }: LoaderFunction) {
@@ -134,7 +135,7 @@ export default function Dashboard() {
         </nav>
       </aside>
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <div className='mt-[30px]'>
+        <div className='mt-[px]'>
           <Outlet />
         </div>
       </div>
@@ -143,5 +144,5 @@ export default function Dashboard() {
 }
 
 export const links: LinksFunction = () => [
-  { rel: "icon", type: "image/svg", href: '/favicons/wrench.svg' },
+  { rel: "icon", type: "image/svg", href: wrench },
 ]

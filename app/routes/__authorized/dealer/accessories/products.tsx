@@ -49,7 +49,7 @@ import {
 import { Outlet, Link, useFetcher, useActionData, useSubmit, useLoaderData } from "@remix-run/react"
 import { json, LoaderFunction, redirect } from "@remix-run/node"
 import { prisma } from "~/libs"
-import IndeterminateCheckbox, { EditableText, Filter } from '~/components/actions/shared'
+import IndeterminateCheckbox, { EditableText, Filter } from '~/components/shared/shared'
 import { getSession } from "~/sessions/auth-session.server"
 import { GetUser } from "~/utils/loader.server"
 import financeFormSchema from "~/overviewUtils/financeFormSchema"
@@ -618,3 +618,25 @@ export default function SearchCustomers() {
     </Card>
   )
 }
+
+
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: '/favicons/calendar.svg' },
+];
+
+export const meta = () => {
+  return [
+    { title: "Inventory || PAC || Dealer Sales Assistant" },
+    {
+      property: "og:title",
+      content: "Your very own assistant!",
+    },
+    {
+      name: "description",
+      content:
+        "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
+      keywords: "Automotive Sales, dealership sales, automotive CRM",
+    },
+  ];
+};

@@ -14,6 +14,11 @@ import { Calendar } from '~/components/ui/calendar';
 import { cn } from "~/components/ui/utils"
 import { type DateRange } from "react-day-picker"
 import { ImCross } from "react-icons/im";
+import chart from '~/images/favicons/chart.svg'
+
+export const links: LinksFunction = () => [
+    { rel: "icon", type: "image/svg", href: chart },
+]
 
 export async function loader({ request, params }: LoaderFunction) {
     const session = await getSession(request.headers.get("Cookie"));
@@ -110,7 +115,7 @@ type Value = ValuePiece | [ValuePiece, ValuePiece];
 export const meta: MetaFunction = () => {
 
     return [
-        { title: 'Sales Tracker/Salesboard - Dealer Sales Assistant' },
+        { title: 'Sales Tracker || STAFF LOUNGE || Dealer Sales Assistant' },
         {
             property: "og:title",
             content: "Your very own assistant!",
@@ -1021,6 +1026,3 @@ function SecondCustom(dateRange, salesData) {
     );
 }
 
-export const links: LinksFunction = () => [
-    { rel: "icon", type: "image/svg", href: "/favicons/settings.svg", },
-]

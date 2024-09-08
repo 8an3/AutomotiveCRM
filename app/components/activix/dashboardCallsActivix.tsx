@@ -17,7 +17,6 @@ import CreateAppt from "../dashboard/calls/actions/createAppt";
 import updateFinance23 from "../dashboard/calls/actions/updateFinance";
 import { createfinanceApt } from "~/utils/financeAppts/create.server";
 import { getMergedFinance } from "~/utils/dashloader/dashloader.server";
-import { EmailFunction } from "~/routes/dummyroute";
 import { model } from "~/models";
 import { getSession, commitSession, getSession as getToken66, commitSession as commitToken66 } from '~/sessions/auth-session.server';
 import axios from 'axios';
@@ -887,7 +886,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
         console.error(`Error status: ${error.response.status}`);
         console.error('Error response:', error.response.data);
       });
-    return json({ sendEmail, saveComms, formData, setComs, createEmailActivix })//, redirect(`/dummyroute`)
+    return json({ sendEmail, saveComms, formData, setComs, createEmailActivix })
   }
   // activix done
   if (intent === 'callClient') {
@@ -958,7 +957,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
         console.error(`Error status: ${error.response.status}`);
         console.error('Error response:', error.response.data);
       });
-    return json({ callCLient, saveComms, formData, setComs, createEmailActivix })//, redirect(`/dummyroute`)
+    return json({ callCLient, saveComms, formData, setComs, createEmailActivix })
   }
   // activix done
   if (intent === 'textQuickFU') {

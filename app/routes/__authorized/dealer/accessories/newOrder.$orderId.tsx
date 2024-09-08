@@ -90,7 +90,7 @@ import { toast } from "sonner";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { BrowserMultiFormatReader, BarcodeFormat, DecodeHintType, NotFoundException, ChecksumException, FormatException } from '@zxing/library';
 import ScanSound from '~/images/scan.mp4'
-import { EditableText } from "~/components/actions/shared";
+import { EditableText } from "~/components/shared/shared";
 import { Percent } from "lucide-react";
 import { ArrowDownUp } from 'lucide-react';
 import { cn } from '~/utils';
@@ -2061,3 +2061,25 @@ export default function Purchase() {
               </Table>
             </CardContent>
           </Card> */
+
+
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: '/favicons/calendar.svg' },
+];
+
+export const meta = () => {
+  return [
+    { title: "New Order || PAC || Dealer Sales Assistant" },
+    {
+      property: "og:title",
+      content: "Your very own assistant!",
+    },
+    {
+      name: "description",
+      content:
+        "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
+      keywords: "Automotive Sales, dealership sales, automotive CRM",
+    },
+  ];
+};

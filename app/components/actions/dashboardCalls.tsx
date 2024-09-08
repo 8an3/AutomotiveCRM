@@ -15,7 +15,7 @@ import { GetUser } from "~/utils/loader.server";
 import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
 import { QuoteServerActivix } from '~/utils/quote/quote.server';
 import emitter from '~/routes/__authorized/dealer/emitter';
-import { checkForMobileDevice, getToken, CompleteLastAppt, TwoDays, FollowUpApt, ComsCount, QuoteServer } from './shared'
+import { checkForMobileDevice, getToken, CompleteLastAppt, TwoDays, FollowUpApt, ComsCount, QuoteServer } from '../shared/shared'
 
 export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
@@ -297,7 +297,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       where: { userEmail: email },
       data: { clientfileId: formData.clientfileId, financeId: formData.financeId }
     })
-    return redirect(`/dealer/customer/${formData.clientfileId}/${formData.financeId}`)
+    return redirect(`/dealer/sales/customer/${formData.clientfileId}/${formData.financeId}`)
   }
   if (intent === 'updateClientInfoFinance') {
     const updateClient = await prisma.finance.update({
@@ -625,7 +625,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       const getFile = await prisma.finance.findFirst({
         where: { clientfileId: clientfileId }
       })
-      return redirect(`/dealer/customer/${clientfileId}/${getFile?.id}`)
+      return redirect(`/dealer/sales/customer/${clientfileId}/${getFile?.id}`)
       break;
     case 'reading':
       const isRead = await prisma.notificationRead.updateMany({
@@ -958,7 +958,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
           lastContact: date56.toLocaleDateString('en-US', options)
         },
       });
-      return json({ callCLient, formData, setComs2, })//, redirect(`/dummyroute`)
+      return json({ callCLient, formData, setComs2, })
       break;
     case 'textQuickFU':
       console.log('hit textquick fu')
@@ -1553,7 +1553,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
         },
       });
     case 'returnToQuote':
-      return redirect(`/overview/customer/${financeId}`);
+      return redirect(`/dealer/sales/overview/customer/${financeId}`);
     case 'addAppt':
       const createAppt77 = await CreateAppt(formData);
       const completeCall77 = await CompleteLastAppt(userId, financeId);

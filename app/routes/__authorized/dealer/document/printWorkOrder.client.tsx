@@ -4,7 +4,7 @@ import { generate } from "@pdfme/generator";
 
 import { ClientOnly } from "remix-utils";
 import React from 'react';
-export default function PrintReceipt(data) {
+export default function WorkOrderSales(data) {
 
   return (
     <>

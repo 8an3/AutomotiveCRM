@@ -2,7 +2,7 @@ import { json } from "@remix-run/node";
 import { Form, useLoaderData } from "@remix-run/react";
 import { useEffect, useState } from "react";
 import { Input } from "~/components/ui/input";
-import { Badge } from "~/ui/badge";
+import { Badge } from "~/components/ui/badge";
 import { templateServer } from "~/utils/emailTemplates/template.server";
 
 

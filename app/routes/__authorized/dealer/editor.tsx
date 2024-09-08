@@ -4,7 +4,7 @@ import React from "react";
 import { getSession } from '~/sessions/auth-session.server';
 import { prisma } from "~/libs";
 import { model } from "~/models";
-import Sidebar from "~/components/shared/sidebar";
+import Sidebar from "~/components/zRoutes/oldComps/sidebar";
 import { json } from "@remix-run/node";
 import NotificationSystem from "~/routes/__authorized/dealer/notifications";
 import { GetUser } from "~/utils/loader.server";

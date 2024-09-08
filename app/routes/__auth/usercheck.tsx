@@ -13,7 +13,7 @@ import {
 import { Outlet, useLoaderData } from "@remix-run/react";
 
 import { useAppContext } from "~/components/microsoft/AppContext";
-import Sidebar from "~/components/shared/sidebar";
+import Sidebar from "~/components/zRoutes/oldComps/sidebar";
 import { prisma } from "~/libs";
 import {
   authSessionStorage,
@@ -53,7 +53,7 @@ export async function loader({ request, params }: ActionFunction) {
       if (user?.returning === true) {
         if (subscriptionId === "trialing" || subscriptionId === "active") {
           console.log("subscription valid1");
-          return redirect("/dealer/quote/new/Harley-Davidson", {
+          return redirect("/dealer/sales/quote/Harley-Davidson", {
             headers: { "Set-Cookie": await commitSession(session) },
           });
         } else {

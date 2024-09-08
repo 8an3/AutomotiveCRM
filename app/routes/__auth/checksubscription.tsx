@@ -19,7 +19,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         console.log(subscriptionId, 'checking subscription');
         if (user?.returning === true) {
             if (subscriptionId === 'trialing' || subscriptionId === 'active') {
-                return redirect('/dealer/quote/new/Harley-Davidson');
+                return redirect('/dealer/sales/quote/Harley-Davidson');
             } else {
                 return redirect('/subscribe');
             }
@@ -34,7 +34,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
                     }
                 })
-                return redirect('/dealer/welcome/dealerfees');
+                return redirect('/dealer/user/dashboard/gettingStarted');
             } else {
                 return redirect('/subscribe');
             }

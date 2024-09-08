@@ -365,20 +365,13 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
                 signed: formData.signed,
                 pickUpSet: formData.pickUpSet,
                 demoed: formData.demoed,
-                lastContact: formData.lastContact,
-                status: formData.status,
                 customerState: formData.customerState,
-                result: formData.result,
-                timesContacted: formData.timesContacted,
-                nextAppointment: formData.nextAppointment,
-                followUpDay: formData.followUpDay,
                 deliveryDate: formData.deliveryDate,
                 delivered: formData.delivered,
                 deliveredDate: formData.deliveredDate,
                 notes: formData.notes,
                 visits: formData.visits,
                 progress: formData.progress,
-                metSalesperson: formData.metSalesperson,
                 metFinance: formData.metFinance,
                 financeApplication: formData.financeApplication,
                 pickUpDate: formData.pickUpDate,
@@ -458,13 +451,11 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
                 tradeLocation: formData.tradeLocation,
                 lien: formData.lien,
                 //: formData.//,
-                //id: formData.id,
-                // activixId: formData.activixId,
-                // theRealActId: formData.theRealActId,
+                id: formData.id,
+                activixId: formData.activixId,
+                theRealActId: formData.theRealActId,
+                clientfileId: formData.clientfileId,
 
-                //clientfileId: formData.clientfileId,
-                //  inventoryMotorcycleId: formData.inventoryMotorcycleId,
-                //InventoryMotorcycle: formData.InventoryMotorcycle,
                 userEmail: user.email,
 
                 lastContact: today.toLocaleDateString('en-US', options),
@@ -479,8 +470,27 @@ export const overviewAction: ActionFunction = async ({ request, params }) => {
                 timesContacted: formData.timesContacted,
             },
         });
+        const clientFile = await prisma.clientfile.update({
+            where: { id: formData.clientfileId },
+            data: {
+                financeId: finance.id,
+                userId: formData.userId,
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                name: formData.name,
+                email: formData.email,
+                phone: formData.phone,
+                address: formData.address,
+                city: formData.city,
+                postal: formData.postal,
+                province: formData.province,
+                dl: formData.dl,
+                typeOfContact: formData.typeOfContact,
+                timeToContact: formData.timeToContact,
 
-        return json({ finance, }, { headers: { "Set-Cookie": serializedSession, } }
+            }
+        })
+        return json({ finance, clientFile }, { headers: { "Set-Cookie": serializedSession, } }
         );
     }
     //     console.log(financeId, 'financeId', financeData, 'financeData', dashData, 'dashData',)

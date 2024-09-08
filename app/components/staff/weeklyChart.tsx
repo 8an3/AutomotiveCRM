@@ -43,7 +43,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/components/ui/drawer"
-import { EditableText } from '~/components/user/dashboard/components';
+import { EditableText } from '~/components/shared/shared';
 import { PaperPlaneIcon } from '@radix-ui/react-icons';
 import { toast } from "sonner"
 import { useEffect, useMemo, useState } from 'react';

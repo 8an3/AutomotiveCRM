@@ -20,13 +20,13 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "~/ui/sheet";
+} from "~/components/ui/sheet"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "~/ui/accordion";
+} from "~/components/ui/accordion"
 import { TextArea } from "~/components/ui/textarea";
 import { ClientOnly } from "remix-utils";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";

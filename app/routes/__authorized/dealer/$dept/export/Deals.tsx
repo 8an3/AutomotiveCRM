@@ -5,7 +5,7 @@ import { prisma } from '~/libs';
 export const loader = async () => {
   // Function to fetch data from the given endpoint
   const getAllFinanceData = async () => {
-    const res = await fetch('http://localhost:3000/dealer/dashboard/calls/loader');
+    const res = await fetch('http://localhost:3000/dealer/api/dashboard/calls/loader');
     if (!res.ok) {
       throw new Error("Failed to fetch data");
     }

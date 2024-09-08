@@ -43,7 +43,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/components/ui/drawer"
-import { EditableText } from '~/components/user/dashboard/components';
+import { EditableText } from '~/components/shared/shared';
 import { PaperPlaneIcon } from '@radix-ui/react-icons';
 import { toast } from "sonner"
 import { useEffect, useMemo, useState } from 'react';
@@ -80,8 +80,27 @@ import moment from 'moment';
 import { Charts } from '~/components/staff/charts';
 import { InteractiveChart } from '~/components/staff/interactiveChart';
 import { WeeklkyChart } from '~/components/staff/weeklyChart';
+import chart from '~/images/favicons/chart.svg'
 
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: chart },
+]
+export const meta: MetaFunction = () => {
 
+  return [
+    { title: 'Leaderboard || STAFF LOUNGE || Dealer Sales Assistant' },
+    {
+      property: "og:title",
+      content: "Your very own assistant!",
+    },
+    {
+      name: "description",
+      content: "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
+      keywords: 'Automotive Sales, dealership sales, automotive CRM',
+
+    },
+  ];
+};
 
 export async function action({ request, params }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData())

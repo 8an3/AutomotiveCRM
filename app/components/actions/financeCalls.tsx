@@ -25,7 +25,7 @@ import { QuoteServerActivix } from '~/utils/quote/quote.server';
 import twilio from 'twilio';
 import axios from "axios";
 import emitter from '~/routes/__authorized/dealer/emitter';
-import { checkForMobileDevice, getToken, CompleteLastAppt, TwoDays, FollowUpApt, ComsCount, QuoteServer } from './shared'
+import { checkForMobileDevice, getToken, CompleteLastAppt, TwoDays, FollowUpApt, ComsCount, QuoteServer } from '../shared/shared'
 
 export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
@@ -905,7 +905,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     const setComs = await prisma.communicationsOverview.create({ data: comdata, });
     const saveComms = await ComsCount(financeId, 'Email')
     console.log('refreshToken',)
-    return json({ sendEmail, saveComms, formData, setComs, })//, redirect(`/dummyroute`)
+    return json({ sendEmail, saveComms, formData, setComs, })
   }
   if (intent === 'callClient') {
     const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2'
@@ -938,7 +938,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     const setComs = await prisma.communicationsOverview.create({ data: comdata, });
     const saveComms = await ComsCount(financeId, 'Email')
     console.log('refreshToken',)
-    return json({ callCLient, saveComms, formData, setComs, })//, redirect(`/dummyroute`)
+    return json({ callCLient, saveComms, formData, setComs, })
   }
   if (intent === 'textQuickFU') {
     console.log('hit textquick fu')

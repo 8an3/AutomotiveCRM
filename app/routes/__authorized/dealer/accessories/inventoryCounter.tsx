@@ -46,7 +46,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
-import { EditableText } from "~/components/actions/shared";
+import { EditableText } from "~/components/shared/shared";
 import { prisma } from "~/libs";
 import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { getSession } from "~/sessions/auth-session.server";
@@ -469,3 +469,23 @@ export default function InventoryCounter() {
     </div>
   )
 }
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: '/favicons/calendar.svg' },
+];
+
+export const meta = () => {
+  return [
+    { title: "Inventory Counter || PAC || Dealer Sales Assistant" },
+    {
+      property: "og:title",
+      content: "Your very own assistant!",
+    },
+    {
+      name: "description",
+      content:
+        "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
+      keywords: "Automotive Sales, dealership sales, automotive CRM",
+    },
+  ];
+};

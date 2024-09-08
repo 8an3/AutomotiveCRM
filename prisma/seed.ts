@@ -4855,7 +4855,25 @@ export async function seedUsers() {
 
       customerSync: { create: { orderId: null } },
       ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
-      columnStateSales: { create: { state: { "id": false, "SMS": false, "pdi": false, "tag": false, "vin": false, "bank": false, "lien": false, "lost": false, "msrp": false, "on60": false, "qc60": false, "sold": false, "trim": false, "ucda": false, "vinE": false, "year": false, "Other": false, "Phone": false, "admin": false, "brand": false, "color": false, "iRate": false, "invId": false, "motor": false, "nat60": false, "notes": false, "onTax": false, "oth60": false, "qcTax": false, "total": false, "dLCopy": false, "demoed": false, "funded": false, "labour": false, "model1": false, "months": false, "othTax": false, "quoted": false, "refund": false, "result": false, "signed": false, "visits": false, "weekly": false, "deposit": false, "freight": false, "insCopy": false, "mileage": false, "options": false, "userGap": false, "visited": false, "voidChq": false, "InPerson": false, "approved": false, "biweekly": false, "discount": false, "lastNote": false, "leadNote": false, "metParts": false, "otherTax": false, "progress": false, "referral": false, "refunded": false, "signBill": false, "stockNum": false, "tradeVin": false, "turnOver": false, "userName": false, "weeklyqc": false, "activixId": false, "aptShowed": false, "biweekOth": false, "bookedApt": false, "cancelled": false, "commodity": false, "createdAt": false, "delivered": false, "licensing": false, "loanOther": false, "modelCode": false, "otherDocs": false, "paintPrem": false, "pickUpSet": false, "seenTrade": false, "testDrive": false, "tradeDesc": false, "tradeInsp": false, "tradeMake": false, "tradeTrim": false, "tradeYear": false, "updatedAt": false, "userEmail": false, "userOther": false, "weeklyOth": false, "bikeStatus": false, "biweeklNat": false, "biweeklyqc": false, "customerWS": false, "dealNumber": false, "docsSigned": false, "financeApp": false, "idVerified": false, "leadSource": false, "lienPayout": false, "loanNumber": false, "metFinance": false, "metManager": false, "metService": false, "pickUpDate": false, "pickUpTime": false, "testDrForm": false, "tradeColor": false, "tradeValue": false, "weeklylNat": false, "accessories": false, "aptNoShowed": false, "depositMade": false, "discountPer": false, "userExtWarr": false, "clientfileId": false, "firstPayment": false, "liceningDone": false, "loanMaturity": false, "optionsTotal": false, "rustProofing": false, "theRealActId": false, "tradeMileage": false, "tradeRepairs": false, "userLoanProt": false, "deliveredDate": false, "licensingSent": false, "nat60WOptions": false, "oth60WOptions": false, "tradeLocation": false, "deliveryCharge": false, "financeManager": false, "lifeDisability": false, "metSalesperson": false, "timesContacted": false, "userTireandRim": false, "applicationDone": false, "desiredPayments": false, "salesCommission": false, "userServicespkg": false, "dealerCommission": false, "depositTakenDate": false, "sendToFinanceNow": false, "totalWithOptions": false, "biweekOthWOptions": false, "financeCommission": false, "urgentFinanceNote": false, "weeklyOthWOptions": false, "biweeklNatWOptions": false, "financeApplication": false, "financeManagerName": false, "weeklylNatWOptions": false, "otherTaxWithOptions": false, "financeDeptProductsTotal": false } } },
+
+      columnStateSales: {
+        create: {
+          state: {
+            "id": false, "SMS": false, "pdi": false, "tag": false, "vin": false, "bank": false, "lien": false, "lost": false, "msrp": false, "on60": false, "qc60": false, "sold": false, "trim": false, "ucda": false, "vinE": false, "year": false, "Other": false, "Phone": false, "admin": false, "brand": false, "color": false, "iRate": false, "invId": false, "motor": false, "nat60": false, "notes": false, "onTax": false, "oth60": false, "qcTax": false, "total": false, "dLCopy": false, "demoed": false, "funded": false, "labour": false, "model1": false, "months": false, "othTax": false, "quoted": false, "refund": false, "result": false, "signed": false, "visits": false, "weekly": false, "deposit": false, "freight": false, "insCopy": false, "mileage": false, "options": false, "userGap": false, "visited": false, "voidChq": false, "InPerson": false, "approved": false, "biweekly": false, "discount": false, "lastNote": false, "leadNote": false, "metParts": false, "otherTax": false, "progress": false, "referral": false, "refunded": false, "signBill": false, "stockNum": false, "tradeVin": false, "turnOver": false, "userName": false, "weeklyqc": false, "activixId": false, "aptShowed": false, "biweekOth": false, "bookedApt": false, "cancelled": false, "commodity": false, "createdAt": false, "delivered": false, "licensing": false, "loanOther": false, "modelCode": false, "otherDocs": false, "paintPrem": false, "pickUpSet": false, "seenTrade": false, "testDrive": false, "tradeDesc": false, "tradeInsp": false, "tradeMake": false, "tradeTrim": false, "tradeYear": false, "updatedAt": false, "userEmail": false, "userOther": false, "weeklyOth": false, "bikeStatus": false, "biweeklNat": false, "biweeklyqc": false, "customerWS": false, "dealNumber": false, "docsSigned": false, "financeApp": false, "idVerified": false, "leadSource": false, "lienPayout": false, "loanNumber": false, "metFinance": false, "metManager": false, "metService": false, "pickUpDate": false, "pickUpTime": false, "testDrForm": false, "tradeColor": false, "tradeValue": false, "weeklylNat": false, "accessories": false, "aptNoShowed": false, "depositMade": false, "discountPer": false, "userExtWarr": false, "clientfileId": false, "firstPayment": false, "liceningDone": false, "loanMaturity": false, "optionsTotal": false, "rustProofing": false, "theRealActId": false, "tradeMileage": false, "tradeRepairs": false, "userLoanProt": false, "deliveredDate": false, "licensingSent": false, "nat60WOptions": false, "oth60WOptions": false, "tradeLocation": false, "deliveryCharge": false, "financeManager": false, "lifeDisability": false, "metSalesperson": false, "timesContacted": false, "userTireandRim": false, "applicationDone": false, "desiredPayments": false, "salesCommission": false, "userServicespkg": false, "dealerCommission": false, "depositTakenDate": false, "sendToFinanceNow": false, "totalWithOptions": false, "biweekOthWOptions": false, "financeCommission": false, "urgentFinanceNote": false, "weeklyOthWOptions": false, "biweeklNatWOptions": false, "financeApplication": false, "financeManagerName": false, "weeklylNatWOptions": false, "otherTaxWithOptions": false, "address": false, "financeDeptProductsTotal": false, "email": false, "phone": false,
+            "city": false,
+            "postal": false,
+            "province": false,
+            "financeId": false,
+            "note": false,
+            "timeOfDay": false,
+            "painPrem": false,
+            "trailer": false,
+            "contactMethod": false,
+            "typeOfContact": false,
+
+          }
+        }
+      },
       profile: { create: { headline: "I am Admin", bio: "The administrator of this app." } },
     },
   });
@@ -4874,7 +4892,7 @@ export async function seedUsers() {
       province: 'ON',
       dl: 'K0K0K0K0K0K0K0K0',
       typeOfContact: 'SMS',
-      timeToContact: '11:00pm',
+      timeToContact: 'Afternoon',
       billingAddress: true,
       userId: process.env.REMIX_ADMIN_EMAIL
     }
@@ -4892,7 +4910,7 @@ export async function seedUsers() {
       province: 'ON',
       dl: 'K0K0K0K0K0K0K0K0',
       typeOfContact: 'SMS',
-      timeToContact: '11:00pm',
+      timeToContact: 'Afternoon',
       billingAddress: true,
       userId: process.env.REMIX_ADMIN_EMAIL
     }
@@ -4910,7 +4928,7 @@ export async function seedUsers() {
       province: 'ON',
       dl: 'K0K0K0K0K0K0K0K0',
       typeOfContact: 'SMS',
-      timeToContact: '11:00pm',
+      timeToContact: 'Afternoon',
       billingAddress: true,
       userId: process.env.REMIX_ADMIN_EMAIL
     }
@@ -4928,7 +4946,7 @@ export async function seedUsers() {
       province: 'ON',
       dl: 'K0K0K0K0K0K0K0K0',
       typeOfContact: 'SMS',
-      timeToContact: '11:00pm',
+      timeToContact: 'Afternoon',
       billingAddress: true,
       userId: process.env.REMIX_ADMIN_EMAIL
     }
@@ -4946,7 +4964,7 @@ export async function seedUsers() {
       province: 'ON',
       dl: 'K0K0K0K0K0K0K0K0',
       typeOfContact: 'SMS',
-      timeToContact: '11:00pm',
+      timeToContact: 'Afternoon',
       billingAddress: true,
       userId: process.env.REMIX_ADMIN_EMAIL
     }
@@ -4964,7 +4982,7 @@ export async function seedUsers() {
       province: 'ON',
       dl: 'HS02QI3J0DF',
       typeOfContact: 'SMS',
-      timeToContact: '7:00pm',
+      timeToContact: 'Afternoon',
       billingAddress: true,
       userId: process.env.REMIX_ADMIN_EMAIL
     }
@@ -6384,6 +6402,7 @@ export async function Board() {
     { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
     { board: "dev", column: "ISSUE", item: "need to be able to choose one resource id in calendar and display it in service" },
     { board: "dev", column: "ISSUE", item: "need winter storage dash for service / winter storage long term" },
+    { board: "dev", column: "IDEAS", item: "service calendar - select mechanic and it only shows that mechanics appts" },
 
     { board: "dev", column: "DEALER ONBOARDING", item: "finish dealer greeting - first step complete, need to set email once CRM is ready that would be sent from dev dashboard, dev dashboard needs to accomadate crm leads and clients, add notes capability for crmcleints" },
     { board: "dev", column: "ISSUE", item: "unit picker - redesign" },
@@ -6728,7 +6747,6 @@ export async function Board() {
     { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
 
     { board: "dev", column: "DONE NEEDS TESTING", item: "instead of input for tax on quotes do a drop down with actual provines taxes done in payument calc only!!!!" },
-    { board: "dev", column: "IDEAS", item: "service calendar - select mechanic and it only shows that mechanics appts" },
     { board: "dev", column: "IDEAS", item: "import / export allow to downlaod a template example so people can see the columns needed for that dataset" },
 
     { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH SMS AND EMAIL TESTING BEFORE RELEASE -----" },
@@ -6764,16 +6782,25 @@ export async function Board() {
     { board: "dev", column: "ROLES", item: "staff chat - need to send out notifications regarding messages for pedople in that dept mor maybe just use a tag system so everyone doesnt get blown up with messages" },
     { board: "dev", column: "ROLES", item: "staff leaderboard - does not work in prod" },
 
-    { board: "dev", column: "ROLES", item: "----- USER -----" },
-    { board: "dev", column: "ROLES", item: "payment calculator" },
-    { board: "dev", column: "ROLES", item: "quote" },
-    { board: "dev", column: "ROLES", item: "overview" },
-    { board: "dev", column: "ROLES", item: "settings" },
-    { board: "dev", column: "ROLES", item: "roadmap " },
-    { board: "dev", column: "ROLES", item: "scripts " },
-    { board: "dev", column: "ROLES", item: "templates " },
-    { board: "dev", column: "ROLES", item: "getting started - may need a few more for dealers " },
-    { board: "dev", column: "ROLES", item: "board - board not saving" },
+    { board: "dev", column: "SALES", item: "----- SALES -----" },
+    { board: "dev", column: "USER", item: "QUOTE - ok" },
+    { board: "dev", column: "USER", item: "unit picker - set the customers unit as a search instead of a filter on all units, that way the user can delete the unit currently and grab a new - need to make sure it updates the pricing if they are going with a total different unit and leave a not for the user stating to check pricing because fof this too" },
+    { board: "dev", column: "USER", item: "overview - ok but go over each input one more time to ensure you didnt miss anything" },
+
+    { board: "dev", column: "USER", item: "----- USER -----" },
+    { board: "dev", column: "USER", item: "payment calculator - ok" },
+    { board: "dev", column: "USER", item: "settings - ok" },
+    { board: "dev", column: "USER", item: "roadmap  - ok" },
+    { board: "dev", column: "USER", item: "scripts - ok " },
+    { board: "dev", column: "USER", item: "templates  - ok " },
+    { board: "dev", column: "USER", item: "documents  - ok - need to add legend so peopole can upload the document themselves" },
+    { board: "dev", column: "USER", item: "getting started   - ok - may need a few more for dealers " },
+    { board: "dev", column: "USER", item: "board - board not saving" },
+
+    { board: "dev", column: "SERVICE", item: "----- SERVICE -----" },
+    { board: "dev", column: "SERVICE", item: "dealer/service/technician - need to cahnge techs email for data fetching when testing is dsone" },
+
+
 
 
 

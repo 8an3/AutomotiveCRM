@@ -12,8 +12,8 @@ import {
 } from '@tanstack/match-sorter-utils'
 import { Button, Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, } from "~/components/ui/index";
 import { Cross2Icon, CaretSortIcon, CalendarIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons";
-import IndeterminateCheckbox from '~/components/actions/shared'
-export const columns  = [
+import IndeterminateCheckbox from '~/components/shared/shared'
+export const columns = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -21,7 +21,7 @@ export const columns  = [
         checked={table.getIsAllRowsSelected()}
         indeterminate={table.getIsSomeRowsSelected()}
         onChange={table.getToggleAllRowsSelectedHandler()}
-         className='border-primary'
+        className='border-primary'
       />
     ),
     cell: ({ row }) => (
@@ -30,12 +30,12 @@ export const columns  = [
           checked={row.getIsSelected()}
           indeterminate={row.getIsSomeSelected()}
           onChange={row.getToggleSelectedHandler()}
-           className='border-primary'
+          className='border-primary'
         />
       </div>
     ),
   },
-   {
+  {
     accessorKey: "id",
     header: "id",
     cell: ({ row }) => (
@@ -43,7 +43,7 @@ export const columns  = [
     ),
   },
   {
-        accessorKey: "stockNumber",
+    accessorKey: "stockNumber",
     header: ({ column }) => {
       return (
         <Button
@@ -426,7 +426,7 @@ export const columns  = [
     header: "Package Number",
     id: 'packageNumber',
     cell: info => info.getValue(),
-      footer: props => props.column.id,
+    footer: props => props.column.id,
   },
   {
     accessorKey: "packagePrice",
@@ -453,21 +453,21 @@ export const columns  = [
     header: "Stocked",
     id: 'stocked',
     cell: info => info.getValue(),
-      footer: props => props.column.id,
+    footer: props => props.column.id,
   },
   {
     accessorKey: "stockedDate",
     header: "Stocked Date",
     id: 'stockedDate',
     cell: info => info.getValue(),
-      footer: props => props.column.id,
+    footer: props => props.column.id,
   },
   {
     accessorKey: "isNew",
     header: "Is New",
     id: 'isNew',
     cell: info => info.getValue(),
-      footer: props => props.column.id,
+    footer: props => props.column.id,
   },
   {
     accessorKey: "mfgSerialNumber",
@@ -565,7 +565,7 @@ export const columns  = [
 
 ]
 
-export const fuzzyFilter  = (  row,  columnId,  value,  addMeta) => {
+export const fuzzyFilter = (row, columnId, value, addMeta) => {
   // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value)
 
@@ -591,10 +591,10 @@ export const fuzzySort = (rowA, rowB, columnId) => {
   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir
 }
 
-export type TableMeta = {  updateData: (rowIndex: number, columnId: string, value: unknown) => void}
+export type TableMeta = { updateData: (rowIndex: number, columnId: string, value: unknown) => void }
 
 // Give our default column cell renderer editing superpowers!
-export const defaultColumn  = {
+export const defaultColumn = {
   cell: ({ getValue, row: { index }, column: { id }, table }) => {
     const initialValue = getValue()
     // We need to keep and update the state of the cell normally
@@ -602,7 +602,7 @@ export const defaultColumn  = {
 
     // When the input is blurred, we'll call our table meta's updateData function
     const onBlur = () => {
-      ;(table.options.meta as TableMeta).updateData(index, id, value)
+      ; (table.options.meta as TableMeta).updateData(index, id, value)
     }
 
     // If the initialValue is changed external, sync it up with our state
@@ -619,7 +619,7 @@ export const defaultColumn  = {
     )
   },
 }
-export const getTableMeta = (  setData: React.Dispatch<React.SetStateAction<Person[]>>,  skipAutoResetPageIndex: () => void) =>
+export const getTableMeta = (setData: React.Dispatch<React.SetStateAction<Person[]>>, skipAutoResetPageIndex: () => void) =>
   ({
     updateData: (rowIndex, columnId, value) => {
       // Skip age index reset until after next rerender

@@ -90,7 +90,7 @@ import { toast } from "sonner";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { BrowserMultiFormatReader, BarcodeFormat, DecodeHintType, NotFoundException, ChecksumException, FormatException } from '@zxing/library';
 import ScanSound from '~/images/scan.mp4'
-import { EditableText } from "~/components/actions/shared";
+import { EditableText } from "~/components/shared/shared";
 import { Percent } from "lucide-react";
 import { ArrowDownUp } from 'lucide-react';
 import { cn } from '~/utils';

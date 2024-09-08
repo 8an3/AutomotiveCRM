@@ -90,7 +90,11 @@ import { toast } from "sonner";
 import useSWR, { SWRConfig, mutate } from "swr";
 import CheckingDealerPlan from "~/routes/__customerLandingPages/welcome/dealer";
 import { Plus } from "lucide-react";
+import msger from '~/images/favicons/msger.svg'
 
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: msger },
+]
 const fetchData = async (url) => {
   const response = await fetch(url);
   return response.json();
@@ -188,17 +192,17 @@ export default function StaffChat({ content }) {
   const { data: swrData } = useSWR(submittingForm ? getDomain + '/dealer/staff/getConvos' : null, dataFetcher, {})
 
   useEffect(() => {
-      if (swrData) {
-        setConversations(swrData);
-          console.log('hitswr!! ', getDomain)
+    if (swrData) {
+      setConversations(swrData);
+      console.log('hitswr!! ', getDomain)
+    }
+    const filteredConversations = mergedLists.reduce((filtered, conv) => {
+      if (conv.dept === roomLabel) {
+        filtered.push(conv);
       }
-      const filteredConversations = mergedLists.reduce((filtered, conv) => {
-        if (conv.dept === roomLabel) {
-          filtered.push(conv);
-        }
-        return filtered;
-      }, []);
-      setFilteredConversations(filteredConversations);
+      return filtered;
+    }, []);
+    setFilteredConversations(filteredConversations);
   }, [swrData]);
 
 
@@ -439,9 +443,6 @@ export default function StaffChat({ content }) {
   );
 }
 
-export const links: LinksFunction = () => [
-  { rel: "icon", type: "image/svg", href: "/dashboard.svg" },
-];
 
 export async function loader({ request, params }) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -494,7 +495,7 @@ export async function action({ request }: ActionFunction) {
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Staff Messenger | Dealer Sales Assistant" },
+    { title: "Staff Messenger || Dealer Sales Assistant" },
     {
       property: "og:title",
       content: "Your very own assistant!",

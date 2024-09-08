@@ -210,8 +210,21 @@ export const metadata = {
   title: "Dashboard",
   description: "Example dashboard app built using the components.",
 }
-
 const completed = [
+  { board: "dev", column: "ROLES", item: "forgot driver, need to add delivery schedule, add it as a resource like the techs need to give the ability to set deliveries to everyoneyt" },
+  { board: "dev", column: "ISSUE", item: "with production demo site, problem started after you manually had to update the files from remote because github action was not working" },
+  { board: "dev", column: "SALES", item: "have it so if you sdelect clientfile it just goes to client file and then you can select a unit if you want to but it displays orders, and work orders under clients name not under a unit bought there" },
+  { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
+  { board: "dev", column: "ISSUE", item: "need to be able to choose one resource id in calendar and display it in service" },
+  { board: "dev", column: "ISSUE", item: "need winter storage dash for service / winter storage long term" },
+  { board: "dev", column: "IDEAS", item: "service calendar - select mechanic and it only shows that mechanics appts" },
+
+  { board: "dev", column: "DEALER ONBOARDING", item: "finish dealer greeting - first step complete, need to set email once CRM is ready that would be sent from dev dashboard, dev dashboard needs to accomadate crm leads and clients, add notes capability for crmcleints" },
+  { board: "dev", column: "ISSUE", item: "unit picker - redesign" },
+  { board: "dev", column: "quote", item: "unit picker - once model is selected with customer=, table will render in modal with the avialble units for sale right on the quote if the customer wants to go for it" },
+  { board: "dev", column: "INFASTRUCTURE", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try - this could also be - set up demo site where, sign in is just inputing the email like technician@email.com and theyre logged in as the tech, or service writer and etc" },
+  { board: "dev", column: "docs", item: "^^^^^ used for final tesing ^^^^^" },
+
   { board: "dev", column: "service", item: "service writer dash" },
   { board: "dev", column: "service", item: "tech dash" },
   { board: "dev", column: "GET DONE NOW", item: "use swr with auto revalidation for workorders so it updates in real time to get rid of the issue of 1 work order only open, set to fast on work orders for service writers but slow on tech's page" },
@@ -547,44 +560,91 @@ const completed = [
 ]
 const getDoneNow = [
   { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
-  { board: "dev", column: "ISSUE", item: "unit picker - redesign" },
 
-  { board: "dev", column: "DEALER ONBOARDING", item: "finish dealer greeting and what to do steps for dealer to take" },
-  { board: "dev", column: "INFASTRUCTURE", item: "set up dummy dealer site, with all the needed data to fill everything, 5 customers or so with orders and units in the system this would give you a production enviroment to test and give you the ability to give out test accounts for people to try - this could also be - set up demo site where, sign in is just inputing the email like technician@email.com and theyre logged in as the tech, or service writer and etc" },
-  { board: "dev", column: "docs", item: "^^^^^ used for final tesing ^^^^^" },
-
-
-  { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH USER DOCS -----" },
-  { board: "dev", column: "ISSUE", item: "user docs button that is page dynamic so its just one button to press to learn about the page and it directs you to the right video to learn instead of having a doc section " },
-  { board: "dev", column: "docs", item: "Videos for docs" },
-  { board: "dev", column: "docs", item: "scripts / templates" },
-  { board: "dev", column: "docs", item: "whole overview" },
-  { board: "dev", column: "docs", item: "quotes" },
-  { board: "dev", column: "docs", item: "dashboard" },
-  { board: "dev", column: "docs", item: "finance dashboard" },
-  { board: "dev", column: "docs", item: "user settings" },
-  { board: "dev", column: "docs", item: "document builder" },
-
+  { board: "dev", column: "DONE NEEDS TESTING", item: "instead of input for tax on quotes do a drop down with actual provines taxes done in payument calc only!!!!" },
+  { board: "dev", column: "IDEAS", item: "import / export allow to downlaod a template example so people can see the columns needed for that dataset" },
 
   { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH SMS AND EMAIL TESTING BEFORE RELEASE -----" },
-  { board: "dev", column: "WIP", item: "mass email/sms - wip" },
-  { board: "dev", column: "DONE NEEDS TESTING", item: "mass sms - wip" },
   { board: "dev", column: "DONE NEEDS TESTING", item: "email" },
+  { board: "dev", column: "DONE NEEDS TESTING", item: "email - update styling so its not akward" },
   { board: "dev", column: "DONE NEEDS TESTING", item: "sms" },
   { board: "dev", column: "DONE NEEDS TESTING", item: "webhook for incoming emails, save notifiation and messeages" },
   { board: "dev", column: "DONE NEEDS TESTING", item: "use same system as notifications to check on new mail - USE SWR" },
 
+  { board: "dev", column: "ISSUE", item: "----- FINAL TESTING ON PROD SITE -----" },
+  { board: "dev", column: "ROLES", item: "service manager" },
+  { board: "dev", column: "ROLES", item: "service writer" },
+  { board: "dev", column: "ROLES", item: "service writer - menu needs to be fixed" },
+  { board: "dev", column: "ROLES", item: "tech" },
+
+  { board: "dev", column: "ROLES", item: "sales manager" },
+  { board: "dev", column: "ROLES", item: "sales" },
+  { board: "dev", column: "ROLES", item: "sales - clientid - financeid --- add commuinication not saving" },
+  { board: "dev", column: "ROLES", item: "sales - clientid - financeid --- apt history not saving" },
+  { board: "dev", column: "ROLES", item: "finance" },
+
+  { board: "dev", column: "ROLES", item: "pac manager" },
+  { board: "dev", column: "ROLES", item: "receiving" },
+  { board: "dev", column: "ROLES", item: "accessories" },
+
+  { board: "dev", column: "ROLES", item: "admin" },
+  { board: "dev", column: "ROLES", item: "it" },
+  { board: "dev", column: "ROLES", item: "dev" },
+
+
+  { board: "dev", column: "ISSUE", item: "----- FINAL TESTING ON PROD SITE - COMPLETED -----" },
+  { board: "dev", column: "ROLES", item: "----- STAFF AREA -----" },
+  { board: "dev", column: "ROLES", item: "staff chat - need to send out notifications regarding messages for pedople in that dept mor maybe just use a tag system so everyone doesnt get blown up with messages" },
+  { board: "dev", column: "ROLES", item: "staff leaderboard - does not work in prod" },
+
+  { board: "dev", column: "ROLES", item: "----- USER -----" },
+  { board: "dev", column: "ROLES", item: "payment calculator" },
+  { board: "dev", column: "ROLES", item: "quote" },
+  { board: "dev", column: "ROLES", item: "overview" },
+  { board: "dev", column: "ROLES", item: "settings" },
+  { board: "dev", column: "ROLES", item: "roadmap " },
+  { board: "dev", column: "ROLES", item: "scripts " },
+  { board: "dev", column: "ROLES", item: "templates " },
+  { board: "dev", column: "ROLES", item: "getting started - may need a few more for dealers " },
+  { board: "dev", column: "ROLES", item: "board - board not saving" },
+
+
 
   { board: "dev", column: "ISSUE", item: "***** BACKBURNER BUT NEEDS TO BE DONE ASAP DOES NOT NEED TO BE DONE FOR RELEASE *****" },
-  { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
   { board: "dev", column: "GET DONE NOW", item: "order dash, same as inventory count but you go around scanning items and slecting a quantity to purchase in managers dash" },
-  { board: "dev", column: "GET DONE NOW", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down" },
+  { board: "dev", column: "GET DONE NOW", item: "create the 'wall', a table of just stats and stats not for everyone but try to break everything down -- for range date pick see shad cd examples cards, middle row third from the top" },
   { board: "dev", column: "ISSUE", item: "FIX MANAGER SECTION" },
   { board: "dev", column: "ISSUE", item: "FIX ADMIN SECTION" },
-  { board: "dev", column: "ISSUE", item: "need winter storage dash for service / winter storage long term" },
   { board: "dev", column: "ISSUE", item: "Parts order printout and workorder printout for srevice" },
   { board: "dev", column: "GET DONE NOW", item: "saving doc templates, see if you can save big json strings in database - make template master sheets designated for specific purposes that way the values used are for that specific type of document with a legend on the side incase they delete something they should where they click and it copies the value it needs" },
 
+
+
+  { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH USER DOCS -----" },
+  { board: "dev", column: "ISSUE", item: "user docs button that is page dynamic so its just one button to press to learn about the page and it directs you to the right video to learn instead of having a doc section " },
+  { board: "dev", column: "docs", item: "-----  VIDEOS FOR DOCS -----" },
+  { board: "dev", column: "docs", item: "scripts / templates" },
+  { board: "dev", column: "docs", item: "quotes" },
+  { board: "dev", column: "docs", item: "sales" },
+  { board: "dev", column: "docs", item: "finance" },
+  { board: "dev", column: "docs", item: "calendar" },
+  { board: "dev", column: "docs", item: "sales manager" },
+  { board: "dev", column: "docs", item: "unit inventory" },
+
+  { board: "dev", column: "docs", item: "pac manager" },
+  { board: "dev", column: "docs", item: "accessories" },
+  { board: "dev", column: "docs", item: "receiving" },
+
+  { board: "dev", column: "docs", item: "service manager" },
+  { board: "dev", column: "docs", item: "service writer" },
+  { board: "dev", column: "docs", item: "techs" },
+
+  { board: "dev", column: "docs", item: "admin" },
+
+  { board: "dev", column: "docs", item: "user settings" },
+  { board: "dev", column: "docs", item: "document builder" },
+  { board: "dev", column: "docs", item: "whole overview" },
+  { board: "dev", column: "docs", item: "leader board" },
 
 ]
 const issue = [
@@ -593,7 +653,8 @@ const issue = [
   { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
 ]
 const WIP = [
-  { board: "dev", column: "quote", item: "unit picker - once model is selected with customer=, table will render in modal with the avialble units for sale right on the quote if the customer wants to go for it" },
+  { board: "dev", column: "WIP", item: "mass email - wip" },
+  { board: "dev", column: "DONE NEEDS TESTING", item: "mass sms - wip" },
 
   { board: "dev", column: "WIP", item: "have your own csi reporting for the dealer that can be sent to customers JUST NEED TO MAKE MOCK EMAIL FOR IT" },
   { board: "dev", column: "INFASTRUCTURE", item: "cell phone site versions for product ordering, unit inventory intake for service writers/managers to quickly take in unit orders, service quoting, search for products, search for units, orders so employees can work on them on the go, in the back getting items or on with customers on floor and as soon they are ready to buy they can just hit print receipt and collect the money instead of waiting for a till if there is none" },
@@ -619,7 +680,7 @@ const ideas = [
   { board: "dev", column: "SALES", item: "fb msgr integration" },
 
 
-  { board: "dev", column: "IDEAS", item: "service calendar - select mechanic and it only shows that mechanics appts" },
+
   { board: "dev", column: "IDEAS", item: "save form to local storage, never loose data for a internet hiccup or outage" },
   { board: "dev", column: "IDEAS", item: "have blue book values on quote section" },
   { board: "dev", column: "IDEAS", item: "service dash - tab where it shows customers who havent had a service in 6 months" },
@@ -642,7 +703,7 @@ const ideas = [
 ]
 const sales = [
   { board: "dev", column: "SALES", item: "make a bill of sale where it prints the items off of acc and parts orders - KIND OF ALREADY DONE BY PUSHING ACC TOTAL TO BOS BUT DOES NOT ITEMIZE ITEMS" },
-  { board: "dev", column: "SALES", item: "have it so if you sdelect clientfile it just goes to client file and then you can select a unit if you want to but it displays orders, and work orders under clients name not under a unit bought there" },
+
   { board: "dev", column: "SALES", item: "finance section in finance file, have it where it can be switch to manual mode only where there are no calculations being done" },
   { board: "dev", column: "SALES", item: "finish className={${isCompleted ? bg-[#30A46C]: bg-primary} in finance file" },
   { board: "dev", column: "SALES", item: "Call center Section" },
@@ -690,6 +751,7 @@ const paidfeature = [
   { board: "dev", column: "PAID FEATURE - ai", item: "AI writing partner for emails, templates and scripts - done in components folder" },
   { board: "dev", column: 'PAID FEATURE - ai', item: 'vercel has a nice write up on this to do in their platform - ai - wip - https://github.com/steven-tey/chathn/blob/main/app/api/chat/route.ts' },
 ]
+
 export const roadMapItems = [
   ...getDoneNow,
   ...BACKBURNER,

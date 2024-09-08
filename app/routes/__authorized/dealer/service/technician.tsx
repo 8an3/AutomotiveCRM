@@ -52,6 +52,7 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip"
 import useSWR from 'swr'
+import calendarIcon from '~/images/favicons/calendar.svg'
 
 const useScreenSize = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -172,17 +173,8 @@ export default function DnDResource() {
             onView={onView}
           />
         </span>
-
         <span className="rbc-toolbar-label">{label}</span>
         <span className="ml-auto justify-end mr-5">
-          <Button
-            onClick={toggleView}
-            className='mr-3'
-          >
-            Toggle Resource View
-          </Button>
-
-
         </span>
         <span className="ml-auto justify-end">
           <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(Navigate.PREVIOUS)}
@@ -609,7 +601,7 @@ const EventInfo = ({ event }) => {
 
 
 export const links: LinksFunction = () => [
-  { rel: "icon", type: "image/svg", href: '/favicons/calendar.svg' },
+  { rel: "icon", type: "image/svg", href: calendarIcon },
   { rel: "stylesheet", href: styles1 },
   { rel: "stylesheet", href: rbc },
   { rel: "stylesheet", href: base },
@@ -980,3 +972,21 @@ interface IProps {
   techs: any
 }
 
+
+
+
+export const meta = () => {
+  return [
+    { title: "Technician Dashboard || SERVICE || Dealer Sales Assistant" },
+    {
+      property: "og:title",
+      content: "Your very own assistant!",
+    },
+    {
+      name: "description",
+      content:
+        "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
+      keywords: "Automotive Sales, dealership sales, automotive CRM",
+    },
+  ];
+};

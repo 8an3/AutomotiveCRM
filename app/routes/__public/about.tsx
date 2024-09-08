@@ -5,7 +5,6 @@ import {
   Balancer,
   Image,
   Layout,
-  PageProgress,
   YouTubeVideo,
 } from "~/components";
 import { useRootLoaderData } from "~/hooks";

@@ -77,11 +77,11 @@ import {
 } from "@radix-ui/react-icons";
 import { DataTable } from "./components/data-table"
 import { columns } from "./components/columns"
-import { fuzzyFilter } from "~/components/actions/shared";
+import { fuzzyFilter } from "~/components/shared/shared";
 import { toast } from "sonner"
 
 async function getData() {
-  const res = await fetch('/dealer/dashboard/inventory/moto')
+  const res = await fetch('/dealer/api/dashboard/inventory/moto')
   console.log(res, 'intable')
   if (!res.ok) {
     throw new Error("Failed to fetch data");

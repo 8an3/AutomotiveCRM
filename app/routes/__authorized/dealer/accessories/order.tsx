@@ -2348,3 +2348,6 @@ async function getTotalFromLast30Days() {
   );
   return formattedSumTotal;
 }
+
+
+

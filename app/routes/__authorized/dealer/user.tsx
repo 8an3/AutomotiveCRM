@@ -12,12 +12,14 @@ import {
 } from "~/components"
 import { SidebarNav } from "~/components/ui/sidebar-nav"
 import { getUserIsAllowed } from "~/helpers";
-import { adminSidebarNav, devSidebarNav, managerSidebarNav } from "~/components/shared/sidebar";
+import { adminSidebarNav, devSidebarNav, managerSidebarNav } from "~/components/zRoutes/oldComps/sidebar";
 import base from "~/styles/base.css";
+import user from '~/images/favicons/user.svg'
+
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
-  { rel: "icon", type: "image/svg", href: "/favicons/settings.svg", },
+  { rel: "icon", type: "image/svg", href: user },
   { rel: "stylesheet", href: base },
 ]
 

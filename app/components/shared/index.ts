@@ -1,8 +1,8 @@
 //export * from "./landing-image";
 export * from "./layout";
 export * from "./logo";
-export * from "./page-header";
-export * from "./page-progress";
+export * from "~/components/shared/page-header";
+export * from "~/components/shared/page-progress";
 export * from "./search-form";
-export * from "./site-footer";
+export * from "~/components/shared/site-footer";
 

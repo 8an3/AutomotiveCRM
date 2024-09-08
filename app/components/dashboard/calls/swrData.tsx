@@ -11,6 +11,6 @@ import useSWR, { SWRConfig, mutate, useSWRConfig } from 'swr';
 
 export default function swrData() {
   const dataFetcher = (url) => fetch(url).then(res => res.json());
-  const data = useSWR('http://localhost:3000/dealer/dashboard/calls/loader', dataFetcher, {})
+  const data = useSWR('http://localhost:3000/dealer/api/dashboard/calls/loader', dataFetcher, {})
   return data
 }

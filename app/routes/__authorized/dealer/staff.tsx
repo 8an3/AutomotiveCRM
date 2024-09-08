@@ -12,13 +12,12 @@ import {
 } from "~/components"
 import { SidebarNav } from "~/components/ui/sidebar-nav"
 import { getUserIsAllowed } from "~/helpers";
-import { adminSidebarNav, devSidebarNav, managerSidebarNav } from "~/components/shared/sidebar";
 import base from "~/styles/base.css";
+import chair from '~/images/favicons/chair.svg'
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: slider },
-  { rel: "icon", type: "image/svg", sizes: "32x32", href: "/money24.svg", },
-  { rel: "icon", type: "image/svg", sizes: "16x16", href: "/money16.svg", },
+  { rel: "icon", type: "image/svg", href: chair },
   { rel: "stylesheet", href: base },
 ]
 

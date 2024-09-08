@@ -29,13 +29,18 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip"
 import { Outlet, Link, useLoaderData, useFetcher, Form, useSubmit, useLocation, useNavigate } from "@remix-run/react";
-import { json, LoaderFunction, redirect } from "@remix-run/node";
+import { json, LinksFunction, LoaderFunction, redirect } from "@remix-run/node";
 import { GetUser } from "~/utils/loader.server";
 import { getSession } from "~/sessions/auth-session.server";
 import { prisma } from "~/libs";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import Purchase from '~/components/accessories/currentOrder';
 import { Button } from "~/components";
+import shirt from '~/images/favicons/shirt.svg'
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: shirt },
+]
 
 
 export async function loader({ request, params }: LoaderFunction) {
@@ -177,7 +182,3 @@ export default function Dashboard() {
   )
 }
 
-
-export const links: LinksFunction = () => [
-  { rel: "icon", type: "image/svg", href: "/favicons/money.svg", },
-]

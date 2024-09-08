@@ -133,7 +133,7 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "~/components/ui/context-menu"
-import { EditableText } from "~/components/actions/shared";
+import { EditableText } from "~/components/shared/shared";
 import { flushSync } from "react-dom";
 import { TextArea } from "~/components";
 import {
@@ -150,6 +150,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "~/components/ui/accordion"
+import wrench from '~/images/favicons/wrench.svg'
+
 export default function Dashboard() {
   const { orders, user, tax, dealerImage, sales } = useLoaderData();
 
@@ -375,7 +377,7 @@ export default function Dashboard() {
   const order = showPrevOrder
   console.log(search.data, 'services.data')
   return (
-    <div>
+    <div className='mt-[15px]'>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
         <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
@@ -2422,7 +2424,7 @@ export async function action({ request, params }: ActionFunction) {
 
 export const meta = () => {
   return [
-    { title: 'Service Center - Dealer Sales Assistant' },
+    { title: 'Dashboard || Service Center || Dealer Sales Assistant' },
     {
       property: "og:title",
       content: "Your very own assistant!",
@@ -2436,5 +2438,5 @@ export const meta = () => {
 };
 
 export const links: LinksFunction = () => [
-  { rel: "icon", type: "image/svg", href: '/favicons/wrench.svg' },
+  { rel: "icon", type: "image/svg", href: wrench },
 ]

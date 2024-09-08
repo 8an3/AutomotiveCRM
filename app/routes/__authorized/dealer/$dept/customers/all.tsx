@@ -22,13 +22,13 @@ import AttemptedOrReached from "~/components/dashboard/calls/setAttOrReached";
 import ContactTimesByType from "~/components/dashboard/calls/ContactTimesByType";
 import LogCall from "~/components/dashboard/calls/logCall";
 import Logtext from "~/components/dashboard/calls/logText";
-import { Badge } from "~/ui/badge";
+import { Badge } from "~/components/ui/badge";
 import secondary from "~/styles/secondary.css";
 
-import { SmDataTable } from '~/components/smData-table';
+import { SmDataTable } from '~/components/dashboard/smData-table';
 import SmClientCard from '~/components/dashboard/calls/smClientCard';
 import PresetFollowUpDay from '~/components/dashboard/calls/presetFollowUpDay';
-import IndeterminateCheckbox, { EditableText } from '~/components/actions/shared'
+import IndeterminateCheckbox, { EditableText } from '~/components/shared/shared'
 import {
   Button,
   Input,
@@ -1181,7 +1181,7 @@ export type Payment = {
 }
 export const meta = () => {
   return [
-    { title: 'Admin - All Clients - Dealer Sales Assistant' },
+    { title: 'All Clients || ADMIN || Dealer Sales Assistant' },
     {
       property: "og:title",
       content: "Your very own assistant!",

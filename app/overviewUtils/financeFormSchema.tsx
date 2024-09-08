@@ -15,6 +15,7 @@ const financeFormSchema = z.object({
   OrderInvId: zfd.text(z.string().optional()),
   accOrderId: zfd.text(z.string().optional()),
   accessoryId: zfd.text(z.string().optional()),
+  username: zfd.text(z.string().optional()),
   attachedId: zfd.text(z.string().optional()),
   // handOffTime
   accessoryNumber: zfd.numeric(z.number().optional()),

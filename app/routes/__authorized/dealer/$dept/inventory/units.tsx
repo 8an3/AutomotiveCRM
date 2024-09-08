@@ -10,9 +10,9 @@ import { getSession } from "~/sessions/auth-session.server";
 import { prisma } from "~/libs";
 import { type MetaFunction, redirect, type LoaderFunctionArgs, json, ActionFunction } from '@remix-run/node'
 import { GetUser } from "~/utils/loader.server";
-import { fuzzyFilter, fuzzySort, TableMeta, getTableMeta, DebouncedInput } from "~/components/actions/shared";
+import { fuzzyFilter, fuzzySort, TableMeta, getTableMeta, DebouncedInput } from "~/components/shared/shared";
 import { Cross2Icon, CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons";
-import IndeterminateCheckbox, { EditableText, Filter } from '~/components/actions/shared'
+import IndeterminateCheckbox, { EditableText, Filter } from '~/components/shared/shared'
 import { X } from "lucide-react";
 import { toast } from "sonner";
 import { DataTablePagination } from "~/components/dashboard/calls/pagination";
@@ -1841,7 +1841,7 @@ export default function UnitInv() {
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Admin - Dealer Sales Assistant' },
+    { title: 'Unit Inventory || ADMIN || Dealer Sales Assistant' },
     {
       property: "og:title",
       content: "Your very own assistant!",

@@ -25,10 +25,8 @@ import { model } from "~/models";
 import axios from 'axios'
 import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
 import { deleteProduct, getHomeData, createProduct, Board, createProvidor, updateProvidorName, deletePrice, updateProductName, upsertItem, getProductData } from '~/components/user/finance/product'
-import { INTENTS, type RenderedItem, ItemMutationFields, ItemMutation, CONTENT_TYPES } from '~/components/user/finance/types'
 import { badRequest } from "~/utils/http";
 import invariant from "tiny-invariant";
-import { SaveButton, CancelButton, EditableText } from '~/components/user/finance/components'
 import { Plus, TrashIcon } from 'lucide-react'
 import { flushSync } from "react-dom";
 import {
@@ -37,8 +35,6 @@ import {
   HoverCardTrigger,
 } from "~/components/ui/hover-card"
 import { Trash } from "lucide-react";
-import { parseItemMutation } from '~/components/user/finance/utils'
-import { todoRoadmap } from './dashboard.roadmap'
 import {
   Drawer,
   DrawerClose,
@@ -52,6 +48,7 @@ import {
 // dontergeasdf
 import { DownloadIcon, PaperPlaneIcon, UploadIcon } from '@radix-ui/react-icons';
 import Products from './dashboard.board'
+import { INTENTS } from '~/components/dev/board/types'
 
 
 export async function loader({ request, params }: LoaderFunction) {

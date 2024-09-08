@@ -1,5 +1,10 @@
 import { Outlet, useLoaderData } from '@remix-run/react';
 import { ClientOnly } from "remix-utils";
+import document from '~/images/favicons/file.svg'
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: document },
+]
 
 export default function Root() {
   return (

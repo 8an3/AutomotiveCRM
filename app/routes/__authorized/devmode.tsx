@@ -7,7 +7,7 @@ import { prisma } from '~/libs';
 //import Sidebar, { managerSidebarNav, adminSidebarNav, devSidebarNav, } from '~/components/shared/sidebar'
 import { Theme, useTheme } from "remix-themes";
 
-import UserSideBar from '~/components/shared/userSideBar';
+import UserSideBar from '~/components/zRoutes/oldComps/userSideBar';
 import Interruptions from '~/components/shared/interruptions';
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import GetData from './dealer/email/notificationsClient';
@@ -64,7 +64,7 @@ import {
   my23Moto,
   my24OffRoad,
   my23OffRoad,
-} from './dealer'
+} from '~/components/shared/dropdownNav'
 
 
 

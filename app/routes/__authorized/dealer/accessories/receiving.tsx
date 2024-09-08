@@ -92,7 +92,7 @@ import PrintLabels from "../document/printLabels.client";
 import useSWR from 'swr'
 import ScanSound from '~/images/scan.mp4'
 import { BrowserMultiFormatReader, BarcodeFormat, DecodeHintType, NotFoundException, ChecksumException, FormatException } from '@zxing/library';
-import { EditableText } from "~/components/actions/shared";
+import { EditableText } from "~/components/shared/shared";
 import { Pencil } from "lucide-react";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { FaMotorcycle } from "react-icons/fa";
@@ -1648,3 +1648,25 @@ async function getTotalFromLast30Days() {
   );
   return formattedSumTotal;
 }
+
+
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: '/favicons/calendar.svg' },
+];
+
+export const meta = () => {
+  return [
+    { title: "Receiving || PAC || Dealer Sales Assistant" },
+    {
+      property: "og:title",
+      content: "Your very own assistant!",
+    },
+    {
+      name: "description",
+      content:
+        "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
+      keywords: "Automotive Sales, dealership sales, automotive CRM",
+    },
+  ];
+};

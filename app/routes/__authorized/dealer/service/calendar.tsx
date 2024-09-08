@@ -8,7 +8,7 @@ import { type LinksFunction, type LoaderFunction, type ActionFunction, json, red
 import { useLoaderData, Link, useNavigate, useSubmit, useFetcher, useSearchParams, Form, useNavigation } from '@remix-run/react'
 import { prisma } from "~/libs";
 import { Text, } from '@radix-ui/themes';
-import { UserPlus, Gauge, CalendarPlus, ArrowDownToDot, ChevronsLeft, ChevronsRightLeft, ChevronsRight, Truck, Sheet, ArrowLeft, ArrowRight } from 'lucide-react';
+import { UserPlus, Gauge, CalendarPlus, ArrowDownToDot, ChevronsLeft, ChevronsRightLeft, ChevronsRight, Truck, Sheet, ArrowLeft, ArrowRight, ArrowDownToLine } from 'lucide-react';
 import EventInfo from "~/components/serviceDept/EventInfo"
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import clsx from 'clsx'
@@ -59,6 +59,7 @@ import {
 } from "~/components/ui/select"
 import { ChevronsUpDown } from 'lucide-react'
 import { Wrench } from 'lucide-react'
+import calendarIcon from '~/images/favicons/calendar.svg'
 
 const useScreenSize = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
@@ -92,6 +93,16 @@ export default function DnDResource() {
     end: new Date(event.end),
     isDraggable: true,
   }));
+
+  const [getDomain, setGetDomain] = useState("http://localhost:3000");
+
+  useEffect(() => {
+    const currentHost = typeof window !== "undefined" ? window.location.host : null;
+    if (currentHost === "dealersalesassistant.ca") {
+      setGetDomain("https://www.dealersalesassistant.ca")
+    }
+  }, []);
+
 
   const [myEvents, setMyEvents] = useState(formattedData)
   const localizer = dayjsLocalizer(dayjs)
@@ -142,6 +153,46 @@ export default function DnDResource() {
     setEventInfoModal(false)
   }
   // add customer modal
+
+
+
+  const ViewToolbar = ({
+    label,
+    onNavigate,
+    onView,
+    view,
+    views,
+  }) => {
+    return (
+      <div classsName='mt-3 mx-auto'>
+        <Select
+          //  value={view}
+          onValueChange={(value) => setView(value)}>
+          <SelectTrigger className="w-[180px] mx-auto">
+            <SelectValue placeholder="Select A Calendar View" />
+          </SelectTrigger>
+          <SelectContent className='border-border'>
+            <SelectGroup>
+              <SelectLabel>Views</SelectLabel>
+              <SelectItem value='day'>
+                Day
+              </SelectItem>
+              <SelectItem value='week'>
+                Week
+              </SelectItem>
+              <SelectItem value='month'>
+                Month
+              </SelectItem>
+              <SelectItem value='agenda'>
+                Agenda
+              </SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+      </div>
+    )
+  }
+
   const ViewNamesGroup = ({ views: viewNames, view, messages, onView }) => {
     return viewNames.map((name) => (
       <Button
@@ -154,6 +205,7 @@ export default function DnDResource() {
       </Button>
     ))
   }
+  /** */
   // old resouce toggle
   const [showResources, setShowResources] = useState(true);
 
@@ -182,41 +234,39 @@ export default function DnDResource() {
     views,
   }) => {
     return (
-      <div className="rbc-toolbar">
-        <span className="rbc-btn-group">
-          <ViewNamesGroup
-            view={view}
-            views={views}
-            messages={messages}
-            onView={onView}
-          />
-        </span>
+      <div className="rbc-toolbar items-center">
 
-        <span className="rbc-toolbar-label">{label}</span>
+        <span className="rbc-toolbar-label text-foreground text-center text-2xl my-auto">{ }</span>
         <span className="ml-auto justify-end mr-5">
 
-
         </span>
-        <span className="ml-auto justify-end">
-          <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(Navigate.PREVIOUS)}
-          >
-            <ArrowLeft />
-          </button>
-          <button className='rounded-none  p-2 cursor-pointer hover:text-primary justify-center items-center '
+        <div className="ml-auto justify-end my-auto items-center">
+          <Button
+            variant='outline'
+            className=' text-center my-auto  p-2 cursor-pointer hover:text-primary justify-center items-center border-border mr-4'
             onClick={() => onNavigate(Navigate.TODAY)}
           >
             Today
-          </button>
-          <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-primary justify-center items-center mr-3'
+          </Button>
+          <Button
+            variant='ghost'
+            className=' p-2 cursor-pointer hover:text-primary justify-center items-center border-transparent hover:bg-transparent'
+            onClick={() => onNavigate(Navigate.PREVIOUS)}
+          >
+            <ArrowLeft />
+          </Button>
+
+          <Button
+            variant='ghost'
+            className='p-2 cursor-pointer hover:text-primary justify-center items-center mr-3 border-transparent hover:bg-transparent'
             onClick={() => onNavigate(Navigate.NEXT)}
           >
             <ArrowRight />
-          </button>
-        </span>
+          </Button>
+        </div>
       </div>
     )
   }
-
   const mobileToolbar = ({
     label,
     localizer: { messages },
@@ -338,7 +388,7 @@ export default function DnDResource() {
     const fetcher = url => fetch(url).then(r => r.json())
     console.log(id, 'id')
     try {
-      const { data, error } = useSWR(`http://localhost:3000/dealer/api/singleServiceAppt?apptId=${id}`, fetcher)
+      const { data, error } = useSWR(getDomain + `/dealer/api/singleServiceAppt?apptId=${id}`, fetcher)
 
       console.log(data, 'response')
       return json({ data })
@@ -422,7 +472,7 @@ export default function DnDResource() {
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const dataFetcher = (url) => fetch(url).then(res => res.json());
-  const { data: swrData } = useSWR(isSubmitting ? `http://localhost:3000/dealer/service/calendar/reload` : null, dataFetcher, {})
+  const { data: swrData } = useSWR(isSubmitting ? getDomain + `/dealer/service/calendar/reload` : null, dataFetcher, {})
 
   useEffect(() => {
     if (swrData) {
@@ -435,10 +485,8 @@ export default function DnDResource() {
       <Fragment>
         <div className="large-screen-ui">
           <>
-            <div className="h-[75px]  w-auto  border-b border-border bg-background text-foreground">
-              <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Service Calendar</h2>
-              <p className="text-muted-foreground   ml-[105px]  ">
-              </p>
+            <div className="h-[45px]  w-auto  border-b border-border bg-background text-foreground">
+              <h2 className="ml-[75px] text-2xl font-bold tracking-tight">Service Calendar</h2>
             </div>
             <div className=" grow">
               <div className='flex w-auto '>
@@ -457,6 +505,7 @@ export default function DnDResource() {
                         initialFocus
                       />
                     </div>
+                    <ViewToolbar />
                     <div className='mt-3  mx-auto'>
 
                       <Select
@@ -472,12 +521,11 @@ export default function DnDResource() {
                       >
                         <SelectTrigger className="w-[180px]  mx-auto ">
                           <SelectValue defaultValue={selectedResource === 'all' ? 'All Calendar Views' : selectedResource} />
-
                         </SelectTrigger>
                         <SelectContent className='bg-background border-border'>
                           <SelectGroup>
-                            <SelectLabel>Calendar Views</SelectLabel>
-                            <SelectItem className='cursor-pointer' value="all">All Calendar Views</SelectItem>
+                            <SelectLabel>Employee Views</SelectLabel>
+                            <SelectItem className='cursor-pointer' value="all">All Employees</SelectItem>
                             {resources.map(resource => (
                               <SelectItem className='cursor-pointer' key={resource.resourceId} value={resource.resourceId}>
                                 {resource.resourceTitle}
@@ -534,8 +582,8 @@ export default function DnDResource() {
                       max={maxTime}
                       date={date}
                       onNavigate={onNavigate}
-                      // onView={onView}
-                      //   view={view}
+                      onView={onView}
+                      view={view}
                       resizable
                       selectable
                       components={{
@@ -709,14 +757,6 @@ export default function DnDResource() {
     </div>
   )
 }
-
-export const links: LinksFunction = () => [
-  { rel: "icon", type: "image/svg", href: '/favicons/calendar.svg' },
-  { rel: "stylesheet", href: styles1 },
-  { rel: "stylesheet", href: rbc },
-  { rel: "stylesheet", href: base },
-
-];
 
 
 export async function action({ request }: ActionFunction) {
@@ -1109,3 +1149,27 @@ export function EventInfoModal({ user, open, handleClose, currentEvent, techs }:
     </>
   )
 }
+
+export const links: LinksFunction = () => [
+  { rel: "icon", type: "image/svg", href: calendarIcon },
+  { rel: "stylesheet", href: styles1 },
+  { rel: "stylesheet", href: rbc },
+  { rel: "stylesheet", href: base },
+
+];
+
+export const meta = () => {
+  return [
+    { title: "Service Calendar || SERVICE || Dealer Sales Assistant" },
+    {
+      property: "og:title",
+      content: "Your very own assistant!",
+    },
+    {
+      name: "description",
+      content:
+        "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
+      keywords: "Automotive Sales, dealership sales, automotive CRM",
+    },
+  ];
+};
