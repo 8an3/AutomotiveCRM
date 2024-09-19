@@ -4596,6 +4596,7 @@ export async function seedUsers() {
       symbol: 'ADMIN',
     },
   });
+
   const tech1Email = 'techdealer1282@email.com'
   const tech2Email = 'tech2dealer1282@email.com'
   const deliveryDriverEmail = 'deliveryDriverdealer1282@email.com'
@@ -4635,6 +4636,28 @@ export async function seedUsers() {
       },
     },
   });
+  await prisma.position.create({
+    data: {
+      userId: technician.id,
+      position: technicianRole.name
+    }
+  })
+  await prisma.automations.create({
+    data: {
+      userEmail: technician.email,
+      pickUp24before: 'no',
+      appt24before: 'no',
+      noFollowup: 'no',
+      askForReferral: 'no',
+      oneYearAnni: 'no',
+      del7days: 'no',
+      afterDelTY: 'no',
+      afterHoursClosed: 'no',
+    }
+  })
+
+
+
   const technician2 = await prisma.user.create({
     data: {
       email: tech2Email,
@@ -4658,6 +4681,28 @@ export async function seedUsers() {
       },
     },
   });
+  await prisma.position.create({
+    data: {
+      userId: technician2.id,
+      position: technicianRole.name
+    }
+  })
+  await prisma.automations.create({
+    data: {
+      userEmail: technician2.email,
+      pickUp24before: 'no',
+      appt24before: 'no',
+      noFollowup: 'no',
+      askForReferral: 'no',
+      oneYearAnni: 'no',
+      del7days: 'no',
+      afterDelTY: 'no',
+      afterHoursClosed: 'no',
+    }
+  })
+
+
+
   const deliveryDriver = await prisma.user.create({
     data: {
       email: deliveryDriverEmail,
@@ -4681,6 +4726,28 @@ export async function seedUsers() {
       },
     },
   });
+  await prisma.position.create({
+    data: {
+      userId: deliveryDriver.id,
+      position: deliveryDriverRole.name
+    }
+  })
+  await prisma.automations.create({
+    data: {
+      userEmail: deliveryDriver.email,
+      pickUp24before: 'no',
+      appt24before: 'no',
+      noFollowup: 'no',
+      askForReferral: 'no',
+      oneYearAnni: 'no',
+      del7days: 'no',
+      afterDelTY: 'no',
+      afterHoursClosed: 'no',
+    }
+  })
+
+
+
   const serviceWriter = await prisma.user.create({
     data: {
       email: servicewriterEmail,
@@ -4703,6 +4770,28 @@ export async function seedUsers() {
       },
     },
   });
+  await prisma.position.create({
+    data: {
+      userId: serviceWriter.id,
+      position: serviceRole.name
+    }
+  })
+  await prisma.automations.create({
+    data: {
+      userEmail: serviceWriter.email,
+      pickUp24before: 'no',
+      appt24before: 'no',
+      noFollowup: 'no',
+      askForReferral: 'no',
+      oneYearAnni: 'no',
+      del7days: 'no',
+      afterDelTY: 'no',
+      afterHoursClosed: 'no',
+    }
+  })
+
+
+
   const serviceManager = await prisma.user.create({
     data: {
       email: serviceManagerEmail,
@@ -4725,6 +4814,28 @@ export async function seedUsers() {
       },
     },
   });
+  await prisma.position.create({
+    data: {
+      userId: serviceManager.id,
+      position: managerRole.name
+    }
+  })
+  await prisma.automations.create({
+    data: {
+      userEmail: serviceManager.email,
+      pickUp24before: 'no',
+      appt24before: 'no',
+      noFollowup: 'no',
+      askForReferral: 'no',
+      oneYearAnni: 'no',
+      del7days: 'no',
+      afterDelTY: 'no',
+      afterHoursClosed: 'no',
+    }
+  })
+
+
+
   const pacManager = await prisma.user.create({
     data: {
       email: pacManagerEmail,
@@ -4747,6 +4858,28 @@ export async function seedUsers() {
       },
     },
   });
+  await prisma.position.create({
+    data: {
+      userId: pacManager.id,
+      position: managerRole.name
+    }
+  })
+  await prisma.automations.create({
+    data: {
+      userEmail: pacManager.email,
+      pickUp24before: 'no',
+      appt24before: 'no',
+      noFollowup: 'no',
+      askForReferral: 'no',
+      oneYearAnni: 'no',
+      del7days: 'no',
+      afterDelTY: 'no',
+      afterHoursClosed: 'no',
+    }
+  })
+
+
+
   const accessories = await prisma.user.create({
     data: {
       email: accessoriesEmail,
@@ -4769,6 +4902,28 @@ export async function seedUsers() {
       },
     },
   });
+  await prisma.position.create({
+    data: {
+      userId: accessories.id,
+      position: accessoriesRole.name
+    }
+  })
+  await prisma.automations.create({
+    data: {
+      userEmail: accessories.email,
+      pickUp24before: 'no',
+      appt24before: 'no',
+      noFollowup: 'no',
+      askForReferral: 'no',
+      oneYearAnni: 'no',
+      del7days: 'no',
+      afterDelTY: 'no',
+      afterHoursClosed: 'no',
+    }
+  })
+
+
+
   const parts = await prisma.user.create({
     data: {
       email: partsEmail,
@@ -4791,6 +4946,28 @@ export async function seedUsers() {
       },
     },
   });
+  await prisma.position.create({
+    data: {
+      userId: parts.id,
+      position: partsRole.name
+    }
+  })
+  await prisma.automations.create({
+    data: {
+      userEmail: parts.email,
+      pickUp24before: 'no',
+      appt24before: 'no',
+      noFollowup: 'no',
+      askForReferral: 'no',
+      oneYearAnni: 'no',
+      del7days: 'no',
+      afterDelTY: 'no',
+      afterHoursClosed: 'no',
+    }
+  })
+
+
+
   const recieving = await prisma.user.create({
     data: {
       email: recievingEmail,
@@ -4813,6 +4990,28 @@ export async function seedUsers() {
       },
     },
   });
+  await prisma.position.create({
+    data: {
+      userId: recieving.id,
+      position: recievingRole.name
+    }
+  })
+  await prisma.automations.create({
+    data: {
+      userEmail: recieving.email,
+      pickUp24before: 'no',
+      appt24before: 'no',
+      noFollowup: 'no',
+      askForReferral: 'no',
+      oneYearAnni: 'no',
+      del7days: 'no',
+      afterDelTY: 'no',
+      afterHoursClosed: 'no',
+    }
+  })
+
+
+
   const adminAssistant = await prisma.user.create({
     data: {
       email: adminAssistantEmail,
@@ -4835,6 +5034,27 @@ export async function seedUsers() {
       },
     },
   });
+  await prisma.position.create({
+    data: {
+      userId: adminAssistant.id,
+      position: adminUserRole.name
+    }
+  })
+  await prisma.automations.create({
+    data: {
+      userEmail: adminAssistant.email,
+      pickUp24before: 'no',
+      appt24before: 'no',
+      noFollowup: 'no',
+      askForReferral: 'no',
+      oneYearAnni: 'no',
+      del7days: 'no',
+      afterDelTY: 'no',
+      afterHoursClosed: 'no',
+    }
+  })
+
+
 
   /* creating admin
   const stateSales = { "id": false, "SMS": false, "pdi": false, "tag": false, "vin": false, "bank": false, "lien": false, "lost": false, "msrp": false, "on60": false, "qc60": false, "sold": false, "trim": false, "ucda": false, "vinE": false, "year": false, "Other": false, "Phone": false, "admin": false, "brand": false, "color": false, "iRate": false, "invId": false, "motor": false, "nat60": false, "notes": false, "onTax": false, "oth60": false, "qcTax": false, "total": false, "dLCopy": false, "demoed": false, "funded": false, "labour": false, "model1": false, "months": false, "othTax": false, "quoted": false, "refund": false, "result": false, "signed": false, "visits": false, "weekly": false, "deposit": false, "freight": false, "insCopy": false, "mileage": false, "options": false, "userGap": false, "visited": false, "voidChq": false, "InPerson": false, "approved": false, "biweekly": false, "discount": false, "lastNote": false, "leadNote": false, "metParts": false, "otherTax": false, "progress": false, "referral": false, "refunded": false, "signBill": false, "stockNum": false, "tradeVin": false, "turnOver": false, "userName": false, "weeklyqc": false, "activixId": false, "aptShowed": false, "biweekOth": false, "bookedApt": false, "cancelled": false, "commodity": false, "createdAt": false, "delivered": false, "licensing": false, "loanOther": false, "modelCode": false, "otherDocs": false, "paintPrem": false, "pickUpSet": false, "seenTrade": false, "testDrive": false, "tradeDesc": false, "tradeInsp": false, "tradeMake": false, "tradeTrim": false, "tradeYear": false, "updatedAt": false, "userEmail": false, "userOther": false, "weeklyOth": false, "bikeStatus": false, "biweeklNat": false, "biweeklyqc": false, "customerWS": false, "dealNumber": false, "docsSigned": false, "financeApp": false, "idVerified": false, "leadSource": false, "lienPayout": false, "loanNumber": false, "metFinance": false, "metManager": false, "metService": false, "pickUpDate": false, "pickUpTime": false, "testDrForm": false, "tradeColor": false, "tradeValue": false, "weeklylNat": false, "accessories": false, "aptNoShowed": false, "depositMade": false, "discountPer": false, "userExtWarr": false, "clientfileId": false, "firstPayment": false, "liceningDone": false, "loanMaturity": false, "optionsTotal": false, "rustProofing": false, "theRealActId": false, "tradeMileage": false, "tradeRepairs": false, "userLoanProt": false, "deliveredDate": false, "licensingSent": false, "nat60WOptions": false, "oth60WOptions": false, "tradeLocation": false, "deliveryCharge": false, "financeManager": false, "lifeDisability": false, "metSalesperson": false, "timesContacted": false, "userTireandRim": false, "applicationDone": false, "desiredPayments": false, "salesCommission": false, "userServicespkg": false, "dealerCommission": false, "depositTakenDate": false, "sendToFinanceNow": false, "totalWithOptions": false, "biweekOthWOptions": false, "financeCommission": false, "urgentFinanceNote": false, "weeklyOthWOptions": false, "biweeklNatWOptions": false, "financeApplication": false, "financeManagerName": false, "weeklylNatWOptions": false, "otherTaxWithOptions": false, "financeDeptProductsTotal": false }
@@ -4870,6 +5090,8 @@ export async function seedUsers() {
             "trailer": false,
             "contactMethod": false,
             "typeOfContact": false,
+            "unitPicker": false,
+            "timeToContact": false,
 
           }
         }
@@ -6398,6 +6620,7 @@ export async function Board() {
   const completed = [
     { board: "dev", column: "ROLES", item: "forgot driver, need to add delivery schedule, add it as a resource like the techs need to give the ability to set deliveries to everyoneyt" },
     { board: "dev", column: "ISSUE", item: "with production demo site, problem started after you manually had to update the files from remote because github action was not working" },
+    { board: "dev", column: "DONE NEEDS TESTING", item: "instead of input for tax on quotes do a drop down with actual provines taxes done in payument calc only!!!!" },
     { board: "dev", column: "SALES", item: "have it so if you sdelect clientfile it just goes to client file and then you can select a unit if you want to but it displays orders, and work orders under clients name not under a unit bought there" },
     { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
     { board: "dev", column: "ISSUE", item: "need to be able to choose one resource id in calendar and display it in service" },
@@ -6746,11 +6969,11 @@ export async function Board() {
   const getDoneNow = [
     { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
 
-    { board: "dev", column: "DONE NEEDS TESTING", item: "instead of input for tax on quotes do a drop down with actual provines taxes done in payument calc only!!!!" },
     { board: "dev", column: "IDEAS", item: "import / export allow to downlaod a template example so people can see the columns needed for that dataset" },
+    { board: "dev", column: "IDEAS", item: "admin dashboard - when going over clients and other objects ie for clients open dialog on left have nave menu with a first level of items such as finance, work order, acc order and the when you click on it you can then click on the tabs for each layer on that data segment" },
 
     { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH SMS AND EMAIL TESTING BEFORE RELEASE -----" },
-    { board: "dev", column: "DONE NEEDS TESTING", item: "email" },
+    { board: "dev", column: "DONE NEEDS TESTING", item: "email - somehow auth is now broken? havent touched in months but now just doesnt work... convert to .client" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "email - update styling so its not akward" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "sms" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "webhook for incoming emails, save notifiation and messeages" },
@@ -6779,7 +7002,7 @@ export async function Board() {
 
     { board: "dev", column: "ISSUE", item: "----- FINAL TESTING ON PROD SITE - COMPLETED -----" },
     { board: "dev", column: "ROLES", item: "----- STAFF AREA -----" },
-    { board: "dev", column: "ROLES", item: "staff chat - need to send out notifications regarding messages for pedople in that dept mor maybe just use a tag system so everyone doesnt get blown up with messages" },
+    { board: "dev", column: "ROLES", item: "staff chat - need to send out notifications regarding messages for pedople in that dept or maybe just use a tag system so everyone doesnt get blown up with messages" },
     { board: "dev", column: "ROLES", item: "staff leaderboard - does not work in prod" },
 
     { board: "dev", column: "SALES", item: "----- SALES -----" },
@@ -6843,6 +7066,7 @@ export async function Board() {
   ]
   const issue = [
     { board: "dev", column: "ISSUE", item: "end of day report, sales people arent printing out" },
+    { board: "dev", column: "ISSUE", item: "need to set up dummy dealer for single user to start" },
     { board: "dev", column: "accessories", item: "dealer/accessories/newOrder/cm06lhi4u0001lb03xvaq4gwu print receipt not working in prod" },
     { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
   ]
@@ -6866,6 +7090,7 @@ export async function Board() {
 
   ]
   const ideas = [
+    { board: "dev", column: "SALES", item: "free for single users? with paid upgrades? ie email, sms, phone calls" },
     { board: "dev", column: "SALES", item: "sales bot - take care of some of the sales process - uses natural language processing and machine learning to assist in automated contract negotiations based on predefined parameters." },
     { board: "dev", column: "SALES", item: "sales bot 2 - customer onboarding" },
     { board: "dev", column: "SALES", item: "sales bot 3 - after sales" },

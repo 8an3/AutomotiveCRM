@@ -28,6 +28,11 @@ import { Calendar as SmallCalendar } from '~/components/ui/calendar';
 import base from "~/styles/base.css";
 import useSWR from 'swr'
 import calendarIcon from '~/images/favicons/calendar.svg'
+import {
+  useScreenSize, ViewNamesGroup, CustomToolbar, mobileToolbar, noToolbar, colors,
+  IEventInfo, EventFormData, DatePickerEventFormData, initialEventFormState, initialDatePickerEventFormData, IProps, ViewToolbar
+} from '~/components/calendar/shared'
+
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: calendarIcon },
@@ -35,23 +40,6 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: rbc },
   { rel: "stylesheet", href: base },
 ];
-const useScreenSize = () => {
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < 768);
-    };
-
-    // Set initial value
-    handleResize();
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return isSmallScreen;
-};
 
 export default function DnDResource() {
   const { salesData, user, filteredData, query } = useLoaderData()
@@ -309,50 +297,8 @@ export default function DnDResource() {
   // add customer modal
   const [addCustomerModal, setAddCustomerModal] = useState(false)
   const [addApptModal, setAddApptModal] = useState(false)
-  const ViewNamesGroup = ({ views: viewNames, view, messages, onView }) => {
-    return viewNames.map((name) => (
-      <Button
-        key={name}
-        type="button"
-        className={clsx({ 'rbc-active': view === name })}
-        onClick={() => onView(name)}
-      >
-        <Text>{messages[name]}</Text>
-      </Button>
-    ))
-  }
 
 
-  const ViewToolbar = () => {
-    return (
-      <div className='mt-3 mx-auto'>
-        <Select
-          //  value={view}
-          onValueChange={(value) => setView(value)}>
-          <SelectTrigger className="w-[240px] mx-auto">
-            <SelectValue placeholder="Select A Calendar View" />
-          </SelectTrigger>
-          <SelectContent className='border-border'>
-            <SelectGroup>
-              <SelectLabel>Views</SelectLabel>
-              <SelectItem value='day'>
-                Day
-              </SelectItem>
-              <SelectItem value='week'>
-                Week
-              </SelectItem>
-              <SelectItem value='month'>
-                Month
-              </SelectItem>
-              <SelectItem value='agenda'>
-                Agenda
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
-    )
-  }
 
   const [showResources, setShowResources] = useState(true);
 
@@ -372,95 +318,6 @@ export default function DnDResource() {
     : myEvents.filter(event => event.resourceId === selectedResource);
 
 
-  const CustomToolbar = ({
-    label,
-    localizer: { messages },
-    onNavigate,
-    onView,
-    view,
-    views,
-  }) => {
-    return (
-      <div className="rbc-toolbar items-center">
-
-        <span className="rbc-toolbar-label text-foreground text-center text-2xl my-auto">{ }</span>
-        <span className="ml-auto justify-end mr-5">
-
-        </span>
-        <div className="ml-auto justify-end my-auto items-center">
-          <Button
-            variant='outline'
-            className=' text-center  p-2 cursor-pointer hover:text-primary justify-center items-center border-border mr-4'
-            onClick={() => onNavigate(Navigate.TODAY)}
-          >
-            Today
-          </Button>
-          <Button
-            variant='ghost'
-            className=' p-2 cursor-pointer hover:text-primary justify-center items-center border-transparent hover:bg-transparent'
-            onClick={() => onNavigate(Navigate.PREVIOUS)}
-          >
-            <ArrowLeft />
-          </Button>
-
-          <Button
-            variant='ghost'
-            className='p-2 cursor-pointer hover:text-primary justify-center items-center mr-3 border-transparent hover:bg-transparent'
-            onClick={() => onNavigate(Navigate.NEXT)}
-          >
-            <ArrowRight />
-          </Button>
-        </div>
-      </div>
-    )
-  }
-  const mobileToolbar = ({
-    label,
-    localizer: { messages },
-    onNavigate,
-    onView,
-    view,
-    views,
-  }) => {
-    return (
-      <div className="grid grid-cols-1">
-
-        <span className="mx-auto">{label}</span>
-
-        <span className="mx-auto">
-          <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(Navigate.PREVIOUS)}
-          >
-            <ChevronsLeft size={20} strokeWidth={1.5} />
-          </button>
-          <button className='rounded-none  p-2 cursor-pointer hover:text-primary justify-center items-center '
-            onClick={() => onNavigate(Navigate.TODAY)}
-          >
-            Today
-          </button>
-          <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-primary justify-center items-center mr-3'
-            onClick={() => onNavigate(Navigate.NEXT)}
-          >
-            <ChevronsRight size={20} strokeWidth={1.5} />
-          </button>
-        </span>
-      </div>
-    )
-  }
-  const noToolbar = ({
-    label,
-    localizer: { messages },
-    onNavigate,
-    onView,
-    view,
-    views,
-  }) => {
-    return (
-      <div className="rbc-toolbar">
-
-
-      </div>
-    )
-  }
   const [date, setDate] = useState<Date>()
 
   const now = new Date();
@@ -566,7 +423,7 @@ export default function DnDResource() {
 
                   <div className='mt-5 grow justify-center'>
                     <div className=' grid grid-cols-1 ' >
-                      <ViewToolbar />
+                      <ViewToolbar setView={setView} />
                       <div>
                         <Select
                           value={String(selectedResource)}
@@ -808,7 +665,6 @@ export default function DnDResource() {
   )
 }
 
-
 export const meta = () => {
   return [
     { title: "Sales Calendar || Dealer Sales Assistant" },
@@ -824,7 +680,6 @@ export const meta = () => {
     },
   ];
 };
-
 export async function CompleteLastAppt(userId, financeId) {
   console.log('CompleteLastAppt')
   const lastApt = await prisma.clientApts.findFirst({
@@ -1018,7 +873,6 @@ export async function ConvertDynamic(finance) {
   const emailBody = replaceTemplateValues(template, values);
   return emailBody
 }
-
 export async function action({ request }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData());
   let formData = financeFormSchema.parse(formPayload);
@@ -1538,279 +1392,4 @@ export async function loader({ request, params }: LoaderFunction) {
 }
 
 dayjs.extend(timezone)
-
-interface IProps {
-  open: boolean;
-  handleClose: () => void;
-  datePickerEventFormData: any; // replace with the correct type
-  setDatePickerEventFormData: (data: any) => void; // replace with the correct type
-  onAddEvent: () => void;
-  todos: any[]; // replace with the correct type
-  onClose: (value: string) => void;
-  selectedValue: string;
-  openDialog: boolean;
-  data: any;
-}
-
-
-export interface IEventInfo extends Event {
-  _id: string
-  id: string
-  todoId?: string
-  description: string
-  allDay: string
-  start: string
-  end: string
-  resourceId: number
-  userEmail: string
-  followUpDay1: string
-  financeId: string
-  direction: string
-  resultOfcall: string
-  firstName: string
-  lastName: string
-  email: string
-  brand: string
-  intent: string
-  contactMethod: string
-  completed: string
-  apptStatus: string
-  apptType: string
-  unit: string
-  title: string
-  note: string
-  phone: string
-  resourceId2: string
-  address: string
-  userId: string
-  userName: string
-  messageTitle: string
-  attachments: string
-  getClientFileById: string
-  followUpDay: string
-  clientFileId: string
-  model: string
-}
-
-export interface EventFormData {
-  todoId: string
-  description: string
-  allDay: string
-  start: string
-  end: string
-  resourceId: string
-  userEmail: string
-  followUpDay1: string
-  financeId: string
-  direction: string
-  resultOfcall: string
-  firstName: string
-  lastName: string
-  email: string
-  brand: string
-  intent: string
-  contactMethod: string
-  completed: string
-  apptStatus: string
-  resourceId2: string
-  vin: string
-  stockNum: string
-  apptType: string
-  unit: string
-  title: string
-  note: string
-  phone: string
-  address: string
-  userId: string
-  userName: string
-  messageTitle: string
-  attachments: string
-  getClientFileById: string
-}
-
-export interface DatePickerEventFormData {
-  allDay: boolean
-  start?: Date
-  end?: Date
-  todoId: string
-  description: string
-  resourceId: string
-  userEmail: string
-  followUpDay1: string
-  financeId: string
-  direction: string
-  resultOfcall: string
-  firstName: string
-  lastName: string
-  email: string
-  brand: string
-  intent: string
-  contactMethod: string
-  completed: string
-  apptStatus: string
-  apptType: string
-  unit: string
-  title: string
-  note: string
-  phone: string
-  address: string
-  userId: string
-  userName: string
-  messageTitle: string
-  attachments: string
-  resourceId2: string
-  getClientFileById: string
-}
-
-const initialEventFormState: EventFormData = {
-  description: "",
-  todoId: undefined,
-  completed: 'no',
-  apptType: '',
-  getClientFileById: '',
-  userEmail: '',
-  followUpDay: '',
-  clientFileId: '',
-  brand: '',
-  model: '',
-  vin: '',
-  stockNum: '',
-
-}
-
-const initialDatePickerEventFormData: DatePickerEventFormData = {
-  description: "",
-  todoId: undefined,
-  allDay: false,
-  start: undefined,
-  resourceId2: '',
-  end: undefined,
-  apptType: '',
-  completed: '',
-  resourceId: '',
-  userEmail: '',
-  followUpDay1: '',
-  financeId: '',
-  direction: '',
-  resultOfcall: '',
-  firstName: '',
-  lastName: '',
-  email: '',
-  brand: '',
-  intent: '',
-  contactMethod: '',
-  apptStatus: '',
-  unit: '',
-  title: '',
-  note: '',
-  phone: '',
-  address: '',
-  userId: '',
-  userName: '',
-  messageTitle: '',
-  attachments: '',
-  getClientFileById: '',
-  followUpDay: '',
-  clientFileId: '',
-  model: '',
-
-}
-/** <AddEventModal
-              open={openSlot}
-              handleClose={handleClose}
-              eventFormData={eventFormData}
-              setEventFormData={setEventFormData}
-              onAddEvent={onAddEvent}
-              todos={todos}
-
-const views = ["day", "week", "month", "agenda"];
-
-handleNavigation = (date, view, action) => {
-  console.log(date, view, action);
-  //it returns current date, view options[month,day,week,agenda] and action like prev, next or today
-};
-handleChange = () => {
-  console.log("this block code executed");
-};
-
-var CustomToolbar = ({ handleChange }) => {
-  return class BaseToolBar extends Toolbar {
-    constructor(props) {
-      super(props);
-    }
-    handleDayChange = (event, mconte) => {
-      mconte(event.target.value);
-    };
-    handleNamvigate = (detail, elem) => {
-      detail.navigate(elem);
-    };
-    render() {
-      return (
-        <div className="flex">
-          <div className="mr-auto p-2 ">
-            <IconButton onClick={() => this.handleNamvigate(this, "PREV")}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-left-circle"><circle cx="12" cy="12" r="10" /><path d="m14 16-4-4 4-4" /></svg>
-            </IconButton>
-            <IconButton onClick={() => this.handleNamvigate(this, "TODAY")}>
-              <Circle strokeWidth={1.5} />
-            </IconButton>
-            <IconButton onClick={() => this.handleNamvigate(this, "NEXT")}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right-circle"><circle cx="12" cy="12" r="10" /><path d="m10 8 4 4-4 4" /></svg>
-            </IconButton>
-          </div>
-          <div className='mr-auto ml-5'>
-            <IconButton onClick={() => setOpenSlot(true)}>
-              <UserPlus size={20} strokeWidth={1.5} />
-            </IconButton>
-            <Link to='/dashboard/calls'>
-              <IconButton >
-                <Gauge size={20} strokeWidth={1.5} />
-              </IconButton>
-            </Link>
-            <Link to='/calendar/sales'>
-              <IconButton>
-                <CalendarCheck size={20} strokeWidth={1.5} />
-              </IconButton>
-            </Link>
-
-            <IconButton onClick={() => setOpenDatepickerModal(true)}>
-              <Search size={20} strokeWidth={1.5} />
-            </IconButton>
-          </div>
-          <div className="rbc-toolbar-label">{this.props.label}</div>
-
-          <div className="rbc-btn-group">
-            <select
-              className="form-control"
-              onChange={(e) => this.handleDayChange(e, this.view)}
-              defaultValue={"week"}
-            >
-              <option className="optionbar" value="day">
-                Day
-              </option>
-              <option className="optionbar" value="week">
-                Week
-              </option>
-              <option className="optionbar" value="month">
-                Month
-              </option>
-              <option className="optionbar" value="agenda">
-                Agenda
-              </option>
-            </select>
-          </div>
-        </div>
-      );
-    }
-  };
-};
-<AddEventModal
-              open={openSlot}
-              handleClose={handleClose}
-              eventFormData={eventFormData}
-              setEventFormData={setEventFormData}
-              onAddEvent={onAddEvent}
-              todos={todos}
-            /> */
-
 

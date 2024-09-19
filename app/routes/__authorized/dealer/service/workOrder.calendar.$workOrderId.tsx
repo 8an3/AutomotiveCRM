@@ -48,24 +48,10 @@ import {
 import { ListFilter } from 'lucide-react'
 import { toast } from "sonner"
 import useSWR from 'swr'
-
-const useScreenSize = () => {
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < 768);
-    };
-
-    // Set initial value
-    handleResize();
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return isSmallScreen;
-};
+import {
+  useScreenSize, ViewNamesGroup, CustomToolbar, mobileToolbar, noToolbar, colors, resourceTitle,
+  IEventInfo, EventFormData, DatePickerEventFormData, initialEventFormState, initialDatePickerEventFormData, IProps, ViewToolbar
+} from '~/components/calendar/shared'
 
 export default function DnDResource() {
   const { allServiceApts, techs, order, user, appointment } = useLoaderData()
@@ -74,6 +60,15 @@ export default function DnDResource() {
   const [view, setView] = useState(Views.WEEK)
   const onView = useCallback((newView) => setView(newView), [setView])
   const submit = useSubmit();
+
+  const [getDomain, setGetDomain] = useState("http://localhost:3000");
+
+  useEffect(() => {
+    const currentHost = typeof window !== "undefined" ? window.location.host : null;
+    if (currentHost === "dealersalesassistant.ca") {
+      setGetDomain("https://www.dealersalesassistant.ca")
+    }
+  }, []);
 
   const formattedData = allServiceApts.map(event => ({
     ...event,
@@ -130,19 +125,6 @@ export default function DnDResource() {
   const onCompleteEvent = () => {
     setEventInfoModal(false)
   }
-  // add customer modal
-  const ViewNamesGroup = ({ views: viewNames, view, messages, onView }) => {
-    return viewNames.map((name) => (
-      <Button
-        key={name}
-        type="button"
-        className={clsx({ 'rbc-active': view === name })}
-        onClick={() => onView(name)}
-      >
-        <Text>{messages[name]}</Text>
-      </Button>
-    ))
-  }
 
   const [showResources, setShowResources] = useState(true);
 
@@ -150,110 +132,11 @@ export default function DnDResource() {
     setShowResources(prevState => !prevState);
   };
 
-  const CustomToolbar = ({
-    label,
-    localizer: { messages },
-    onNavigate,
-    onView,
-    view,
-    views,
-  }) => {
-    return (
-      <div className="rbc-toolbar">
-        <span className="rbc-btn-group">
-          <ViewNamesGroup
-            view={view}
-            views={views}
-            messages={messages}
-            onView={onView}
-          />
-        </span>
-
-        <span className="rbc-toolbar-label">{label}</span>
-        <span className="ml-auto justify-end mr-5">
-          <Button
-            onClick={toggleView}
-            className='mr-3'
-          >
-            Toggle Resource View
-          </Button>
-
-
-        </span>
-        <span className="ml-auto justify-end">
-          <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(Navigate.PREVIOUS)}
-          >
-            <ChevronsLeft size={20} strokeWidth={1.5} />
-          </button>
-          <button className='rounded-none  p-2 cursor-pointer hover:text-primary justify-center items-center '
-            onClick={() => onNavigate(Navigate.TODAY)}
-          >
-            Today
-          </button>
-          <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-primary justify-center items-center mr-3'
-            onClick={() => onNavigate(Navigate.NEXT)}
-          >
-            <ChevronsRight size={20} strokeWidth={1.5} />
-          </button>
-        </span>
-      </div>
-    )
-  }
-
-  const mobileToolbar = ({
-    label,
-    localizer: { messages },
-    onNavigate,
-    onView,
-    view,
-    views,
-  }) => {
-    return (
-      <div className="grid grid-cols-1">
-
-        <span className="mx-auto">{label}</span>
-
-        <span className="mx-auto">
-          <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(Navigate.PREVIOUS)}
-          >
-            <ChevronsLeft size={20} strokeWidth={1.5} />
-          </button>
-          <button className='rounded-none  p-2 cursor-pointer hover:text-primary justify-center items-center '
-            onClick={() => onNavigate(Navigate.TODAY)}
-          >
-            Today
-          </button>
-          <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-primary justify-center items-center mr-3'
-            onClick={() => onNavigate(Navigate.NEXT)}
-          >
-            <ChevronsRight size={20} strokeWidth={1.5} />
-          </button>
-        </span>
-      </div>
-    )
-  }
-  const noToolbar = ({
-    label,
-    localizer: { messages },
-    onNavigate,
-    onView,
-    view,
-    views,
-  }) => {
-    return (
-      <div className="rbc-toolbar">
-
-
-      </div>
-    )
-  }
   const [date, setDate] = useState<Date>()
 
   const newDate = new Date()
 
   const onNavigate = useCallback((newDate) => setDate(newDate), [setDate])
-
-
 
   // ---------------------- dnd
   const fetcher = useFetcher()
@@ -340,24 +223,6 @@ export default function DnDResource() {
     })),
   ];
 
-  const colors = [
-    '#039be5',
-    '#7986cb',
-    '#f6bf26',
-    '#9e69af',
-    '#4285f4',
-    '#33FFF3',
-    '#ad1457',
-    '#f09300',
-    '#7cb342',
-    '#1757aa',
-    '#f4511e',
-    '#0b8043',
-    '#3f51b5',
-    '#039be5',
-    '#d81b60',
-  ];
-
   const colorMap = {};
   let colorIndex = 0;
 
@@ -384,13 +249,6 @@ export default function DnDResource() {
   const getResourceId = (resource) => resource.resourceId;
   const getResourceTitle = (resource) => resource.resourceTitle;
 
-  const resourceTitle = (resource) => {
-    return (
-      <div className='h-[50px] justify-center items-center mt-[25px]'>
-        <p className='text-primary text-center text-3xl my-auto'>{resource.resourceTitle}</p>
-      </div>
-    )
-  }
 
   const navigation = useNavigation();
   console.log(navigation.state, 'nav state workorder calendar id');
@@ -402,7 +260,7 @@ export default function DnDResource() {
 
   useEffect(() => {
     if (isSubmitting) {
-      mutate(`http://localhost:3000/dealer/service/calendar/reload`);
+      mutate(getDomain + `/dealer/service/calendar/reload`);
     }
   }, [isSubmitting, mutate]);
 
@@ -420,7 +278,7 @@ export default function DnDResource() {
         <div className="large-screen-ui">
           <>
             <div className="h-[75px]  w-auto  border-b border-border bg-background text-foreground">
-              <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Calendar</h2>
+              <h2 className="ml-[100px] text-2xl font-bold tracking-tight">Service Calendar</h2>
               <p className="text-muted-foreground   ml-[105px]  ">
               </p>
             </div>
@@ -441,6 +299,8 @@ export default function DnDResource() {
                         initialFocus
                       />
                     </div>
+                    <ViewToolbar setView={setView} />
+
                     <div className='flex-col justify-center' >
 
                       <ul className='ml-[90px] mt-4'>
@@ -1450,223 +1310,6 @@ export async function loader({ request, params }: LoaderFunction) {
 dayjs.extend(timezone)
 
 
-
-export interface IEventInfo extends Event {
-  _id: string
-  id: string
-  todoId?: string
-  description: string
-  allDay: string
-  start: string
-  end: string
-  resourceId: number
-  userEmail: string
-  followUpDay1: string
-  financeId: string
-  direction: string
-  resultOfcall: string
-  firstName: string
-  lastName: string
-  email: string
-  brand: string
-  intent: string
-  contactMethod: string
-  completed: string
-  apptStatus: string
-  apptType: string
-  title: string
-  note: string
-  phone: string
-  resourceId2: string
-  address: string
-  userId: string
-  userName: string
-  messageTitle: string
-  attachments: string
-  getClientFileById: string
-  followUpDay: string
-  clientFileId: string
-  model: string
-  unit: string
-
-  writer: string
-  tech: string
-  vin: string
-  tag: string
-  motor: string
-  location: string
-  workOrderId: number
-  mileage: string
-  color: string
-}
-
-export interface EventFormData {
-  todoId: string
-  description: string
-  allDay: string
-  start: string
-  end: string
-  resourceId: string
-  userEmail: string
-  followUpDay1: string
-  financeId: string
-  direction: string
-  resultOfcall: string
-  firstName: string
-  lastName: string
-  email: string
-  brand: string
-  intent: string
-  contactMethod: string
-  completed: string
-  apptStatus: string
-  resourceId2: string
-  stockNum: string
-  apptType: string
-  unit: string
-  title: string
-  note: string
-  phone: string
-  address: string
-  userId: string
-  userName: string
-  messageTitle: string
-  attachments: string
-  getClientFileById: string
-  model: string
-  writer: string
-  tech: string
-  tag: string
-  motor: string
-  location: string
-  workOrderId: number
-  mileage: string
-  color: string
-}
-
-export interface DatePickerEventFormData {
-  allDay: boolean
-  start?: Date
-  end?: Date
-  todoId: string
-  description: string
-  resourceId: string
-  userEmail: string
-  followUpDay1: string
-  financeId: string
-  direction: string
-  resultOfcall: string
-  firstName: string
-  lastName: string
-  email: string
-  brand: string
-  intent: string
-  contactMethod: string
-  completed: string
-  apptStatus: string
-  apptType: string
-  title: string
-  note: string
-  phone: string
-  address: string
-  userId: string
-  userName: string
-  messageTitle: string
-  attachments: string
-  resourceId2: string
-  getClientFileById: string
-  model: string
-  unit: string
-  writer: string
-  tech: string
-  vin: string
-  tag: string
-  motor: string
-  location: string
-  workOrderId: number
-  mileage: string
-  color: string
-}
-
-const initialEventFormState: EventFormData = {
-  description: "",
-  todoId: undefined,
-  completed: 'no',
-  apptType: '',
-  getClientFileById: '',
-  userEmail: '',
-  followUpDay: '',
-  clientFileId: '',
-  brand: '',
-  model: '',
-  stockNum: '',
-  writer: '',
-  tech: '',
-  vin: '',
-  tag: '',
-  motor: '',
-  location: '',
-  workOrderId: '',
-  mileage: '',
-  color: '',
-}
-
-const initialDatePickerEventFormData: DatePickerEventFormData = {
-  description: "",
-  todoId: undefined,
-  allDay: false,
-  start: undefined,
-  resourceId2: '',
-  end: undefined,
-  apptType: '',
-  completed: '',
-  resourceId: '',
-  userEmail: '',
-  followUpDay1: '',
-  financeId: '',
-  direction: '',
-  resultOfcall: '',
-  firstName: '',
-  lastName: '',
-  email: '',
-  brand: '',
-  intent: '',
-  contactMethod: '',
-  apptStatus: '',
-  unit: '',
-  title: '',
-  note: '',
-  phone: '',
-  address: '',
-  userId: '',
-  userName: '',
-  messageTitle: '',
-  attachments: '',
-  getClientFileById: '',
-  followUpDay: '',
-  clientFileId: '',
-  model: '',
-  writer: '',
-  tech: '',
-  vin: '',
-  tag: '',
-  motor: '',
-  location: '',
-  workOrderId: '',
-  mileage: '',
-  color: '',
-
-}
-
-interface IProps {
-  open: boolean
-  handleClose: Dispatch<SetStateAction<void>>
-  onDeleteEvent: (e: MouseEvent<HTMLButtonElement>) => void
-  onCompleteEvent: (e: MouseEvent<HTMLButtonElement>) => void
-  currentEvent: IEventInfo
-  user: IUser
-  techs: any
-}
 
 export function EventInfoModal({ user, open, handleClose, currentEvent, techs, setMyEvents }: IProps) {
   const data = currentEvent

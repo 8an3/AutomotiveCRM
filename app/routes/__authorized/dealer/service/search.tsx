@@ -353,7 +353,7 @@ export default function SearchCustomers() {
                   <TableCell className="flex text-center text-lg text-muted-foreground">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Form method='post'                         >
+                        <Form method='post' >
                           <Button size='icon' variant='ghost' name='intent' value='createNewOrder' className="hover:bg-primary mr-3">
                             <Plus className="h-5 w-5" />
                           </Button>

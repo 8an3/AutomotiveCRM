@@ -45,38 +45,43 @@ export const meta: MetaFunction = () => {
 
 export const action: ActionFunction = async ({ request, }) => {
   const formPayload = Object.fromEntries(await request.formData())
+  let formData = financeFormSchema.parse(formPayload);
   console.log(formPayload, 'before dealerlead is created')
   const lead = await prisma.dSALeads.create({
     data: {
-      dealerName: formPayload.dealerName,
-      dealerAddress: formPayload.dealerAddress,
-      dealerCity: formPayload.dealerCity,
-      dealerProv: formPayload.dealerProv,
-      dealerPostal: formPayload.dealerPostal,
-      dealerPhone: formPayload.dealerPhone,
-      ownerName: formPayload.ownerName,
-      ownerEmail: formPayload.ownerEmail,
-      ownerPhone: formPayload.ownerPhone,
-      adminName: formPayload.adminName,
-      adminEmail: formPayload.adminEmail,
-      adminPhone: formPayload.adminPhone,
-      dealerEtransferEmail: formPayload.dealerEtransferEmail,
-      message: formPayload.message,
+      dealerName: formData.dealerName,
+      dealerAddress: formData.dealerAddress,
+      dealerCity: formData.dealerCity,
+      dealerProv: formData.dealerProv,
+      dealerPostal: formData.dealerPostal,
+      dealerPhone: formData.dealerPhone,
+      ownerName: formData.ownerName,
+      ownerEmail: formData.ownerEmail,
+      ownerPhone: formData.ownerPhone,
+      adminName: formData.adminName,
+      adminEmail: formData.adminEmail,
+      adminPhone: formData.adminPhone,
+      dealerEtransferEmail: formData.dealerEtransferEmail,
+      message: formData.message,
 
-      generatedFrom: 'Contact us via dealer pricing',
-      infoBeforePurchase: formPayload.infoBeforePurchase ? formPayload.infoBeforePurchase : false,
-      justlooking: formPayload.justlooking ? formPayload.justlooking : false,
-      demoBeforePurchase: formPayload.demoBeforePurchase ? formPayload.demoBeforePurchase : false,
-      seekingAppointment: formPayload.seekingAppointment ? formPayload.seekingAppointment : false,
+      generatedFrom: 'Contact us via index page',
+      infoBeforePurchase: formData.infoBeforePurchase ? formData.infoBeforePurchase : false,
+      justlooking: formData.justlooking ? formData.justlooking : false,
+      demoBeforePurchase: formData.demoBeforePurchase ? formData.demoBeforePurchase : false,
+      seekingAppointment: formData.seekingAppointment ? formData.seekingAppointment : false,
 
-      timeToPurchase: Boolean(formPayload.asap) === true ? 'ASAP' :
-        Boolean(formPayload.justlooking) === true ? 'Just looking' :
-          Boolean(formPayload.infoBeforePurchase) === true ? "Haven't made a descion yet, if I make one, but I require more information." :
-            Boolean(formPayload.seekingAppointment) === true ? " Looking to set up an appointment with someone to discuss everything." :
-              "Did not make a decision"
+      timeToPurchase:
+        Boolean(formData.asap) === true
+          ? "ASAP"
+          : Boolean(formData.justlooking) === true
+            ? "Just looking"
+            : Boolean(formData.infoBeforePurchase) === true
+              ? "Haven't made a descion yet, if I make one, but I require more information."
+              : Boolean(formData.seekingAppointment) === true
+                ? " Looking to set up an appointment with someone to discuss everything."
+                : "Did not make a decision",
 
-      ,
-      triedDemo: formPayload.triedDemo,
+      triedDemo: formData.triedDemo,
     }
   })
 
@@ -89,7 +94,7 @@ export const action: ActionFunction = async ({ request, }) => {
   }
   console.log(customer)
   const sendEmail = await CheckingDealerPlan(customer)
-  return json({ sendEmail })
+  return json({ sendEmail, lead })
 }
 
 export default function Component() {

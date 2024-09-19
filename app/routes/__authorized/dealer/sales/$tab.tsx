@@ -66,7 +66,7 @@ import {
 import WebLeads from '~/components/dashboard/demoDay/webLeads';
 import { CalendarCheck, Mail, MessageSquare, UserPlus, X } from 'lucide-react';
 import { Message, Conversation, Participant, Client, ConnectionState, Paginator, } from "@twilio/conversations";
-import emitter from '~/routes/__authorized/dealer/emitter';
+import emitter from '~/routes/__authorized/dealer/features/addOn/emitter';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -264,7 +264,7 @@ export function MainDashbaord({ user }) {
     const navigation = useNavigation();
     const isSubmitting = navigation.state === "submitting";
     const dataFetcher = (url) => fetch(url).then(res => res.json());
-    const { data: swrData } = useSWR(isSubmitting ? getDomain + '/dealer/api/dashboard/calls/loader' : null, dataFetcher, {})
+    const { data: swrData } = useSWR(isSubmitting ? getDomain + `/dealer/api/dashboard/calls/loader/${user.email}` : null, dataFetcher, {})
 
     useEffect(() => {
         if (swrData) {
@@ -653,8 +653,7 @@ export function MainDashbaord({ user }) {
                 <DataTableColumnHeader column={column} title="Set New Apt." />
             ),
             cell: ({ row }) => {
-                const navigation = useNavigation();
-                const isSubmitting = navigation.state === "submitting";
+
                 const data = row.original
                 return <>
 
@@ -3568,7 +3567,7 @@ export function MainDashbaord({ user }) {
 
                                     <DropdownMenuItem>
                                         <Link
-                                            to="/dealer/calendar/sales"
+                                            to="/dealer/sales/calendar"
                                             className="flex w-full items-center justify-between"
                                         >
                                             <p>Calendar</p>

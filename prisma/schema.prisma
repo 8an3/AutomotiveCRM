@@ -588,19 +588,17 @@ model DSALeads {
   adminPhone           String?
   dealerEtransferEmail String?
 
-  generatedFrom String?
-
-  message String?
-
+  generatedFrom      String?
+  message            String?
   infoBeforePurchase Boolean?
   justlooking        Boolean?
   demoBeforePurchase Boolean?
   seekingAppointment Boolean?
-
-  timeToPurchase String?
-
-  triedDemo Boolean?
-  purchased Boolean?
+  timeToPurchase     String?
+  triedDemo          Boolean?
+  purchased          Boolean?
+  status             String?
+  read               String?
 }
 
 // ----------------------------------------------------------------------------
@@ -1143,44 +1141,6 @@ model DemoDay {
   notified  String?
 }
 
-//model Part {
-//  id        String   @id @default(cuid())
-//  createdAt DateTime @default(now())
-//  updatedAt DateTime @updatedAt
-//
-//  partNumber  Int     @default(autoincrement())
-//  brand       String?
-//  name        String?
-//  price       Int?
-//  cost        Int?
-//  quantity    Int?
-//  description String?
-//  category    String?
-//  subCategory String?
-//  onOrder     Int?
-//  distributer String?
-//
-//  @@index([partNumber])
-//}
-
-//model PartsOrder {
-// orderNumber Int @id @default(autoincrement())
-//
-//  createdAt DateTime @default(now())
-//  updatedAt DateTime @updatedAt
-//
-//userId       String?
-//  clientfileId String?
-//  partNumber   String?
-//}
-
-//model PartsOrderDetail {
-//id          Int     @id @default(autoincrement())
-// orderNumber Int
-//  partNumber  String?
-//  quantity    Int?
-//}
-
 model AccOrder {
   id           String   @id @default(cuid())
   createdAt    DateTime @default(now())
@@ -1602,10 +1562,22 @@ model FinanceNote {
   userName     String?
   clientfileId String
 
-  financeId String?
-  finance   Finance? @relation(fields: [financeId], references: [id], onDelete: Cascade)
+  financeId     String?
+  finance       Finance?        @relation(fields: [financeId], references: [id], onDelete: Cascade)
+  selectedUsers SelectedUsers[]
 
   @@index([financeId])
+}
+
+model SelectedUsers {
+  id            String      @id @default(cuid())
+  createdAt     DateTime    @default(now())
+  selectedName  String?
+  selectedEmail String?
+  FinanceNoteId String
+  FinanceNote   FinanceNote @relation(fields: [FinanceNoteId], references: [id], onDelete: Cascade)
+
+  @@index([FinanceNoteId])
 }
 
 model FinancePayment {
@@ -1785,12 +1757,13 @@ model WorkOrder {
   FinanceUnit           FinanceUnit?           @relation(fields: [FinanceUnitId], references: [id], onDelete: Cascade)
   ServiceUnit           ServiceUnit[]
   AccOrders             AccOrder[]
-  Finance               Finance[]
+  Finance               Finance?               @relation(fields: [financeId], references: [id], onDelete: Cascade)
   Clientfile            Clientfile?            @relation(fields: [clientfileId], references: [id], onDelete: Cascade)
   ServicesOnWorkOrders  ServicesOnWorkOrders[]
   Payments              Payment[]
   WorkOrderApts         WorkOrderApts[]
   WorkOrderClockEntries WorkOrderClockEntry[]
+  WorkOrderNotes        WorkOrderNotes[]
 
   @@index([clientfileId])
   @@index([FinanceUnitId])
@@ -1816,6 +1789,20 @@ model WorkOrderApts {
   motor       String?
   color       String?
   location    String?
+  WorkOrder   WorkOrder? @relation(fields: [workOrderId], references: [workOrderId], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workOrderId])
+}
+
+model WorkOrderNotes {
+  id          String     @id @default(cuid())
+  body        String?
+  userName    String?
+  userEmail   String?
+  workOrderId Int?
   WorkOrder   WorkOrder? @relation(fields: [workOrderId], references: [workOrderId], onDelete: Cascade)
 
   createdAt DateTime @default(now())

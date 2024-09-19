@@ -1,16 +1,16 @@
 
 import { useState, useEffect, } from 'react'
-import canamIndex from '~/logos/canamIndex.png'
-import manitouIndex from '~/logos/manitouIndex.png'
+import canamIndex from '~/images/logos/canamIndex.png'
+import manitouIndex from '~/images/logos/manitouIndex.png'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter, } from '~/components/ui/card'
 import { Form, Link, useLocation, useLoaderData, useFetcher, Links, NavLink } from '@remix-run/react';
 import Overview from '~/images/overview.png'
 import Salestracker from '~/images/salestracker.png'
 import Features from '~/images/features.png'
 import Dealerfees from '~/images/dealerfees.png'
-import harleyDavidson from '~/logos/hd.png'
+import harleyDavidson from '~/images/logos/hd.png'
 import kawasaki from '~/overviewUtils/images/kawa.png'
-import activix from '~/logos/activix.svg'
+import activix from '~/images/logos/activix.svg'
 import {
   Accordion,
   AccordionContent,
@@ -226,7 +226,7 @@ function NewHeader() {
           </p>
           <div className='flex justify-center'>
             <Link to='/testDrive' >
-              <Button size='sm' className='mx-auto bg-primary text-foreground  mt-3'>
+              <Button size='sm' className='mx-auto bg-primary text-foreground  mt-3 mr-3'>
                 Request Demo
               </Button>
             </Link>

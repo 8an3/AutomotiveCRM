@@ -7,7 +7,7 @@ import { prisma } from "~/libs";
 import { model } from "~/models";
 import Sidebar from "~/components/zRoutes/oldComps/sidebar";
 import { type LinksFunction, json, createCookie, redirect } from "@remix-run/node";
-import NotificationSystem from "~/routes/__authorized/dealer/notifications";
+import NotificationSystem from "~/routes/__authorized/dealer/systems/notifications";
 import { GetUser } from "~/utils/loader.server";
 import secondary from "~/styles/secondary.css";
 import global from "~/globals.css";

@@ -1,7 +1,7 @@
 import { Theme, useTheme } from "remix-themes";
 
 import { ButtonIcon } from "~/components";
-import { Moon, Sun } from "~/icons";
+import { Moon, Sun } from "~/images/icons";
 
 interface Props {
   size?: "xs" | "sm" | "lg" | undefined;

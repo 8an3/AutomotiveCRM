@@ -81,7 +81,7 @@ export default function Subscribe() {
                                                 <SalespersonPrice />
                                             ) : (
                                                 <fieldset
-                                                    className="mx-auto grid w-[350px]  rounded-lg p-4 hover:border-primary  "
+                                                    className="mx-auto grid w-[400px]  rounded-lg p-4 hover:border-primary mr-10 "
                                                 >
                                                     <legend className="-ml-1 px-1 text-lg font-medium text-myColor-200">
                                                         Sales People
@@ -105,7 +105,7 @@ export default function Subscribe() {
                                             {dealer ? (
                                                 <DealerPrice />
                                             ) : (
-                                                <fieldset className="mx-auto grid  w-[350px] gap-6 rounded-lg   p-4  hover:border-primary lg:h-full  " >
+                                                <fieldset className="mx-auto grid  w-[400px] gap-6 rounded-lg ml-10   p-4  hover:border-primary lg:h-full  " >
                                                     <legend className="-ml-1 px-1 text-lg font-medium text-foreground">
                                                         Dealers
                                                     </legend>

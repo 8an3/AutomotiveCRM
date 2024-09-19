@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Button } from "~/components";
-import { Copy, Check } from "~/icons";
+import { Copy, Check } from "~/images/icons";
 
 import type { ButtonProps } from "~/components";
 

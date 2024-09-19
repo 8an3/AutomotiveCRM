@@ -60,24 +60,11 @@ import {
 import { ChevronsUpDown } from 'lucide-react'
 import { Wrench } from 'lucide-react'
 import calendarIcon from '~/images/favicons/calendar.svg'
+import {
+  useScreenSize, ViewNamesGroup, CustomToolbar, mobileToolbar, noToolbar, colors, resourceTitle,
+  IEventInfo, EventFormData, DatePickerEventFormData, initialEventFormState, initialDatePickerEventFormData, IProps, ViewToolbar
+} from '~/components/calendar/shared'
 
-const useScreenSize = () => {
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < 768);
-    };
-
-    // Set initial value
-    handleResize();
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return isSmallScreen;
-};
 
 export default function DnDResource() {
   const { allServiceApts, techs, user } = useLoaderData()
@@ -155,56 +142,6 @@ export default function DnDResource() {
   // add customer modal
 
 
-
-  const ViewToolbar = ({
-    label,
-    onNavigate,
-    onView,
-    view,
-    views,
-  }) => {
-    return (
-      <div classsName='mt-3 mx-auto'>
-        <Select
-          //  value={view}
-          onValueChange={(value) => setView(value)}>
-          <SelectTrigger className="w-[180px] mx-auto">
-            <SelectValue placeholder="Select A Calendar View" />
-          </SelectTrigger>
-          <SelectContent className='border-border'>
-            <SelectGroup>
-              <SelectLabel>Views</SelectLabel>
-              <SelectItem value='day'>
-                Day
-              </SelectItem>
-              <SelectItem value='week'>
-                Week
-              </SelectItem>
-              <SelectItem value='month'>
-                Month
-              </SelectItem>
-              <SelectItem value='agenda'>
-                Agenda
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-      </div>
-    )
-  }
-
-  const ViewNamesGroup = ({ views: viewNames, view, messages, onView }) => {
-    return viewNames.map((name) => (
-      <Button
-        key={name}
-        type="button"
-        className={clsx({ 'rbc-active': view === name })}
-        onClick={() => onView(name)}
-      >
-        <Text>{messages[name]}</Text>
-      </Button>
-    ))
-  }
   /** */
   // old resouce toggle
   const [showResources, setShowResources] = useState(true);
@@ -217,115 +154,21 @@ export default function DnDResource() {
 
   const handleResourceChange = (value) => {
     setSelectedResource(value);
-
   };
 
   const filteredEvents = selectedResource === 'all'
     ? myEvents
     : myEvents.filter(event => event.resourceId === selectedResource);
 
-
-  const CustomToolbar = ({
-    label,
-    localizer: { messages },
-    onNavigate,
-    onView,
-    view,
-    views,
-  }) => {
-    return (
-      <div className="rbc-toolbar items-center">
-
-        <span className="rbc-toolbar-label text-foreground text-center text-2xl my-auto">{ }</span>
-        <span className="ml-auto justify-end mr-5">
-
-        </span>
-        <div className="ml-auto justify-end my-auto items-center">
-          <Button
-            variant='outline'
-            className=' text-center my-auto  p-2 cursor-pointer hover:text-primary justify-center items-center border-border mr-4'
-            onClick={() => onNavigate(Navigate.TODAY)}
-          >
-            Today
-          </Button>
-          <Button
-            variant='ghost'
-            className=' p-2 cursor-pointer hover:text-primary justify-center items-center border-transparent hover:bg-transparent'
-            onClick={() => onNavigate(Navigate.PREVIOUS)}
-          >
-            <ArrowLeft />
-          </Button>
-
-          <Button
-            variant='ghost'
-            className='p-2 cursor-pointer hover:text-primary justify-center items-center mr-3 border-transparent hover:bg-transparent'
-            onClick={() => onNavigate(Navigate.NEXT)}
-          >
-            <ArrowRight />
-          </Button>
-        </div>
-      </div>
-    )
-  }
-  const mobileToolbar = ({
-    label,
-    localizer: { messages },
-    onNavigate,
-    onView,
-    view,
-    views,
-  }) => {
-    return (
-      <div className="grid grid-cols-1">
-
-        <span className="mx-auto">{label}</span>
-
-        <span className="mx-auto">
-          <button className='rounded-tl-md   rounded-bl-md   p-2 cursor-pointer hover:text-primary justify-center items-center ' onClick={() => onNavigate(Navigate.PREVIOUS)}
-          >
-            <ChevronsLeft size={20} strokeWidth={1.5} />
-          </button>
-          <button className='rounded-none  p-2 cursor-pointer hover:text-primary justify-center items-center '
-            onClick={() => onNavigate(Navigate.TODAY)}
-          >
-            Today
-          </button>
-          <button className=' rounded-tr-md  rounded-br-md  p-2 cursor-pointer hover:text-primary justify-center items-center mr-3'
-            onClick={() => onNavigate(Navigate.NEXT)}
-          >
-            <ChevronsRight size={20} strokeWidth={1.5} />
-          </button>
-        </span>
-      </div>
-    )
-  }
-  const noToolbar = ({
-    label,
-    localizer: { messages },
-    onNavigate,
-    onView,
-    view,
-    views,
-  }) => {
-    return (
-      <div className="rbc-toolbar">
-
-
-      </div>
-    )
-  }
   const [date, setDate] = useState<Date>()
 
   const newDate = new Date()
 
   const onNavigate = useCallback((newDate) => setDate(newDate), [setDate])
 
-
-
   // ---------------------- dnd
 
 
-  /// ------------------- end of dnd
   const moveEvent = useCallback(
     ({ event, start, end, isAllDay: droppedOnAllDaySlot = false }) => {
       const { allDay } = event
@@ -396,6 +239,7 @@ export default function DnDResource() {
       console.error('Error fetching appointment data:', error);
     }
   };
+  /// ------------------- end of dnd
 
   // ---------------------------resource
 
@@ -407,26 +251,6 @@ export default function DnDResource() {
     })),
     { resourceId: 'Deliveries', resourceTitle: 'Deliveries' }, // Static entry
 
-  ];
-
-
-
-  const colors = [
-    '#039be5',
-    '#7986cb',
-    '#f6bf26',
-    '#9e69af',
-    '#4285f4',
-    '#33FFF3',
-    '#ad1457',
-    '#f09300',
-    '#7cb342',
-    '#1757aa',
-    '#f4511e',
-    '#0b8043',
-    '#3f51b5',
-    '#039be5',
-    '#d81b60',
   ];
 
   const colorMap = {};
@@ -454,20 +278,6 @@ export default function DnDResource() {
 
   const getResourceId = (resource) => resource.resourceId;
   const getResourceTitle = (resource) => resource.resourceTitle;
-
-  const resourceTitle = (resource) => {
-
-    return (
-      <div className='h-[50px] flex justify-center items-center mt-[25px]'>
-        {resource.resourceTitle === 'Service Desk' ? (
-          <Sheet />
-        ) : resource.resourceTitle === 'Deliveries' ? (
-          <Truck />
-        ) : <Wrench />}
-        <p className='text-foreground text-center text-3xl my-auto ml-3'>{resource.resourceTitle}</p>
-      </div>
-    )
-  }
 
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
@@ -505,7 +315,7 @@ export default function DnDResource() {
                         initialFocus
                       />
                     </div>
-                    <ViewToolbar />
+                    <ViewToolbar setView={setView} />
                     <div className='mt-3  mx-auto'>
 
                       <Select
@@ -653,44 +463,6 @@ export default function DnDResource() {
     );
   };
 
-  /**
-                {showResources ? (
-                       ) : (
-                        <DragAndDropCalendar
-                          style={{
-                            width: `calc(100vw - 310px)`,
-                            height: "100vh",
-                            overflowX: "hidden",
-                            overflowY: "scroll",
-                            objectFit: "contain",
-                            overscrollBehavior: "contain",
-                            color: "white",
-                          }}
-                          selected={selected}
-                          defaultView={Views.WEEK}
-                          events={myEvents}
-                          step={15}
-                          showMultiDayTimes={true}
-                          localizer={localizer}
-                          min={minTime}
-                          max={maxTime}
-                          date={date}
-                          onNavigate={onNavigate}
-                          components={{
-                            toolbar: CustomToolbar,
-                            event: EventInfo,
-                          }}
-                          resizable
-                          selectable
-                          onEventDrop={moveEvent}
-                          onEventResize={resizeEvent}
-                          onSelectEvent={HandleSelectEvent}
-                          onSelectSlot={handleSelectSlot}
-                          eventPropGetter={eventPropGetter}
-
-                        // onClick={() => setOpenDatepickerModal(true)}
-                        />
-                      )}     */
 
   const SmallScreenUI = () => {
     return (
@@ -757,7 +529,6 @@ export default function DnDResource() {
     </div>
   )
 }
-
 
 export async function action({ request }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData());
@@ -831,225 +602,6 @@ export async function loader({ request, params }: LoaderFunction) {
 }
 
 dayjs.extend(timezone)
-
-
-
-export interface IEventInfo extends Event {
-  _id: string
-  id: string
-  todoId?: string
-  description: string
-  allDay: string
-  start: string
-  end: string
-  resourceId: number
-  userEmail: string
-  followUpDay1: string
-  financeId: string
-  direction: string
-  resultOfcall: string
-  firstName: string
-  lastName: string
-  email: string
-  brand: string
-  intent: string
-  contactMethod: string
-  completed: string
-  apptStatus: string
-  apptType: string
-  title: string
-  note: string
-  phone: string
-  resourceId2: string
-  address: string
-  userId: string
-  userName: string
-  messageTitle: string
-  attachments: string
-  getClientFileById: string
-  followUpDay: string
-  clientFileId: string
-  model: string
-  unit: string
-
-  writer: string
-  tech: string
-  vin: string
-  tag: string
-  motor: string
-  location: string
-  workOrderId: number
-  mileage: string
-  color: string
-}
-
-export interface EventFormData {
-  todoId: string
-  description: string
-  allDay: string
-  start: string
-  end: string
-  resourceId: string
-  userEmail: string
-  followUpDay1: string
-  financeId: string
-  direction: string
-  resultOfcall: string
-  firstName: string
-  lastName: string
-  email: string
-  brand: string
-  intent: string
-  contactMethod: string
-  completed: string
-  apptStatus: string
-  resourceId2: string
-  stockNum: string
-  apptType: string
-  unit: string
-  title: string
-  note: string
-  phone: string
-  address: string
-  userId: string
-  userName: string
-  messageTitle: string
-  attachments: string
-  getClientFileById: string
-  model: string
-  writer: string
-  tech: string
-  tag: string
-  motor: string
-  location: string
-  workOrderId: number
-  mileage: string
-  color: string
-}
-
-export interface DatePickerEventFormData {
-  allDay: boolean
-  start?: Date
-  end?: Date
-  todoId: string
-  description: string
-  resourceId: string
-  userEmail: string
-  followUpDay1: string
-  financeId: string
-  direction: string
-  resultOfcall: string
-  firstName: string
-  lastName: string
-  email: string
-  brand: string
-  intent: string
-  contactMethod: string
-  completed: string
-  apptStatus: string
-  apptType: string
-  title: string
-  note: string
-  phone: string
-  address: string
-  userId: string
-  userName: string
-  messageTitle: string
-  attachments: string
-  resourceId2: string
-  getClientFileById: string
-  model: string
-  unit: string
-  writer: string
-  tech: string
-  vin: string
-  tag: string
-  motor: string
-  location: string
-  workOrderId: number
-  mileage: string
-  color: string
-}
-
-const initialEventFormState: EventFormData = {
-  description: "",
-  todoId: undefined,
-  completed: 'no',
-  apptType: '',
-  getClientFileById: '',
-  userEmail: '',
-  followUpDay: '',
-  clientFileId: '',
-  brand: '',
-  model: '',
-  stockNum: '',
-  writer: '',
-  tech: '',
-  vin: '',
-  tag: '',
-  motor: '',
-  location: '',
-  workOrderId: '',
-  mileage: '',
-  color: '',
-}
-
-const initialDatePickerEventFormData: DatePickerEventFormData = {
-  description: "",
-  todoId: undefined,
-  allDay: false,
-  start: undefined,
-  resourceId2: '',
-  end: undefined,
-  apptType: '',
-  completed: '',
-  resourceId: '',
-  userEmail: '',
-  followUpDay1: '',
-  financeId: '',
-  direction: '',
-  resultOfcall: '',
-  firstName: '',
-  lastName: '',
-  email: '',
-  brand: '',
-  intent: '',
-  contactMethod: '',
-  apptStatus: '',
-  unit: '',
-  title: '',
-  note: '',
-  phone: '',
-  address: '',
-  userId: '',
-  userName: '',
-  messageTitle: '',
-  attachments: '',
-  getClientFileById: '',
-  followUpDay: '',
-  clientFileId: '',
-  model: '',
-  writer: '',
-  tech: '',
-  vin: '',
-  tag: '',
-  motor: '',
-  location: '',
-  workOrderId: '',
-  mileage: '',
-  color: '',
-
-}
-
-interface IProps {
-  open: boolean
-  handleClose: Dispatch<SetStateAction<void>>
-  onDeleteEvent: (e: MouseEvent<HTMLButtonElement>) => void
-  onCompleteEvent: (e: MouseEvent<HTMLButtonElement>) => void
-  currentEvent: IEventInfo
-  user: IUser
-  techs: any
-}
 
 export function EventInfoModal({ user, open, handleClose, currentEvent, techs }: IProps) {
   const data = currentEvent
@@ -1155,7 +707,6 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: styles1 },
   { rel: "stylesheet", href: rbc },
   { rel: "stylesheet", href: base },
-
 ];
 
 export const meta = () => {

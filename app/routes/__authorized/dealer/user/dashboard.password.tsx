@@ -23,7 +23,7 @@ import {
   TextArea,
 } from "~/components";
 import { requireUserSession } from "~/helpers";
-import { Settings } from "~/icons";
+import { Settings } from "~/images/icons";
 import { model } from "~/models";
 import {
   schemaUserUpdateData,

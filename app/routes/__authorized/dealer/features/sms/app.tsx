@@ -1,6 +1,6 @@
 
 import React, { useEffect, useRef, useState, RefObject } from "react";
-import { Loader2 } from "~/icons";
+import { Loader2 } from "~/images/icons";
 import { Outlet, useFetcher, useLoaderData, useActionData, Form, useLocation, useSubmit, useMatch } from '@remix-run/react';
 import { Textarea } from '~/components/zRoutes/oldComps/ui/textarea';
 import { setMessages, setSelectedChannel } from '~/components/actions/actions';

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { Button, Progress, ToastAction } from "~/components";
 import { toast } from "~/hooks";
-import { CheckCircle, Undo } from "~/icons";
+import { CheckCircle, Undo } from "~/images/icons";
 import { cn } from "~/utils";
 
 interface Props

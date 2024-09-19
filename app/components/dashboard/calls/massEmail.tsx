@@ -10,7 +10,7 @@ import { cn } from "~/components/ui/utils"
 import { toast } from "sonner"
 import { CheckIcon, PaperPlaneIcon, PlusIcon } from "@radix-ui/react-icons"
 import { prisma } from "~/libs";
-import DashboardClient from "~/routes/__authorized/dealer/email/massEmail";
+import DashboardClient from "~/routes/__authorized/dealer/features/email/massEmail.client";
 
 export default function MassEmail({
   //data,

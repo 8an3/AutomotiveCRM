@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ButtonIcon, Text } from "~/components";
 import { configDev } from "~/configs";
-import { X } from "~/icons";
+import { X } from "~/images/icons";
 
 /**
  * Tailwind Indicator

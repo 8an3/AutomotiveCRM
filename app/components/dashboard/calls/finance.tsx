@@ -74,8 +74,8 @@ import { ScrollArea } from "~/components/ui/scroll-area";
 import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
 import { ModelPage } from "~/overviewUtils/modelPage";
 import { ImageSelectNav } from '~/overviewUtils/imageselect'
-import canamIndex from '~/logos/canamIndex.png'
-import manitouIndex from '~/logos/manitouIndex.png'
+import canamIndex from '~/images/logos/canamIndex.png'
+import manitouIndex from '~/images/logos/manitouIndex.png'
 import Harley from '~/components/dashboardCustId/hdIcon.png'
 import second from '~/styles/second.css'
 import {
@@ -99,7 +99,7 @@ import DealerFeesDisplay from '~/overviewUtils/dealerFeesDisplay'
 import ContactInfoDisplay from '~/overviewUtils/contactInfoDisplay'
 import ClientProfile from '~/components/dashboard/calls/actions/clientProfile'
 // <Sidebar />
-import NotificationSystem from "~/routes/__authorized/dealer/notifications";
+import NotificationSystem from "~/routes/__authorized/dealer/systems/notifications";
 import { PrintSpec } from "~/overviewUtils/printSpec";
 import { CiEdit } from "react-icons/ci";
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';

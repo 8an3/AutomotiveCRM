@@ -18,7 +18,7 @@ import {
   PageSearch,
   PageStar,
   UserCrown,
-} from "~/icons";
+} from "~/images/icons";
 
 /**
  * Icon Component

@@ -14,8 +14,13 @@ import { DataForm } from '../dashboard/calls/actions/dbData';
 import { GetUser } from "~/utils/loader.server";
 import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
 import { QuoteServerActivix } from '~/utils/quote/quote.server';
-import emitter from '~/routes/__authorized/dealer/emitter';
+import emitter from '~/routes/__authorized/dealer/features/addOn/emitter';
 import { checkForMobileDevice, getToken, CompleteLastAppt, TwoDays, FollowUpApt, ComsCount, QuoteServer } from '../shared/shared'
+import { Resend } from 'resend';
+import CustomBody from "~/emails/customBody";
+
+const resend = new Resend('re_YFCDynPp_5cod9FSRkrbS6kfmRsoqSsBS')//new Resend(process.env.resend_API_KEY);
+
 
 export async function dashboardLoader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
@@ -471,6 +476,55 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     })
     return json({ updateClient })
   }
+  if (intent === 'email') {
+    const finance = await prisma.finance.findUnique({ where: { id: formData.financeId } })
+
+    const model = finance?.model || '';
+    const modelData = formData.modelData
+    const value = formData.template
+    let data;
+    if (value.startsWith("customEmailDropdown")) {
+      const prefix = "customEmailDropdown";
+      const id = value.slice(prefix.length);
+      const emailDrop = await prisma.emailTemplatesForDropdown.findUnique({
+        where: { id: id },
+      });
+      console.log(value, emailDrop, 'hitd')
+
+      data = await resend.emails.send({
+        from: "Sales <sales@resend.dev>",
+        reply_to: user?.email,
+        to: [`${finance?.email}`],
+        subject: emailDrop.subject || '',
+        react: <CustomBody body={emailDrop.body} user={user} />
+      });
+
+    } else {
+      console.log('hitemail')
+      data = await resend.emails.send({
+        from: "Sales <sales@resend.dev>",
+        reply_to: user?.email,
+        to: [`${finance?.email}`],
+        subject: `${finance?.brand} ${model} model information.`,
+        react: <PaymentCalculatorEmail user={user} finance={finance} modelData={modelData} formData={formData} />
+      });
+    }
+    await prisma.comm.create({
+      data: {
+        financeId: finance.financeId,
+        body: formData.body || 'Templated Email',
+        type: 'Email',
+        direction: 'Outgoing',
+        subject: `${finance?.brand} ${model} model information.`,
+        result: 'Attempted',
+        userEmail: user.email,
+        Finance: {
+          connect: { id: financeId }
+        },
+      }
+    })
+    return json({ data })
+  }
   switch (intent) {
     case 'salesColumns':
       const userEmail = formData.userEmail
@@ -899,7 +953,59 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     second: '2-digit',
   };
   let { clientData, dashData, financeData } = DataForm(formData);
+  if (intent === 'updateAppointment') {
+    console.log(formData, 'formData')
 
+    let dateModal = new Date(formData.value);
+    const hours = Number(formData.hours);
+    const minutes = Number(formData.minutes);
+    dateModal.setHours(hours, minutes, 0);
+    const date66 = new Date(dateModal);
+    const options2 = {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    };
+    const apptDate66 = new Date(date66).toLocaleDateString("en-US", options2)
+    //  console.log(dateModal, 'dateModal', date66, 'date66', apptDate66, 'apptDate66',)
+    const todaysDate66 = new Date()
+    const completeApt66 = await CompleteLastAppt(userId, financeId)
+    // console.log(completeApt66, 'CompleteLastAppt')
+
+    const updating = await prisma.finance.update({
+      where: { id: formData.financeId },
+      data: {
+        lastContact: todaysDate66.toLocaleDateString('en-US', options2),
+        status: formData.status,
+        customerState: formData.customerState,
+        result: formData.result,
+        timesContacted: formData.timesContacted,
+        nextAppointment: apptDate66,
+        followUpDay: apptDate66,
+
+      },
+    });
+    const apptDat66 = date66.toLocaleDateString('en-US', options2)
+    const createFollowup66 = await prisma.clientApts.update({
+      where: { id: formPayload.appointmentId },
+      data: {
+        apptType: formData.apptType,
+        apptStatus: formData.apptStatus,
+        completed: 'no',
+        contactMethod: formData.contactMethod,
+        end: String(new Date(new Date(apptDat66).getTime() + 45 * 60000)),
+        title: formData.title,
+        start: String(apptDat66),
+        description: formData.description,
+        resourceId: Number(formData.resourceId),
+      }
+    })
+    return json({ updating, completeApt66, createFollowup66, });
+  }
   switch (intent) {
     case 'newLead':
       const activixActivated = user?.activixActivated
@@ -985,7 +1091,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       break;
     case '2DaysFromNow':
       const followUpDay2 = parseInt(formData.followUpDay1);
-      console.log('followUpDay:', followUpDay2);
+      console.log('followUpDay:', followUpDay2, formPayload, formPayload.newFollowUpDate, 'datteeee');
       function addDays(days) {
         let currentDate = new Date();
         currentDate.setDate(currentDate.getDate() + days);
@@ -1059,14 +1165,10 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       console.log(formData, 'formData')
 
       let dateModal = new Date(formData.value);
-      const year = dateModal.getFullYear();
-      const month = String(dateModal.getMonth() + 1).padStart(2, '0');
-      const day = String(dateModal.getDate()).padStart(2, '0');
       const hours = Number(formData.hours);
       const minutes = Number(formData.minutes);
-      dateModal.setHours(hours, minutes);
-      const dateTimeString = `${year}-${month}-${day}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00.000`;
-      const date66 = new Date(dateTimeString);
+      dateModal.setHours(hours, minutes, 0);
+      const date66 = new Date(dateModal);
       const options2 = {
         weekday: 'short',
         year: 'numeric',
@@ -1076,7 +1178,8 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
         minute: '2-digit',
         second: '2-digit',
       };
-      const apptDate66 = date66.toLocaleDateString('en-US', options2)
+      const apptDate66 = new Date(date66).toLocaleDateString("en-US", options2)
+      console.log(dateModal, 'dateModal', date66, 'date66', apptDate66, 'apptDate66',)
       const todaysDate66 = new Date()
       const completeApt66 = await CompleteLastAppt(userId, financeId)
       console.log(completeApt66, 'CompleteLastAppt')
@@ -1094,7 +1197,6 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
 
         },
       });
-      console.log(updating, 'updating')
       const apptDat66 = date66.toLocaleDateString('en-US', options2)
       const createFollowup66 = await prisma.clientApts.create({
         data: {
@@ -1121,8 +1223,8 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
           userName: user?.name,
         }
       })
-      console.log(createFollowup66, 'creating followup')
       return json({ updating, completeApt66, createFollowup66, });
+
     case 'updateFinance':
       console.log(formData, ' update finance data')
 

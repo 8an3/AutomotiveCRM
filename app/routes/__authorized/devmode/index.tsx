@@ -1,7 +1,7 @@
 
 import { useState, useEffect, } from 'react'
-import canamIndex from '~/logos/canamIndex.png'
-import manitouIndex from '~/logos/manitouIndex.png'
+import canamIndex from '~/images/logos/canamIndex.png'
+import manitouIndex from '~/images/logos/manitouIndex.png'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter, } from '~/components/ui/card'
 import { redirect, json, type LinksFunction, type DataFunctionArgs, type LoaderArgs, type MetaFunction, } from '@remix-run/node'
 import { Form, Link, useLoaderData, useFetcher, Links } from '@remix-run/react';
@@ -9,8 +9,8 @@ import Overview from '~/images/overview.png'
 import Salestracker from '~/images/salestracker.png'
 import Features from '~/images/features.png'
 import Dealerfees from '~/images/dealerfees.png'
-import harleyDavidson from '~/logos/hd.png'
-import activix from '~/logos/activix.svg'
+import harleyDavidson from '~/images/logos/hd.png'
+import activix from '~/images/logos/activix.svg'
 import {
   Accordion,
   AccordionContent,

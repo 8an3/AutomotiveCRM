@@ -2,65 +2,66 @@ import { json, type LoaderFunction } from "@remix-run/node";
 import { prisma } from "~/libs";
 
 export async function loader({ request, params }: LoaderFunction) {
-  const brandId = params.brandId;
+  const brandId = params.brand;
   console.log(brandId, ' getting brand list')
   let modelList;
   switch (brandId) {
     case "Harley-DavidsonMY24":
       const HarleyDavidsonMY24 = await prisma.harley24.findMany({ select: { model: true } });
-      return json({ HarleyDavidsonMY24 });
+      return (HarleyDavidsonMY24);
     case "Ski-Doo-MY24":
       const skidDoo24 = await prisma.my24canam.findMany({ select: { model: true } });
-      return json({ skidDoo24 });
+      return (skidDoo24);
     case "Can-Am-SXS-MY24":
       const CanAmSXSMY24 = await prisma.my24canam.findMany({ select: { model: true } });
-      return json({ CanAmSXSMY24 });
+      return (CanAmSXSMY24);
     case "Kawasaki":
       const Kawasaki = await prisma.kawasaki.findMany({ select: { model: true } });
-      return json({ Kawasaki });
+      return (Kawasaki);
     case "Manitou":
       const Manitou = await prisma.manitou.findMany({ select: { model: true } });
-      return json({ Manitou })
+      return (Manitou)
     case "Sea-Doo":
       const SeaDoo = await prisma.seadoo.findMany({ select: { model: true } });
-      return json({ SeaDoo })
+      return (SeaDoo)
     case "Switch":
       const Switch = await prisma.switch.findMany({ select: { model: true } });
-      return json({ Switch });
+      return (Switch);
     case "Can-Am":
       const CanAm = await prisma.canam.findMany({ select: { model: true } });
-      return json({ CanAm });
+      return (CanAm);
     case "Can-Am-SXS":
       const modelList = await prisma.canamsxs.findMany({ select: { model: true } });
-      return json({ modelList });
+      return (modelList);
     case "KTM":
       const KTM = await prisma.harley24.findMany({ select: { model: true } });
-      return json({ KTM });
+      return (KTM);
     case "Ski-Doo":
       const SkiDoo = await prisma.skidoo.findMany({ select: { model: true } });
-      return json({ SkiDoo });
+      return (SkiDoo);
     case "Suzuki":
       const Suzuki = await prisma.suzuki.findMany({ select: { model: true } });
-      return json({ Suzuki });
+      return (Suzuki);
     case "Triumph":
       const Triumph = await prisma.triumph.findMany({ select: { model: true } });
-      return json({ Triumph });
+      return (Triumph);
     case "BMW-Motorrad":
       const BMWMotorrad = await prisma.bmwmoto.findMany({ select: { model: true } });
-      return json({ BMWMotorrad });
+      return (BMWMotorrad);
     case "Indian":
       const Indian = await prisma.harley24.findMany({ select: { model: true } });
-      return json({ Indian });
+      return (Indian);
     case "Yamaha":
       const Yamaha = await prisma.harley24.findMany({ select: { model: true } });
-      return json({ Yamaha });
+      return (Yamaha);
     case "Spyder":
       const Spyder = await prisma.spyder.findMany({ select: { model: true } });
-      return json({ Spyder });
+      return (Spyder);
     case "Harley-Davidson":
       const Harley = await prisma.harley.findMany({ select: { model: true } });
-      return json({ Harley });
+      console.log(Harley, 'harley')
+      return (Harley);
     default:
-      null;
+      return json('did not get brand');
   }
 }

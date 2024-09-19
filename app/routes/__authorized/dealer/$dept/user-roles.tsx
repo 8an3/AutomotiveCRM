@@ -12,7 +12,7 @@ import {
 } from "~/components";
 import { configDev } from "~/configs";
 import { requireUserRole, requireUserSession } from "~/helpers";
-import { Plus, Trash } from "~/icons";
+import { Plus, Trash } from "~/images/icons";
 import { createSitemap, formatPluralItems } from "~/utils";
 import { requireAuthCookie } from '~/utils/misc.user.server';
 import { model } from "~/models";

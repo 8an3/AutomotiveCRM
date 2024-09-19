@@ -24,7 +24,7 @@ import { createFinance, createFinanceManitou, createBMWOptions, createBMWOptions
 import { QuoteServerActivix } from '~/utils/quote/quote.server';
 import twilio from 'twilio';
 import axios from "axios";
-import emitter from '~/routes/__authorized/dealer/emitter';
+import emitter from '~/routes/__authorized/dealer/features/addOn/emitter';
 import { checkForMobileDevice, getToken, CompleteLastAppt, TwoDays, FollowUpApt, ComsCount, QuoteServer } from '../shared/shared'
 
 export async function dashboardLoader({ request, params }: LoaderFunction) {

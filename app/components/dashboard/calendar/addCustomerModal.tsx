@@ -14,7 +14,6 @@ import { type IEventInfo } from "backups/calendar.sales"
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { useRootLoaderData } from "~/hooks/use-root-loader-data";
 import { ListSelection2 } from '~/quoteUtils/listSelection'
-import { CircleAlert } from 'lucide-react'
 
 interface IProps {
   open: boolean
@@ -169,7 +168,6 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
 
                   {String(validity.firstName).length > 3 && validity.firstName === false && (
                     <div className="text-[#ff0202] flex items-center">
-                      <CircleAlert size={12} />
                       <p className="mr-3">
                         First name is required.
                       </p>
@@ -194,7 +192,6 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
 
                   {String(validity.lastName).length > 3 && validity.lastName == false && (
                     <div className="text-[#ff0202] flex items-center">
-                      <CircleAlert size={12} />
                       <p className="mr-3">
                         Last name is required.
                       </p>
@@ -217,7 +214,6 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                   </div>
                   {String(validity.phone).length > 3 && validity.phone === false && (
                     <div className="text-[#ff0202] flex items-center">
-                      <CircleAlert />
                       <p className="mr-3">
                         Phone number is not valid...
                       </p>
@@ -240,7 +236,6 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                   </div>
                   {String(validity.email).length > 3 && validity.email === false && (
                     <div className="text-[#ff0202] flex items-center">
-                      <CircleAlert size={12} />
                       <p className="mr-3">
                         Email is not valid...
                       </p>
@@ -304,7 +299,6 @@ export default function AddCustomerModal({ open, handleClose }: IProps) {
                   )}
                   {modelError === true && (
                     <div className="text-[#ff0202] flex items-center">
-                      <CircleAlert size={12} />
                       <p className="mr-3">
                         Model is required.
                       </p>

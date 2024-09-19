@@ -472,11 +472,11 @@ export default function DemoDay() {
   };
 
   const handleBrand = (e) => {
-    setBrandId(e.target.value);
+    setBrandId(e);
     console.log(brandId, modelList)
   };
   const handleBrand2 = (e) => {
-    setBrandId2(e.target.value);
+    setBrandId2(e);
     console.log(brandId, modelList)
   };
 
@@ -696,7 +696,7 @@ export default function DemoDay() {
                     type="text"
                     list="ListOptions"
                     name="brand"
-                    onChange={handleBrand}
+                    onChange={(e) => handleBrand(e.currentTarget.value)}
                   />
                   <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Brand</label>
                 </div>
@@ -709,7 +709,7 @@ export default function DemoDay() {
                       <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Model</label>
                     </div>
                     <datalist id="ListOptions2">
-                      {modelList.models.map((item, index) => (
+                      {modelList.map((item, index) => (
                         <option key={index} value={item.model} />
                       ))}
                     </datalist>
@@ -717,21 +717,14 @@ export default function DemoDay() {
                 )}
               </div>
 
-              <div className="relative mt-3">
-                <Input
-                  className=" col-span-3 bg-background border-border"
-                  type="text"
-                  list="ListOptions"
-                  name="brand2"
-                  onChange={handleBrand2}
-                />
-                <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Brand 2</label>
-              </div>
+
               <datalist id="ListOptions">
                 <option value="BMW-Motorrad" />
                 <option value="Can-Am" />
                 <option value="Can-Am-SXS" />
+                <option value="an-Am-SXS-MY24" />
                 <option value="Harley-Davidson" />
+                <option value="Harley-DavidsonMY24" />
                 <option value="Indian" />
                 <option value="Kawasaki" />
                 <option value="KTM" />
@@ -739,25 +732,15 @@ export default function DemoDay() {
                 <option value="Sea-Doo" />
                 <option value="Switch" />
                 <option value="Ski-Doo" />
+                <option value="Ski-Doo-MY24" />
                 <option value="Suzuki" />
                 <option value="Triumph" />
                 <option value="Spyder" />
                 <option value="Yamaha" />
+                <option value="Used" />
               </datalist>
 
-              {modelList2 && (
-                <>
-                  <div className="relative mt-3">
-                    <Input className=" col-span-3 bg-background border-border" type="text" list="ListOptions3" name="model2" />
-                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Model 2</label>
-                  </div>
-                  <datalist id="ListOptions3">
-                    {modelList2.models.map((item, index) => (
-                      <option key={index} value={item.model} />
-                    ))}
-                  </datalist>
-                </>
-              )}
+
               <div className="relative mt-3">
                 <Input
                   name="leadNote"

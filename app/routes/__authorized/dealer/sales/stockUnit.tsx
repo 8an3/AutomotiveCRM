@@ -43,7 +43,7 @@ import {
 import StockUnit from '~/components/dashboard/unitPicker/table'
 
 import type { LinksFunction, LoaderArgs, } from "@remix-run/node";
-import { Input, Separator, PopoverTrigger, PopoverContent, Popover, TextArea, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "~/components/ui/index";
+import { Input, Separator, PopoverTrigger, PopoverContent, Popover, TextArea, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, SelectGroup, SelectLabel, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "~/components/ui/index";
 import * as React from "react"
 import { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, sortingFns, } from "@tanstack/react-table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu"
@@ -75,7 +75,7 @@ export const links: LinksFunction = () => [
 export default function UnitPicker({ finance, tableData, user }) {
 
 
-  console.log(finance, tableData, user, 'unitpicker')
+  // console.log(finance, tableData, user, 'unitpicker')
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -133,11 +133,14 @@ export function UnitInv({ finance, user, tableData }) {
 
   const [data, setPaymentData] = useState([]);
 
+
+
   useEffect(() => {
-    if (tableData) {
-      const filtered = tableData.filter((moto) => moto.model === finance.model)
-      setPaymentData(filtered)
-    }
+    setPaymentData(tableData)
+
+    /**     if (tableData) {
+           const filtered = tableData.filter((moto) => moto.model === finance.model)
+         } */
   }, []);
 
   const fetcher = useFetcher();
@@ -166,9 +169,6 @@ export function UnitInv({ finance, user, tableData }) {
     },
   }
 
-
-
-  console.log(referrer, 'referer')
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -220,19 +220,36 @@ export function UnitInv({ finance, user, tableData }) {
   }, [columnVisibility]);
 
   const [rowSelection, setRowSelection] = React.useState({});
-  const [globalFilter, setGlobalFilter] = useState('')
+  const [globalFilter, setGlobalFilter] = useState(finance.model)
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedModel, setSelectedModel] = useState({})
   const [filterBy, setFilterBy] = useState('');
   const [showFilter, setShowFilter] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState("");
-  const [selectedGlobal, setSelectedGlobal] = useState(false);
+  const [selectedGlobal, setSelectedGlobal] = useState(true);
   const [todayfilterBy, setTodayfilterBy] = useState(null);
+  const [models, setModels] = useState([]);
+  const [modelName, setModelName] = useState([]);
+  const [subModel, setSubModel] = useState([]);
 
-  const [date, setDate] = useState<Date>()
+  useEffect(() => {
+    async function fetchModels() {
+      const uniqueModels = [
+        ...new Set(tableData.map(wishList => wishList.model))
+      ];
+      const uniqueModels2 = [
+        ...new Set(tableData.map(wishList => wishList.modelName))
+      ];
+      const uniqueModels3 = [
+        ...new Set(tableData.map(wishList => wishList.subModel))
+      ];
+      setModels(uniqueModels);
+      setModelName(uniqueModels2);
+      setSubModel(uniqueModels3);
+    }
 
-  const newDate = new Date()
-  const [datefloorPlanDueDate, setDatefloorPlanDueDate] = useState<Date>()
+    fetchModels();
+  }, []);
 
   const options2 = {
     weekday: "short",
@@ -244,6 +261,10 @@ export function UnitInv({ finance, user, tableData }) {
     second: "2-digit",
     hour12: false,
     timeZoneName: "short"
+  };
+
+  const handleDropdownChange = (value) => {
+    setGlobalFilter(value);
   };
 
   const assignUnit = useFetcher()
@@ -371,13 +392,21 @@ export function UnitInv({ finance, user, tableData }) {
       accessorKey: "model",
       header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Model
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
+          <Select name='model' onValueChange={handleDropdownChange}>
+            <SelectTrigger className="  bg-background text-foreground border border-border">
+              <SelectValue placeholder='Model' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border border-border '>
+              <SelectGroup>
+                <SelectLabel>Models</SelectLabel>
+                {models.map((model, index) => (
+                  <SelectItem key={index} value={model} className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                    {model}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         )
       },
 
@@ -388,13 +417,21 @@ export function UnitInv({ finance, user, tableData }) {
       accessorKey: "modelName",
       header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Model Name
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
+          <Select name='model' onValueChange={handleDropdownChange}>
+            <SelectTrigger className="  bg-background text-foreground border border-border">
+              <SelectValue placeholder='Model Name' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border border-border '>
+              <SelectGroup>
+                <SelectLabel>Models</SelectLabel>
+                {modelName.map((model, index) => (
+                  <SelectItem key={index} value={model} className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                    {model}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         )
       },
 
@@ -405,13 +442,21 @@ export function UnitInv({ finance, user, tableData }) {
       accessorKey: "submodel",
       header: ({ column }) => {
         return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Sub Model
-            <CaretSortIcon className="ml-2 h-4 w-4" />
-          </Button>
+          <Select name='model' onValueChange={handleDropdownChange}>
+            <SelectTrigger className="  bg-background text-foreground border border-border">
+              <SelectValue placeholder='Sub Model' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border border-border '>
+              <SelectGroup>
+                <SelectLabel>Models</SelectLabel>
+                {subModel.map((model, index) => (
+                  <SelectItem key={index} value={model} className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                    {model}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
         )
       },
 
@@ -897,10 +942,6 @@ export function UnitInv({ finance, user, tableData }) {
     enableRowSelection: true,
   });
 
-  // -------- my components --------  //
-
-
-
   // clears filters
   const setAllFilters = () => {
     setColumnFilters([]);
@@ -922,7 +963,6 @@ export function UnitInv({ finance, user, tableData }) {
     console.log("value", value);
     table.getColumn(selectedColumn)?.setFilterValue(value);
   };
-
   const CallsList = [
     {
       key: "inStock",
@@ -1095,8 +1135,7 @@ export function UnitInv({ finance, user, tableData }) {
 
     return `${year}-${month}`;
   };
-
-  const now = new Date(); // Current date and time
+  const now = new Date();
   const formattedDate = formatDate(now);
   function getToday() {
     const today = new Date();

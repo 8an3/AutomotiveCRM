@@ -1,7 +1,7 @@
 import { useLocation, useSearchParams } from "@remix-run/react";
 
 import { Input, Label, RemixForm } from "~/components";
-import { Search } from "~/icons";
+import { Search } from "~/images/icons";
 
 export function SearchForm({ action = "/search" }: { action?: string }) {
   const location = useLocation();

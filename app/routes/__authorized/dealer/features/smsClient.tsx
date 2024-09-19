@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import ChatChannel from "~/components/sms/ChatChannel";
 import ChannelsList from "~/components/sms/ChannelList";
-import { Loader2 } from "~/icons";
+import { Loader2 } from "~/images/icons";
 import { Outlet, useLoaderData, useNavigation, Form } from '@remix-run/react';
 import axios from "axios";
 import {

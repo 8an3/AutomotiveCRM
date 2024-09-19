@@ -9,8 +9,8 @@ import { GetUser } from "~/utils/loader.server";
 import { getClientListMerged, getMergedFinanceOnFinance, getMergedFinance } from "~/utils/dashloader/dashloader.server";
 
 export async function loader({ request, params }: LoaderFunction) {
-    const session = await getSession(request.headers.get("Cookie"));
-    const email = session.get("email")
+    // const session = await getSession(request.headers.get("Cookie"));
+    const email = params.email// session.get("email")
     const user = await GetUser(email)
     if (!user) { redirect('/login') }
     const financeList = await prisma.finance.findMany({ where: { userEmail: user?.email }, });

@@ -58,7 +58,7 @@ export async function loader({ request, params }: LoaderFunction) {
     let user = await GetUser(email)
     if (user?.subscriptionId === 'active' || user?.subscriptionId === 'trialing') {
       let deFees;
-      if (user.plan === 'prod_OY8EMf7RNoJXhX') {
+      if (user.plan === 'prod_OY8EMf7RNoJXhX' || user.plan === 'prod_Q9tYUe0dEVzaRf') {
         deFees = await prisma.dealer.findFirst();
       } else {
         deFees = await prisma.dealer.findUnique({ where: { userEmail: email } });

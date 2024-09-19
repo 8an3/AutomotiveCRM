@@ -1,6 +1,6 @@
 import React, { forwardRef, useState } from "react";
 import { Button } from "~/components";
-import { Eye, EyeOff } from "~/icons";
+import { Eye, EyeOff } from "~/images/icons";
 import { cn } from "~/components/ui/utils"
 import { useField } from "remix-validated-form";
 

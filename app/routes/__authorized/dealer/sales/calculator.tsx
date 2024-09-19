@@ -61,7 +61,7 @@ import {
 } from "@remix-run/node";
 import { getSession } from "~/sessions/auth-session.server";
 import { requireAuthCookie } from "~/utils/misc.user.server";
-import NotificationSystem from "~/routes/__authorized/dealer/notifications";
+import NotificationSystem from "~/routes/__authorized/dealer/systems/notifications";
 import Sidebar from "~/components/zRoutes/oldComps/sidebar";
 import { GetUser } from "~/utils/loader.server";
 import {

@@ -29,7 +29,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getUserIsAllowed } from "~/helpers";
 
 import { ButtonIcon } from "~/components";
-import { Moon, Sun } from "~/icons";
+import { Moon, Sun } from "~/images/icons";
 import SearchFunction2 from './dealer/searchTable';
 import useSWR from 'swr';
 import SearchByOrderFunction from './dealer/searchByOrder';
@@ -147,18 +147,18 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
 
   const leadLength = lead.length;
 
-  const [swrURL, setSwrURL] = useState(`http://localhost:3000/dealer/notifications/notifications/${user.email}`)
-
+  const [getDomain, setGetDomain] = useState("http://localhost:3000");
 
   useEffect(() => {
-    if (host !== 'localhost:3000') {
-      setSwrURL(`https://www.dealersalesassistant.ca/dealer/notifications/notifications/${user.email}`)
+    const currentHost = typeof window !== "undefined" ? window.location.host : null;
+    if (currentHost === "dealersalesassistant.ca") {
+      setGetDomain("https://www.dealersalesassistant.ca")
     }
-  }, [host]);
+  }, []);
 
 
   const dataFetcher = (url) => fetch(url).then(res => res.json());
-  const { data, error, isLoading } = useSWR(swrURL, dataFetcher, { refreshInterval: 180000 });
+  const { data, error, isLoading } = useSWR(getDomain + `/dealer/notifications/notifications/${user.email}`, dataFetcher, { refreshInterval: 180000 });
   //if (error) return <div>Loading...</div>;
   ///  if (isLoading) return <div>Error loading data</div>;
   const notificationsList = data//.notifications
@@ -413,7 +413,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                             formData.append("notificationId", item.id);
                             formData.append("userEmail", user.email);
                             formData.append("userName", user.name);
-                            formData.append("navigate", `/dealer/customer/${item.clientfileId}/${item.financeId}`);
+                            formData.append("navigate", `/dealer/sales/customer/${item.clientfileId}/${item.financeId}`);
                             formData.append("intent", 'newMsg');
                             submit(formData, { method: "post" });
                           }}
@@ -470,7 +470,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                             formData.append("notificationId", item.id);
                             formData.append("userEmail", user.email);
                             formData.append("userName", user.name);
-                            formData.append("navigate", `/dealer/leads/sales/newLeads`);
+                            formData.append("navigate", `/dealer/sales/newLeads`);
                             formData.append("intent", 'newLead');
                             submit(formData, { method: "post" });
                           }}
@@ -523,7 +523,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                           formData.append("notificationId", item.id);
                           formData.append("userEmail", user.email);
                           formData.append("userName", user.name);
-                          formData.append("navigate", `/dealer/customer/${item.clientfileId}/${item.financeId}`);
+                          formData.append("navigate", `/dealer/sales/customer/${item.clientfileId}/${item.financeId}`);
                           formData.append("intent", 'newUpdate');
                           submit(formData, { method: "post" });
                         }}
@@ -599,9 +599,10 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
-
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
+
+            {/* sales */}
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className='text-primary cursor-pointer'>Sales</DropdownMenuSubTrigger>
               <DropdownMenuPortal>
@@ -824,7 +825,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                     )}
                   >
                     <NavLink
-                      to={`/dealer/customer/${clientfileId}/${financeId}`}
+                      to={`/dealer/sales/customer/${clientfileId}/${financeId}`}
                       className='w-full rounded-[4px] flex justify-between items-center'>
                       Finance File - Synced
                     </NavLink>
@@ -832,6 +833,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
+            {/* Accessories */}
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className='text-primary cursor-pointer'>Accessories</DropdownMenuSubTrigger>
               <DropdownMenuPortal>
@@ -876,6 +878,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
+            {/* Finance */}
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className='text-primary cursor-pointer'>Finance</DropdownMenuSubTrigger>
               <DropdownMenuPortal>
@@ -905,6 +908,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
+            {/* Manager */}
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className='text-primary cursor-pointer'>Manager</DropdownMenuSubTrigger>
               <DropdownMenuPortal>
@@ -934,6 +938,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
+            {/* Service */}
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className='text-primary cursor-pointer'>Service</DropdownMenuSubTrigger>
               <DropdownMenuPortal>
@@ -962,6 +967,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
+            {/* DEV */}
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className='text-primary cursor-pointer'>DEV</DropdownMenuSubTrigger>
               <DropdownMenuPortal>
@@ -990,6 +996,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
+            {/* Admin */}
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className='text-primary cursor-pointer'>Admin</DropdownMenuSubTrigger>
               <DropdownMenuPortal>
@@ -1018,6 +1025,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
             </DropdownMenuSub>
+            {/* Documents */}
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className=' text-primary cursor-pointer'>Documents</DropdownMenuSubTrigger>
               <DropdownMenuPortal>
@@ -1047,7 +1055,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
               </DropdownMenuPortal>
             </DropdownMenuSub>
             <DropdownMenuSeparator />
-
+            {/* User */}
             <DropdownMenuLabel className='text-primary'>User</DropdownMenuLabel>
             <DropdownMenuSeparator />
 
@@ -1087,6 +1095,9 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
               </DropdownMenuSub>
               {userNavSidebarNav.map((item, index) => (
                 <DropdownMenuItem
+                  onSelect={() => {
+                    setDropdownOpen(false)
+                  }}
                   key={index}
                   className={cn(
                     ' ',
@@ -1150,13 +1161,13 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                   Messages
                 </DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
-                  <DropdownMenuSubContent className="bg-background w-[400px] border border-border h-[500px] max-h-[500x]">
+                  <DropdownMenuSubContent className="bg-background w-[385px] border border-border max-h-[500px] h-auto overflow-y-auto">
                     {messages ? messages.map((item, index) => {
                       return (
                         <DropdownMenuItem
                           key={index}
-                          className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer h-[90px]
-                 ${item.read === true ? 'bg-background' : 'bg-[#181818]'}`}
+                          className={`focus:bg-accent focus:text-accent-foreground  justify-start mx-auto cursor-pointer h-[85px] border-b border-border bg-background hover:bg-[#111111] `}
+
                           onSelect={() => {
                             const formData = new FormData();
                             formData.append("notificationId", item.id);
@@ -1167,11 +1178,18 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                             submit(formData, { method: "post" });
                           }}
                         >
-                          <div className='flex items-center'>
-
+                          <div className='flex items-center gap-3'>
+                            {item.read === true ? null :
+                              < img
+                                alt='warning'
+                                src={Warning}
+                                className="object-contain"
+                              />
+                            }
                             <div className='grid grid-cols-1'>
-                              <p>   {item.title}</p>
-                              <p className='text-muted-foreground'>   {item.createdAt}</p>
+                              <p> {item.title}</p>
+                              <p className='text-muted-foreground'> {new Date(item.createdAt).toLocaleDateString("en-US", options)}</p>
+
                             </div>
                           </div>
 
@@ -1206,8 +1224,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                       {lead ? lead.map((item, index) => (
                         <DropdownMenuItem
                           key={index}
-                          className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
-                            ${item.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                          className={`focus:bg-accent focus:text-accent-foreground  justify-start mx-auto cursor-pointer h-[85px] border-b border-border bg-background hover:bg-[#111111] `}
                           onSelect={() => {
                             const formData = new FormData();
                             formData.append("notificationId", item.id);
@@ -1218,9 +1235,20 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                             submit(formData, { method: "post" });
                           }}
                         >
-                          <div>
-                            <p> {item.title} - {item.content}</p>
-                            <p className='text-muted-foreground'>billy bobby</p>
+                          <div className='flex items-center gap-3'>
+                            {item.read === true ? null :
+                              < img
+                                alt='warning'
+                                src={Warning}
+                                className="object-contain"
+                              />
+                            }
+                            <div className='grid grid-cols-1'>
+                              <p> {item.title} - {item.content}</p>
+                              <p>{item.cusxtomerName}</p>
+                              <p className='text-muted-foreground'> {new Date(item.createdAt).toLocaleDateString("en-US", options)}</p>
+
+                            </div>
                           </div>
 
                         </DropdownMenuItem>
@@ -1249,8 +1277,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                     {updates ? updates.map((item, index) => (
                       <DropdownMenuItem
                         key={index}
-                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
-                          ${item.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                        className={`focus:bg-accent focus:text-accent-foreground  justify-start mx-auto cursor-pointer h-[85px] border-b border-border bg-background hover:bg-[#111111] `}
                         onSelect={() => {
                           const formData = new FormData();
                           formData.append("notificationId", item.id);
@@ -1261,9 +1288,21 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                           submit(formData, { method: "post" });
                         }}
                       >
-                        <p className='w-[95%] rounded-[6px] flex justify-between items-center'>
-                          {item.title}
-                        </p>
+                        <div className='flex items-center gap-3'>
+                          {item.read === true ? null :
+                            < img
+                              alt='warning'
+                              src={Warning}
+                              className="object-contain"
+                            />
+                          }
+                          <div className='grid grid-cols-1'>
+                            <p> {item.title}</p>
+                            <p className='text-muted-foreground'> {new Date(item.createdAt).toLocaleDateString("en-US", options)}</p>
+
+                          </div>
+                        </div>
+
                       </DropdownMenuItem>
                     )) : <DropdownMenuItem>No updates available</DropdownMenuItem>}
                   </DropdownMenuSubContent>
@@ -1281,8 +1320,6 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                         </span>
                       </span>
                     )}
-
-
                   </div>
                   Interruptions
                 </DropdownMenuSubTrigger>
@@ -1291,8 +1328,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                     {interruptions ? (interruptions.map((item, index) => (
                       <DropdownMenuItem
                         key={index}
-                        className={`focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px] justify-start mt-1 mx-auto cursor-pointer
-                          ${item.read === true ? 'bg-background ' : 'bg-[#181818]'}`}
+                        className={`focus:bg-accent focus:text-accent-foreground  justify-start mx-auto cursor-pointer h-[85px] border-b border-border bg-background hover:bg-[#111111] `}
                         onSelect={() => {
                           const formData = new FormData();
                           formData.append("notificationId", item.id);
@@ -1303,12 +1339,21 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                           submit(formData, { method: "post" });
                         }}
                       >
-                        <div>
-                          <p> {item.title} </p>
-                          <p className='text-muted-foreground'>{item.date}</p>
-                          <p className='text-muted-foreground'>{item.location}</p>
+                        <div className='flex items-center gap-3'>
+                          {item.read === true ? null :
+                            < img
+                              alt='warning'
+                              src={Warning}
+                              className="object-contain"
+                            />
+                          }
+                          <div className='grid grid-cols-1'>
+                            <p> {item.title}</p>
+                            <p className='text-muted-foreground'>{item.date}</p>
+                            <p className='text-muted-foreground'>{item.location}</p>
+                            <p className='text-muted-foreground'> {new Date(item.createdAt).toLocaleDateString("en-US", options)}</p>
+                          </div>
                         </div>
-
                       </DropdownMenuItem>
                     ))) : <DropdownMenuItem>No interruptions available</DropdownMenuItem>}
                   </DropdownMenuSubContent>
@@ -1319,438 +1364,475 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
 
             {/* sales */}
             {userIsSales && (
-              <>
-                {/* Quotes */}
-                <DropdownMenuLabel className='text-primary'>Quotes</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuGroup>
-                  {/* my24 */}
-                  <DropdownMenuSub>
-                    <DropdownMenuSubTrigger className='cursor-pointer'>MY24</DropdownMenuSubTrigger>
-                    <DropdownMenuPortal>
-                      <DropdownMenuSubContent className="bg-background    border border-border">
-                        <DropdownMenuSub>
-                          <DropdownMenuSubTrigger className='cursor-pointer'>Watercraft</DropdownMenuSubTrigger>
-                          <DropdownMenuPortal>
-                            <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
-                              {my24Watercraft.map((item, index) => (
-                                <DropdownMenuItem
-                                  key={index}
-                                  className={cn(
-                                    '',
-                                    pathname === item.to
-                                      ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]"
-                                      : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                                    "justify-start "
-                                  )}
-                                >
-                                  <NavLink
-                                    to={item.to}
-                                    className='w-[95%] rounded-[6px] flex justify-between items-center'>
-                                    {item.title}
-                                  </NavLink>
-                                </DropdownMenuItem>
-                              ))}
-                            </DropdownMenuSubContent>
-                          </DropdownMenuPortal>
-                        </DropdownMenuSub>
-                        <DropdownMenuSub>
-                          <DropdownMenuSubTrigger className='cursor-pointer'>Motorcycle</DropdownMenuSubTrigger>
-                          <DropdownMenuPortal>
-                            <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
-                              {my24Moto.map((item, index) => (
-                                <DropdownMenuItem
-                                  key={index}
-                                  className={cn(
-                                    '',
-                                    pathname === item.to
-                                      ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]"
-                                      : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                                    "justify-start "
-                                  )}
-                                >
-                                  <NavLink
-                                    to={item.to}
-                                    className='w-[95%] rounded-[6px] flex justify-between items-center'>
-                                    {item.title}
-                                  </NavLink>
-                                </DropdownMenuItem>
-                              ))}
-                            </DropdownMenuSubContent>
-                          </DropdownMenuPortal>
-                        </DropdownMenuSub>
-                        <DropdownMenuSub>
-                          <DropdownMenuSubTrigger className='cursor-pointer'>Off-Road</DropdownMenuSubTrigger>
-                          <DropdownMenuPortal>
-                            <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
-                              {my24OffRoad.map((item, index) => (
-                                <DropdownMenuItem
-                                  key={index}
-                                  className={cn(
-                                    '',
-                                    pathname === item.to
-                                      ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]"
-                                      : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                                    "justify-start "
-                                  )}
-                                >
-                                  <NavLink
-                                    to={item.to}
-                                    className='w-[95%] rounded-[6px] flex justify-between items-center'>
-                                    {item.title}
-                                  </NavLink>
-                                </DropdownMenuItem>
-                              ))}
-                            </DropdownMenuSubContent>
-                          </DropdownMenuPortal>
-                        </DropdownMenuSub>
-                        <DropdownMenuSub>
-                          <DropdownMenuSubTrigger disabled className='cursor-pointer'>On-Road</DropdownMenuSubTrigger>
-                          <DropdownMenuPortal>
-                            <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
-                              <DropdownMenuItem>Email</DropdownMenuItem>
-                            </DropdownMenuSubContent>
-                          </DropdownMenuPortal>
-                        </DropdownMenuSub>
-                      </DropdownMenuSubContent>
-                    </DropdownMenuPortal>
-                  </DropdownMenuSub>
-                  {/* my23 */}
-                  <DropdownMenuSub>
-                    <DropdownMenuSubTrigger className='cursor-pointer'>MY23</DropdownMenuSubTrigger>
-                    <DropdownMenuPortal>
-                      <DropdownMenuSubContent className='bg-background'>
-                        <DropdownMenuSub>
-                          <DropdownMenuSubTrigger className='cursor-pointer'>Watercraft</DropdownMenuSubTrigger>
-                          <DropdownMenuPortal>
-                            <DropdownMenuSubContent className="bg-background border-border">
-                              {my23Watercraft.map((item, index) => (
-                                <DropdownMenuItem
-                                  key={index}
-                                  className={cn(
-                                    '',
-                                    pathname === item.to
-                                      ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]"
-                                      : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                                    "justify-start "
-                                  )}
-                                >
-                                  <NavLink
-                                    to={item.to}
-                                    className='w-[95%] rounded-[6px] flex justify-between items-center'>
-                                    {item.title}
-                                  </NavLink>
-                                </DropdownMenuItem>
-                              ))}
-                            </DropdownMenuSubContent>
-                          </DropdownMenuPortal>
-                        </DropdownMenuSub>
-                        <DropdownMenuSub>
-                          <DropdownMenuSubTrigger className='cursor-pointer'>Motorcycle</DropdownMenuSubTrigger>
-                          <DropdownMenuPortal>
-                            <DropdownMenuSubContent className="bg-background border-border">
-                              {my23Moto.map((item, index) => (
-                                <DropdownMenuItem
-                                  key={index}
-                                  className={cn(
-                                    '',
-                                    pathname === item.to
-                                      ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]"
-                                      : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                                    "justify-start "
-                                  )}
-                                >
-                                  <NavLink
-                                    to={item.to}
-                                    className='w-[95%] rounded-[6px] flex justify-between items-center'>
-                                    {item.title}
-                                  </NavLink>
-                                </DropdownMenuItem>
-                              ))}
-                            </DropdownMenuSubContent>
-                          </DropdownMenuPortal>
-                        </DropdownMenuSub>
-                        <DropdownMenuSub>
-                          <DropdownMenuSubTrigger className='cursor-pointer'>Off-Road</DropdownMenuSubTrigger>
-                          <DropdownMenuPortal>
-                            <DropdownMenuSubContent className="bg-background border-border">
-                              {my23OffRoad.map((item, index) => (
-                                <DropdownMenuItem
-                                  key={index}
-                                  className={cn(
-                                    '',
-                                    pathname === item.to
-                                      ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]"
-                                      : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                                    "justify-start "
-                                  )}
-                                >
-                                  <NavLink
-                                    to={item.to}
-                                    className='w-[95%] rounded-[6px] flex justify-between items-center'>
-                                    {item.title}
-                                  </NavLink>
-                                </DropdownMenuItem>
-                              ))}
-                            </DropdownMenuSubContent>
-                          </DropdownMenuPortal>
-                        </DropdownMenuSub>
-                        <DropdownMenuSub>
-                          <DropdownMenuSubTrigger disabled className='cursor-pointer'>On-Road</DropdownMenuSubTrigger>
-                          <DropdownMenuPortal>
-                            <DropdownMenuSubContent className="bg-background border-border">
-                              <DropdownMenuItem>Email</DropdownMenuItem>
-                            </DropdownMenuSubContent>
-                          </DropdownMenuPortal>
-                        </DropdownMenuSub>
-                      </DropdownMenuSubContent>
-                    </DropdownMenuPortal>
-                  </DropdownMenuSub>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-                <DropdownMenuLabel className='text-primary'>Sales</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {salesNavSidebarNav.map((item, index) => (
-                  <DropdownMenuItem
-                    key={index}
-                    className={cn(
-                      ' ',
-                      pathname === item.to
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                  >
-                    <NavLink
-                      to={item.to}
-                      className='w-full rounded-[4px] flex justify-between items-center'>
-                      {item.title}
-                    </NavLink>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuItem
-                  disabled={!financeId && !clientfileId}
-                  className={cn(
-                    ' ',
-                    pathname === `/dealer/customer/customer/sync`
-                      ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                      : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                    "justify-start "
-                  )}
-                >
-                  <NavLink
-                    to={`/dealer/customer/${clientfileId}/${financeId}`}
-                    className='w-full rounded-[4px] flex justify-between items-center'>
-                    Finance File - Synced
-                  </NavLink>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-              </>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className='text-primary cursor-pointer'>Sales</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
+                    <DropdownMenuLabel className='text-primary'>Quotes</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                      {/* my24 */}
+                      <DropdownMenuSub>
+                        <DropdownMenuSubTrigger className='cursor-pointer'>MY24</DropdownMenuSubTrigger>
+                        <DropdownMenuPortal>
+                          <DropdownMenuSubContent className="bg-background    border border-border">
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger className='cursor-pointer'>Watercraft</DropdownMenuSubTrigger>
+                              <DropdownMenuPortal>
+                                <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
+                                  {my24Watercraft.map((item, index) => (
+                                    <DropdownMenuItem
+                                      key={index}
+                                      className={cn(
+                                        '',
+                                        pathname === item.to
+                                          ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]"
+                                          : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                                        "justify-start "
+                                      )}
+                                    >
+                                      <NavLink
+                                        to={item.to}
+                                        className='w-[95%] rounded-[6px] flex justify-between items-center'>
+                                        {item.title}
+                                      </NavLink>
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuSubContent>
+                              </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger className='cursor-pointer'>Motorcycle</DropdownMenuSubTrigger>
+                              <DropdownMenuPortal>
+                                <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
+                                  {my24Moto.map((item, index) => (
+                                    <DropdownMenuItem
+                                      key={index}
+                                      className={cn(
+                                        '',
+                                        pathname === item.to
+                                          ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]"
+                                          : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                                        "justify-start "
+                                      )}
+                                    >
+                                      <NavLink
+                                        to={item.to}
+                                        className='w-[95%] rounded-[6px] flex justify-between items-center'>
+                                        {item.title}
+                                      </NavLink>
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuSubContent>
+                              </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger className='cursor-pointer'>Off-Road</DropdownMenuSubTrigger>
+                              <DropdownMenuPortal>
+                                <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
+                                  {my24OffRoad.map((item, index) => (
+                                    <DropdownMenuItem
+                                      key={index}
+                                      className={cn(
+                                        '',
+                                        pathname === item.to
+                                          ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]"
+                                          : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                                        "justify-start "
+                                      )}
+                                    >
+                                      <NavLink
+                                        to={item.to}
+                                        className='w-[95%] rounded-[6px] flex justify-between items-center'>
+                                        {item.title}
+                                      </NavLink>
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuSubContent>
+                              </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger disabled className='cursor-pointer'>On-Road</DropdownMenuSubTrigger>
+                              <DropdownMenuPortal>
+                                <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
+                                  <DropdownMenuItem>Email</DropdownMenuItem>
+                                </DropdownMenuSubContent>
+                              </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                          </DropdownMenuSubContent>
+                        </DropdownMenuPortal>
+                      </DropdownMenuSub>
+                      {/* my23 */}
+                      <DropdownMenuSub>
+                        <DropdownMenuSubTrigger className='cursor-pointer'>MY23</DropdownMenuSubTrigger>
+                        <DropdownMenuPortal>
+                          <DropdownMenuSubContent className='bg-background   border border-border'>
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger className='cursor-pointer'>Watercraft</DropdownMenuSubTrigger>
+                              <DropdownMenuPortal>
+                                <DropdownMenuSubContent className="bg-background   border border-border">
+                                  {my23Watercraft.map((item, index) => (
+                                    <DropdownMenuItem
+                                      key={index}
+                                      className={cn(
+                                        '',
+                                        pathname === item.to
+                                          ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]"
+                                          : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                                        "justify-start "
+                                      )}
+                                    >
+                                      <NavLink
+                                        to={item.to}
+                                        className='w-[95%] rounded-[6px] flex justify-between items-center'>
+                                        {item.title}
+                                      </NavLink>
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuSubContent>
+                              </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger className='cursor-pointer'>Motorcycle</DropdownMenuSubTrigger>
+                              <DropdownMenuPortal>
+                                <DropdownMenuSubContent className="bg-background   border border-border">
+                                  {my23Moto.map((item, index) => (
+                                    <DropdownMenuItem
+                                      key={index}
+                                      className={cn(
+                                        '',
+                                        pathname === item.to
+                                          ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]"
+                                          : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                                        "justify-start "
+                                      )}
+                                    >
+                                      <NavLink
+                                        to={item.to}
+                                        className='w-[95%] rounded-[6px] flex justify-between items-center'>
+                                        {item.title}
+                                      </NavLink>
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuSubContent>
+                              </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger className='cursor-pointer'>Off-Road</DropdownMenuSubTrigger>
+                              <DropdownMenuPortal>
+                                <DropdownMenuSubContent className="bg-background   border border-border">
+                                  {my23OffRoad.map((item, index) => (
+                                    <DropdownMenuItem
+                                      key={index}
+                                      className={cn(
+                                        '',
+                                        pathname === item.to
+                                          ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]"
+                                          : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                                        "justify-start "
+                                      )}
+                                    >
+                                      <NavLink
+                                        to={item.to}
+                                        className='w-[95%] rounded-[6px] flex justify-between items-center'>
+                                        {item.title}
+                                      </NavLink>
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuSubContent>
+                              </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger disabled className='cursor-pointer'>On-Road</DropdownMenuSubTrigger>
+                              <DropdownMenuPortal>
+                                <DropdownMenuSubContent className="bg-background   border border-border">
+                                  <DropdownMenuItem>Email</DropdownMenuItem>
+                                </DropdownMenuSubContent>
+                              </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                          </DropdownMenuSubContent>
+                        </DropdownMenuPortal>
+                      </DropdownMenuSub>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel className='text-primary'>Sales</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {salesNavSidebarNav.map((item, index) => (
+                      <DropdownMenuItem
+                        key={index}
+                        className={cn(
+                          ' ',
+                          pathname === item.to
+                            ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
+                            : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                          "justify-start "
+                        )}
+                      >
+                        <NavLink
+                          to={item.to}
+                          className='w-full rounded-[4px] flex justify-between items-center'>
+                          {item.title}
+                        </NavLink>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuItem
+                      disabled={!financeId && !clientfileId}
+                      className={cn(
+                        ' ',
+                        pathname === `/dealer/customer/customer/sync`
+                          ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
+                          : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                        "justify-start "
+                      )}
+                    >
+                      <NavLink
+                        to={`/dealer/customer/${clientfileId}/${financeId}`}
+                        className='w-full rounded-[4px] flex justify-between items-center'>
+                        Finance File - Synced
+                      </NavLink>
+                    </DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
             )}
             {/* accessories */}
             {userIsACC && (
-              <>
-                <DropdownMenuLabel className='text-primary'> PAC</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {accNavSidebarNav.map((item, index) => (
-                  <DropdownMenuItem
-                    key={index}
-                    className={cn(
-                      ' ',
-                      pathname === item.to
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                  >
-                    <NavLink
-                      to={item.to}
-                      className='w-full rounded-[4px] flex justify-between items-center'>
-                      {item.title}
-                    </NavLink>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuItem
-                  disabled={!orderId}
-                  className={cn(
-                    ' ',
-                    pathname === `/dealer/accessories/currentOrder`
-                      ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                      : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                    "justify-start "
-                  )}
-                >
-                  <NavLink
-                    to='/dealer/accessories/currentOrder'
-                    className='w-full rounded-[4px] flex justify-between items-center'>
-                    Customer Order - Synced
-                  </NavLink>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-
-              </>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className='text-primary cursor-pointer'>Accessories</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
+                    <DropdownMenuLabel className='text-primary'> PAC</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {accNavSidebarNav.map((item, index) => (
+                      <DropdownMenuItem
+                        key={index}
+                        className={cn(
+                          ' ',
+                          pathname === item.to
+                            ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
+                            : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                          "justify-start "
+                        )}
+                      >
+                        <NavLink
+                          to={item.to}
+                          className='w-full rounded-[4px] flex justify-between items-center'>
+                          {item.title}
+                        </NavLink>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuItem
+                      disabled={!orderId}
+                      className={cn(
+                        ' ',
+                        pathname === `/dealer/accessories/currentOrder`
+                          ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
+                          : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                        "justify-start "
+                      )}
+                    >
+                      <NavLink
+                        to='/dealer/accessories/currentOrder'
+                        className='w-full rounded-[4px] flex justify-between items-center'>
+                        Customer Order - Synced
+                      </NavLink>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
             )}
             {/* finance */}
             {userIsFinance && (
-              <>
-                <DropdownMenuLabel className='text-primary'>Finance</DropdownMenuLabel>
-                <DropdownMenuSeparator />
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className='text-primary cursor-pointer'>Finance</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
+                    <DropdownMenuLabel className='text-primary'>Finance</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
 
-                {financeNavSidebarNav.map((item, index) => (
-                  <DropdownMenuItem
-                    key={index}
-                    className={cn(
-                      ' ',
-                      pathname === item.to
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                  >
-                    <NavLink
-                      to={item.to}
-                      className='w-full rounded-[4px] flex justify-between items-center'>
-                      {item.title}
-                    </NavLink>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-              </>
+                    {financeNavSidebarNav.map((item, index) => (
+                      <DropdownMenuItem
+                        key={index}
+                        className={cn(
+                          ' ',
+                          pathname === item.to
+                            ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
+                            : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                          "justify-start "
+                        )}
+                      >
+                        <NavLink
+                          to={item.to}
+                          className='w-full rounded-[4px] flex justify-between items-center'>
+                          {item.title}
+                        </NavLink>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
             )}
             {/* manager */}
             {userIsManager && (
-              <>
-                <DropdownMenuLabel className='text-primary'>Manager</DropdownMenuLabel>
-                <DropdownMenuSeparator />
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className='text-primary cursor-pointer'>Manager</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
+                    <DropdownMenuLabel className='text-primary'>Manager</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
 
-                {managerSidebarNav.map((item, index) => (
-                  <DropdownMenuItem
-                    key={index}
-                    className={cn(
-                      ' ',
-                      pathname === item.to
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                  >
-                    <NavLink
-                      to={item.to}
-                      className='w-full rounded-[4px] flex justify-between items-center'>
-                      {item.title}
-                    </NavLink>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-              </>
+                    {managerSidebarNav.map((item, index) => (
+                      <DropdownMenuItem
+                        key={index}
+                        className={cn(
+                          ' ',
+                          pathname === item.to
+                            ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
+                            : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                          "justify-start "
+                        )}
+                      >
+                        <NavLink
+                          to={item.to}
+                          className='w-full rounded-[4px] flex justify-between items-center'>
+                          {item.title}
+                        </NavLink>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
             )}
             {/* admin */}
             {userIsADMIN && (
-              <>
-                <DropdownMenuLabel className='text-primary'>Administrator</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-
-                {adminSidebarNav.map((item, index) => (
-                  <DropdownMenuItem
-                    key={index}
-                    className={cn(
-                      ' ',
-                      pathname === item.to
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                  >
-                    <NavLink
-                      to={item.to}
-                      className='w-full rounded-[4px] flex justify-between items-center'>
-                      {item.title}
-                    </NavLink>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-              </>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className='text-primary cursor-pointer'>Admin</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
+                    <DropdownMenuLabel className='text-primary'>Administrator</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {adminSidebarNav.map((item, index) => (
+                      <DropdownMenuItem
+                        key={index}
+                        className={cn(
+                          ' ',
+                          pathname === item.to
+                            ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
+                            : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                          "justify-start "
+                        )}
+                      >
+                        <NavLink
+                          to={item.to}
+                          className='w-full rounded-[4px] flex justify-between items-center'>
+                          {item.title}
+                        </NavLink>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
             )}
             {/* dev */}
             {userIsDEV && (
-              <>
-                <DropdownMenuLabel className='text-primary'>DEV</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-
-                {devSidebarNav.map((item, index) => (
-                  <DropdownMenuItem
-                    key={index}
-                    className={cn(
-                      ' ',
-                      pathname === item.to
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                  >
-                    <NavLink
-                      to={item.to}
-                      className='w-full rounded-[4px] flex justify-between items-center'>
-                      {item.title}
-                    </NavLink>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-              </>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className='text-primary cursor-pointer'>DEV</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
+                    <DropdownMenuLabel className='text-primary'>DEV</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {devSidebarNav.map((item, index) => (
+                      <DropdownMenuItem
+                        key={index}
+                        className={cn(
+                          ' ',
+                          pathname === item.to
+                            ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
+                            : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                          "justify-start "
+                        )}
+                      >
+                        <NavLink
+                          to={item.to}
+                          className='w-full rounded-[4px] flex justify-between items-center'>
+                          {item.title}
+                        </NavLink>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
             )}
             {/* service */}
             {userIsSERVICE && (
-              <>
-                <DropdownMenuLabel className='text-primary'>Service</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-
-                {serviceNavSidebarNav.map((item, index) => (
-                  <DropdownMenuItem
-                    key={index}
-                    className={cn(
-                      ' ',
-                      pathname === item.to
-                        ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                        : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                      "justify-start "
-                    )}
-                  >
-                    <NavLink
-                      to={item.to}
-                      className='w-full rounded-[4px] flex justify-between items-center'>
-                      {item.title}
-                    </NavLink>
-                  </DropdownMenuItem>
-                ))}
-                <DropdownMenuSeparator />
-              </>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className='text-primary cursor-pointer'>Service</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
+                    <DropdownMenuLabel className='text-primary'>Service</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {serviceNavSidebarNav.map((item, index) => (
+                      <DropdownMenuItem
+                        key={index}
+                        className={cn(
+                          ' ',
+                          pathname === item.to
+                            ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
+                            : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                          "justify-start "
+                        )}
+                      >
+                        <NavLink
+                          to={item.to}
+                          className='w-full rounded-[4px] flex justify-between items-center'>
+                          {item.title}
+                        </NavLink>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
             )}
             {/* documents */}
-            <DropdownMenuLabel className='text-primary'>Documents</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-
-            {documentNavSidebarNav.map((item, index) => (
-              <DropdownMenuItem
-                key={index}
-                className={cn(
-                  ' ',
-                  pathname === item.to
-                    ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
-                    : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
-                  "justify-start "
-                )}
-              >
-                <NavLink
-                  to={item.to}
-                  className='w-full rounded-[4px] flex justify-between items-center'>
-                  {item.title}
-                </NavLink>
-              </DropdownMenuItem>
-            ))}
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger className=' text-primary cursor-pointer'>Documents</DropdownMenuSubTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
+                  <DropdownMenuLabel className='text-primary'>Documents</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {documentNavSidebarNav.map((item, index) => (
+                    <DropdownMenuItem
+                      key={index}
+                      className={cn(
+                        ' ',
+                        pathname === item.to
+                          ? "bg-accent text-accent-foreground w-[95%] rounded-[4px]    "
+                          : "focus:bg-accent focus:text-accent-foreground w-[95%] rounded-[4px]",
+                        "justify-start "
+                      )}
+                    >
+                      <NavLink
+                        to={item.to}
+                        className='w-full rounded-[4px] flex justify-between items-center'>
+                        {item.title}
+                      </NavLink>
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
             <DropdownMenuSeparator />
             {/* User */}
             <DropdownMenuLabel className='text-primary'>User</DropdownMenuLabel>
             <DropdownMenuSeparator />
+
             <DropdownMenuGroup>
               <DropdownMenuItem onSelect={handleChangeTheme} className='flex items-center'>
                 Toggle Theme

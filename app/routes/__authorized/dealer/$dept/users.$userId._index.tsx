@@ -17,7 +17,7 @@ import {
   Image,
 } from "~/components";
 import { requireUserRole, requireUserSession } from "~/helpers";
-import { EditPencil, Eye, Trash } from "~/icons";
+import { EditPencil, Eye, Trash } from "~/images/icons";
 import { model } from "~/models";
 import {
   createSitemap,

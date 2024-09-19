@@ -33,7 +33,7 @@ import { prisma } from "~/libs";
 import { model } from "~/models";
 import Sidebar from "~/components/shared/sidebar";
 import { json } from "@remix-run/node";
-import NotificationSystem from "~/routes/__authorized/dealer/notifications";
+import NotificationSystem from "~/routes/__authorized/dealer/systems/notifications";
 
 export const loader = async ({ request }) => {
   const session = await getSession(request.headers.get("Cookie"));

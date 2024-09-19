@@ -1,7 +1,7 @@
 import { Combobox, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 
-import { Check, ChevronsUpDown } from "~/icons";
+import { Check, ChevronsUpDown } from "~/images/icons";
 import { cn } from "~/utils";
 
 /**

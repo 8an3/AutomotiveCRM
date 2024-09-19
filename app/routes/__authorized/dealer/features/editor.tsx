@@ -6,7 +6,7 @@ import { prisma } from "~/libs";
 import { model } from "~/models";
 import Sidebar from "~/components/zRoutes/oldComps/sidebar";
 import { json } from "@remix-run/node";
-import NotificationSystem from "~/routes/__authorized/dealer/notifications";
+import NotificationSystem from "~/routes/__authorized/dealer/systems/notifications";
 import { GetUser } from "~/utils/loader.server";
 
 export const links: LinksFunction = () => [

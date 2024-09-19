@@ -72,7 +72,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { Outlet, Link, useLoaderData, useFetcher, useNavigate, useSubmit, Form } from "@remix-run/react";
+import { Outlet, Link, useLoaderData, useFetcher, useNavigate, useSubmit, Form, useNavigation } from "@remix-run/react";
 import { ActionFunction, json, LinksFunction, LoaderFunction, redirect } from "@remix-run/node";
 import { GetUser } from "~/utils/loader.server";
 import { getSession } from "~/sessions/auth-session.server";
@@ -174,30 +174,31 @@ import {
 export default function Dashboard() {
   const { orderFirst, user, tax, dealerImage, services, techs } = useLoaderData();
   const [order, setOrder] = useState(orderFirst)
+  console.log(order.WorkOrderNotes, 'order')
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting" || navigation.state === "loading";
 
   const swrFetcher = (url) => fetch(url).then((r) => r.json());
 
-  const { data: dataFetch, userError } = useSWR(
-    `/dealer/service/loader/${order.workOrderId}`,
-    swrFetcher,
-    {
-      refreshInterval: 60000,
-      revalidateOnMount: true,
-      revalidateOnReconnect: true,
-    }
-  );
+  const { data: dataFetch } = useSWR(isSubmitting ? `/dealer/service/loader/${order.workOrderId}` : null, swrFetcher);
+
+  const { data: dataFetch2 } = useSWR(`/dealer/service/loader/${order.workOrderId}`, swrFetcher, { refreshInterval: 60000, revalidateOnMount: true, revalidateOnReconnect: true, });
 
   useEffect(() => {
     if (dataFetch) {
-      console.log(dataFetch, "userFetch");
+      //  console.log(dataFetch, "userFetch");
       setOrder(dataFetch);
     }
-  }, [dataFetch]);
+    if (dataFetch2) {
+      ///  console.log(dataFetch2, "userFetch");
+      setOrder(dataFetch2);
+    }
+  }, [dataFetch, dataFetch2]);
 
   const [scannedCode, setScannedCode] = useState('')
   useEffect(() => {
     const codeReader = new BrowserMultiFormatReader();
-    console.log('ZXing code reader initialized');
+    // console.log('ZXing code reader initialized');
 
     const hints = new Map();
     const formats = [
@@ -240,28 +241,28 @@ export default function Dashboard() {
               setScannedCode(result.text);
 
               playScanSound();
-              console.log('result', result);
+              //    console.log('result', result);
               await new Promise(resolve => setTimeout(resolve, 5000));
               codeReader.reset();
             } catch (err) {
               console.error('error', err);
             }
           }
-          console.log('Stopped scanning');
+          //  console.log('Stopped scanning');
         });
 
         document.getElementById('resetButtonOrder').addEventListener('click', () => {
           document.getElementById('resultOrder').textContent = '';
           codeReader.reset();
           setScannedCode('')
-          console.log('Reset.');
+          //  console.log('Reset.');
         });
 
         let listener = (event) => {
           if ((event.metaKey || event.ctrlKey) && event.key === "s") {
             //    event.preventDefault();
             codeReader.decodeOnceFromVideoDevice(selectedDeviceId, 'videoOrder', hints).then((result) => {
-              console.log(result);
+              //   console.log(result);
               /// document.getElementById('result').textContent = result.text;
               setScannedCode(result.text)
 
@@ -274,7 +275,7 @@ export default function Dashboard() {
             event.preventDefault();
             codeReader.reset();
             setScannedCode('')
-            console.log('Reset.');
+            //   console.log('Reset.');
           }
         };
 
@@ -291,7 +292,7 @@ export default function Dashboard() {
       formData.append("orderId", scannedCode);
       formData.append("intent", 'scanOrder');
       const submitOrder = submit(formData, { method: "post" });
-      console.log(submitOrder, 'sibmiteedd')
+      // console.log(submitOrder, 'sibmiteedd')
       return submitOrder
     }
   }, [scannedCode]);
@@ -324,6 +325,7 @@ export default function Dashboard() {
   const [totalPreTax, setTotalPreTax] = useState(0.00);
   const [input, setInput] = useState("");
   const inputLength = input.trim().length
+  let addService = useFetcher();
   let payment = useFetcher();
   let search = useFetcher();
   let product = useFetcher();
@@ -376,7 +378,7 @@ export default function Dashboard() {
 
       let accessoryIndex = 0;
     }
-    console.log(order, 'order');
+    // console.log(order, 'order');
   }, [order]);
 
   useEffect(() => {
@@ -394,7 +396,7 @@ export default function Dashboard() {
         const hours = serviceOnOrder.hr || serviceOnOrder.service.estHr;
         const quantity = serviceOnOrder.quantity || 1; // Make sure quantity is correct
         const subtotal = hours * tax.userLabour * quantity;
-        console.log('hours:', hours, 'quantity:', quantity, 'subtotal:', subtotal); // Log values here
+        //   console.log('hours:', hours, 'quantity:', quantity, 'subtotal:', subtotal); // Log values here
         return total + subtotal;
       }, 0);
 
@@ -413,7 +415,7 @@ export default function Dashboard() {
       const totalPreTax = parseFloat(partsSub) + parseFloat(serviceSub);
       setTotalPreTax(totalPreTax.toFixed(2));
 
-      console.log('partsSub:', partsSub, 'serviceSub:', serviceSub, 'totalPreTax:', totalPreTax);
+      //  console.log('partsSub:', partsSub, 'serviceSub:', serviceSub, 'totalPreTax:', totalPreTax);
 
       const total2 = ((parseFloat(partsSub + serviceSub) - parseFloat(discDollar)) * taxRate).toFixed(2);
       const total1 = (((parseFloat(partsSub + serviceSub) * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
@@ -440,12 +442,12 @@ export default function Dashboard() {
       }
 
       totalHours = serviceHoursTotal
-      console.log('Service Hours Total:', serviceHoursTotal);
-      console.log('Total Clocked Time:', totalTime);
+      //  console.log('Service Hours Total:', serviceHoursTotal);
+      // console.log('Total Clocked Time:', totalTime);
       order.ServicesOnWorkOrders?.forEach(serviceOnOrder => {
-        console.log('Service On Order:', serviceOnOrder);
+        //   console.log('Service On Order:', serviceOnOrder);
       });
-      console.log('Order Services:', order.ServicesOnWorkOrders);
+      //  console.log('Order Services:', order.ServicesOnWorkOrders);
     }
   }, [order, serviceHours, serviceHoursVar, adjustedService, discDollar, discPer]);
   let unitCard = [
@@ -462,7 +464,7 @@ export default function Dashboard() {
   ];
 
   const remaining = parseFloat(total) - parseFloat(totalAmountPaid)
-  console.log(order, 'order')
+  // console.log(order, 'order')
   /**     <div className="grid gap-3">
   <div className="font-semibold">Work Order Services</div>
   <ul className="grid gap-3">
@@ -604,7 +606,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
+      <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3 mt-5">
         <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
             <Card className="sm:col-span-2" x-chunk="dashboard-05-chunk-0"            >
@@ -676,7 +678,7 @@ export default function Dashboard() {
                                   onChange={() => {
                                     let products;
                                     products = addProduct.load('/dealer/accessories/products/search/all')
-                                    console.log(products, 'products')
+                                    //  console.log(products, 'products')
                                     let result;
                                     result = products.filter(
                                       (result) =>
@@ -780,7 +782,7 @@ export default function Dashboard() {
                                     formData.append("color", result.color);
                                     formData.append("workOrderId", order.workOrderId);
                                     formData.append("intent", 'addUnit');
-                                    addPart.submit(formData, { method: "post", });
+                                    submit(formData, { method: "post", });
                                   }}>
                                     <TableCell>
                                       <p>{result.year} {result.brand} {result.model}</p>
@@ -1310,7 +1312,7 @@ export default function Dashboard() {
                           formData.append("total", total);
                           formData.append("intent", 'updateStatus');
                           formData.append("status", value);
-                          console.log(formData, 'formData');
+                          //  console.log(formData, 'formData');
                           workOrder.submit(formData, { method: "post" });
                         }}>
                         <SelectTrigger className="w-[200px] " >
@@ -1358,7 +1360,7 @@ export default function Dashboard() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={() => {
-                        console.log(toReceipt)
+                        //    console.log(toReceipt)
                         PrintReceipt(toReceipt)
                       }}>
                       Reprint Receipt
@@ -1416,9 +1418,7 @@ export default function Dashboard() {
                     </div>
                   </AccordionContent>
                 </AccordionItem>
-              </Accordion>
-              <Accordion type="single" collapsible className="w-full border-border mt-3">
-                <AccordionItem value="item-1" className='border-border'>
+                <AccordionItem value="item-2" className='border-border'>
                   <AccordionTrigger>Customer Unit</AccordionTrigger>
                   <AccordionContent>
                     <dl className="grid gap-3">
@@ -1544,17 +1544,35 @@ export default function Dashboard() {
                     </dl>
                   </AccordionContent>
                 </AccordionItem>
-              </Accordion>
-              <Accordion type="single" collapsible className="w-full border-border mt-3">
-                <AccordionItem value="item-1" className='border-border'>
-                  <AccordionTrigger>Work Order Notes</AccordionTrigger>
+                <AccordionItem value="item-3" className='border-border'>
+                  <AccordionTrigger>Notes</AccordionTrigger>
                   <AccordionContent>
                     <div className="grid gap-3">
+                      <ul className="grid gap-3 text-sm mt-2">
+                        {order.WorkOrderNotes && order.WorkOrderNotes.map((result, index) => {
+                          return (
+
+                            <li key={index}
+                              className="p-3 bg-muted/50 hover:bg-accent hover:text-accent-foreground rounded-[6px]">
+                              <div className='flex-col'>
+                                <div className='flex justify-between items-center'>
+                                  <p className='font-medium text-muted-foreground  text-left'>Author: {result.userName}</p>
+                                  <p className='text-muted-foreground font-medium text-right'>{new Date(result.createdAt).toLocaleDateString("en-US", options2)}</p>
+                                </div>
+                                <p className='text-left'>{result.body}</p>
+                              </div>
+                            </li>
+                          )
+                        })}
+                      </ul>
+
                       <Form method='post'>
                         <div className="relative mt-4">
-                          <TextArea className='w-full mt-4' name='note' defaultValue={order.notes} />
+                          <TextArea className='w-full mt-4' name='body' />
                           <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note</label>
                         </div>
+                        <input type='hidden' name='userName' defaultValue={user.username} />
+                        <input type='hidden' name='userEmail' defaultValue={user.email} />
                         <input type='hidden' name='id' defaultValue={order.workOrderId} />
                         <Button type='submit' name='intent' value='updateNote' className='mt-4 text-foreground' size='sm'>
                           Submit
@@ -1563,8 +1581,8 @@ export default function Dashboard() {
                     </div>
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="item-2" className='border-border'>
-                  <AccordionTrigger>Work Order Clock Times</AccordionTrigger>
+                <AccordionItem value="item-4" className='border-border'>
+                  <AccordionTrigger>Clock Times</AccordionTrigger>
                   <AccordionContent>
                     <div className="max-h-[600px] h-auto overflow-y-auto">
                       <div className="grid gap-3">
@@ -1883,7 +1901,7 @@ export default function Dashboard() {
                             </li>
                           ))
                         ) : (
-                          <p>No Accessories On Orders available.</p>
+                          <p>No Accessories On Work Order.</p>
                         )}
                       </div>
                     ))
@@ -2596,6 +2614,16 @@ export async function loader({ request, params }: LoaderFunction) {
           }
         }
       },
+      WorkOrderNotes: {
+        select: {
+          id: true,
+          body: true,
+          userName: true,
+          userEmail: true,
+          workOrderId: true,
+          createdAt: true,
+        }
+      },
       // FinanceUnit
       WorkOrderClockEntries: {
         select: {
@@ -2669,7 +2697,7 @@ export async function action({ request, params }: ActionFunction) {
   const email = session.get("email");
   const user = await GetUser(email)
   const id = params.workOrderId
-  console.log(formPayload, 'formpayload')
+  // console.log(formPayload, 'formpayload')
 
   if (intent === "updateWorkOrderHours") {
 
@@ -3087,7 +3115,7 @@ export async function action({ request, params }: ActionFunction) {
       return total + entryHours;
     }, 0);
 
-    console.log(`Total Hours: ${totalHours}`);
+    // console.log(`Total Hours: ${totalHours}`);
 
     const end = new Date(start);
     end.setHours(end.getHours() + totalHours);
@@ -3179,7 +3207,7 @@ export async function action({ request, params }: ActionFunction) {
       return total + entryHours;
     }, 0);
 
-    console.log(`Total Hours: ${totalHours}`);
+    // console.log(`Total Hours: ${totalHours}`);
 
     const end = new Date(start);
     end.setHours(end.getHours() + totalHours);
@@ -3344,7 +3372,7 @@ export async function action({ request, params }: ActionFunction) {
   if (intent === "addAccToWorkOrder") {
     let addToWorkOrder
     if (formPayload.accOrderId === null) {
-      console.log('accOrderId is null')
+      //  console.log('accOrderId is null')
       const accOrder = await prisma.accOrder.create({
         data: {
           userEmail: email,
@@ -3365,7 +3393,7 @@ export async function action({ request, params }: ActionFunction) {
         }
       })
     } else {
-      console.log('accOrderId is NOT null')
+      // console.log('accOrderId is NOT null')
 
       addToWorkOrder = await prisma.accessoriesOnOrders.create({
         data: {
@@ -3375,7 +3403,7 @@ export async function action({ request, params }: ActionFunction) {
         }
       })
     }
-    console.log(addToWorkOrder, 'accOrderId')
+    // console.log(addToWorkOrder, 'accOrderId')
 
     return json({ addToWorkOrder })
   }
@@ -3400,14 +3428,22 @@ export async function action({ request, params }: ActionFunction) {
   }
 
   if (intent === "updateNote") {
-    console.log(';hit update note')
-    const update = await prisma.workOrder.update({
-      where: { workOrderId: Number(formPayload.id) },
+    /// console.log(';hit update note')
+    /**    const update = await prisma.workOrder.update({
+          where: { workOrderId: Number(formPayload.id) },
+          data: {
+            notes: formPayload.note,
+          }
+        }); */
+    const create = await prisma.workOrderNotes.create({
       data: {
-        notes: formPayload.note,
+        body: formPayload.body,
+        userName: formPayload.name,
+        userEmail: formPayload.userEmail,
+        workOrderId: parseInt(formPayload.id),
       }
     });
-    return json({ update })
+    return json({ create })
   }
   if (intent === "sendToParts") {
     const sendtoacc = await prisma.accHandoff.create({

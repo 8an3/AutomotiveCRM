@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
 
 import { buttonVariants } from "~/components";
-import { Loader2 } from "~/icons";
+import { Loader2 } from "~/images/icons";
 import { cn } from "~/utils";
 
 import type { VariantProps } from "class-variance-authority";
@@ -14,7 +14,7 @@ import type { VariantProps } from "class-variance-authority";
 
 export interface ButtonLoadingProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  VariantProps<typeof buttonVariants> {
   isSubmitting?: boolean;
   loadingText?: React.ReactNode;
   isDisabledWhenLoading?: boolean;

@@ -45,7 +45,7 @@ export const mainNav = [
     title: "Roadmap",
     to: "/roadmap",
     description:
-      "A look into our developement plans and accomplishments.",
+      "The path forward...",
   },
   {
     title: "Privacy Policy",

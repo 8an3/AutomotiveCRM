@@ -594,19 +594,28 @@ const getDoneNow = [
 
   { board: "dev", column: "ISSUE", item: "----- FINAL TESTING ON PROD SITE - COMPLETED -----" },
   { board: "dev", column: "ROLES", item: "----- STAFF AREA -----" },
-  { board: "dev", column: "ROLES", item: "staff chat - need to send out notifications regarding messages for pedople in that dept mor maybe just use a tag system so everyone doesnt get blown up with messages" },
+  { board: "dev", column: "ROLES", item: "staff chat - need to send out notifications regarding messages for pedople in that dept or maybe just use a tag system so everyone doesnt get blown up with messages" },
   { board: "dev", column: "ROLES", item: "staff leaderboard - does not work in prod" },
 
-  { board: "dev", column: "ROLES", item: "----- USER -----" },
-  { board: "dev", column: "ROLES", item: "payment calculator" },
-  { board: "dev", column: "ROLES", item: "quote" },
-  { board: "dev", column: "ROLES", item: "overview" },
-  { board: "dev", column: "ROLES", item: "settings" },
-  { board: "dev", column: "ROLES", item: "roadmap " },
-  { board: "dev", column: "ROLES", item: "scripts " },
-  { board: "dev", column: "ROLES", item: "templates " },
-  { board: "dev", column: "ROLES", item: "getting started - may need a few more for dealers " },
-  { board: "dev", column: "ROLES", item: "board - board not saving" },
+  { board: "dev", column: "SALES", item: "----- SALES -----" },
+  { board: "dev", column: "USER", item: "QUOTE - ok" },
+  { board: "dev", column: "USER", item: "unit picker - set the customers unit as a search instead of a filter on all units, that way the user can delete the unit currently and grab a new - need to make sure it updates the pricing if they are going with a total different unit and leave a not for the user stating to check pricing because fof this too" },
+  { board: "dev", column: "USER", item: "overview - ok but go over each input one more time to ensure you didnt miss anything" },
+
+  { board: "dev", column: "USER", item: "----- USER -----" },
+  { board: "dev", column: "USER", item: "payment calculator - ok" },
+  { board: "dev", column: "USER", item: "settings - ok" },
+  { board: "dev", column: "USER", item: "roadmap  - ok" },
+  { board: "dev", column: "USER", item: "scripts - ok " },
+  { board: "dev", column: "USER", item: "templates  - ok " },
+  { board: "dev", column: "USER", item: "documents  - ok - need to add legend so peopole can upload the document themselves" },
+  { board: "dev", column: "USER", item: "getting started   - ok - may need a few more for dealers " },
+  { board: "dev", column: "USER", item: "board - board not saving" },
+
+  { board: "dev", column: "SERVICE", item: "----- SERVICE -----" },
+  { board: "dev", column: "SERVICE", item: "dealer/service/technician - need to cahnge techs email for data fetching when testing is dsone" },
+
+
 
 
 

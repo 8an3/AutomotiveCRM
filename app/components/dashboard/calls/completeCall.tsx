@@ -31,6 +31,7 @@ import { format } from "date-fns"
 import clsx from 'clsx'
 import { isDate } from 'date-fns';
 import { FaCheck } from "react-icons/fa";
+import { ButtonLoading } from "~/components/ui/button-loading";
 
 import { toast } from "sonner"
 import { cn } from "~/utils";
@@ -232,7 +233,7 @@ const CompleteCall = ({ data, user }) => {
                       </div>
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[240px] bg-muted/40 p-0 text-foreground border-border" align="start">
+                  <PopoverContent className="w-[240px] bg-background p-0 text-foreground border border-border" align="start">
                     <div className='align-center my-3 flex justify-center   '>
                       <Select name='pickHour' onValueChange={(value) => setHour(value)} defaultValue='09'>
                         <SelectTrigger className="m-3 w-auto mx-auto bg-background text-foreground border border-border" >
@@ -277,14 +278,12 @@ const CompleteCall = ({ data, user }) => {
             </div>
           </div>
 
-          <Input type='hidden' value={value} name='dateModal' />
-          <Input type='hidden' value={value} name='followUpDay' />
+          <Input type='hidden' value={String(value)} name='followUpDay' />
           <input type='hidden' value={data.firstName} name='firstName' />
           <input type='hidden' value={data.address} name='address' />
           <input type='hidden' value={data.lastName} name='lastName' />
           <input type='hidden' value={data.phone} name='phone' />
           <input type='hidden' value={data.email} name='email' />
-          <input type='hidden' value='scheduleFUp' name='intent' />
           <Input type="hidden" defaultValue={data.userEmail} name="userEmail" />
           <Input type="hidden" defaultValue={user.name} name="userName" />
           <Input type="hidden" defaultValue={user.id} name="userId" />
@@ -304,25 +303,27 @@ const CompleteCall = ({ data, user }) => {
 
           <div className="mt-[25px] flex justify-end">
             <DialogClose >
-              <Button
-                onClick={() => {
-                  setIsButtonPressed(true);
-                  toast.message('Event has been created', {
-                    description: `${value}, ${currentTime}`,
-                  })
-                }}
-                name='intent' size='sm' value='scheduleFUp' type='submit'
-                className={`bg-primary cursor-pointer ml-2 mr-2 p-3 hover:text-primary text-foreground font-bold uppercase text-xs rounded-lg shadow hover:shadow-md outline-none focus:outline-none ease-linear transition-all text-center duration-150 ${isButtonPressed ? ' bg-green-500 ' : 'bg-primary'}`}
+              <ButtonLoading
+                name='intent'
+                size='sm'
+                value='scheduleFUp'
+                type='submit'
+                className={`bg-primary cursor-pointer ml-2 mr-2 p-3 text-foreground font-bold uppercase text-xs   text-center duration-150 `}
+                loadingText="Saving new appointment..."
               >
                 Complete
-              </Button>
+              </ButtonLoading>
             </DialogClose>
           </div>
-
         </Form>
       </DialogContent>
     </Dialog >
   )
 }
-
+/**  onClick={() => {
+                  setIsButtonPressed(true);
+                  toast.message('Event has been created', {
+                    description: `${value}, ${currentTime}`,
+                  })
+                }} */
 export default CompleteCall

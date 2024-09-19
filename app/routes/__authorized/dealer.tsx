@@ -2,7 +2,7 @@ import { json, redirect, type LoaderFunction, type ActionFunction } from '@remix
 import { Outlet, useFetcher, useLoaderData, useLocation, NavLink, useSubmit, Form } from '@remix-run/react';
 import { getSession, commitSession, authSessionStorage, destroySession } from "~/sessions/auth-session.server";
 import { GetUser } from "~/utils/loader.server";
-import NotificationSystem from "~/routes/__authorized/dealer/notifications";
+import NotificationSystem from "~/routes/__authorized/dealer/systems/notifications";
 import { prisma } from '~/libs';
 //import Sidebar, { managerSidebarNav, adminSidebarNav, devSidebarNav, } from '~/components/shared/sidebar'
 import { Theme, useTheme } from "remix-themes";
@@ -10,8 +10,8 @@ import { Theme, useTheme } from "remix-themes";
 import UserSideBar from '~/components/zRoutes/oldComps/userSideBar';
 import Interruptions from '~/components/shared/interruptions';
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
-import GetData from './dealer/email/notificationsClient';
-import SearchFunction from './dealer/search';
+import GetData from './dealer/features/email/notifications.client';
+import SearchFunction from './dealer/systems/search';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,13 +41,14 @@ import {
 import { getUserIsAllowed } from "~/helpers";
 
 import { ButtonIcon } from "~/components";
-import { Moon, Sun } from "~/icons";
-import SearchFunction2 from './dealer/searchTable';
+import { Moon, Sun } from "~/images/icons";
+import SearchFunction2 from './dealer/systems/searchTable';
 import useSWR from 'swr';
-import SearchByOrderFunction from './dealer/searchByOrder';
+import SearchByOrderFunction from './dealer/systems/searchByOrder';
 import { toast } from 'sonner';
 import Warning from '~/overviewUtils/images/warning.svg'
 import MainDropwdown from '~/components/shared/dropdownNav'
+
 export async function loader({ request, params }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));
   const email = session.get("email")

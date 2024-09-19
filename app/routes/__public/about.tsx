@@ -8,7 +8,7 @@ import {
   YouTubeVideo,
 } from "~/components";
 import { useRootLoaderData } from "~/hooks";
-import { AppleMac } from "~/icons";
+import { AppleMac } from "~/images/icons";
 import { createMetaData, createSitemap } from "~/utils";
 
 export const meta = createMetaData({

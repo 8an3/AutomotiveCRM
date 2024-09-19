@@ -1,4 +1,4 @@
-import { Form } from "@remix-run/react";
+import { Form, useFetcher } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import * as Toast from '@radix-ui/react-toast';
 import React, { useState } from "react";
@@ -15,13 +15,14 @@ import { toast } from "sonner"
 
 export default function TwoDaysFromNow({ data }) {
     const [isButtonPressed, setIsButtonPressed] = React.useState(false);
-    let followUpDay;
+    let followUpDay = 0
     if (data.followUpDay < 1) followUpDay = 1;
     const [fUpDays, setFUpDays] = React.useState(followUpDay);
 
-    const [followUpDay1, setAppointmentDate] = useState(new Date());
+    const [followUpDay12, setAppointmentDate] = useState(new Date());
 
     function handleDropdownChange(value) {
+        setFUpDays(Number(value))
         const followUpDay1 = Number(value);
         setButtonText('F/U ' + followUpDay1 + ' days')
         setAppointmentDate(getFutureDate(followUpDay1));
@@ -33,10 +34,10 @@ export default function TwoDaysFromNow({ data }) {
         return date;
     }
     const [buttonText, setButtonText] = useState('F/U ' + fUpDays + ' days');
-
+    const fetcher = useFetcher()
     return (
         <div className="justify-center  items-center mx-auto my-auto ">
-            <Form method='post'>
+            <fetcher.Form method='post'>
                 <div className="flex justify-between">
                     <Select name='followUpDay1' onValueChange={handleDropdownChange}>
                         <SelectTrigger className="w-auto border-border text-foreground bg-background font-bold uppercase">
@@ -54,6 +55,7 @@ export default function TwoDaysFromNow({ data }) {
                     </Select>
                     <input type='hidden' value='2DaysFromNow' name='intent' />
                     <input type="hidden" defaultValue={data.userEmail} name="userEmail" />
+                    <input type="hidden" defaultValue={String(followUpDay12)} name="newFollowUpDate" />
                     <input type="hidden" defaultValue={data.brand} name="brand" />
                     <input type='hidden' name='financeId' value={data.id} />
                     <input type='hidden' name='email' value={data.email} />
@@ -75,20 +77,17 @@ export default function TwoDaysFromNow({ data }) {
                     <input type="hidden" defaultValue={data.id} name="financeId" />
 
                     <input type="hidden" defaultValue={data.apptStatus} name="apptStatus" />
-                    <input type="hidden" defaultValue='Other' name="contactMethod" />
+                    <input type="hidden" defaultValue='Quick Appt' name="contactMethod" />
                     <input type="hidden" name="title" defaultValue={`F/U on the ${data.model}`} />
                     <input type="hidden" defaultValue={data.vin} name="vin" />
                     <input type="hidden" defaultValue={data.stockNum} name="stockNum" />
 
                     <Button
-                        disabled={followUpDay1.getTime() < Date.now()}
+                        disabled={fUpDays === 0}
                         onClick={() => {
                             toast.success(`Quote updated for ${data.firstName}`)
 
-                            // Set the button state to pressed
                             setIsButtonPressed(true);
-
-                            // Change the button text
                             setButtonText('Follow-up set');
                         }}
                         type='submit'
@@ -98,7 +97,8 @@ export default function TwoDaysFromNow({ data }) {
                     </Button>
 
                 </div>
-            </Form >
+            </fetcher.Form >
         </div >
     )
 }
+//followUpDay1.getTime() < Date.now()

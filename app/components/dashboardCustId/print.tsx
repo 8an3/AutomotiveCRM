@@ -16,7 +16,7 @@ import { model } from "~/models";
 import { v4 as uuidv4 } from "uuid";
 import { commitSession, getSession } from '~/utils/pref.server';
 import UploadFile from '~/routes/__authorized/dealer/uploadFile'
-import Root from "~/routes/__authorized/dealer/upload/file";
+import Root from "~/routes/__authorized/dealer/features/upload/file";
 
 
 export default function Print() {

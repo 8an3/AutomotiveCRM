@@ -70,10 +70,10 @@ import {
   PanelTop,
 } from "lucide-react"
 import kawasaki from '~/overviewUtils/images/kawa.png'
-import canamIndex from '~/logos/canamIndex.png'
-import manitouIndex from '~/logos/manitouIndex.png'
+import canamIndex from '~/images/logos/canamIndex.png'
+import manitouIndex from '~/images/logos/manitouIndex.png'
 
-import harleyDavidson from '~/logos/hd.png'
+import harleyDavidson from '~/images/logos/hd.png'
 import UserIcon from '~/images/favicons/user.svg'
 
 export const links: LinksFunction = () => [

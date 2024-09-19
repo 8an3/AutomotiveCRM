@@ -8,7 +8,7 @@ import {
 } from "~/components";
 import { configDev } from "~/configs";
 import { useRootLoaderData } from "~/hooks";
-import { X } from "~/icons";
+import { X } from "~/images/icons";
 import { cn, jsonStringify } from "~/utils";
 
 /**

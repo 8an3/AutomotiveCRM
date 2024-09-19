@@ -88,7 +88,7 @@ export default function NotificationSystem(interruptionsData, getEmails) {
 
 
   const { data: leadData, error: leadError, isLoading: leadLoading, isValidating } = useSWR(
-    'http://localhost:3000/dealer/notifications/newLead',
+    `http://localhost:3000/dealer/notifications/newLead`,
     dataFetcher,
     { refreshInterval: 180000 }
   );

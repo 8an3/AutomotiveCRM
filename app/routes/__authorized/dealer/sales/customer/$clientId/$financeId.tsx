@@ -34,107 +34,24 @@ import { Cross2Icon, CaretSortIcon, CalendarIcon, ClockIcon, ChevronDownIcon, Do
 import { Calendar } from '~/components/ui/calendar';
 import { format } from "date-fns"
 import { cn } from "~/components/ui/utils"
-import harleyDavidson from '~/logos/hd.png'
+import harleyDavidson from '~/images/logos/hd.png'
 import clsx from 'clsx'
 import { isDate } from 'date-fns';
 import { FaCheck } from "react-icons/fa";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from "~/components/ui/alert-dialog"
+import { ChevronLeft, ChevronRight, Copy, X, CreditCard, File, Home, LineChart, ListFilter, MoreVertical, Package, Send, FileText, Package2, PanelLeft, Plus, Search, Settings, ShoppingCart, Truck, Users2, Eye, PanelTop, } from "lucide-react"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "~/components/ui/alert-dialog"
-import {
-  ChevronLeft,
-  ChevronRight,
-  Copy,
-  X, CreditCard,
-  File,
-  Home,
-  LineChart,
-  ListFilter,
-  MoreVertical,
-  Package,
-  Send,
-  FileText,
-  Package2,
-  PanelLeft,
-  Plus,
-  Search,
-  Settings,
-  ShoppingCart,
-  Truck,
-  Users2,
-  Eye,
-  PanelTop,
-} from "lucide-react"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
+  Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,
 } from "~/components/ui/breadcrumb"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, DropdownMenuGroup, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuPortal, DropdownMenuSubContent } from "~/components/ui/dropdown-menu"
 //import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, } from "~/components/ui/dropdown-menu";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-} from "~/components/ui/pagination"
+import { Pagination, PaginationContent, PaginationItem, } from "~/components/ui/pagination"
 import { Progress } from "~/components/ui/progress"
 import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table"
-import {
-  Tabs, Badge,
-  TabsContent,
-  TabsList,
-  TabsTrigger, Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogClose,
-  DialogTitle,
-  DialogTrigger, Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  Alert,
-  Debug,
-  InputPassword,
-  Layout,
-  PageHeader,
-  RemixForm,
-  RemixLinkText,
-  CardHeader,
-  CardTitle, Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup,
-  RemixNavLink, Input, Separator, Button, TextArea, Label, PopoverTrigger, PopoverContent, Popover,
-} from "~/components"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
+import { Tabs, Badge, TabsContent, TabsList, TabsTrigger, Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogClose, DialogTitle, DialogTrigger, Card, CardContent, CardDescription, CardFooter, Alert, Debug, InputPassword, Layout, PageHeader, RemixForm, RemixLinkText, CardHeader, CardTitle, Avatar, AvatarFallback, AvatarImage, Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup, RemixNavLink, Input, Separator, Button, TextArea, Label, PopoverTrigger, PopoverContent, Popover, } from "~/components"
 import { CheckIcon, PaperPlaneIcon, PlusIcon, UploadIcon } from "@radix-ui/react-icons"
-
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "~/components/ui/tooltip"
 import {
   Command,
   CommandEmpty,
@@ -149,8 +66,8 @@ import { FaMotorcycle } from "react-icons/fa";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
 import { ImageSelectNav } from '~/overviewUtils/imageselect'
-import canamIndex from '~/logos/canamIndex.png'
-import manitouIndex from '~/logos/manitouIndex.png'
+import canamIndex from '~/images/logos/canamIndex.png'
+import manitouIndex from '~/images/logos/manitouIndex.png'
 import Harley from '~/components/dashboardCustId/hdIcon.png'
 import second from '~/styles/second.css'
 import CustomerGen from "~/routes/__authorized/dealer/document/customerGen.client";
@@ -174,7 +91,7 @@ import DealerFeesDisplay from '~/overviewUtils/dealerFeesDisplay'
 import ContactInfoDisplay from '~/overviewUtils/contactInfoDisplay'
 import ClientProfile from '~/components/dashboard/calls/actions/clientProfile'
 // <Sidebar />
-import NotificationSystem from "~/routes/__authorized/dealer/notifications";
+import NotificationSystem from "~/routes/__authorized/dealer/systems/notifications";
 import { PrintSpec } from "~/overviewUtils/printSpec";
 import { CiEdit } from "react-icons/ci";
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';
@@ -184,11 +101,7 @@ import { cors } from "remix-utils";
 import { TextFunction } from "~/components/dashboard/calls/logText";
 import { ModelPage } from "~/overviewUtils/modelPage";
 import timeline from "~/styles/timeline.css";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "~/components/ui/hover-card"
+import { HoverCard, HoverCardContent, HoverCardTrigger, } from "~/components/ui/hover-card"
 import useSWR from "swr";
 import { ClientOnly } from "remix-utils";
 import PrintReceipt from "~/routes/__authorized/dealer/document/printReceiptSales.client";
@@ -201,55 +114,17 @@ import { Shirt } from "lucide-react";
 import PrintReceiptAcc from "~/routes/__authorized/dealer/document/printReceiptAcc.client";
 import { Receipt } from "lucide-react";
 import WorkOrderSales from "~/routes/__authorized/dealer/document/printWorkOrder.client";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "~/components/ui/accordion"
-import {
-  ContextMenu,
-  ContextMenuCheckboxItem,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuLabel,
-  ContextMenuRadioGroup,
-  ContextMenuRadioItem,
-  ContextMenuSeparator,
-  ContextMenuShortcut,
-  ContextMenuSub,
-  ContextMenuSubContent,
-  ContextMenuSubTrigger,
-  ContextMenuTrigger,
-} from "~/components/ui/context-menu"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "~/components/ui/accordion"
+import { ContextMenu, ContextMenuCheckboxItem, ContextMenuContent, ContextMenuItem, ContextMenuLabel, ContextMenuRadioGroup, ContextMenuRadioItem, ContextMenuSeparator, ContextMenuShortcut, ContextMenuSub, ContextMenuSubContent, ContextMenuSubTrigger, ContextMenuTrigger, } from "~/components/ui/context-menu"
 import { EditableText } from "~/components/shared/shared";
 import UnitDialog from "~/components/dashboard/inventory/diaolog";
-
 import { PullActivix, GetMergedWithActivix, SimplerStaticVersion, getToken } from '~/components/shared/shared'
+import { Resend } from 'resend';
+import PaymentCalculatorEmail from '~/emails/PaymentCalculatorEmail';
+import CustomBody from '~/emails/customBody';
 
-/**  const [formData, setFormData] = useState({
-    referral: mergedFinanceList.referral || "off",
-    visited: mergedFinanceList.visited || "off",
-    bookedApt: mergedFinanceList.bookedApt || "off",
-    aptShowed: mergedFinanceList.aptShowed || "off",
-    aptNoShowed: mergedFinanceList.aptNoShowed || "off",
-    testDrive: mergedFinanceList.testDrive || "off",
-    metService: mergedFinanceList.metService || "off",
-    metManager: mergedFinanceList.metManager || "off",
-    metParts: mergedFinanceList.metParts || "off",
-    sold: mergedFinanceList.sold || "off",
-    depositMade: mergedFinanceList.depositMade || "off",
-    refund: mergedFinanceList.refund || "off",
-    turnOver: mergedFinanceList.turnOver || "off",
-    financeApp: mergedFinanceList.financeApp || "off",
-    approved: mergedFinanceList.approved || "off",
-    signed: mergedFinanceList.signed || "off",
-    pickUpSet: mergedFinanceList.pickUpSet || "off",
-    demoed: mergedFinanceList.demoed || "off",
-    seenTrade: mergedFinanceList.seenTrade || "off",
-    delivered: mergedFinanceList.delivered || "off",
-    setPickUpDate: mergedFinanceList.setPickUpDate || "off",
-  }); */
+const resend = new Resend('re_YFCDynPp_5cod9FSRkrbS6kfmRsoqSsBS')//new Resend(process.env.resend_API_KEY);
+
 
 export const headers = ({ loaderHeaders, parentHeaders }) => {
   return {
@@ -259,7 +134,9 @@ export const headers = ({ loaderHeaders, parentHeaders }) => {
 };
 
 export default function Dashboard() {
-  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, mergedFinanceList, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown, salesPeople, financeManagers, services, dealerImage, tax, orders, assignedUnit, tableData } = useLoaderData();
+  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown, salesPeople, financeManagers, services, dealerImage, tax, orders, assignedUnit, tableData } = useLoaderData();
+
+  console.log(finance.WorkOrders, 'orders')
 
   const [financeIdState, setFinanceIdState] = useState();
   const fetcher = useFetcher();
@@ -270,8 +147,7 @@ export default function Dashboard() {
   const timerRef = React.useRef(0);
   let addProduct = useFetcher();
 
-  const [tradeToggled, setTradeToggled] = useState(true);
-  const [financeInfo, setFinanceInfo] = useState(true);
+
   const [PickUpCalendar, setPickUpCalendar] = useState('off');
 
   useEffect(() => {
@@ -382,14 +258,8 @@ export default function Dashboard() {
   const currentTime = `${hour}:${min}:${currentSecond}`
   const time = `${hour}:${min}:00`
 
-  useEffect(() => {
-    if (mergedFinanceList.tradeDesc === null || mergedFinanceList.tradeDesc === undefined || mergedFinanceList.tradeDesc === '') {
-      setTradeToggled(false);
-    }
-    if (mergedFinanceList.approved !== 'on' || mergedFinanceList.turnOver !== 'on' || mergedFinanceList.financeApp !== 'on') {
-      setFinanceInfo(false);
-    }
-  }, []);
+
+
 
   const generateHiddenInputs = () => {
     return ClientResultFunction({ formData }).map((item) => (
@@ -426,108 +296,7 @@ export default function Dashboard() {
   };
 
 
-  let NewListForStatus = [
 
-    { name: 'lastContact', value: mergedFinanceList.lastContact === '1969-12-31 19:00' || mergedFinanceList.lastContact === null ? 'TBD' : formatDate(mergedFinanceList.lastContact), label: 'Last Contacted', },
-    { name: 'nextAppointment', value: null, label: 'Next Appt', },
-    {
-      name: 'deliveryDate',
-      value: mergedFinanceList.customerState !== 'depositMade' ?
-        (<>
-
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-[240px] justify-start text-left font-normal",
-                  !date && "text-muted-foreground"
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "PPP") : <span>Pick a date</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                mode="single"
-                selected={date}
-                onSelect={setDate}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant={"outline"}
-                className={cn(
-                  "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary hover:border-primary",
-                  !date && " text-foreground"
-                )}
-              >
-                <div className=' text-foreground  mx-auto flex justify-center  '>
-                  <ClockIcon className="mr-2 size-8 " />
-                  {currentTime ? (time) : <span>Pick a Time</span>}
-                </div>
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[240px] bg-white p-0 text-black" align="start">
-              <div className='align-center my-3 flex justify-center   '>
-                <Select name='pickHour' value={hour} onValueChange={setHour}>
-                  <SelectTrigger className="m-3 w-auto bg-transparent hover:bg-transparent hover:text-primary hover:border-primary" >
-                    <SelectValue placeholder={hour} defaultValue={hour} />
-                  </SelectTrigger>
-                  <SelectContent className='bg-white text-black' >
-                    <SelectGroup>
-                      <SelectLabel>Hour</SelectLabel>
-                      <SelectItem value="09">09</SelectItem>
-                      <SelectItem value="10">10</SelectItem>
-                      <SelectItem value="11">11</SelectItem>
-                      <SelectItem value="12">12</SelectItem>
-                      <SelectItem value="13">13</SelectItem>
-                      <SelectItem value="14">14</SelectItem>
-                      <SelectItem value="15">15</SelectItem>
-                      <SelectItem value="16">16</SelectItem>
-                      <SelectItem value="17">17</SelectItem>
-                      <SelectItem value="18">18</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <Select name='pickMin' value={min} onValueChange={setMin} >
-                  <SelectTrigger className="m-3 w-auto" >
-                    <SelectValue placeholder={min} defaultValue={min} />
-                  </SelectTrigger>
-                  <SelectContent className='bg-white text-black'  >
-                    <SelectGroup>
-                      <SelectLabel>Minute</SelectLabel>
-                      <SelectItem value="10">10</SelectItem>
-                      <SelectItem value="20">20</SelectItem>
-                      <SelectItem value="30">30</SelectItem>
-                      <SelectItem value="40">40</SelectItem>
-                      <SelectItem value="50">50</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-            </PopoverContent>
-          </Popover>
-
-
-        </>
-
-        ) :
-        mergedFinanceList.customerState !== 'pickUpSet' ?
-          (<Badge onClick={() => setPickUpCalendar(PickUpCalendar === 'yes' ? 'no' : 'yes')} className="cursor-pointer transform transform:translate-x-1 bg-green-600">{result}</Badge>) :
-          mergedFinanceList.customerState !== 'delivered' ?
-            (<Badge className="bg-green-600">Delivered</Badge>) :
-            (<Badge onClick={() => setPickUpCalendar(PickUpCalendar === 'yes' ? 'no' : 'yes')} className="cursor-pointer transform transform:translate-x-1 bg-green-600">{result}</Badge>
-            ),
-
-      label: 'Pick Up Date',
-    }
-
-  ]
 
   const [editItemId, setEditItemId] = useState(null);
 
@@ -544,7 +313,7 @@ export default function Dashboard() {
         setTimeout(() => setCopiedText(''), 3000); // Reset after 3 seconds
       })
       .catch((error) => {
-        console.error('Failed to copy text: ', error);
+        // console.error('Failed to copy text: ', error);
       });
   };
   const [copiedText, setCopiedText] = useState('');
@@ -556,27 +325,22 @@ export default function Dashboard() {
     {
       name: "Olivia Martin",
       email: "m@example.com",
-      avatar: "/avatars/01.png",
     },
     {
       name: "Isabella Nguyen",
       email: "isabella.nguyen@email.com",
-      avatar: "/avatars/03.png",
     },
     {
       name: "Emma Wilson",
       email: "emma@example.com",
-      avatar: "/avatars/05.png",
     },
     {
       name: "Jackson Lee",
       email: "lee@example.com",
-      avatar: "/avatars/02.png",
     },
     {
       name: "William Kim",
       email: "will@email.com",
-      avatar: "/avatars/04.png",
     },
   ] as const
 
@@ -584,6 +348,8 @@ export default function Dashboard() {
 
   const [open, setOpen] = useState(false)
   const [openAppt, setOpenAppt] = useState(false)
+  const [openView, setOpenView] = useState(false)
+  const [openEdit, setOpenEdit] = useState(false)
   const [openComms, setOpenComms] = useState(false)
   const [selectedUsers, setSelectedUsers] = useState<User[]>([])
 
@@ -617,7 +383,7 @@ export default function Dashboard() {
     { name: 'model', value: finance.model, placeholder: 'Model' },
     { name: 'trim', value: finance.submodel, placeholder: 'Trim' },
     { name: 'stockNum', value: finance.stockNum, placeholder: 'Stock Number' },
-    { name: 'modelCode', value: finance.modelCode, placeholder: 'Model Code' },
+    { name: 'modelCode', value: finance.modelCode !== 0 ? finance.modelCode : null, placeholder: 'Model Code' },
     { name: 'color', value: finance.color, placeholder: 'Color' },
     { name: 'mileage', value: finance.mileage, placeholder: 'Mileage' },
     { name: 'location', value: finance.location, placeholder: 'Location' },
@@ -2017,7 +1783,6 @@ export default function Dashboard() {
   const [messagesConvo, setMessagesConvo] = useState([]);
   const [chatReady, setChatReady] = useState(false);
 
-
   let multipliedConvoList = [];
   for (let i = 0; i < 30; i++) {
     multipliedConvoList = multipliedConvoList.concat(convoList);
@@ -2101,7 +1866,7 @@ export default function Dashboard() {
         });
 
         client.on('tokenAboutToExpire', () => {
-          console.log('About to expire');
+          //  console.log('About to expire');
           const username = 'skylerzanth'//localStorage.getItem("username") ?? "";
           const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
           setName(username)
@@ -2122,7 +1887,7 @@ export default function Dashboard() {
           }
         });
         client.on('tokenExpired', () => {
-          console.log('Token expired');
+          // console.log('Token expired');
           client.removeAllListeners();
           const client2 = new Client(token);
           setClient(client2);
@@ -2137,11 +1902,11 @@ export default function Dashboard() {
           );
         });
         client.on('typingStarted', (user) => {
-          console.log('typing..', user);
+          // console.log('typing..', user);
           if (user.conversation.sid === currentConversation.sid) setIsTyping(true);
         });
         client.on('typingEnded', (user) => {
-          console.log('typing end..', user);
+          // console.log('typing end..', user);
           if (user.conversation.sid === currentConversation.sid) setIsTyping(false);
         });
       }, 10);
@@ -2205,10 +1970,10 @@ export default function Dashboard() {
             else {
               setCustomerMessages([])
             }
-            console.log(data, 'fetched messages');
+            //  console.log(data, 'fetched messages');
             return data;
           } catch (error) {
-            console.error('Failed to fetch messages:', error);
+            // console.error('Failed to fetch messages:', error);
           }
         }
 
@@ -2390,7 +2155,6 @@ export default function Dashboard() {
     { name: 'deliveredDate', value: finance.deliveredDate, label: 'Delivered Date', },
   ];
 
-
   // -----------------------------finance dropdowns ---------------------------------//
   const email = [
     {
@@ -2453,7 +2217,7 @@ export default function Dashboard() {
   );
   function SubmitTheForm(newValue, template, financeId) {
     if (template === "justPayments" || template === "fullBreakdown" || template === "FullBreakdownWOptions") {
-      console.log(newValue, template, 'reg emails')
+      // console.log(newValue, template, 'reg emails')
       const formData = new FormData();
       formData.append("value", newValue);
       formData.append("modelData", modelData);
@@ -2462,13 +2226,13 @@ export default function Dashboard() {
       formData.append("intent", 'email');
       submit(formData, { method: "post" });
     } else if (template === "justPaymentsCustom" || template === "fullBreakdownCustom" || template === "FullBreakdownWOptionsCustom") {
-      console.log(newValue, template, 'custom emails')
+      //console.log(newValue, template, 'custom emails')
 
       setOpenEmail(true);
     } else if (template === 'Custom-Templated-Emails') {
       return null
     } else {
-      console.log('hit id form')
+      //  console.log('hit id form')
       const formData = new FormData();
       formData.append("value", newValue);
       formData.append("modelData", modelData);
@@ -2519,7 +2283,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const intervalFunction = async () => {
-      console.log('Interval fired1212');
+      //   console.log('Interval fired1212');
       const getLocked = await prisma.lockFinanceTerminals.findFirst({ where: { salesEmail: user.email, locked: false, response: false } })
       if (getLocked.response === false) {
         setLockData(getLocked)
@@ -2705,7 +2469,7 @@ export default function Dashboard() {
    console.log(result, 'result')
   const [tableData, setTableData] = useState(result);
 */
-  console.log(tableData, 'table data')
+  //  console.log(tableData, 'table data')
   let sync = useFetcher();
 
   useEffect(() => {
@@ -2718,14 +2482,13 @@ export default function Dashboard() {
             formData.append("email", user.email);
             formData.append("intent", 'unsync');
             const sendIt = sync.submit(formData, { method: "post", action: '/dealer/customer' });
-            console.log(sendIt, 'formData');
+            // console.log(sendIt, 'formData');
             return sendIt
           }
         },
       })
     }
   }, [user]);
-
 
   const toReceipt =
   {
@@ -2759,9 +2522,6 @@ export default function Dashboard() {
     "image": dealerImage.dealerLogo
 
   }
-
-
-
 
   const [openEmail, setOpenEmail] = useState(false);
   const [emailLabel, setEmailLabel] = useState('');
@@ -2810,8 +2570,11 @@ export default function Dashboard() {
   const [deposits, setDeposits] = useState("")
   const depositsLength = deposits.trim().length
   const financeId = finance.id
-  const attachedToFinance = clientFile.AccOrder.filter(order => order.financeId === financeId);
-  const notAttachedToFinance = clientFile.AccOrder.filter(order => order.financeId !== financeId);
+  const attachedToFinance = finance.AccOrders//.filter(order => order.financeId === financeId);
+  let notAttachedToFinance
+  if (finance.Clientfile.AccOrder && finance.Clientfile.AccOrder.length > 1) {
+    notAttachedToFinance = finance.Clientfile.AccOrder
+  }
   // console.log(notAttachedToFinance, 'notAttachedToFinance')
   const total2 = ((totalAccessoriesCost - parseFloat(discDollar)) * taxRate).toFixed(2)
   const total1 = (((totalAccessoriesCost * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2)
@@ -2935,14 +2698,16 @@ export default function Dashboard() {
       if (totalAmountPaid2) {
         setTotalAmountPaid(totalAmountPaid2)
       }
-      console.log(partsSubTotal, serviceSubTotal, partsSubTotal + serviceSubTotal, 'totals')
+      //  console.log(partsSubTotal, serviceSubTotal, partsSubTotal + serviceSubTotal, 'totals')
 
     }
   }, [serviceOrder]);
+  //console.log(finance, 'finance')
+
 
   return (
     <div >
-      <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
+      <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3 mt-4">
         <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-6">
             <Card className="sm:col-span-2 text-foreground rounded-lg  flex flex-col h-full" x-chunk="dashboard-05-chunk-0"  >
@@ -2960,7 +2725,7 @@ export default function Dashboard() {
                     <li key={index} className=" group flex items-center justify-between">
                       <div className='flex'>
                         <span className="text-muted-foreground">
-                          {item.name}
+                          {item.label}
                         </span>
                         <Button
                           size="icon"
@@ -2980,7 +2745,7 @@ export default function Dashboard() {
                     <li key={index} className=" group flex items-center justify-between">
                       <div className='flex'>
                         <span className="text-muted-foreground">
-                          {item.name}
+                          {item.label}
                         </span>
                         <Button
                           size="icon"
@@ -3000,7 +2765,7 @@ export default function Dashboard() {
                     <li key={index} className=" group flex items-center justify-between">
                       <div className='flex'>
                         <span className="text-muted-foreground">
-                          {item.name}
+                          {item.label}
                         </span>
                         <Button
                           size="icon"
@@ -3237,12 +3002,6 @@ export default function Dashboard() {
 
                     <li className="flex items-center justify-between">
                       <span className="text-muted-foreground">
-                        Current Mileage
-                      </span>
-                      <span>{finance.mileage}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
                         Location
                       </span>
                       <span>{finance.location}</span>
@@ -3268,7 +3027,7 @@ export default function Dashboard() {
                         <span className="text-muted-foreground">
                           Model Code
                         </span>
-                        <span>{finance.modelCode}</span>
+                        <span>{finance.modelCode !== 0 ? finance.modelCode : null}</span>
                       </li>
                     )}
                     {finance.tag && (
@@ -3613,7 +3372,7 @@ export default function Dashboard() {
                       <Select
                         onValueChange={(value) => {
                           setOpen(false);
-                          console.log("click");
+                          // console.log("click");
                           const selectedFramework = updatedEmailArray.find((framework) => framework.value === value);
 
                           const newValue = value
@@ -3626,11 +3385,11 @@ export default function Dashboard() {
                           setEmailLabel(selectedFramework.label);
 
                           if (selectedFramework.template === "justPayments" || selectedFramework.template === "fullBreakdown" || selectedFramework.template === "justPaymentsCustom") {
-                            console.log(selectedFramework, 'selectedFramework')
+                            // console.log(selectedFramework, 'selectedFramework')
                             SubmitTheForm(newValue, template, financeId);
                           } else
                             if (selectedFramework.template === "justPaymentsCustom" || selectedFramework.template === "fullBreakdownCustom" || selectedFramework.template === "FullBreakdownWOptionsCustom") {
-                              console.log(selectedFramework, 'customEmail')
+                              // console.log(selectedFramework, 'customEmail')
                               setOpenEmail(true);
                             } else {
                               SubmitTheForm(newValue, template, financeId);
@@ -5302,9 +5061,9 @@ export default function Dashboard() {
                     <Input type="hidden" defaultValue={formData.discountPer} name="discountPer" />
                     <Input type="hidden" defaultValue={total} name="total" />
                     <Input type="hidden" defaultValue={msrp} name="msrp" />
-                    <Input type="hidden" defaultValue={modelData.color} name="color" />
-                    <Input type="hidden" defaultValue={modelData.model1} name="model1" />
-                    <Input type="hidden" defaultValue={modelData.modelCode} name="modelCode" />
+                    <Input type="hidden" defaultValue={formData.color} name="color" />
+                    <Input type="hidden" defaultValue={formData.model1} name="model1" />
+                    <Input type="hidden" defaultValue={formData.modelCode} name="modelCode" />
                     <Input type="hidden" defaultValue={onTax} name="onTax" />
                     <Input type="hidden" defaultValue={qcTax} name="qcTax" />
                     <Input type="hidden" defaultValue={otherTax} name="otherTax" />
@@ -6023,7 +5782,7 @@ export default function Dashboard() {
                                   formData.append("total", total);
                                   formData.append("intent", 'updateStatus');
                                   formData.append("status", value);
-                                  console.log(formData, 'formData');
+                                  // console.log(formData, 'formData');
                                   workOrder.submit(formData, { method: "post" });
                                 }}>
                                 <SelectTrigger className="w-[200px] " >
@@ -6107,22 +5866,42 @@ export default function Dashboard() {
 
                           <Accordion type="single" collapsible className="w-full border-border mt-3">
                             <AccordionItem value="item-1" className='border-border'>
-                              <AccordionTrigger>Work Order Notes</AccordionTrigger>
+                              <AccordionTrigger>Notes</AccordionTrigger>
                               <AccordionContent>
                                 <div className="grid gap-3">
+                                  <ul className="grid gap-3 text-sm mt-2">
+                                    {serviceOrder.WorkOrderNotes && serviceOrder.WorkOrderNotes.map((result, index) => {
+                                      return (
+
+                                        <li key={index}
+                                          className="p-3 bg-muted/50 hover:bg-accent hover:text-accent-foreground rounded-[6px]">
+                                          <div className='flex-col'>
+                                            <div className='flex justify-between items-center'>
+                                              <p className='font-medium text-muted-foreground  text-left'>Author: {result.userName}</p>
+                                              <p className='text-muted-foreground font-medium text-right'>{new Date(result.createdAt).toLocaleDateString("en-US", options2)}</p>
+                                            </div>
+                                            <p className='text-left'>{result.body}</p>
+                                          </div>
+                                        </li>
+                                      )
+                                    })}
+                                  </ul>
                                   <Form method='post'>
                                     <div className="relative mt-4">
-                                      <TextArea className='w-full mt-4' name='note' defaultValue={serviceOrder.notes} />
-                                      <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note</label>
+                                      <TextArea className='w-full mt-4' name='body' />
+                                      <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500 mx-1">Note</label>
                                     </div>
-                                    <input type='hidden' name='id' defaultValue={serviceOrder.workOrderId} />
+                                    <input type='hidden' name='workOrderId' defaultValue={serviceOrder.workOrderId} />
+                                    <input type='hidden' name='userName' defaultValue={user.username} />
+                                    <input type='hidden' name='userEmail' defaultValue={user.email} />
                                     <Button type='submit' name='intent' value='updateNote' className='mt-4 text-foreground' size='sm'>
-                                      Submit
+                                      Save
                                     </Button>
                                   </Form>
                                 </div>
                               </AccordionContent>
                             </AccordionItem>
+
                           </Accordion>
 
                           <div className="grid gap-3 mt-3">
@@ -6362,7 +6141,7 @@ export default function Dashboard() {
                                         </li>
                                       ))
                                     ) : (
-                                      <p>No Accessories On Orders available.</p>
+                                      <p>No Accessories On Work Order.</p>
                                     )}
                                   </div>
                                 ))
@@ -6448,9 +6227,21 @@ export default function Dashboard() {
                       )}
                     </CardContent>
                     <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3 border-border">
-                      <Button size='sm' variant='outline'>
-                        Create New Work Order
-                      </Button>
+                      <Form method='post' >
+                        <input type='hidden' name='email' value={finance.email} />
+                        <input type='hidden' name='year' value={finance.year} />
+                        <input type='hidden' name='brand' value={finance.brand} />
+                        <input type='hidden' name='model' value={finance.model} />
+                        <input type='hidden' name='mileage' value={finance.mileage} />
+                        <input type='hidden' name='vin' value={finance.vin} />
+                        <input type='hidden' name='color' value={finance.color} />
+                        <input type='hidden' name='financeId' value={finance.id} />
+                        <input type='hidden' name='clientfileId' value={finance.Clientfile.id} />
+                        <Button size='sm' variant='outline' name='intent' value='createNewOrder'>
+                          Create New Work Order
+                        </Button>
+                      </Form>
+
                       <Pagination className="ml-auto mr-0 w-auto">
                         <PaginationContent>
                           <PaginationItem>
@@ -7161,7 +6952,7 @@ export default function Dashboard() {
                       <CardContent>
                         <div className="space-y-4 mt-5">
 
-                          {financeNotes.slice().reverse().map((message, index) => (
+                          {financeNotes.map((message, index) => (
                             <div
                               key={index}
                               className={cn(
@@ -7173,11 +6964,29 @@ export default function Dashboard() {
                             >
                               <div className='grid grid-cols-1'>
                                 {message.userEmail !== user.email && (
-                                  <p className='text-[#8c8c8c]'>
+                                  <p className='text-muted-foreground'>
                                     {message.userName}
                                   </p>
                                 )}
                                 {message.body}
+                                {message.selectedUsers.length > 0 && (
+                                  <div className="flex -space-x-2 overflow-hidden">
+                                    {message.selectedUsers.map((user) => (
+                                      <Tooltip key={user.email}>
+                                        <TooltipTrigger asChild>
+                                          <Avatar className="inline-block  border border-border"                                >
+                                            <AvatarImage src={user.avatar} />
+                                            <AvatarFallback>{user.selectedName[0]}</AvatarFallback>
+                                          </Avatar>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="right" className='text-center grid grid-cols-1 border border-border'>
+                                          <p>{user.selectedName}</p>
+                                          <p>{user.selectedEmail}</p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                    ))}
+                                  </div>
+                                )}
                               </div>
                             </div>
                           ))}
@@ -7198,7 +7007,7 @@ export default function Dashboard() {
                           <CommandList>
                             <CommandEmpty>No users found.</CommandEmpty>
                             <CommandGroup className="p-2">
-                              {users.map((user) => (
+                              {userList.map((user) => (
                                 <CommandItem
                                   key={user.email}
                                   className="flex items-center px-2"
@@ -7212,14 +7021,14 @@ export default function Dashboard() {
                                     }
 
                                     return setSelectedUsers(
-                                      [...users].filter((u) =>
+                                      [...userList].filter((u) =>
                                         [...selectedUsers, user].includes(u)
                                       )
                                     )
                                   }}
                                 >
                                   <Avatar>
-                                    <AvatarImage src={user.avatar} alt="Image" />
+                                    <AvatarImage src='/avatars/02.png' alt="Image" />
                                     <AvatarFallback>{user.name[0]}</AvatarFallback>
                                   </Avatar>
                                   <div className="ml-2">
@@ -7244,7 +7053,7 @@ export default function Dashboard() {
                               {selectedUsers.map((user) => (
                                 <Avatar
                                   key={user.email}
-                                  className="inline-block border-2 border-background border-border"
+                                  className="inline-block  border border-border"
                                 >
                                   <AvatarImage src={user.avatar} />
                                   <AvatarFallback>{user.name[0]}</AvatarFallback>
@@ -7256,8 +7065,9 @@ export default function Dashboard() {
                               Select users to add to this thread.
                             </p>
                           )}
+
                           <Button
-                            disabled={selectedUsers.length < 2}
+                            disabled={selectedUsers.length < 1}
                             onClick={() => {
                               setOpen(false)
                             }}
@@ -7273,9 +7083,11 @@ export default function Dashboard() {
 
                   <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2" >
                     <input type='hidden' name='financeId' defaultValue={finance.id} />
+                    <input type='hidden' name='selectedUsers' defaultValue={JSON.stringify(selectedUsers)} />
                     <input type='hidden' name='userEmail' defaultValue={user.email} />
                     <input type='hidden' name='clientfileId' defaultValue={finance.clientfileId} />
                     <input type='hidden' name='userName' defaultValue={user.name} />
+                    <input type='hidden' name='name' defaultValue={finance.name} />
                     <Input
                       id="message"
                       placeholder="Type your message..."
@@ -7338,11 +7150,11 @@ export default function Dashboard() {
                     </TooltipProvider>
                   </div>
                 </CardHeader>
-                <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip p-6 text-sm bg-background">
-                  <div className="grid gap-3 max-h-[20vh] h-auto">
-                    <div className="space-y-4 mt-5">
+                <CardContent className="flex-grow !grow overflow-x-clip p-6 text-sm bg-background">
+                  <div className="grid gap-3 max-h-[500px] h-auto  overflow-y-auto">
+                    <div className="space-y-4 mt-5 mb-5">
 
-                      {aptFinance3.map((message, index) => {
+                      {aptFinance3.slice().reverse().map((message, index) => {
                         const options = {
                           weekday: 'short',
                           year: 'numeric',
@@ -7353,12 +7165,24 @@ export default function Dashboard() {
                           second: '2-digit',
                         };
                         const isValidDate = message.start && message.start !== '1969-12-31 19:00';
-                        const date = new Date(message.start);
+                        const date = new Date();
                         const formattedDateAppt = isValidDate ? date.toLocaleDateString('en-US', options) : 'TBD';
+                        const [editDate, setEditDate] = useState<Date>(date)
+                        const now = new Date();
+                        const currentHour = now.getHours();
+                        const currentMinute = now.getMinutes();
+                        const currentSecond = now.getSeconds();
+                        const [hour, setHour] = useState('08')
+                        const [min, setMin] = useState('00')
+                        const [sec, setSec] = useState('00');
+                        const newDate = new Date()
+
+                        const currentTime = `${hour}:${min}:${currentSecond}`
+
                         return (
                           <div
                             key={index}
-                            className={cn("flex w-[95%] flex-col gap-2 rounded-lg px-3 py-2 text-sm bg-[#262626] mx-auto")} >
+                            className={cn("flex w-[95%] flex-col gap-2 rounded-lg px-3 py-2 text-sm bg-muted/50 mx-auto")} >
                             <div className='grid grid-cols-1'>
                               <div className='flex justify-between '>
                                 {message.completed === 'yes' ? (
@@ -7370,37 +7194,260 @@ export default function Dashboard() {
                                     Incomplete
                                   </Badge>
                                 )}
-                                <DropdownMenu>
-                                  <DropdownMenuTrigger asChild>
-                                    <Button size="icon" variant="outline" className="h-8 w-8 bg-transparent">
-                                      <MoreVertical className="h-3.5 w-3.5" />
-                                      <span className="sr-only">Menu</span>
-                                    </Button>
-                                  </DropdownMenuTrigger>
-                                  <DropdownMenuContent align="end" className=' bg-blackground  text-foreground border border-border'>
-                                    <Form method='post'>
-                                      <DropdownMenuItem
-                                        onSelect={() => {
-                                          const formData = new FormData();
-                                          formData.append("aptId", item.message);
-                                          formData.append("userEmail", user.email);
-                                          formData.append("userName", user.name);
-                                          formData.append("intent", 'deleteApt');
-                                          submit(formData, { method: "post" });
-                                        }}>
-                                        Delete
-                                      </DropdownMenuItem>
-                                      <input type='hidden' name='financeId' defaultValue={finance.id} />
-                                    </Form>
-                                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem>Trash</DropdownMenuItem>
-                                  </DropdownMenuContent>
-                                </DropdownMenu>
+                                <Dialog>
+                                  <DropdownMenu modal={false}>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button size="icon" variant="outline" className="h-8 w-8 bg-transparent">
+                                        <MoreVertical className="h-3.5 w-3.5" />
+                                        <span className="sr-only">Menu</span>
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className=' bg-background  text-foreground border border-border'>
+                                      <Form method='post'>
+                                        <DropdownMenuItem
+                                          onSelect={() => {
+                                            const formData = new FormData();
+                                            formData.append("aptId", message.id);
+                                            formData.append("userEmail", user.email);
+                                            formData.append("userName", user.name);
+                                            formData.append("intent", 'deleteApt');
+                                            submit(formData, { method: "post" });
+                                          }}>
+                                          Delete
+                                        </DropdownMenuItem>
+                                        <input type='hidden' name='financeId' defaultValue={finance.id} />
+                                      </Form>
 
+                                      <DropdownMenuSeparator />
+
+                                      <DialogItem triggerChildren="View">
+                                        <DialogTitle className="DialogTitle">View Appointment Details</DialogTitle>
+                                        <DialogDescription className="DialogDescription">
+
+                                        </DialogDescription>
+                                        <div className='  my-3 flex justify-center   '>
+                                          <CalendarIcon className="mr-2 size-8 " />
+                                          {new Date(message.start).toLocaleDateString("en-US", options2) ? new Date(message.start).toLocaleDateString("en-US", options2) : <span>{format(newDate, "PPP")}</span>}
+                                        </div>
+                                        <ul className="grid gap-3 text-sm mt-2">
+
+                                          <li className=" group flex items-center justify-between">
+                                            <span className="text-muted-foreground">
+                                              Title
+                                            </span>
+                                            <span>{message.title}</span>
+                                          </li>
+                                          <li className=" group flex items-center justify-between">
+                                            <span className="text-muted-foreground">
+                                              Contact Method
+                                            </span>
+                                            <span>{message.contactMethod}</span>
+                                          </li>
+                                          <li className=" group flex items-center justify-between">
+                                            <span className="text-muted-foreground">
+                                              Completed
+                                            </span>
+                                            <span>{message.completed}</span>
+                                          </li>
+                                          <li className=" group flex items-center justify-between">
+                                            <span className="text-muted-foreground">
+                                              Appt Type
+                                            </span>
+                                            <span>{message.apptType}</span>
+                                          </li>
+                                          <li className=" group flex items-center justify-between">
+                                            <span className="text-muted-foreground">
+                                              Note
+                                            </span>
+                                            <span>{message.note}</span>
+                                          </li>
+                                        </ul>
+                                      </DialogItem>
+
+                                      <DialogItem triggerChildren="Edit">
+                                        <DialogTitle className="DialogTitle">Edit Appointment</DialogTitle>
+                                        <DialogDescription className="DialogDescription">
+                                          Edit selected appointments details.
+                                        </DialogDescription>
+                                        <Form method="post" >
+                                          <div className='grid grid-cols-1 mx-auto w-[90%] '>
+                                            <div className="relative mt-3">
+                                              <Input
+                                                type="text"
+                                                name="title"
+                                                defaultValue={message.title}
+                                                className="w-full bg-background border-border "
+                                              />
+                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Title</label>
+                                            </div>
+
+                                            <div className="relative mt-3">
+                                              <Input
+                                                name="note"
+                                                className="w-full bg-background border-border "
+                                                defaultValue={message.note}
+                                              />
+                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note</label>
+                                            </div>
+                                            <div className="relative mt-3">
+                                              <Select name='contactMethod' defaultValue={message.contactMethod}>
+                                                <SelectTrigger className="w-full  bg-background text-foreground border border-border  ">
+                                                  <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent className='bg-background text-foreground '>
+                                                  <SelectGroup>
+                                                    <SelectLabel>Contact Method</SelectLabel>
+                                                    <SelectItem value="Phone">Phone</SelectItem>
+                                                    <SelectItem value="In Person">In-Person</SelectItem>
+                                                    <SelectItem value="SMS">SMS</SelectItem>
+                                                    <SelectItem value="Email">Email</SelectItem>
+                                                    <SelectItem value="Other">Other</SelectItem>
+                                                    <SelectItem value="Quick Appt">Quick Appt</SelectItem>
+                                                  </SelectGroup>
+                                                </SelectContent>
+                                              </Select>
+                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
+                                            </div>
+                                            <div className="relative mt-3">
+                                              <Select name='resourceId' defaultValue={String(message.resourceId)}>
+                                                <SelectTrigger className="w-full  bg-background text-foreground border border-border ">
+                                                  <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent className='bg-background text-foreground '>
+                                                  <SelectGroup>
+                                                    <SelectLabel>Type of Appointment</SelectLabel>
+                                                    <SelectItem value="1">Sales Calls</SelectItem>
+                                                    <SelectItem value="2">Sales Appointments</SelectItem>
+                                                    <SelectItem value="3">Deliveries</SelectItem>
+                                                    <SelectItem value="4">F & I Appointments</SelectItem>
+                                                  </SelectGroup>
+                                                </SelectContent>
+                                              </Select>
+                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Type of Appointment</label>
+                                            </div>
+                                            <div className="relative mt-3">
+                                              <Select name='resourceId' defaultValue={message.completed}>
+                                                <SelectTrigger className="w-full  bg-background text-foreground border border-border ">
+                                                  <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent className='bg-background text-foreground '>
+                                                  <SelectGroup>
+                                                    <SelectLabel>Appointment Completed?</SelectLabel>
+                                                    <SelectItem value="yes">Yes</SelectItem>
+                                                    <SelectItem value="no">No</SelectItem>
+                                                  </SelectGroup>
+                                                </SelectContent>
+                                              </Select>
+                                              <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Completed</label>
+                                            </div>
+                                            <div className=' mt-5 flex-col mx-auto justify-center'>
+                                              <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
+                                                <div className='  my-3 flex justify-center   '>
+                                                  <CalendarIcon className="mr-2 size-8 " />
+                                                  {new Date(message.start).toLocaleDateString("en-US", options2) ? new Date(message.start).toLocaleDateString("en-US", options2) : <span>{format(newDate, "PPP")}</span>}
+                                                </div>
+                                                <Calendar
+                                                  className='mx-auto w-auto   bg-background text-foreground'
+                                                  mode="single"
+                                                  selected={editDate}
+                                                  onSelect={setEditDate}
+                                                  initialFocus
+                                                />
+                                              </div>
+                                            </div>
+                                            <div className=' flex-col mx-auto justify-center' >
+                                              <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
+
+                                                <input type='hidden' value={String(editDate)} name='value' />
+                                                <Popover>
+                                                  <PopoverTrigger asChild>
+                                                    <Button
+                                                      variant={"outline"}
+                                                      className={cn(
+                                                        "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary border-border",
+                                                        !editDate && " text-foreground"
+                                                      )}
+                                                    >
+                                                      <div className=' text-foreground  mx-auto flex justify-center  '>
+                                                        <ClockIcon className="mr-2 size-8 " />
+                                                        {currentTime ? (time) : <span>Pick a Time</span>}
+                                                      </div>
+                                                    </Button>
+                                                  </PopoverTrigger>
+                                                  <PopoverContent className="w-[240px] bg-background p-0 text-foreground border border-border" align="start">
+                                                    <div className='align-center my-3 flex justify-center   '>
+                                                      <Select name='pickHour' onValueChange={(value) => setHour(value)} defaultValue='09'>
+                                                        <SelectTrigger className="m-3 w-auto mx-auto bg-background text-foreground border border-border" >
+                                                          <SelectValue />
+                                                        </SelectTrigger>
+                                                        <SelectContent className='bg-white text-black' >
+                                                          <SelectGroup>
+                                                            <SelectLabel>Hour</SelectLabel>
+                                                            <SelectItem value="08">08</SelectItem>
+                                                            <SelectItem value="09">09</SelectItem>
+                                                            <SelectItem value="10">10</SelectItem>
+                                                            <SelectItem value="11">11</SelectItem>
+                                                            <SelectItem value="12">12</SelectItem>
+                                                            <SelectItem value="13">13</SelectItem>
+                                                            <SelectItem value="14">14</SelectItem>
+                                                            <SelectItem value="15">15</SelectItem>
+                                                            <SelectItem value="16">16</SelectItem>
+                                                            <SelectItem value="17">17</SelectItem>
+                                                            <SelectItem value="18">18</SelectItem>
+                                                          </SelectGroup>
+                                                        </SelectContent>
+                                                      </Select>
+                                                      <Select defaultValue='00' name='pickMin' onValueChange={(value) => setMin(value)}>
+                                                        <SelectTrigger className="m-3 w-auto bg-background text-foreground border border-border" >
+                                                          <SelectValue />
+                                                        </SelectTrigger>
+                                                        <SelectContent className='bg-white text-black'  >
+                                                          <SelectGroup>
+                                                            <SelectLabel>Minute</SelectLabel>
+                                                            <SelectItem value="00">00</SelectItem>
+                                                            <SelectItem value="10">10</SelectItem>
+                                                            <SelectItem value="20">20</SelectItem>
+                                                            <SelectItem value="30">30</SelectItem>
+                                                            <SelectItem value="40">40</SelectItem>
+                                                            <SelectItem value="50">50</SelectItem>
+                                                          </SelectGroup>
+                                                        </SelectContent>
+                                                      </Select>
+                                                    </div>
+                                                  </PopoverContent>
+                                                </Popover>
+                                              </div>
+                                            </div>
+                                          </div>
+
+                                          <Input type='hidden' value={String(editDate)} name='value' />
+                                          <input type='hidden' value={message.id} name='appointmentId' />
+                                          <input type='hidden' value={finance.id} name='financeId' />
+                                          <input type='hidden' name='minutes' value={min} />
+                                          <input type='hidden' name='hours' value={hour} />
+
+                                          <div className="mt-[25px] flex justify-end">
+                                            <DialogClose >
+                                              <ButtonLoading
+                                                name='intent'
+                                                size='sm'
+                                                value='updateAppointment'
+                                                type='submit'
+                                                className={`bg-primary cursor-pointer ml-2 mr-2 p-3 text-foreground font-bold uppercase text-xs   text-center duration-150 `}
+                                                loadingText="Saving new appointment..."
+                                              >
+                                                Complete
+                                              </ButtonLoading>
+                                            </DialogClose>
+                                          </div>
+                                        </Form>
+                                      </DialogItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                </Dialog>
                               </div>
                               <div className='flex justify-between mt-1'>
-                                <p className='text-muted-foreground'>{formattedDateAppt}</p>
+                                <p className='text-muted-foreground'>{new Date(message.start).toLocaleDateString("en-US", options2)}</p>
                                 <p>{message.contactMethod}</p>
                               </div>
                               <p className='mt-1'> {message.title}</p>
@@ -7419,32 +7466,51 @@ export default function Dashboard() {
               </Card>
               <Dialog open={openAppt} onOpenChange={setOpenAppt}>
                 <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
-                  <Form method='post'>
-                    <DialogHeader className="px-4 pb-4 pt-5 mb-3">
-                      <DialogTitle>Add Appointment</DialogTitle>
+                  <Form method="post" >
+                    <div className='grid grid-cols-1 mx-auto w-[90%] '>
+                      <div className="relative mt-3">
 
-                    </DialogHeader>
-                    <div className="grid gap-3 mx-3 mb-3">
+                        <Select name='resultOfcall' defaultValue="Left Message" >
+                          <SelectTrigger className="w-full  bg-background text-foreground border border-border">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent className='bg-background text-foreground '>
+                            <SelectGroup>
+                              <SelectLabel>Result of call</SelectLabel>
+                              <SelectItem value="Reached">Reached</SelectItem>
+                              <SelectItem value="Attempted">N/A</SelectItem>
+                              <SelectItem value="Left Message">Left Message</SelectItem>
+                              <SelectItem value="Completed">Completed</SelectItem>
+                              <SelectItem value="Rescheduled">Rescheduled</SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Updating Completed Appointment</label>
+                      </div>
+                      <p className=' text-foreground mt-5'>Creating New Appointment</p>
+                      <hr className="solid  text-muted-foreground " />
                       <div className="relative mt-3">
                         <Input
-                          name="title"
                           type="text"
+                          name="title"
+                          defaultValue={`F/U on the ${finance.model}`}
                           className="w-full bg-background border-border "
                         />
-                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Title</label>
+                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Title</label>
                       </div>
                       <div className="relative mt-3">
                         <Select name='note' defaultValue="No Answer / Left Message">
-                          <SelectTrigger className="w-full  border-border  ">
+                          <SelectTrigger className="w-full bg-background text-foreground border border-border">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className='bg-background text-foreground bg-background'>
+                          <SelectContent className='bg-background text-foreground '>
                             <SelectGroup>
                               <SelectLabel>Message examples</SelectLabel>
+
                               <SelectItem value="">-- Moving Forward --</SelectItem>
                               <SelectItem value="Wants to move forward, got deposit">Wants to move forward, got deposit</SelectItem>
                               <SelectItem value="Wants to move forward, did not have credit card on him">Wants to move forward, did not have credit card on him</SelectItem>
-                              <SelectItem value="Wants to get finance approval before moving forward">Wants to get approval before moving forward</SelectItem>
+                              <SelectItem value="Wants to get fiannce approval before moving forward">Wants to get approval before moving forward</SelectItem>
                               <SelectItem value="Sent BOS to sign off on">Sent BOS to sign off on deal</SelectItem>
                               <SelectItem value="Wants to come back in to view and negotiate">Wants to come back in to view and negotiate</SelectItem>
 
@@ -7463,21 +7529,21 @@ export default function Dashboard() {
                             </SelectGroup>
                           </SelectContent>
                         </Select>
-                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note Examples</label>
+                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Pre-Made Notes</label>
                       </div>
                       <div className="relative mt-3">
                         <Input
-                          type="text"
-                          className="w-full bg-background border-border"
+                          name="note"
+                          className="w-full bg-background border-border "
                         />
-                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Or Write A Custom Note...</label>
+                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Custom Notes</label>
                       </div>
                       <div className="relative mt-3">
                         <Select name='contactMethod' defaultValue="SMS">
-                          <SelectTrigger className="w-full    bg-background border-border">
+                          <SelectTrigger className="w-full  bg-background text-foreground border border-border  ">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className='bg-background text-foreground bg-background'>
+                          <SelectContent className='bg-background text-foreground '>
                             <SelectGroup>
                               <SelectLabel>Contact Method</SelectLabel>
                               <SelectItem value="Phone">Phone</SelectItem>
@@ -7491,10 +7557,10 @@ export default function Dashboard() {
                       </div>
                       <div className="relative mt-3">
                         <Select name='resourceId' defaultValue="1">
-                          <SelectTrigger className="w-full    bg-background border-border">
+                          <SelectTrigger className="w-full  bg-background text-foreground border border-border ">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className='bg-background text-foreground bg-background'>
+                          <SelectContent className='bg-background text-foreground '>
                             <SelectGroup>
                               <SelectLabel>Type of Appointment</SelectLabel>
                               <SelectItem value="1">Sales Calls</SelectItem>
@@ -7506,68 +7572,19 @@ export default function Dashboard() {
                         </Select>
                         <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Type of Appointment</label>
                       </div>
-                      <div className="relative mt-3">
-                        <Select name='resultOfcall' defaultValue="Attempted">
-                          <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className='bg-background text-foreground bg-background'>
-                            <SelectGroup>
-                              <SelectLabel>Result of call</SelectLabel>
-                              <SelectItem value="Reached">Reached</SelectItem>
-                              <SelectItem value="N/A">N/A</SelectItem>
-                              <SelectItem value="Attempted">Left Message</SelectItem>
-                              <SelectItem value="Completed">Completed</SelectItem>
-                              <SelectItem value="Rescheduled">Rescheduled</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Result of call</label>
-                      </div>
-                      <div className="relative mt-3">
-                        <Select name='direction' defaultValue="Outgoing">
-                          <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
-                            <SelectValue placeholder="" />
-                          </SelectTrigger>
-                          <SelectContent className='bg-background text-foreground bg-background'>
-                            <SelectGroup>
-                              <SelectLabel>Direction of call</SelectLabel>
-                              <SelectItem value="Incoming">Incoming</SelectItem>
-                              <SelectItem value="Outgoing">Outgoing</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Direction of call</label>
-                      </div>
-                      <div className=' flex-col mx-auto justify-center'>
+                      <div className=' mt-5 flex-col mx-auto justify-center'>
                         <div className="mx-auto w-[280px] rounded-md border-white bg-background px-3 text-foreground " >
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button
-                                variant={"outline"}
-                                className={cn(
-                                  "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary border-border",
-                                  !date && " text-foreground"
-                                )}
-                              >
-                                <div className=' text-foreground  mx-auto flex justify-center  '>
-                                  <CalendarIcon className="mr-2 size-8 " />
-                                  {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
-                                </div>
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[275px] bg-muted/40 p-0 text-foreground border-border" align="start">
-                              <div className='align-center my-3 flex justify-center   '>
-                                <SmallCalendar
-                                  className='mx-auto w-auto   bg-background text-foreground'
-                                  mode="single"
-                                  selected={date}
-                                  onSelect={setDate}
-                                  initialFocus
-                                />
-                              </div>
-                            </PopoverContent>
-                          </Popover>
+                          <div className='  my-3 flex justify-center   '>
+                            <CalendarIcon className="mr-2 size-8 " />
+                            {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
+                          </div>
+                          <Calendar
+                            className='mx-auto w-auto   bg-background text-foreground'
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                            initialFocus
+                          />
                         </div>
                       </div>
                       <div className=' flex-col mx-auto justify-center' >
@@ -7589,11 +7606,11 @@ export default function Dashboard() {
                                 </div>
                               </Button>
                             </PopoverTrigger>
-                            <PopoverContent className="w-[275px] bg-muted/40 p-0 text-foreground border-border" align="start">
+                            <PopoverContent className="w-[240px] bg-background p-0 text-foreground border border-border" align="start">
                               <div className='align-center my-3 flex justify-center   '>
-                                <Select name='pickHour'  >
-                                  <SelectTrigger className="m-3 w-auto mx-auto bg-transparent hover:bg-transparent hover:text-primary border-border" >
-                                    <SelectValue defaultValue='09' />
+                                <Select name='pickHour' onValueChange={(value) => setHour(value)} defaultValue='09'>
+                                  <SelectTrigger className="m-3 w-auto mx-auto bg-background text-foreground border border-border" >
+                                    <SelectValue />
                                   </SelectTrigger>
                                   <SelectContent className='bg-white text-black' >
                                     <SelectGroup>
@@ -7611,13 +7628,14 @@ export default function Dashboard() {
                                     </SelectGroup>
                                   </SelectContent>
                                 </Select>
-                                <Select name='pickMin'   >
-                                  <SelectTrigger className="m-3 w-auto" >
-                                    <SelectValue defaultValue='10' />
+                                <Select defaultValue='00' name='pickMin' onValueChange={(value) => setMin(value)}>
+                                  <SelectTrigger className="m-3 w-auto bg-background text-foreground border border-border" >
+                                    <SelectValue />
                                   </SelectTrigger>
                                   <SelectContent className='bg-white text-black'  >
                                     <SelectGroup>
                                       <SelectLabel>Minute</SelectLabel>
+                                      <SelectItem value="00">00</SelectItem>
                                       <SelectItem value="10">10</SelectItem>
                                       <SelectItem value="20">20</SelectItem>
                                       <SelectItem value="30">30</SelectItem>
@@ -7632,34 +7650,43 @@ export default function Dashboard() {
                         </div>
                       </div>
                     </div>
-                    <input type='hidden' name='phone' defaultValue={finance.phone} />
-                    <input type='hidden' name='email' defaultValue={finance.email} />
-                    <input type='hidden' name='lastName' defaultValue={finance.lastName} />
-                    <input type='hidden' name='firstName' defaultValue={finance.firstName} />
-                    <input type='hidden' name='brand' defaultValue={finance.brand} />
-                    <input type='hidden' name='unit' defaultValue={finance.model} />
-                    <input type='hidden' name='brand' defaultValue={finance.brand} />
-                    <input type='hidden' name='financeId' defaultValue={finance.id} />
-                    <input type='hidden' name='userId' defaultValue={user.id} />
-                    <input type='hidden' name='apptType' defaultValue='sales' />
-                    <input type='hidden' name='min' defaultValue={minForm} />
-                    <input type='hidden' name='hour' defaultValue={hourForm} />
-                    <DialogFooter className=" p-4  ">
-                      <div className='flex justify-center' >
-                        <Button
+
+                    <Input type='hidden' value={String(value)} name='followUpDay' />
+                    <input type='hidden' value={finance.firstName} name='firstName' />
+                    <input type='hidden' value={finance.address} name='address' />
+                    <input type='hidden' value={finance.lastName} name='lastName' />
+                    <input type='hidden' value={finance.phone} name='phone' />
+                    <input type='hidden' value={finance.email} name='email' />
+                    <Input type="hidden" defaultValue={user.email} name="userEmail" />
+                    <Input type="hidden" defaultValue={user.name} name="userName" />
+                    <Input type="hidden" defaultValue={user.id} name="userId" />
+                    <Input type="hidden" defaultValue={finance.id} name="financeId" />
+                    <Input type="hidden" defaultValue={finance.id} name="id" />
+                    <Input type="hidden" defaultValue={finance.brand} name="brand" />
+                    <Input type="hidden" defaultValue='future' name="apptStatus" />
+                    <Input type="hidden" defaultValue={finance.model} name="unit" />
+                    <Input type="hidden" defaultValue='no' name="completed" />
+                    <Input type="hidden" defaultValue='Sales' name="apptType" />
+                    <Input type="hidden" defaultValue='Outgoing' name="direction" />
+                    <input type="hidden" defaultValue={finance.vin} name="vin" />
+                    <input type="hidden" defaultValue={finance.stockNum} name="stockNum" />
+                    <input type='hidden' name='minutes' value={min} />
+                    <input type='hidden' name='hours' value={hour} />
+
+                    <div className="mt-[25px] flex justify-end">
+                      <DialogClose >
+                        <ButtonLoading
+                          name='intent'
                           size='sm'
-                          value="addAppt"
-                          type="submit"
-                          name="intent"
-                          onClick={() => {
-                            toast.success(`Appointment Added!`)
-                          }}
-                          className='bg-primary ml-auto  mr-auto'>
-                          Add Appointment
-                          <PaperPlaneIcon className="h-4 w-4 ml-2" />
-                        </Button>
-                      </div>
-                    </DialogFooter>
+                          value='scheduleFUp'
+                          type='submit'
+                          className={`bg-primary cursor-pointer ml-2 mr-2 p-3 text-foreground font-bold uppercase text-xs   text-center duration-150 `}
+                          loadingText="Saving new appointment..."
+                        >
+                          Complete
+                        </ButtonLoading>
+                      </DialogClose>
+                    </div>
                   </Form>
 
                 </DialogContent>
@@ -7703,7 +7730,7 @@ export default function Dashboard() {
                   <div className="grid gap-3 max-h-[40vh] h-auto">
                     <div className="space-y-4 mt-5">
 
-                      {Coms.map((message, index) => (
+                      {finance.Comm && finance.Comm.map((message, index) => (
                         <div
                           key={index}
                           className={cn(
@@ -7726,8 +7753,8 @@ export default function Dashboard() {
                                 </p>
                               )}
                             </div>
-                            <p className='text-[#8c8c8c]'>
-                              {message.createdAt}
+                            <p className='text-muted-foreground'>
+                              {new Date(message.createdAt).toLocaleDateString("en-US", options2)}
                             </p>
                             <p>{message.subject}</p>
                             <p>{message.body}</p>
@@ -7746,14 +7773,14 @@ export default function Dashboard() {
                         <div className="grid gap-3 mx-3 mb-3">
                           <div className="relative mt-3">
                             <Input
-                              id="title"
+                              id="subject"
                               type="text"
                               className="w-full bg-background border-border "
                             />
-                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Title</label>
+                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Subject</label>
                           </div>
                           <div className="relative mt-3">
-                            <Select name='note' defaultValue="Gave pricing, need to follow up">
+                            <Select name='body' defaultValue="Gave pricing, need to follow up">
                               <SelectTrigger className="w-full  border-border  ">
                                 <SelectValue placeholder="Message examples" />
                               </SelectTrigger>
@@ -7788,13 +7815,13 @@ export default function Dashboard() {
                             <Input
                               id="name"
                               type="text"
-
+                              name='body2'
                               className="w-full bg-background border-border  "
                             />
-                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Or Write A Custom Note...</label>
+                            <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Or write a custom body...</label>
                           </div>
                           <div className="relative mt-3">
-                            <Select name='contactMethod' defaultValue="Phone">
+                            <Select name='type' defaultValue="Phone">
                               <SelectTrigger className="w-full    bg-background border-border">
                                 <SelectValue />
                               </SelectTrigger>
@@ -7811,7 +7838,7 @@ export default function Dashboard() {
                             <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
                           </div>
                           <div className="relative mt-3">
-                            <Select name='resultOfcall' defaultValue="Reached">
+                            <Select name='result' defaultValue="Reached">
                               <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
                                 <SelectValue />
                               </SelectTrigger>
@@ -7847,7 +7874,8 @@ export default function Dashboard() {
                         </div>
                         <DialogFooter className="flex items-center  p-4 sm:justify-between">
                           <input type='hidden' name='financeId' defaultValue={finance.id} />
-                          <input type='hidden' name='userId' defaultValue={user.id} />
+                          <input type='hidden' name='userEmail' defaultValue={user.email} />
+                          <input type='hidden' name='userName' defaultValue={user.name} />
 
                           <Button
                             value="addComms"
@@ -8100,7 +8128,7 @@ export default function Dashboard() {
                       ))}
                       <li className="flex items-center justify-between">
                         <span className="text-muted-foreground">Balance </span>
-                        <span>${Number(financeTotal).toFixed(2) - Number(totalAmountPaidFinance).toFixed(2)}</span>
+                        <span>${(Number(financeTotal) - Number(totalAmountPaidFinance)).toFixed(2)}</span>
 
                       </li>
                       {parseFloat(total) - parseFloat(totalAmountPaid) === 0 && (
@@ -8276,134 +8304,34 @@ export default function Dashboard() {
 
   )
 }
-/** <Separator className="my-4" />
-                        <div className="grid gap-3">
-                          <div className="font-semibold">Payment</div>
-                          <dl className="grid gap-3">
 
-                            <div className="flex flex-col" >
-                              <div className='flex items-center justify-center text-foreground'>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn('mr-2 bg-primary', paymentType === 'Visa' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('Visa')}
-                                >
-                                  <CreditCard className="h-4 w-4 text-foreground" />
-                                  <p className="">Visa</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn('mr-2 bg-primary', paymentType === 'Mastercard' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('Mastercard')}
-                                >
-                                  <CreditCard className="h-4 w-4 text-foreground" />
-                                  <p className="">Mastercard</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => setPaymentType('Debit')}
-                                  className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
-                                >
-                                  <CreditCard className="h-4 w-4 text-foreground" />
-                                  <p className="">Debit</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => setPaymentType('Cheque')}
-                                  className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
-                                >
-                                  <CreditCard className="h-4 w-4 text-foreground" />
-                                  <p className="">Cheque</p>
-                                </Button>
-                              </div>
-                              <div className='flex items-center justify-center text-foreground mt-2'>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn('mr-2 bg-primary', paymentType === 'Cash' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('Cash')}
-                                >
-                                  <BanknoteIcon className="h-4 w-4 text-foreground" />
-                                  <p className="">Cash</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn(' bg-primary mr-2', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('Online Transaction')}
-                                >
-                                  <PanelTop className="h-4 w-4 text-foreground" />
-                                  <p className="">Online Transaction</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn(' bg-primary', paymentType === 'E-Transfer' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('E-Transfer')}
-                                >
-                                  <PanelTop className="h-4 w-4 text-foreground" />
-                                  <p className="">E-Transfer</p>
-                                </Button>
-                              </div>
-                            </div>
-                          </dl>
-                        </div>
-                        <div className="grid gap-3">
-                          <ul className="grid gap-3">
-                            {showOrder.Payments && showOrder.Payments.map((result, index) => (
-                              <li className="flex items-center justify-between mt-4" key={index}                    >
-                                <span className="text-muted-foreground">{result.paymentType}</span>
-                                <span>${result.amountPaid}</span>
-                              </li>
-                            ))}
-                            <li className="flex items-center justify-between mt-4 mb-4">
-                              <span className="text-muted-foreground">Balance</span>
-                              <span>${parseFloat(pacTotal) - parseFloat(totalAmountPaid)}</span>
 
-                            </li>
-                            {parseFloat(pacTotal) - parseFloat(totalAmountPaid) === 0 && (
-                              <input type='hidden' name='status' value='Fulfilled' />
-                            )}
-                            {paymentType !== '' && (
-                              <>
-                                <li className="flex items-center justify-between">
-                                  <span className="text-muted-foreground">Amount to be charged on {paymentType}</span>
-                                  <payment.Form method="post" ref={formRef} >
-                                    <input type='hidden' name='accOrderId' value={showOrder.id} />
-                                    <input type='hidden' name='paymentType' value={paymentType} />
-                                    <input type='hidden' name='intent' value='createPayment' />
-                                    <input type='hidden' name='total' value={pacTotal} />
-                                    <div className="relative ml-auto flex-1 md:grow-0 ">
-                                      <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                      <Input
-                                        name='amountPaid'
-                                        className='text-right pr-9'
-                                        value={input}
-                                        onChange={(event) => setInput(event.target.value)}
-                                      />
-                                      <Button
-                                        type="submit"
-                                        size="icon"
-                                        onClick={() => {
-                                          toast.success(`Payment rendered!`)
-                                        }}
-                                        disabled={inputLength === 0}
-                                        className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
-                                        <PaperPlaneIcon className="h-4 w-4" />
-                                        <span className="sr-only">Cash</span>
-                                      </Button>
-                                    </div>
-                                  </payment.Form>
-                                </li>
-                              </>
-                            )}
+const DialogItem = React.forwardRef((props, forwardedRef) => {
+  const { triggerChildren, children, onSelect, onOpenChange, ...itemProps } = props;
+  return (
+    <Dialog onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>
+        <DropdownMenuItem
+          {...itemProps}
+          ref={forwardedRef}
+          className="DropdownMenuItem"
+          onSelect={(event) => {
+            event.preventDefault();
+            onSelect && onSelect();
+          }}
+        >
+          {triggerChildren}
+        </DropdownMenuItem>
+      </DialogTrigger>
+      <DialogContent className="DialogContent border-border">
+        {children}
+      </DialogContent>
+    </Dialog>
+  );
+});
 
-                          </ul>
-                        </div> */
+
+
 export const action: ActionFunction = async ({ req, request, params }) => {
   const formPayload = Object.fromEntries(await request.formData());
   const session = await getSession(request.headers.get("Cookie"));
@@ -8417,6 +8345,35 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   const clientfileId = idSession.get('clientfileId')
   const financeId = idSession.get('financeId')
   const dashboardId = idSession.get('dashboardId')
+  if (intent === 'createNewOrder') {
+    const order = await prisma.workOrder.create({
+      data: {
+        writer: user.username,
+        userEmail: email,
+        status: 'Sales',
+        total: 0.00,
+        financeId: formData.financeId,
+        clientfileId: formPayload.clientfileId,
+        unit: formData.year + ' ' + formData.brand + ' ' + formData.model,
+        mileage: formPayload.mileage ? formPayload.mileage : 'TBD',
+        vin: formPayload.vin ? formPayload.vin : 'TBD',
+        color: formPayload.color ? formPayload.color : 'TBD',
+      }
+    })
+    const accOrder = await prisma.accOrder.create({
+      data: {
+        userName: user.username,
+        userEmail: email,
+        dept: 'Sales',
+        status: 'Quote',
+        total: 0.00,
+        workOrderId: order.workOrderId,
+        clientfileId: formPayload.clientfileId,
+        financeId: formData.financeId,
+      }
+    })
+    return redirect(`/dealer/service/workOrder/${order.workOrderId}`)
+  }
   if (intent === 'assignUnit') {
     const update = await prisma.inventoryMotorcycle.update({
       where: { id: formData.id },
@@ -8426,6 +8383,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         status: 'Reserved',
       }
     })
+
     const finance = await prisma.finance.update({
       where: { id: formData.financeId },
       data: {
@@ -8566,7 +8524,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     const finance = await prisma.finance.findUnique({ where: { id: formData.financeId } })
 
     const model = finance?.model || '';
-    const modelData = formData.modelData
+    const modelData = finance
     const value = formData.template
     let data;
     if (value.startsWith("customEmailDropdown")) {
@@ -8595,18 +8553,16 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         react: <PaymentCalculatorEmail user={user} finance={finance} modelData={modelData} formData={formData} />
       });
     }
-    await prisma.previousComms.create({
+    await prisma.comm.create({
       data: {
-        financeId: finance.financeId,
+        financeId: finance.id,
         body: formData.body || 'Templated Email',
         userName: user.name,
         type: 'Email',
-        customerEmail: finance.email,
         direction: 'Outgoing',
         subject: `${finance?.brand} ${model} model information.`,
         result: 'Attempted',
         userEmail: user.email,
-        dept: 'Sales',
       }
     })
     return json({ data })
@@ -8681,17 +8637,47 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     return json({ updateApt });
   }
   if (intent === 'addAppt') {
-    console.log(formData, formPayload, 'formData')
+    console.log(formData, 'formData')
 
-    const initialDate = new Date(formData.value);
-    const hour = parseInt(formPayload.hour, 10);
-    const minute = parseInt(formPayload.min, 10);
-    initialDate.setUTCHours(hour);
-    initialDate.setUTCMinutes(minute);
-    const updatedDateString = initialDate.toISOString();
+    let dateModal = new Date(formData.value);
+    const hours = Number(formData.hours);
+    const minutes = Number(formData.minutes);
+    dateModal.setHours(hours, minutes, 0);
+    const date66 = new Date(dateModal);
+    const options2 = {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    };
+    const apptDate66 = new Date(date66).toLocaleDateString("en-US", options2)
+    console.log(dateModal, 'dateModal', date66, 'date66', apptDate66, 'apptDate66',)
+    const todaysDate66 = new Date()
+    const completeApt66 = await CompleteLastAppt(userId, financeId)
+    console.log(completeApt66, 'CompleteLastAppt')
 
-    const createApt = await prisma.clientApts.create({
+    const updating = await prisma.finance.update({
+      where: { id: formData.financeId },
       data: {
+        lastContact: todaysDate66.toLocaleDateString('en-US', options2),
+        status: formData.status,
+        customerState: formData.customerState,
+        result: formData.result,
+        timesContacted: formData.timesContacted,
+        nextAppointment: apptDate66,
+        followUpDay: apptDate66,
+
+      },
+    });
+    const apptDat66 = date66.toLocaleDateString('en-US', options2)
+    const createFollowup66 = await prisma.clientApts.create({
+      data: {
+        financeId: formData.financeId,
+        userEmail: formData.userEmail,
+        address: formData.address,
         phone: formData.phone,
         email: formData.email,
         lastName: formData.lastName,
@@ -8703,49 +8689,38 @@ export const action: ActionFunction = async ({ req, request, params }) => {
         apptStatus: formData.apptStatus,
         completed: 'no',
         contactMethod: formData.contactMethod,
-        //   end: formData.end,
+        end: String(new Date(new Date(apptDat66).getTime() + 45 * 60000)),
         title: formData.title,
-        start: updatedDateString,
+        start: String(apptDat66),
         userId: user?.id,
+        description: formData.description,
         resourceId: Number(formData.resourceId),
         userName: user?.name,
+      }
+    })
+    return json({ updating, completeApt66, createFollowup66, });
+
+  }
+  if (intent === 'addComms') {
+    const setComs = await prisma.comm.create({
+      data: {
         financeId: formData.financeId,
-        direction: formData.direction,
-        resultOfcall: formData.resultOfcall,
+        body: formPayload.body2.length > 2 ? formPayload.body2 : body,
+        userName: formData.userName,
+        type: formPayload.type,
+        direction: formPayload.direction,
+        subject: formPayload.subject,
+        result: formPayload.result,
+        userEmail: user.email,
       }
     })
 
 
-    return (createApt)
-  }
-  if (intent === 'addComms') {
-    const comdata = {
-      financeId: formData.financeId,
-      userId: formData.userId,
-      content: formData.note,
-      title: formData.title,
-      direction: formData.direction,
-      result: formData.resultOfcall,
-      subject: formData.messageContent,
-      userEmail: user.email,
-      type: formData.apptType,
-      userName: user?.name,
-      date: new Date().toISOString(),
-    }
-    const setComs = await prisma.communicationsOverview.create({
-      data: comdata,
-    });
-
-
-    return (setComs)
+    return json({ setComs })
   }
   if (intent === 'deleteApt') {
-    const newFormData = { ...formData };
-    delete newFormData.intent;
-    const deleteNote = await prisma.clientApts.create({
-      where: {
-        id: formData.financeId
-      }
+    const deleteNote = await prisma.clientApts.delete({
+      where: { id: formPayload.aptId }
     })
 
     return json({ deleteNote });
@@ -8811,7 +8786,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
           //  content: formData.content,
           read: false,
           type: 'updates',
-          content: formData.customContent,
+          content: formData.body,
           userEmail: formData.userEmail,
           financeId: formData.financeId,
           clientfileId: formData.clientfileId,
@@ -8819,18 +8794,42 @@ export const action: ActionFunction = async ({ req, request, params }) => {
       });
     }
     let saved
-    if (formData.ccUser) {
-      saved = await prisma.notificationsUser.create({
-        data: {
-          title: `New note on ${formData.name}'s file.`,
-          content: `Note left by ${formData.author}`,
-          read: false,
-          type: 'updates',
-          userEmail: formData.ccUser,
-          financeId: financeId,
-          clientfileId: clientfileId,
+    if (formPayload.selectedUsers) {
+      let selectedUsers;
+      console.log(formPayload, formPayload.selectedUsers, 'selectedusersa')
+
+      if (typeof formPayload.selectedUsers === 'string') {
+        try {
+          selectedUsers = JSON.parse(formPayload.selectedUsers);
+        } catch (error) {
+          console.error('Error parsing selectedUsers:', error);
         }
-      })
+      } else {
+        selectedUsers = formPayload.selectedUsers; // It's already an array
+      }
+
+      for (const selected of selectedUsers) {
+        await prisma.selectedUsers.create({
+          data: {
+            selectedName: selected.name,
+            selectedEmail: selected.email,
+            FinanceNoteId: SaveFinanceNote.id
+          }
+        });
+
+        await prisma.notificationsUser.create({
+          data: {
+            title: `You have been tagged in a new note in ${formData.name}'s file.`,
+            content: `Note left by ${formData.userName}`,
+            read: false,
+            type: 'updates',
+            userEmail: selected.email,
+            financeId: formData.financeId,
+            clientfileId: formData.clientfileId,
+            customerName: formPayload.name,
+          }
+        });
+      }
     }
     return json({ SaveFinanceNote, })
   }
@@ -10005,10 +10004,12 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   }
   if (intent === "updateNote") {
     console.log(';hit update note')
-    const update = await prisma.workOrder.update({
-      where: { workOrderId: Number(formPayload.id) },
+    const create = await prisma.workOrder.create({
       data: {
-        notes: formPayload.note,
+        body: formPayload.body,
+        userName: formPayload.name,
+        userEmail: formPayload.userEmail,
+        workOrderId: parseInt(formPayload.workOrderId),
       }
     });
     return json({ update })
@@ -10030,75 +10031,1136 @@ export async function loader({ params, request }: DataFunctionArgs) {
   if (!deFees) {
     deFees = await prisma.dealer.findFirst();
   }
+  let { clientId, financeId } = params;
+  let sliderWidth = 50
 
   let clientfileId = undefined
-  let { clientId, financeId } = params;
   if (clientfileId === undefined) { clientfileId = clientId }
-  let sliderWidth = 50
   if (clientfileId === 'customer' && financeId === 'sync') {
     clientfileId = user?.customerSync.clientfileId
   }
-
-  let aptFinance3 = await getAppointmentsForFinance(financeId)
-  const clientFile = await getClientFileById(params.clientId)
-  // console.log(clientFile, 'checking clientFile')
 
   let finance
   if (user?.activixActivated === 'yes') {
     finance = await GetMergedWithActivix(financeId)
     await UpdateClientFromActivix(finance)
   } else {
-    if (clientFile && Array.isArray(clientFile.Finance)) {
-      const filteredFinances = clientFile.Finance.filter(finance => {
-        return String(finance.id) === String(financeId);
-      });
+    finance = await prisma.finance.findUnique({
+      where: { id: financeId, },
+      select: {
+        financeManager: true,
+        userEmail: true,
+        userName: true,
+        financeManagerName: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        phone: true,
+        name: true,
+        address: true,
+        city: true,
+        postal: true,
+        province: true,
+        dl: true,
+        typeOfContact: true,
+        timeToContact: true,
+        dob: true,
+        othTax: true,
+        optionsTotal: true,
+        lienPayout: true,
+        leadNote: true,
+        sendToFinanceNow: true,
+        dealNumber: true,
+        iRate: true,
+        months: true,
+        discount: true,
+        total: true,
+        onTax: true,
+        on60: true,
+        biweekly: true,
+        weekly: true,
+        weeklyOth: true,
+        biweekOth: true,
+        oth60: true,
+        weeklyqc: true,
+        biweeklyqc: true,
+        qc60: true,
+        deposit: true,
+        biweeklNatWOptions: true,
+        weeklylNatWOptions: true,
+        nat60WOptions: true,
+        weeklyOthWOptions: true,
+        biweekOthWOptions: true,
+        oth60WOptions: true,
+        biweeklNat: true,
+        weeklylNat: true,
+        nat60: true,
+        qcTax: true,
+        otherTax: true,
+        totalWithOptions: true,
+        otherTaxWithOptions: true,
+        desiredPayments: true,
+        admin: true,
+        commodity: true,
+        pdi: true,
+        discountPer: true,
+        userLoanProt: true,
+        userTireandRim: true,
+        userGap: true,
+        userExtWarr: true,
+        userServicespkg: true,
+        deliveryCharge: true,
+        vinE: true,
+        lifeDisability: true,
+        rustProofing: true,
+        userOther: true,
+        referral: true,
+        visited: true,
+        bookedApt: true,
+        aptShowed: true,
+        aptNoShowed: true,
+        testDrive: true,
+        metService: true,
+        metManager: true,
+        metParts: true,
+        sold: true,
+        depositMade: true,
+        refund: true,
+        turnOver: true,
+        financeApp: true,
+        approved: true,
+        signed: true,
+        pickUpSet: true,
+        demoed: true,
+        lastContact: true,
+        status: true,
+        customerState: true,
+        result: true,
+        timesContacted: true,
+        nextAppointment: true,
+        followUpDay: true,
+        deliveryDate: true,
+        delivered: true,
+        deliveredDate: true,
+        notes: true,
+        visits: true,
+        progress: true,
+        metSalesperson: true,
+        metFinance: true,
+        financeApplication: true,
+        pickUpDate: true,
+        pickUpTime: true,
+        depositTakenDate: true,
+        docsSigned: true,
+        tradeRepairs: true,
+        seenTrade: true,
+        lastNote: true,
+        applicationDone: true,
+        licensingSent: true,
+        liceningDone: true,
+        refunded: true,
+        cancelled: true,
+        lost: true,
+        dLCopy: true,
+        insCopy: true,
+        testDrForm: true,
+        voidChq: true,
+        loanOther: true,
+        signBill: true,
+        ucda: true,
+        tradeInsp: true,
+        customerWS: true,
+        otherDocs: true,
+        urgentFinanceNote: true,
+        funded: true,
+        leadSource: true,
+        financeDeptProductsTotal: true,
+        bank: true,
+        loanNumber: true,
+        idVerified: true,
+        dealerCommission: true,
+        financeCommission: true,
+        salesCommission: true,
+        firstPayment: true,
+        loanMaturity: true,
+        quoted: true,
+        InPerson: true,
+        Phone: true,
+        SMS: true,
+        Email: true,
+        Other: true,
+        paintPrem: true,
+        licensing: true,
+        stockNum: true,
+        options: true,
+        accessories: true,
+        freight: true,
+        labour: true,
+        year: true,
+        brand: true,
+        mileage: true,
+        model: true,
+        model1: true,
+        color: true,
+        modelCode: true,
+        msrp: true,
+        trim: true,
+        vin: true,
+        bikeStatus: true,
+        invId: true,
+        motor: true,
+        tag: true,
+        tradeValue: true,
+        tradeDesc: true,
+        tradeColor: true,
+        tradeYear: true,
+        tradeMake: true,
+        tradeVin: true,
+        tradeTrim: true,
+        tradeMileage: true,
+        tradeLocation: true,
+        lien: true,
+        id: true,
+        activixId: true,
+        theRealActId: true,
+        createdAt: true,
+        updatedAt: true,
+        clientfileId: true,
+        inventoryMotorcycleId: true,
+        InventoryMotorcycle: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            packageNumber: true,
+            packagePrice: true,
+            stockNumber: true,
+            type: true,
+            class: true,
+            year: true,
+            make: true,
+            model: true,
+            modelName: true,
+            submodel: true,
+            subSubmodel: true,
+            price: true,
+            exteriorColor: true,
+            mileage: true,
+            consignment: true,
+            onOrder: true,
+            expectedOn: true,
+            status: true,
+            orderStatus: true,
+            hdcFONumber: true,
+            hdmcFONumber: true,
+            vin: true,
+            age: true,
+            floorPlanDueDate: true,
+            location: true,
+            stocked: true,
+            stockedDate: true,
+            isNew: true,
+            actualCost: true,
+            mfgSerialNumber: true,
+            engineNumber: true,
+            plates: true,
+            keyNumber: true,
+            length: true,
+            width: true,
+            engine: true,
+            fuelType: true,
+            power: true,
+            chassisNumber: true,
+            chassisYear: true,
+            chassisMake: true,
+            chassisModel: true,
+            chassisType: true,
+            registrationState: true,
+            registrationExpiry: true,
+            grossWeight: true,
+            netWeight: true,
+            insuranceCompany: true,
+            policyNumber: true,
+            insuranceAgent: true,
+            insuranceStartDate: true,
+            insuranceEndDate: true,
+            sold: true,
+            freight: true,
+            financeId: true,
+          }
+        },
+        //  financeStorage
+        clientApts: {
+          select: {
+            id: true,
+            financeId: true,
+            title: true,
+            start: true,
+            end: true,
+            contactMethod: true,
+            completed: true,
+            apptStatus: true,
+            apptType: true,
+            note: true,
+            unit: true,
+            brand: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            phone: true,
+            address: true,
+            userEmail: true,
+            userId: true,
+            description: true,
+            userName: true,
+            attachments: true,
+            direction: true,
+            resultOfcall: true,
+            resourceId: true,
+            activixId: true,
+            activixNoteId: true,
+            createdAt: true,
+            updatedAt: true,
+            isPublished: true,
+          }
+        },
+        Comm: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            userEmail: true,
+            type: true,
+            body: true,
+            subject: true,
+            userName: true,
+            direction: true,
+            result: true,
+            financeId: true,
+          }
+        },
+        /*FinanceDeptProducts*/
+        FinanceUnit: {
+          select: {
+            paintPrem: true,
+            licensing: true,
+            stockNum: true,
+            options: true,
+            accessories: true,
+            freight: true,
+            labour: true,
+            year: true,
+            brand: true,
+            mileage: true,
+            model: true,
+            model1: true,
+            color: true,
+            modelCode: true,
+            msrp: true,
+            trim: true,
+            vin: true,
+            bikeStatus: true,
+            invId: true,
+            location: true,
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            financeId: true,
 
-      // console.log('Filtered finances:', filteredFinances);
+            // Finance
+            //WorkOrders
+          }
+        },
+        FinanceTradeUnit: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            financeId: true,
+            price: true,
+            brand: true,
+            model: true,
+            color: true,
+            accessories: true,
+            options: true,
+            year: true,
+            vin: true,
+            trim: true,
+            mileage: true,
+            location: true,
+            condition: true,
+            repairs: true,
+            stockNum: true,
+            licensing: true,
+            tradeEval: true,
+          }
+        },
+        AccOrders: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            userEmail: true,
+            userName: true,
+            dept: true,
+            sellingDept: true,
+            total: true,
+            discount: true,
+            discPer: true,
+            paid: true,
+            paidDate: true,
+            status: true,
+            workOrderId: true,
+            note: true,
+            financeId: true,
+            clientfileId: true,
 
-      // Check if we have any matches
-      if (filteredFinances.length > 0) {
-        const selectedFinance = filteredFinances[0];
-        //   console.log('Selected finance:', selectedFinance);
-        finance = selectedFinance
-      } else {
-        console.log('No matching finance found.');
+            AccessoriesOnOrders: {
+              select: {
+                id: true,
+                quantity: true,
+                accOrderId: true,
+                status: true,
+                orderNumber: true,
+                OrderInvId: true,
+                accessoryId: true,
+                service: true,
+                hour: true,
+
+                //orderInventor
+                accessory: {
+                  select: {
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    partNumber: true,
+                    brand: true,
+                    name: true,
+                    price: true,
+                    cost: true,
+                    quantity: true,
+                    minQuantity: true,
+                    description: true,
+                    category: true,
+                    subCategory: true,
+                    onOrder: true,
+                    distributer: true,
+                    location: true,
+                    note: true,
+                    workOrderSuggestion: true,
+                  }
+                },
+                //accOrder
+              }
+            },
+            Payments: {
+              select: {
+                id: true,
+                createdAt: true,
+                paymentType: true,
+                cardType: true,
+                amountPaid: true,
+                cardNum: true,
+                receiptId: true,
+                financeId: true,
+                userEmail: true,
+                accOrderId: true,
+                workOrderId: true,
+
+                // AccOrder
+                //Finance
+                //WorkOrder
+              }
+            },
+
+            // WorkOrder
+            //Finance
+            AccHandoff: {
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                sendTo: true,
+                handOffTime: true,
+                status: true,
+                sendToCompleted: true,
+                completedTime: true,
+                notes: true,
+                handOffDept: true,
+                AccOrderId: true,
+                //AccOrder
+              }
+            }
+            //Clientfile
+          }
+        },
+        WorkOrders: {
+          select: {
+            workOrderId: true,
+            unit: true,
+            mileage: true,
+            vin: true,
+            tag: true,
+            motor: true,
+            color: true,
+            budget: true,
+            waiter: true,
+            totalLabour: true,
+            totalParts: true,
+            subTotal: true,
+            total: true,
+            writer: true,
+            userEmail: true,
+            tech: true,
+            discDollar: true,
+            discPer: true,
+            techEmail: true,
+            notes: true,
+            customerSig: true,
+            status: true,
+            location: true,
+            quoted: true,
+            paid: true,
+            remaining: true,
+            FinanceUnitId: true,
+            ServiceUnitId: true,
+            financeId: true,
+            clientfileId: true,
+            note: true,
+            closedAt: true,
+            createdAt: true,
+            updatedAt: true,
+
+            // FinanceUnit
+            //onDelete
+            //ServiceUnit
+            AccOrders: {
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                userEmail: true,
+                userName: true,
+                dept: true,
+                sellingDept: true,
+                total: true,
+                discount: true,
+                discPer: true,
+                paid: true,
+                paidDate: true,
+                status: true,
+                workOrderId: true,
+                note: true,
+                financeId: true,
+                clientfileId: true,
+
+                AccessoriesOnOrders: {
+                  select: {
+                    id: true,
+                    quantity: true,
+                    accOrderId: true,
+                    status: true,
+                    orderNumber: true,
+                    OrderInvId: true,
+                    accessoryId: true,
+                    service: true,
+                    hour: true,
+
+                    //orderInventor
+                    accessory: {
+                      select: {
+                        id: true,
+                        createdAt: true,
+                        updatedAt: true,
+                        partNumber: true,
+                        brand: true,
+                        name: true,
+                        price: true,
+                        cost: true,
+                        quantity: true,
+                        minQuantity: true,
+                        description: true,
+                        category: true,
+                        subCategory: true,
+                        onOrder: true,
+                        distributer: true,
+                        location: true,
+                        note: true,
+                        workOrderSuggestion: true,
+                      }
+                    },
+                    //accOrder
+                  }
+                },
+                Payments: {
+                  select: {
+                    id: true,
+                    createdAt: true,
+                    paymentType: true,
+                    cardType: true,
+                    amountPaid: true,
+                    cardNum: true,
+                    receiptId: true,
+                    financeId: true,
+                    userEmail: true,
+                    accOrderId: true,
+                    workOrderId: true,
+
+                    // AccOrder
+                    //Finance
+                    //WorkOrder
+                  }
+                },
+
+                // WorkOrder
+                //Finance
+                //AccHandoff
+                //Clientfile
+              }
+            },
+            Clientfile: {
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                financeId: true,
+                userId: true,
+                firstName: true,
+                lastName: true,
+                name: true,
+                email: true,
+                phone: true,
+                address: true,
+                city: true,
+                postal: true,
+                province: true,
+                dl: true,
+                typeOfContact: true,
+                timeToContact: true,
+                conversationId: true,
+                billingAddress: true,
+                dob: true,
+                Finance: {
+                  select: {
+                    financeManager: true,
+                    userEmail: true,
+                    userName: true,
+                    financeManagerName: true,
+                    //: true,
+                    email: true,
+                    firstName: true,
+                    lastName: true,
+                    phone: true,
+                    name: true,
+                    address: true,
+                    city: true,
+                    postal: true,
+                    province: true,
+                    dl: true,
+                    typeOfContact: true,
+                    timeToContact: true,
+                    dob: true,
+                    //: true,
+                    othTax: true,
+                    optionsTotal: true,
+                    lienPayout: true,
+                    leadNote: true,
+                    sendToFinanceNow: true,
+                    dealNumber: true,
+                    iRate: true,
+                    months: true,
+                    discount: true,
+                    total: true,
+                    onTax: true,
+                    on60: true,
+                    biweekly: true,
+                    weekly: true,
+                    weeklyOth: true,
+                    biweekOth: true,
+                    oth60: true,
+                    weeklyqc: true,
+                    biweeklyqc: true,
+                    qc60: true,
+                    deposit: true,
+                    biweeklNatWOptions: true,
+                    weeklylNatWOptions: true,
+                    nat60WOptions: true,
+                    weeklyOthWOptions: true,
+                    biweekOthWOptions: true,
+                    oth60WOptions: true,
+                    biweeklNat: true,
+                    weeklylNat: true,
+                    nat60: true,
+                    qcTax: true,
+                    otherTax: true,
+                    totalWithOptions: true,
+                    otherTaxWithOptions: true,
+                    desiredPayments: true,
+                    admin: true,
+                    commodity: true,
+                    pdi: true,
+                    discountPer: true,
+                    userLoanProt: true,
+                    userTireandRim: true,
+                    userGap: true,
+                    userExtWarr: true,
+                    userServicespkg: true,
+                    deliveryCharge: true,
+                    vinE: true,
+                    lifeDisability: true,
+                    rustProofing: true,
+                    userOther: true,
+                    //: true,
+                    referral: true,
+                    visited: true,
+                    bookedApt: true,
+                    aptShowed: true,
+                    aptNoShowed: true,
+                    testDrive: true,
+                    metService: true,
+                    metManager: true,
+                    metParts: true,
+                    sold: true,
+                    depositMade: true,
+                    refund: true,
+                    turnOver: true,
+                    financeApp: true,
+                    approved: true,
+                    signed: true,
+                    pickUpSet: true,
+                    demoed: true,
+                    delivered: true,
+                    lastContact: true,
+                    status: true,
+                    customerState: true,
+                    result: true,
+                    timesContacted: true,
+                    nextAppointment: true,
+                    followUpDay: true,
+                    deliveryDate: true,
+                    deliveredDate: true,
+                    notes: true,
+                    visits: true,
+                    progress: true,
+                    metSalesperson: true,
+                    metFinance: true,
+                    financeApplication: true,
+                    pickUpDate: true,
+                    pickUpTime: true,
+                    depositTakenDate: true,
+                    docsSigned: true,
+                    tradeRepairs: true,
+                    seenTrade: true,
+                    lastNote: true,
+                    applicationDone: true,
+                    licensingSent: true,
+                    liceningDone: true,
+                    refunded: true,
+                    cancelled: true,
+                    lost: true,
+                    dLCopy: true,
+                    insCopy: true,
+                    testDrForm: true,
+                    voidChq: true,
+                    loanOther: true,
+                    signBill: true,
+                    ucda: true,
+                    tradeInsp: true,
+                    customerWS: true,
+                    otherDocs: true,
+                    urgentFinanceNote: true,
+                    funded: true,
+                    leadSource: true,
+                    financeDeptProductsTotal: true,
+                    bank: true,
+                    loanNumber: true,
+                    idVerified: true,
+                    dealerCommission: true,
+                    financeCommission: true,
+                    salesCommission: true,
+                    firstPayment: true,
+                    loanMaturity: true,
+                    quoted: true,
+                    //: true,
+                    InPerson: true,
+                    Phone: true,
+                    SMS: true,
+                    Email: true,
+                    Other: true,
+                    //------: true,
+                    //: true,
+                    paintPrem: true,
+                    licensing: true,
+                    stockNum: true,
+                    options: true,
+                    accessories: true,
+                    freight: true,
+                    labour: true,
+                    year: true,
+                    brand: true,
+                    mileage: true,
+                    model: true,
+                    model1: true,
+                    color: true,
+                    modelCode: true,
+                    msrp: true,
+                    trim: true,
+                    vin: true,
+                    bikeStatus: true,
+                    invId: true,
+                    //: true,
+                    tradeValue: true,
+                    tradeDesc: true,
+                    tradeColor: true,
+                    tradeYear: true,
+                    tradeMake: true,
+                    tradeVin: true,
+                    tradeTrim: true,
+                    tradeMileage: true,
+                    tradeLocation: true,
+                    lien: true,
+                    //: true,
+                    id: true,
+                    activixId: true,
+                    theRealActId: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    FinanceUnit: {
+                      select: {
+                        paintPrem: true,
+                        licensing: true,
+                        stockNum: true,
+                        options: true,
+                        accessories: true,
+                        freight: true,
+                        labour: true,
+                        year: true,
+                        brand: true,
+                        mileage: true,
+                        model: true,
+                        model1: true,
+                        color: true,
+                        modelCode: true,
+                        msrp: true,
+                        trim: true,
+                        vin: true,
+                        bikeStatus: true,
+                        invId: true,
+                        location: true,
+                        id: true,
+                        createdAt: true,
+                        updatedAt: true,
+                        financeId: true,
+                      }
+                    },
+                  }
+                },
+                ServiceUnit: {
+                  select: {
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    price: true,
+                    brand: true,
+                    model: true,
+                    color: true,
+                    accessories: true,
+                    options: true,
+                    year: true,
+                    vin: true,
+                    trim: true,
+                    mileage: true,
+                    location: true,
+                    condition: true,
+                    repairs: true,
+                    stockNum: true,
+                    licensing: true,
+                    tradeEval: true,
+                  }
+                },
+                // AccOrder
+                //   Finance
+                //   WorkOrder
+                //   ServiceUnit
+              }
+            },
+            WorkOrderNotes: {
+              select: {
+                id: true,
+                body: true,
+                userName: true,
+                userEmail: true,
+                workOrderId: true,
+                createdAt: true,
+              }
+            },
+            //Finance
+            //onDelete
+            ServicesOnWorkOrders: {
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                quantity: true,
+                hr: true,
+                status: true,
+                workOrderId: true,
+                serviceId: true,
+                WorkOrder: true,
+                service: true,
+              }
+            },
+            Payments: {
+              select: {
+                id: true,
+                createdAt: true,
+                paymentType: true,
+                cardType: true,
+                amountPaid: true,
+                cardNum: true,
+                receiptId: true,
+                financeId: true,
+                userEmail: true,
+                accOrderId: true,
+                workOrderId: true,
+
+                // AccOrder
+                //Finance
+                //WorkOrder
+              }
+            },
+            WorkOrderApts: {
+              select: {
+                id: true,
+                tech: true,
+                techEmail: true,
+                writer: true,
+                start: true,
+                end: true,
+                title: true,
+                workOrderId: true,
+                completed: true,
+                resourceId: true,
+                unit: true,
+                mileage: true,
+                vin: true,
+                tag: true,
+                motor: true,
+                color: true,
+                location: true,
+                WorkOrder: true,
+                createdAt: true,
+                updatedAt: true,
+              }
+            },
+            WorkOrderClockEntries: {
+              select: {
+                id: true,
+                start: true,
+                end: true,
+                userEmail: true,
+                username: true,
+                workOrderId: true,
+                WorkOrder: true,
+                createdAt: true,
+                updatedAt: true,
+              }
+            }
+          }
+        },
+        Payments: {
+          select: {
+            id: true,
+            createdAt: true,
+            paymentType: true,
+            cardType: true,
+            amountPaid: true,
+            cardNum: true,
+            receiptId: true,
+            financeId: true,
+            userEmail: true,
+            accOrderId: true,
+            workOrderId: true,
+
+            // AccOrder
+            //Finance
+            //WorkOrder
+          }
+        },
+        FinanceNote: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            body: true,
+            userEmail: true,
+            userName: true,
+            clientfileId: true,
+            financeId: true,
+            selectedUsers: {
+              select: {
+                id: true,
+                createdAt: true,
+                selectedName: true,
+                selectedEmail: true,
+                FinanceNoteId: true,
+              }
+            }
+          }
+        },
+        Clientfile: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            financeId: true,
+            userId: true,
+            firstName: true,
+            lastName: true,
+            name: true,
+            email: true,
+            phone: true,
+            address: true,
+            city: true,
+            postal: true,
+            province: true,
+            dl: true,
+            typeOfContact: true,
+            timeToContact: true,
+            conversationId: true,
+            billingAddress: true,
+            dob: true,
+
+            AccOrder: {
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                userEmail: true,
+                userName: true,
+                dept: true,
+                sellingDept: true,
+                total: true,
+                discount: true,
+                discPer: true,
+                paid: true,
+                paidDate: true,
+                status: true,
+                workOrderId: true,
+                note: true,
+                financeId: true,
+                clientfileId: true,
+
+                AccessoriesOnOrders: {
+                  select: {
+                    id: true,
+                    quantity: true,
+                    accOrderId: true,
+                    status: true,
+                    orderNumber: true,
+                    OrderInvId: true,
+                    accessoryId: true,
+                    service: true,
+                    hour: true,
+
+                    //orderInventor
+                    accessory: {
+                      select: {
+                        id: true,
+                        createdAt: true,
+                        updatedAt: true,
+                        partNumber: true,
+                        brand: true,
+                        name: true,
+                        price: true,
+                        cost: true,
+                        quantity: true,
+                        minQuantity: true,
+                        description: true,
+                        category: true,
+                        subCategory: true,
+                        onOrder: true,
+                        distributer: true,
+                        location: true,
+                        note: true,
+                        workOrderSuggestion: true,
+                      }
+                    },
+                    //accOrder
+                  }
+                },
+                Payments: {
+                  select: {
+                    id: true,
+                    createdAt: true,
+                    paymentType: true,
+                    cardType: true,
+                    amountPaid: true,
+                    cardNum: true,
+                    receiptId: true,
+                    financeId: true,
+                    userEmail: true,
+                    accOrderId: true,
+                    workOrderId: true,
+
+                    // AccOrder
+                    //Finance
+                    //WorkOrder
+                  }
+                },
+
+                // WorkOrder
+                //Finance
+                AccHandoff: {
+                  select: {
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    sendTo: true,
+                    handOffTime: true,
+                    status: true,
+                    sendToCompleted: true,
+                    completedTime: true,
+                    notes: true,
+                    handOffDept: true,
+                    AccOrderId: true,
+                  }
+                }
+                //Clientfile
+              }
+            },
+            //Finance
+            //WorkOrder
+            //ServiceUnit
+          }
+        },
+        //  finManOptions
+        //bmwMotoOptions
+        //FinCanOptions
       }
-    } else {
-      console.log('Client file or Finance array not found or is not an array.');
-    }
-
-
+    });
   }
+
+  let aptFinance3 = finance.clientApts //await getAppointmentsForFinance(financeId)
+  const clientFile = finance.Clientfile //await getClientFileById(params.clientId)
+  const financeNotes = finance.FinanceNote //await getAllFinanceNotes(financeId)
+  const Coms = finance.Comm//await getComsOverview(email)
+
   const SetClient66Cookie = await SetClient66(userId, clientId, financeId, request)
 
   const brand = finance?.brand
-  const financeNotes = await getAllFinanceNotes(financeId)
   const docTemplates = await getDocsbyUserId(userId)
 
-  const Coms = await getComsOverview(email)
   let dealerFees = await prisma.dealer.findUnique({ where: { userEmail: email } });
   if (!dealerFees) {
     dealerFees = await prisma.dealer.findFirst();
   }
   const dealerInfo = dealerFees
-  // ------------------ nav
-  const financeEmail = await prisma.finance.findFirst({ where: { id: financeId }, });
-  const financeList = await prisma.finance.findMany({ where: { email: financeEmail?.email }, });
-  const financeIds = financeList.map(financeRecord => financeRecord.id);
-  const mergedFinanceList = await getClientListMerged(financeIds);
+
   // ------------------------
   let merged
-
-
   const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: email } });
-  // const UploadedDocs = await prisma.uploadDocs.findMany({ where: { financeId: finance?.id } });
   const userList = await prisma.user.findMany()
-  /// const parts = await prisma.part.findMany()
-  let clientUnit
-  if (clientFile.Finance.FinanceUnit) {
-    clientUnit = await prisma.inventoryMotorcycle.findFirst({ where: { stockNumber: clientFile.Finance.FinanceUnit.stockNum } })
-  }
-
 
   // -----------------------------sms ---------------------------------//
   const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
@@ -10118,7 +11180,6 @@ export async function loader({ params, request }: DataFunctionArgs) {
 
   if (!Array.isArray(convoList) || convoList.length === 0) {
     getConvos = await client.conversations.v1.users(`${username}`).userConversations.list({ limit: 50 });
-    // .then(userConversations => userConversations.forEach(u => console.log(u.friendlyName)))
     convoList = getConvos;
   }
   // -----------------------------sms ---------------------------------//
@@ -10140,381 +11201,8 @@ export async function loader({ params, request }: DataFunctionArgs) {
     where: { positions: { some: { position: 'Finance Manager' } } }
   });
   // ----------------------service -----------------------------
-  const orders = await prisma.workOrder.findMany({
-    where: { financeId: finance.id },
-    select: {
-      workOrderId: true,
-      unit: true,
-      mileage: true,
-      vin: true,
-      tag: true,
-      motor: true,
-      budget: true,
-      totalLabour: true,
-      totalParts: true,
-      subTotal: true,
-      total: true,
-      writer: true,
-      userEmail: true,
-      tech: true,
-      notes: true,
-      customerSig: true,
-      status: true,
-      location: true,
-      quoted: true,
-      paid: true,
-      remaining: true,
-      FinanceUnitId: true,
-      financeId: true,
-      clientfileId: true,
-      createdAt: true,
-      updatedAt: true,
-      Clientfile: {
-        select: {
-          id: true,
-          financeId: true,
-          firstName: true,
-          lastName: true,
-          name: true,
-          email: true,
-          phone: true,
-          address: true,
-          city: true,
-          postal: true,
-          province: true,
-          dl: true,
-          typeOfContact: true,
-          timeToContact: true,
-          conversationId: true,
-          billingAddress: true,
-          Finance: {
-            select: {
-              financeManager: true,
-              userEmail: true,
-              userName: true,
-              financeManagerName: true,
-              //: true,
-              email: true,
-              firstName: true,
-              lastName: true,
-              phone: true,
-              name: true,
-              address: true,
-              city: true,
-              postal: true,
-              province: true,
-              dl: true,
-              typeOfContact: true,
-              timeToContact: true,
-              dob: true,
-              //: true,
-              othTax: true,
-              optionsTotal: true,
-              lienPayout: true,
-              leadNote: true,
-              sendToFinanceNow: true,
-              dealNumber: true,
-              iRate: true,
-              months: true,
-              discount: true,
-              total: true,
-              onTax: true,
-              on60: true,
-              biweekly: true,
-              weekly: true,
-              weeklyOth: true,
-              biweekOth: true,
-              oth60: true,
-              weeklyqc: true,
-              biweeklyqc: true,
-              qc60: true,
-              deposit: true,
-              biweeklNatWOptions: true,
-              weeklylNatWOptions: true,
-              nat60WOptions: true,
-              weeklyOthWOptions: true,
-              biweekOthWOptions: true,
-              oth60WOptions: true,
-              biweeklNat: true,
-              weeklylNat: true,
-              nat60: true,
-              qcTax: true,
-              otherTax: true,
-              totalWithOptions: true,
-              otherTaxWithOptions: true,
-              desiredPayments: true,
-              admin: true,
-              commodity: true,
-              pdi: true,
-              discountPer: true,
-              userLoanProt: true,
-              userTireandRim: true,
-              userGap: true,
-              userExtWarr: true,
-              userServicespkg: true,
-              deliveryCharge: true,
-              vinE: true,
-              lifeDisability: true,
-              rustProofing: true,
-              userOther: true,
-              //: true,
-              referral: true,
-              visited: true,
-              bookedApt: true,
-              aptShowed: true,
-              aptNoShowed: true,
-              testDrive: true,
-              metService: true,
-              metManager: true,
-              metParts: true,
-              sold: true,
-              depositMade: true,
-              refund: true,
-              turnOver: true,
-              financeApp: true,
-              approved: true,
-              signed: true,
-              pickUpSet: true,
-              demoed: true,
-              delivered: true,
-              lastContact: true,
-              status: true,
-              customerState: true,
-              result: true,
-              timesContacted: true,
-              nextAppointment: true,
-              followUpDay: true,
-              deliveryDate: true,
-              deliveredDate: true,
-              notes: true,
-              visits: true,
-              progress: true,
-              metSalesperson: true,
-              metFinance: true,
-              financeApplication: true,
-              pickUpDate: true,
-              pickUpTime: true,
-              depositTakenDate: true,
-              docsSigned: true,
-              tradeRepairs: true,
-              seenTrade: true,
-              lastNote: true,
-              applicationDone: true,
-              licensingSent: true,
-              liceningDone: true,
-              refunded: true,
-              cancelled: true,
-              lost: true,
-              dLCopy: true,
-              insCopy: true,
-              testDrForm: true,
-              voidChq: true,
-              loanOther: true,
-              signBill: true,
-              ucda: true,
-              tradeInsp: true,
-              customerWS: true,
-              otherDocs: true,
-              urgentFinanceNote: true,
-              funded: true,
-              leadSource: true,
-              financeDeptProductsTotal: true,
-              bank: true,
-              loanNumber: true,
-              idVerified: true,
-              dealerCommission: true,
-              financeCommission: true,
-              salesCommission: true,
-              firstPayment: true,
-              loanMaturity: true,
-              quoted: true,
-              //: true,
-              InPerson: true,
-              Phone: true,
-              SMS: true,
-              Email: true,
-              Other: true,
-              //------: true,
-              //: true,
-              paintPrem: true,
-              licensing: true,
-              stockNum: true,
-              options: true,
-              accessories: true,
-              freight: true,
-              labour: true,
-              year: true,
-              brand: true,
-              mileage: true,
-              model: true,
-              model1: true,
-              color: true,
-              modelCode: true,
-              msrp: true,
-              trim: true,
-              vin: true,
-              bikeStatus: true,
-              invId: true,
-              //: true,
-              tradeValue: true,
-              tradeDesc: true,
-              tradeColor: true,
-              tradeYear: true,
-              tradeMake: true,
-              tradeVin: true,
-              tradeTrim: true,
-              tradeMileage: true,
-              tradeLocation: true,
-              lien: true,
-              //: true,
-              id: true,
-              activixId: true,
-              theRealActId: true,
-              createdAt: true,
-              updatedAt: true,
-              FinanceUnit: {
-                select: {
-                  paintPrem: true,
-                  licensing: true,
-                  stockNum: true,
-                  options: true,
-                  accessories: true,
-                  freight: true,
-                  labour: true,
-                  year: true,
-                  brand: true,
-                  mileage: true,
-                  model: true,
-                  model1: true,
-                  color: true,
-                  modelCode: true,
-                  msrp: true,
-                  trim: true,
-                  vin: true,
-                  bikeStatus: true,
-                  invId: true,
-                  location: true,
-                  id: true,
-                  createdAt: true,
-                  updatedAt: true,
-                  financeId: true,
-                }
-              },
-            }
-          },
-          ServiceUnit: {
-            select: {
-              id: true,
-              createdAt: true,
-              updatedAt: true,
-              price: true,
-              brand: true,
-              model: true,
-              color: true,
-              accessories: true,
-              options: true,
-              year: true,
-              vin: true,
-              trim: true,
-              mileage: true,
-              location: true,
-              condition: true,
-              repairs: true,
-              stockNum: true,
-              licensing: true,
-              tradeEval: true,
-            }
-          },
-        },
-      },
-      AccOrders: {
-        select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          userEmail: true,
-          userName: true,
-          dept: true,
-          total: true,
-          discount: true,
-          discPer: true,
-          paid: true,
-          paidDate: true,
-          status: true,
-          workOrderId: true,
-          note: true,
-          financeId: true,
-          clientfileId: true,
-          AccessoriesOnOrders: {
-            select: {
-              id: true,
-              quantity: true,
-              accOrderId: true,
-              status: true,
-              orderNumber: true,
-              OrderInvId: true,
-              accessoryId: true,
-              accessory: {
-                select: {
-                  id: true,
-                  createdAt: true,
-                  updatedAt: true,
-                  partNumber: true,
-                  brand: true,
-                  name: true,
-                  price: true,
-                  cost: true,
-                  quantity: true,
-                  description: true,
-                  category: true,
-                  subCategory: true,
-                  onOrder: true,
-                  distributer: true,
-                  location: true,
-                },
-              },
-            },
-          },
-        }
-      },
-      Payments: {
-        select: {
-          id: true,
-          createdAt: true,
-          paymentType: true,
-          amountPaid: true,
-          cardNum: true,
-          receiptId: true,
-          financeId: true,
-          userEmail: true,
-          accOrderId: true,
-        },
-      },
-      ServicesOnWorkOrders: {
-        select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          quantity: true,
-          status: true,
-          workOrderId: true,
-          serviceId: true,
-          hr: true,
-          service: {
-            select: {
-              id: true,
-              createdAt: true,
-              updatedAt: true,
-              description: true,
-              estHr: true,
-              service: true,
-              price: true,
-            }
-          }
-        }
-      }
-    },
-  });
+  const orders = finance.WorkOrders
+  console.log(orders, 'work ordfers')
   const tax = await prisma.dealer.findUnique({
     where: { id: 1 },
     select: {
@@ -10571,262 +11259,14 @@ export async function loader({ params, request }: DataFunctionArgs) {
     // code block
   }
 
-  return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2, dealerImage, services, tax, orders, tableData }));
+  return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2, dealerImage, services, tax, orders, tableData }));
 }
-
-function SidebarNav({ mergedFinanceList, finance }) {
-  function ImageSelectNav(brandId) {
-    if (brandId === 'Can-Am') {
-      return (
-        <img
-          width="300"
-          height="166"
-          className="mx-auto"
-          src="https://logovectorseek.com/wp-content/uploads/2020/09/can-am-logo-vector.png"
-          alt="srry"
-        />
-      )
-    }
-    if (brandId === 'Can-Am-SXS') {
-      return (
-        <img
-          width="300"
-          height="166"
-          className="mx-auto"
-          src="https://logovectorseek.com/wp-content/uploads/2020/09/can-am-logo-vector.png"
-          alt="srry"
-        />
-      )
-    }
-    else if (brandId === 'Ski-Doo') {
-      return (
-        <img
-          width="300"
-          height="166"
-          className="mx-auto"
-          src="https://searchlogovector.com/wp-content/uploads/2020/04/ski-doo-logo-vector.png"
-          alt="steve"
-        />
-      )
-    }
-    else if (brandId === 'Sea-Doo') {
-      return (
-        <img
-          width="300"
-          height="166"
-          alt="steve"
-          className="mx-auto"
-          src="https://searchlogovector.com/wp-content/uploads/2020/04/sea-doo-logo-vector.png"
-        />
-      )
-    }
-    else if (brandId === 'Kawasaki') {
-      return (
-        <div className="flex justify-center mt-5">
-          <svg
-            className="mx-auto flex-1 mr-6"
-            width="260.5398px"
-            height="70.7005px"
-            viewBox="0 0 130.5398 35.7005"
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink">
-            <defs>
-              <polygon
-                id="path-1"
-                points="0 0 130.5398 0 130.5398 35.7005 0 35.7005"></polygon>
-            </defs>
-            <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
-              <g transform="translate(-45.000000, -20.000000)">
-                <g transform="translate(45.000000, 20.000000)">
-                  <mask fill="white">
-                    <use xlinkHref="#path-1"></use>
-                  </mask>
-                  <g id="Clip-2"></g>
-                  <path
-                    d="M123.178,35.5435 L124.588,35.5435 L124.588,28.1385 L123.178,28.1385 L123.178,35.5435 Z M120.1,35.5435 L121.51,35.5435 L121.51,28.1385 L120.1,28.1385 L120.1,35.5435 Z M117.377,32.8915 C117.377,31.8545 116.89,31.1535 116.029,31.1535 C115.161,31.1535 114.684,31.8545 114.684,32.8915 C114.684,33.9295 115.161,34.6215 116.029,34.6215 C116.89,34.6215 117.377,33.9295 117.377,32.8915 L117.377,32.8915 Z M118.808,32.8915 C118.808,34.4775 117.678,35.6985 116.029,35.6985 C114.382,35.6985 113.253,34.4775 113.253,32.8915 C113.253,31.3075 114.382,30.0855 116.029,30.0855 C117.678,30.0855 118.808,31.3075 118.808,32.8915 L118.808,32.8915 Z M110.736,30.4465 C110.736,29.7725 110.302,29.4435 109.557,29.4435 L107.981,29.4435 L107.981,31.4625 L109.535,31.4625 C110.323,31.4625 110.736,31.0995 110.736,30.4465 L110.736,30.4465 Z M110.809,32.5085 L112.662,35.5435 L110.923,35.5435 L109.203,32.6845 L107.981,32.6845 L107.981,35.5435 L106.427,35.5435 L106.427,28.1385 L109.68,28.1385 C110.539,28.1385 111.182,28.3845 111.616,28.8315 C112.031,29.2555 112.281,29.7725 112.281,30.4375 C112.281,31.4715 111.742,32.1985 110.809,32.5085 L110.809,32.5085 Z M100.814,32.3135 C100.057,32.1565 99.352,32.1165 99.352,31.6605 C99.352,31.2765 99.715,31.0695 100.263,31.0695 C100.863,31.0695 101.226,31.2765 101.288,31.8455 L102.562,31.8455 C102.46,30.7775 101.682,30.0845 100.284,30.0845 C99.072,30.0845 98.118,30.6325 98.118,31.7835 C98.118,32.9445 99.05,33.2025 100.004,33.3905 C100.731,33.5345 101.401,33.5875 101.401,34.0955 C101.401,34.4675 101.051,34.7045 100.429,34.7045 C99.798,34.7045 99.361,34.4365 99.269,33.8245 L97.964,33.8245 C98.047,34.9535 98.906,35.6985 100.451,35.6985 C101.777,35.6985 102.688,35.0585 102.688,33.9905 C102.688,32.7475 101.703,32.4975 100.814,32.3135 L100.814,32.3135 Z M95.518,32.3115 C95.478,31.6375 95.031,31.1735 94.391,31.1735 C93.643,31.1735 93.28,31.6195 93.157,32.3115 L95.518,32.3115 Z M96.989,33.2845 L93.135,33.2845 C93.24,34.1035 93.696,34.6105 94.493,34.6105 C95.044,34.6105 95.364,34.3615 95.518,33.9585 L96.906,33.9585 C96.709,34.9005 95.872,35.7005 94.505,35.7005 C92.742,35.7005 91.747,34.4665 91.747,32.8815 C91.747,31.3085 92.815,30.0835 94.37,30.0835 C96.078,30.0835 96.989,31.3885 96.989,33.2845 L96.989,33.2845 Z M88.88,30.0855 C88.206,30.0855 87.646,30.4365 87.282,31.0175 L87.261,31.0175 C87.002,30.4575 86.464,30.0855 85.793,30.0855 C85.057,30.0855 84.537,30.4575 84.248,30.9445 L84.217,30.9445 L84.217,30.2295 L82.86,30.2295 L82.86,35.5455 L84.269,35.5455 L84.269,32.4585 C84.269,31.7535 84.651,31.2975 85.22,31.2975 C85.74,31.2975 86.039,31.6085 86.039,32.2085 L86.039,35.5455 L87.449,35.5455 L87.449,32.4585 C87.449,31.7535 87.812,31.2975 88.403,31.2975 C88.92,31.2975 89.221,31.6085 89.221,32.2085 L89.221,35.5455 L90.628,35.5455 L90.628,31.9685 C90.628,30.8085 89.997,30.0855 88.88,30.0855 L88.88,30.0855 Z M79.804,35.5435 L81.214,35.5435 L81.214,30.2285 L79.804,30.2285 L79.804,35.5435 Z M79.804,29.4035 L81.214,29.4035 L81.214,28.1385 L79.804,28.1385 L79.804,29.4035 Z M72.78,29.4025 L75.008,29.4025 L75.008,35.5425 L76.51,35.5425 L76.51,29.4025 L78.735,29.4025 L78.735,28.1375 L72.78,28.1375 L72.78,29.4025 Z M68.191,32.9235 C68.191,31.9075 67.859,31.2245 66.957,31.2245 C66.181,31.2245 65.787,31.9075 65.787,32.8925 C65.787,33.9175 66.19,34.5175 66.917,34.5175 C67.757,34.5175 68.191,33.8955 68.191,32.9235 L68.191,32.9235 Z M68.16,28.1375 L69.57,28.1375 L69.57,35.5455 L68.212,35.5455 L68.212,34.8495 L68.191,34.8495 C67.88,35.3575 67.351,35.6995 66.606,35.6995 C65.27,35.6995 64.359,34.6125 64.359,32.8925 C64.359,31.2335 65.301,30.0855 66.627,30.0855 C67.372,30.0855 67.84,30.4275 68.129,30.8735 L68.16,30.8735 L68.16,28.1375 Z M62.027,32.8915 C62.027,31.8545 61.541,31.1535 60.679,31.1535 C59.811,31.1535 59.334,31.8545 59.334,32.8915 C59.334,33.9295 59.811,34.6215 60.679,34.6215 C61.541,34.6215 62.027,33.9295 62.027,32.8915 L62.027,32.8915 Z M63.458,32.8915 C63.458,34.4775 62.328,35.6985 60.679,35.6985 C59.032,35.6985 57.903,34.4775 57.903,32.8915 C57.903,31.3075 59.032,30.0855 60.679,30.0855 C62.328,30.0855 63.458,31.3075 63.458,32.8915 L63.458,32.8915 Z M55.594,32.8915 C55.594,31.8545 55.107,31.1535 54.246,31.1535 C53.378,31.1535 52.901,31.8545 52.901,32.8915 C52.901,33.9295 53.378,34.6215 54.246,34.6215 C55.107,34.6215 55.594,33.9295 55.594,32.8915 L55.594,32.8915 Z M57.025,32.8915 C57.025,34.4775 55.895,35.6985 54.246,35.6985 C52.599,35.6985 51.47,34.4775 51.47,32.8915 C51.47,31.3075 52.599,30.0855 54.246,30.0855 C55.895,30.0855 57.025,31.3075 57.025,32.8915 L57.025,32.8915 Z M47.245,32.7675 L49.027,32.7675 L49.027,32.8105 C49.027,33.6265 48.27,34.4875 47.119,34.4875 C45.845,34.4875 45.048,33.3805 45.048,31.8655 C45.048,30.3945 45.743,29.2345 47.14,29.2345 C48.094,29.2345 48.642,29.7545 48.809,30.4685 L50.28,30.4685 C50.04,29.0185 48.975,27.9945 47.11,27.9945 C46.116,27.9945 45.328,28.2925 44.727,28.8435 C43.949,29.5575 43.515,30.6345 43.515,31.8655 C43.515,32.9855 43.866,33.9365 44.478,34.6235 C45.091,35.2945 45.959,35.7005 47.079,35.7005 C47.959,35.7005 48.652,35.3985 49.159,34.5495 L49.181,34.5495 L49.233,35.5435 L50.363,35.5435 L50.363,31.6075 L47.245,31.6075 L47.245,32.7675 Z M38.748,32.3115 C38.708,31.6375 38.262,31.1735 37.622,31.1735 C36.874,31.1735 36.511,31.6195 36.388,32.3115 L38.748,32.3115 Z M40.219,33.2845 L36.366,33.2845 C36.471,34.1035 36.926,34.6105 37.723,34.6105 C38.274,34.6105 38.594,34.3615 38.748,33.9585 L40.136,33.9585 C39.939,34.9005 39.102,35.7005 37.736,35.7005 C35.972,35.7005 34.978,34.4665 34.978,32.8815 C34.978,31.3085 36.046,30.0835 37.6,30.0835 C39.308,30.0835 40.219,31.3885 40.219,33.2845 L40.219,33.2845 Z M32.048,30.0835 C31.322,30.0835 30.888,30.3635 30.503,30.9235 L30.472,30.9235 L30.472,28.1385 L29.063,28.1385 L29.063,35.5435 L30.472,35.5435 L30.472,32.5305 C30.472,31.8045 30.928,31.3085 31.549,31.3085 C32.14,31.3085 32.473,31.7115 32.473,32.2815 L32.473,35.5435 L33.879,35.5435 L33.879,32.0755 C33.879,30.9145 33.144,30.0835 32.048,30.0835 L32.048,30.0835 Z M26.693,33.9785 L26.693,31.1625 L27.604,31.1625 L27.604,30.2295 L26.693,30.2295 L26.693,28.5715 L25.314,28.5715 L25.314,30.2295 L24.578,30.2295 L24.578,31.1625 L25.314,31.1625 L25.314,34.2805 C25.314,35.2835 26.071,35.5545 26.754,35.5545 C27.314,35.5545 27.634,35.5325 27.634,35.5325 L27.634,34.4985 C27.634,34.4985 27.394,34.5075 27.219,34.5075 C26.908,34.5075 26.693,34.3725 26.693,33.9785 L26.693,33.9785 Z M19.804,33.9785 L19.804,31.1625 L20.715,31.1625 L20.715,30.2295 L19.804,30.2295 L19.804,28.5715 L18.425,28.5715 L18.425,30.2295 L17.689,30.2295 L17.689,31.1625 L18.425,31.1625 L18.425,34.2805 C18.425,35.2835 19.182,35.5545 19.865,35.5545 C20.425,35.5545 20.746,35.5325 20.746,35.5325 L20.746,34.4985 C20.746,34.4985 20.505,34.5075 20.33,34.5075 C20.019,34.5075 19.804,34.3725 19.804,33.9785 L19.804,33.9785 Z M15.388,32.3115 C15.348,31.6375 14.902,31.1735 14.262,31.1735 C13.514,31.1735 13.151,31.6195 13.028,32.3115 L15.388,32.3115 Z M16.859,33.2845 L13.006,33.2845 C13.111,34.1035 13.566,34.6105 14.363,34.6105 C14.914,34.6105 15.234,34.3615 15.388,33.9585 L16.776,33.9585 C16.579,34.9005 15.742,35.7005 14.376,35.7005 C12.612,35.7005 11.618,34.4665 11.618,32.8815 C11.618,31.3085 12.686,30.0835 14.24,30.0835 C15.948,30.0835 16.859,31.3885 16.859,33.2845 L16.859,33.2845 Z M7.454,34.2565 L10.935,34.2565 L10.935,35.5095 L5.952,35.5095 L5.952,28.1045 L7.454,28.1045 L7.454,34.2565 Z"
-                    id="Fill-1"
-                    fill="#000000"
-                    mask="url(#mask-2)"></path>
-                  <path
-                    d="M68.8788,13.291 C68.8788,13.291 66.6518,14.025 65.4028,14.567 C64.1568,15.111 64.7798,16.059 64.7798,16.059 C64.7798,16.059 65.4028,17.092 66.8958,16.712 C69.0418,16.143 68.8788,13.291 68.8788,13.291 L68.8788,13.291 Z M74.2588,9.412 C74.6108,14.54 73.8988,18.026 75.4238,20.023 L69.7458,20.023 C69.7458,20.023 69.2278,19.343 68.9578,18.692 C68.9578,18.692 67.4408,20.483 64.1838,20.483 C60.9278,20.483 59.0938,18.584 59.0938,16.143 C59.0938,13.7 60.5078,11.907 65.0508,11.094 C66.8688,10.769 68.4968,10.552 68.5778,9.547 C68.6598,8.542 67.2748,8.353 66.9228,8.353 C66.9228,8.353 64.8478,8.201 64.8258,10.506 L59.5278,10.506 C59.5278,10.506 58.4008,4.663 67.3018,4.663 C67.3018,4.663 73.9068,4.281 74.2588,9.412 L74.2588,9.412 Z M29.4108,13.291 C29.4108,13.291 27.1808,14.025 25.9348,14.567 C24.6858,15.111 25.3118,16.059 25.3118,16.059 C25.3118,16.059 25.9348,17.092 27.4278,16.712 C29.5728,16.143 29.4108,13.291 29.4108,13.291 L29.4108,13.291 Z M34.7928,9.412 C35.1428,14.54 34.4298,18.026 35.9558,20.023 L30.2778,20.023 C30.2778,20.023 29.7628,19.343 29.4888,18.692 C29.4888,18.692 27.9718,20.483 24.7158,20.483 C21.4598,20.483 19.6258,18.584 19.6258,16.143 C19.6258,13.7 21.0398,11.907 25.5798,11.094 C27.4008,10.769 29.0288,10.552 29.1128,9.547 C29.1908,8.542 27.8098,8.353 27.4548,8.353 C27.4548,8.353 25.3798,8.201 25.3578,10.506 L20.0568,10.506 C20.0568,10.506 18.9328,4.663 27.8338,4.663 C27.8338,4.663 34.4388,4.281 34.7928,9.412 L34.7928,9.412 Z M19.7558,0.003 L12.1578,0.003 L6.0758,6.101 L6.0758,0.003 L-0.0002,0.003 L-0.0002,20.019 L6.0738,20.019 L6.0738,14.095 L7.6468,12.469 L12.4258,20.016 L20.3328,20.016 L11.9978,7.981 L19.7558,0.003 Z M123.1618,5.542 L116.2948,5.542 L113.3338,8.982 L113.3338,0 L107.5048,0 L107.5048,20.019 L113.3338,20.019 L113.3338,15.942 L114.0848,15.137 L117.2868,20.013 L124.0158,20.013 L118.0858,10.941 L123.1618,5.542 Z M124.7098,20.016 L130.5398,20.016 L130.5398,5.548 L124.7098,5.548 L124.7098,20.016 Z M124.7098,4.079 L130.5398,4.079 L130.5398,0.005 L124.7098,0.005 L124.7098,4.079 Z M100.4808,13.291 C100.4808,13.291 98.2538,14.025 97.0048,14.567 C95.7558,15.111 96.3818,16.059 96.3818,16.059 C96.3818,16.059 97.0048,17.092 98.4978,16.712 C100.6428,16.143 100.4808,13.291 100.4808,13.291 L100.4808,13.291 Z M105.8628,9.412 C106.2148,14.54 105.5028,18.026 107.0278,20.023 L101.3468,20.023 C101.3468,20.023 100.8328,19.343 100.5618,18.692 C100.5618,18.692 99.0418,20.483 95.7828,20.483 C92.5298,20.483 90.6928,18.584 90.6928,16.143 C90.6928,13.7 92.1128,11.907 96.6548,11.094 C98.4698,10.769 100.0988,10.552 100.1818,9.547 C100.2608,8.542 98.8788,8.353 98.5248,8.353 C98.5248,8.353 96.4498,8.201 96.4308,10.506 L91.1288,10.506 C91.1288,10.506 90.0018,4.663 98.9068,4.663 C98.9068,4.663 105.5078,4.281 105.8628,9.412 L105.8628,9.412 Z M84.4268,10.568 C81.3338,10.162 80.9028,9.894 80.9028,9.217 C80.9028,8.699 81.5228,8.293 82.6368,8.293 C83.7498,8.293 84.4028,9.111 84.5108,9.897 L89.5818,9.897 C89.5818,7.182 87.7918,4.858 82.5008,4.858 C75.0378,4.858 75.4738,9.81 75.4738,9.81 C75.4738,13.854 80.3318,14.269 82.6118,14.61 C84.6468,14.938 84.5898,16.051 84.5898,16.051 C84.5898,16.051 84.6468,17.14 82.7988,17.14 C80.4938,17.14 80.5208,14.959 80.5208,14.959 L75.2008,14.959 C75.2008,19.573 79.2988,20.719 82.7478,20.719 C86.1908,20.719 90.0188,19.527 90.0188,15.864 C90.0188,12.199 87.9808,11.302 84.4268,10.568 L84.4268,10.568 Z M59.7548,5.55 L55.3048,20.013 L49.6348,20.013 L47.3538,12.932 L45.4008,20.013 L39.5138,20.013 L34.5188,5.55 L40.5708,5.55 L42.6318,12.336 L44.7638,5.55 L49.8238,5.55 L51.7778,12.336 L54.0308,5.55 L59.7548,5.55 Z"
-                    id="Fill-3"
-                    fill="#E60012"
-                    mask="url(#mask-2)"></path>
-                </g>
-              </g>
-            </g>
-          </svg>
-        </div>
-      )
-    }
-    else if (brandId === 'Manitou') {
-      return (
-        <img
-          width="599"
-          height="105"
-          alt=""
-          className="mx-auto"
-          src="data:image/jpg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCACNAyADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD5Hooor1SAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKK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567QSPfJ6mnUUUtBBQuQu3ouMbVwB9MADiiigAb51YHpu3beCpORyQR6Dp7CiiigAooopgFC/IqgdN27bwFByeQAPQ9Pc0UUgBvnDA/XPBBPqQR+lFFFGgBRRRTAKKKKAF9cEj0GThfm9iCePek59f5/40UUnZu47g3zdTkY4XGADRRRTEFFFFACYPy852jjOcA+2CCPzpefX+f+NFFToO4p5ORnd03Mc4H0pKKKLIQUUUVQBR9TkHqpHFFFIA578k9WJOf50rMS27cxbOdzMSfrk55pKKNB3CiiimIKKKKACl4+XqNp4OeQPbGAPypKKnQBCob7+H9MqOOmMZzjHOPqaWiiq6WAKKKKACiiigAooooAF+XocDHK4yCaOfX+f+NFFToANll2kkjnPJxzuPGSSOW9e1FFFCSQBRRRVAFFFFABRRRQAgXbu2jaWBywxkk9c4AzS8+v8/8AGiiloO4c+v8AP/Gjn1/n/jRRU8qC4c+v8/8AGjn1/n/jRRRyoLhz6/z/AMaOfX+f+NFFHKguHPr/AD/xob5upyMcLjABoop6CCiiiqAKKKKADn1/n/jRz6/z/wAaKKjlQ7hz6/z/AMaOfX+f+NFFHKguHPr/AD/xo59f5/40UUcqC4c+v8/8aOfX+f8AjRRRyoLgfmBDfMvQKQPlH1IOaKKKaSQhNvy4ySMbccAY9OnT2paKKa0HcKKKKYgooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwP//Z"
-        >
-        </img>
-      )
-    }
-    if (brandId === 'Spyder') {
-      return (
-        <img
-          width="300"
-          height="166"
-          className="mx-auto"
-          src="https://logovectorseek.com/wp-content/uploads/2020/09/can-am-logo-vector.png"
-          alt="srry"
-        />
-      )
-    }
-    if (brandId === 'Suzuki') {
-      return (
-        <img
-          width="250"
-          height="150"
-          className="mx-auto"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Suzuki_logo_2.svg/500px-Suzuki_logo_2.svg.png"
-          alt="steve"
-        />
-      )
-    }
-    if (brandId === 'BMW-Motorrad') {
-      return (
-        <>
-          <img
-            width="150"
-            height="150"
-            className="mx-auto"
-            src={BMW}
-            alt="steve"
-          />
-        </>
-      )
-    }
-    if (brandId === 'Harley-Davidson') {
-      return (
-        <img
-          className="mx-auto "
-          src={Harley}
-          alt="steve"
-        />
-      )
-    }
-    if (brandId === 'Triumph') {
-      return (
-        <img
-          src="https://media.triumphmotorcycles.co.uk/image/upload/f_auto/q_auto/sitecoremedialibrary/media-library/misc/misc-images/logo.svg?la=en-US"
-          alt="Triumph Logo">
-        </img>
-      )
-    }
-    if (brandId === 'Indian') {
-      return (
-        <p>Coming Soon</p>
-      )
-    }
-    if (brandId === 'KTM') {
-      return (
-        <p>Coming Soon</p>
-      )
-    }
-    if (brandId === 'Yamaha') {
-      return (
-        <p>Coming Soon</p>
-      )
-    }
-    else if (brandId === 'Switch') {
-      return (
-        <img
-          width="300"
-          height="166"
-          alt="steve"
-          className="mx-auto"
-          src="https://searchlogovector.com/wp-content/uploads/2020/04/sea-doo-logo-vector.png"
-        />
-      )
-    }
-
-
-  }
-  return (
-    <div>
-      <nav
-        className={cn("sm:flex hidden  flex-col items-center gap-4 px-2 sm:py-4 mt-10",)}    >
-        {mergedFinanceList && mergedFinanceList.map((item, index) => {
-          const brand = item.brand
-          return (
-            <Tooltip key={index}>
-              <TooltipTrigger asChild>
-                <Link
-                  to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 "
-                >
-                  <Button variant="ghost" className="bg-transparent    hover:bg-transparent">
-                    <div className="h-5 w-5 flex justify-center">
-                      <FaMotorcycle className='text-foreground text-3xl mx-auto' />
-
-                    </div>
-                  </Button>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right">  <div className='m-4'>
-                <p>{item.year} {item.brand}</p>
-                <p>{item.model.toString().slice(0, 28)}</p>
-                <Badge className="">{item.customerState}</Badge>
-              </div></TooltipContent>
-            </Tooltip>
-
-          );
-        })}
-      </nav >
-      <nav
-        className={cn(" sm:hidden flex  items-center gap-4 px-2 sm:py-4 mt-[10px] ml-[50px] ",)}    >
-        {mergedFinanceList && mergedFinanceList.map((item, index) => {
-          const brand = item.brand
-          return (
-            <Tooltip key={index}>
-              <TooltipTrigger asChild>
-                <Link
-                  to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 "
-                >
-                  <Button variant="ghost" className="bg-transparent    hover:bg-transparent">
-                    <div className="h-5 w-5 flex justify-center">
-                      <FaMotorcycle className='text-foreground text-3xl mx-auto' />
-
-                    </div>
-                  </Button>
-                </Link>
-              </TooltipTrigger>
-              <TooltipContent side="right">  <div className='m-4'>
-                <p>{item.year} {item.brand}</p>
-                <p>{item.model.toString().slice(0, 28)}</p>
-                <Badge className="">{item.customerState}</Badge>
-              </div></TooltipContent>
-            </Tooltip>
-
-
-          );
-        })}
-      </nav >
-    </div>
-
-  )
-}
-
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: second },
   { rel: "stylesheet", href: timeline },
   { rel: "icon", type: "image/svg", href: '/user.svg' },
 ];
-
-
 type ValuePiece = Date | null;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];
@@ -10835,47 +11275,971 @@ const FinanceIdContext = React.createContext();
 
 
 /**
+if (clientFile && Array.isArray(clientFile.Finance)) {
+  const filteredFinances = clientFile.Finance.filter(finance => {
+    return String(finance.id) === String(financeId);
+  });
+
+  // console.log('Filtered finances:', filteredFinances);
+
+  // Check if we have any matches
+  if (filteredFinances.length > 0) {
+    const selectedFinance = filteredFinances[0];
+    //   console.log('Selected finance:', selectedFinance);
+    finance = selectedFinance
+  } else {
+    //  console.log('No matching finance found.');
+  }
+} else {
+  // console.log('Client file or Finance array not found or is not an array.');
+}
+*/
+
+
+/**  const [formData, setFormData] = useState({
+    referral: mergedFinanceList.referral || "off",
+    visited: mergedFinanceList.visited || "off",
+    bookedApt: mergedFinanceList.bookedApt || "off",
+    aptShowed: mergedFinanceList.aptShowed || "off",
+    aptNoShowed: mergedFinanceList.aptNoShowed || "off",
+    testDrive: mergedFinanceList.testDrive || "off",
+    metService: mergedFinanceList.metService || "off",
+    metManager: mergedFinanceList.metManager || "off",
+    metParts: mergedFinanceList.metParts || "off",
+    sold: mergedFinanceList.sold || "off",
+    depositMade: mergedFinanceList.depositMade || "off",
+    refund: mergedFinanceList.refund || "off",
+    turnOver: mergedFinanceList.turnOver || "off",
+    financeApp: mergedFinanceList.financeApp || "off",
+    approved: mergedFinanceList.approved || "off",
+    signed: mergedFinanceList.signed || "off",
+    pickUpSet: mergedFinanceList.pickUpSet || "off",
+    demoed: mergedFinanceList.demoed || "off",
+    seenTrade: mergedFinanceList.seenTrade || "off",
+    delivered: mergedFinanceList.delivered || "off",
+    setPickUpDate: mergedFinanceList.setPickUpDate || "off",
+  }); */
+/**
    *
-   * if (brand === 'Triumph') {
-    const modelData = await getDataTriumph(finance);
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
-  }
-
-
-   * if (brand === 'BMW-Motorrad') {
-    const bmwMoto = await getLatestBMWOptions(financeId)
-    const bmwMoto2 = await getLatestBMWOptions2(financeId)
-    const modelData = await getDataBmwMoto(finance);
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
-  }
    *
-   *  if (brand === 'Kawasaki') {
-    const modelData = await getDataKawasaki(finance);
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
-  }
+   * /** <Separator className="my-4" />
+                        <div className="grid gap-3">
+                          <div className="font-semibold">Payment</div>
+                          <dl className="grid gap-3">
+
+                            <div className="flex flex-col" >
+                              <div className='flex items-center justify-center text-foreground'>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className={cn('mr-2 bg-primary', paymentType === 'Visa' ? "bg-secondary" : "", "")}
+                                  onClick={() => setPaymentType('Visa')}
+                                >
+                                  <CreditCard className="h-4 w-4 text-foreground" />
+                                  <p className="">Visa</p>
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className={cn('mr-2 bg-primary', paymentType === 'Mastercard' ? "bg-secondary" : "", "")}
+                                  onClick={() => setPaymentType('Mastercard')}
+                                >
+                                  <CreditCard className="h-4 w-4 text-foreground" />
+                                  <p className="">Mastercard</p>
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setPaymentType('Debit')}
+                                  className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
+                                >
+                                  <CreditCard className="h-4 w-4 text-foreground" />
+                                  <p className="">Debit</p>
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setPaymentType('Cheque')}
+                                  className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
+                                >
+                                  <CreditCard className="h-4 w-4 text-foreground" />
+                                  <p className="">Cheque</p>
+                                </Button>
+                              </div>
+                              <div className='flex items-center justify-center text-foreground mt-2'>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className={cn('mr-2 bg-primary', paymentType === 'Cash' ? "bg-secondary" : "", "")}
+                                  onClick={() => setPaymentType('Cash')}
+                                >
+                                  <BanknoteIcon className="h-4 w-4 text-foreground" />
+                                  <p className="">Cash</p>
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className={cn(' bg-primary mr-2', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
+                                  onClick={() => setPaymentType('Online Transaction')}
+                                >
+                                  <PanelTop className="h-4 w-4 text-foreground" />
+                                  <p className="">Online Transaction</p>
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className={cn(' bg-primary', paymentType === 'E-Transfer' ? "bg-secondary" : "", "")}
+                                  onClick={() => setPaymentType('E-Transfer')}
+                                >
+                                  <PanelTop className="h-4 w-4 text-foreground" />
+                                  <p className="">E-Transfer</p>
+                                </Button>
+                              </div>
+                            </div>
+                          </dl>
+                        </div>
+                        <div className="grid gap-3">
+                          <ul className="grid gap-3">
+                            {showOrder.Payments && showOrder.Payments.map((result, index) => (
+                              <li className="flex items-center justify-between mt-4" key={index}                    >
+                                <span className="text-muted-foreground">{result.paymentType}</span>
+                                <span>${result.amountPaid}</span>
+                              </li>
+                            ))}
+                            <li className="flex items-center justify-between mt-4 mb-4">
+                              <span className="text-muted-foreground">Balance</span>
+                              <span>${parseFloat(pacTotal) - parseFloat(totalAmountPaid)}</span>
+
+                            </li>
+                            {parseFloat(pacTotal) - parseFloat(totalAmountPaid) === 0 && (
+                              <input type='hidden' name='status' value='Fulfilled' />
+                            )}
+                            {paymentType !== '' && (
+                              <>
+                                <li className="flex items-center justify-between">
+                                  <span className="text-muted-foreground">Amount to be charged on {paymentType}</span>
+                                  <payment.Form method="post" ref={formRef} >
+                                    <input type='hidden' name='accOrderId' value={showOrder.id} />
+                                    <input type='hidden' name='paymentType' value={paymentType} />
+                                    <input type='hidden' name='intent' value='createPayment' />
+                                    <input type='hidden' name='total' value={pacTotal} />
+                                    <div className="relative ml-auto flex-1 md:grow-0 ">
+                                      <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                      <Input
+                                        name='amountPaid'
+                                        className='text-right pr-9'
+                                        value={input}
+                                        onChange={(event) => setInput(event.target.value)}
+                                      />
+                                      <Button
+                                        type="submit"
+                                        size="icon"
+                                        onClick={() => {
+                                          toast.success(`Payment rendered!`)
+                                        }}
+                                        disabled={inputLength === 0}
+                                        className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                                        <PaperPlaneIcon className="h-4 w-4" />
+                                        <span className="sr-only">Cash</span>
+                                      </Button>
+                                    </div>
+                                  </payment.Form>
+                                </li>
+                              </>
+                            )}
+
+                          </ul>
+                        </div> */
 
 
-   * if (brand === 'Switch') {
-    const modelData = await getDataByModel(finance);
-    const manOptions = await getLatestOptionsManitou(email)
-    return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
-  }
+/// const parts = await prisma.part.findMany()
+// .then(userConversations => userConversations.forEach(u => console.log(u.friendlyName)))
+// const UploadedDocs = await prisma.uploadDocs.findMany({ where: { financeId: finance?.id } });
+// ------------------ nav
+// const financeEmail = await prisma.finance.findFirst({ where: { id: financeId }, });
+// const financeList = await prisma.finance.findMany({ where: { email: financeEmail?.email }, });
+// const financeIds = financeList.map(financeRecord => financeRecord.id);
+//const mergedFinanceList = await getClientListMerged(financeIds);
 
 
-   *   if (brand === 'Manitou') {
-    const modelData = await getDataByModelManitou(finance);
-    const manOptions = await getLatestOptionsManitou(email)
-    return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, clientfileId, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown })
-  }
-   *  if (brand === 'Harley-Davidson') {
-    const modelData = await getDataHarley(finance);
-    const apptFinance2 = await getAllFinanceApts2(financeId)
-    const aptFinance3 = await getAllFinanceApts(financeId)
-    return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }));
-  }
-      if (brand === 'Indian' || brand === 'Can-Am' || brand === 'Sea-Doo' || brand === 'Ski-Doo' || brand === 'Suzuki' || brand === 'Spyder' || brand === 'Can-Am-SXS') {
-  const modelData = await getDataByModel(finance)
-  return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
+/* const orders = await prisma.workOrder.findMany({
+ where: { financeId: finance.id },
+ select: {
+   workOrderId: true,
+   unit: true,
+   mileage: true,
+   vin: true,
+   tag: true,
+   motor: true,
+   budget: true,
+   totalLabour: true,
+   totalParts: true,
+   subTotal: true,
+   total: true,
+   writer: true,
+   userEmail: true,
+   tech: true,
+   notes: true,
+   customerSig: true,
+   status: true,
+   location: true,
+   quoted: true,
+   paid: true,
+   remaining: true,
+   FinanceUnitId: true,
+   financeId: true,
+   clientfileId: true,
+   createdAt: true,
+   updatedAt: true,
+   Clientfile: {
+     select: {
+       id: true,
+       financeId: true,
+       firstName: true,
+       lastName: true,
+       name: true,
+       email: true,
+       phone: true,
+       address: true,
+       city: true,
+       postal: true,
+       province: true,
+       dl: true,
+       typeOfContact: true,
+       timeToContact: true,
+       conversationId: true,
+       billingAddress: true,
+       Finance: {
+         select: {
+           financeManager: true,
+           userEmail: true,
+           userName: true,
+           financeManagerName: true,
+           //: true,
+           email: true,
+           firstName: true,
+           lastName: true,
+           phone: true,
+           name: true,
+           address: true,
+           city: true,
+           postal: true,
+           province: true,
+           dl: true,
+           typeOfContact: true,
+           timeToContact: true,
+           dob: true,
+           //: true,
+           othTax: true,
+           optionsTotal: true,
+           lienPayout: true,
+           leadNote: true,
+           sendToFinanceNow: true,
+           dealNumber: true,
+           iRate: true,
+           months: true,
+           discount: true,
+           total: true,
+           onTax: true,
+           on60: true,
+           biweekly: true,
+           weekly: true,
+           weeklyOth: true,
+           biweekOth: true,
+           oth60: true,
+           weeklyqc: true,
+           biweeklyqc: true,
+           qc60: true,
+           deposit: true,
+           biweeklNatWOptions: true,
+           weeklylNatWOptions: true,
+           nat60WOptions: true,
+           weeklyOthWOptions: true,
+           biweekOthWOptions: true,
+           oth60WOptions: true,
+           biweeklNat: true,
+           weeklylNat: true,
+           nat60: true,
+           qcTax: true,
+           otherTax: true,
+           totalWithOptions: true,
+           otherTaxWithOptions: true,
+           desiredPayments: true,
+           admin: true,
+           commodity: true,
+           pdi: true,
+           discountPer: true,
+           userLoanProt: true,
+           userTireandRim: true,
+           userGap: true,
+           userExtWarr: true,
+           userServicespkg: true,
+           deliveryCharge: true,
+           vinE: true,
+           lifeDisability: true,
+           rustProofing: true,
+           userOther: true,
+           //: true,
+           referral: true,
+           visited: true,
+           bookedApt: true,
+           aptShowed: true,
+           aptNoShowed: true,
+           testDrive: true,
+           metService: true,
+           metManager: true,
+           metParts: true,
+           sold: true,
+           depositMade: true,
+           refund: true,
+           turnOver: true,
+           financeApp: true,
+           approved: true,
+           signed: true,
+           pickUpSet: true,
+           demoed: true,
+           delivered: true,
+           lastContact: true,
+           status: true,
+           customerState: true,
+           result: true,
+           timesContacted: true,
+           nextAppointment: true,
+           followUpDay: true,
+           deliveryDate: true,
+           deliveredDate: true,
+           notes: true,
+           visits: true,
+           progress: true,
+           metSalesperson: true,
+           metFinance: true,
+           financeApplication: true,
+           pickUpDate: true,
+           pickUpTime: true,
+           depositTakenDate: true,
+           docsSigned: true,
+           tradeRepairs: true,
+           seenTrade: true,
+           lastNote: true,
+           applicationDone: true,
+           licensingSent: true,
+           liceningDone: true,
+           refunded: true,
+           cancelled: true,
+           lost: true,
+           dLCopy: true,
+           insCopy: true,
+           testDrForm: true,
+           voidChq: true,
+           loanOther: true,
+           signBill: true,
+           ucda: true,
+           tradeInsp: true,
+           customerWS: true,
+           otherDocs: true,
+           urgentFinanceNote: true,
+           funded: true,
+           leadSource: true,
+           financeDeptProductsTotal: true,
+           bank: true,
+           loanNumber: true,
+           idVerified: true,
+           dealerCommission: true,
+           financeCommission: true,
+           salesCommission: true,
+           firstPayment: true,
+           loanMaturity: true,
+           quoted: true,
+           //: true,
+           InPerson: true,
+           Phone: true,
+           SMS: true,
+           Email: true,
+           Other: true,
+           //------: true,
+           //: true,
+           paintPrem: true,
+           licensing: true,
+           stockNum: true,
+           options: true,
+           accessories: true,
+           freight: true,
+           labour: true,
+           year: true,
+           brand: true,
+           mileage: true,
+           model: true,
+           model1: true,
+           color: true,
+           modelCode: true,
+           msrp: true,
+           trim: true,
+           vin: true,
+           bikeStatus: true,
+           invId: true,
+           //: true,
+           tradeValue: true,
+           tradeDesc: true,
+           tradeColor: true,
+           tradeYear: true,
+           tradeMake: true,
+           tradeVin: true,
+           tradeTrim: true,
+           tradeMileage: true,
+           tradeLocation: true,
+           lien: true,
+           //: true,
+           id: true,
+           activixId: true,
+           theRealActId: true,
+           createdAt: true,
+           updatedAt: true,
+           FinanceUnit: {
+             select: {
+               paintPrem: true,
+               licensing: true,
+               stockNum: true,
+               options: true,
+               accessories: true,
+               freight: true,
+               labour: true,
+               year: true,
+               brand: true,
+               mileage: true,
+               model: true,
+               model1: true,
+               color: true,
+               modelCode: true,
+               msrp: true,
+               trim: true,
+               vin: true,
+               bikeStatus: true,
+               invId: true,
+               location: true,
+               id: true,
+               createdAt: true,
+               updatedAt: true,
+               financeId: true,
+             }
+           },
+         }
+       },
+       ServiceUnit: {
+         select: {
+           id: true,
+           createdAt: true,
+           updatedAt: true,
+           price: true,
+           brand: true,
+           model: true,
+           color: true,
+           accessories: true,
+           options: true,
+           year: true,
+           vin: true,
+           trim: true,
+           mileage: true,
+           location: true,
+           condition: true,
+           repairs: true,
+           stockNum: true,
+           licensing: true,
+           tradeEval: true,
+         }
+       },
+     },
+   },
+   AccOrders: {
+     select: {
+       id: true,
+       createdAt: true,
+       updatedAt: true,
+       userEmail: true,
+       userName: true,
+       dept: true,
+       total: true,
+       discount: true,
+       discPer: true,
+       paid: true,
+       paidDate: true,
+       status: true,
+       workOrderId: true,
+       note: true,
+       financeId: true,
+       clientfileId: true,
+       AccessoriesOnOrders: {
+         select: {
+           id: true,
+           quantity: true,
+           accOrderId: true,
+           status: true,
+           orderNumber: true,
+           OrderInvId: true,
+           accessoryId: true,
+           accessory: {
+             select: {
+               id: true,
+               createdAt: true,
+               updatedAt: true,
+               partNumber: true,
+               brand: true,
+               name: true,
+               price: true,
+               cost: true,
+               quantity: true,
+               description: true,
+               category: true,
+               subCategory: true,
+               onOrder: true,
+               distributer: true,
+               location: true,
+             },
+           },
+         },
+       },
+     }
+   },
+   Payments: {
+     select: {
+       id: true,
+       createdAt: true,
+       paymentType: true,
+       amountPaid: true,
+       cardNum: true,
+       receiptId: true,
+       financeId: true,
+       userEmail: true,
+       accOrderId: true,
+     },
+   },
+   ServicesOnWorkOrders: {
+     select: {
+       id: true,
+       createdAt: true,
+       updatedAt: true,
+       quantity: true,
+       status: true,
+       workOrderId: true,
+       serviceId: true,
+       hr: true,
+       service: {
+         select: {
+           id: true,
+           createdAt: true,
+           updatedAt: true,
+           description: true,
+           estHr: true,
+           service: true,
+           price: true,
+         }
+       }
+     }
+   }
+ },
+});
+
+*
+*   const [tradeToggled, setTradeToggled] = useState(true);
+const [financeInfo, setFinanceInfo] = useState(true);
+useEffect(() => {
+if (mergedFinanceList.tradeDesc === null || mergedFinanceList.tradeDesc === undefined || mergedFinanceList.tradeDesc === '') {
+  setTradeToggled(false);
+}
+if (mergedFinanceList.approved !== 'on' || mergedFinanceList.turnOver !== 'on' || mergedFinanceList.financeApp !== 'on') {
+  setFinanceInfo(false);
+}
+}, []);
+
+
+*   let NewListForStatus = [
+
+{ name: 'lastContact', value: mergedFinanceList.lastContact === '1969-12-31 19:00' || mergedFinanceList.lastContact === null ? 'TBD' : formatDate(mergedFinanceList.lastContact), label: 'Last Contacted', },
+{ name: 'nextAppointment', value: null, label: 'Next Appt', },
+{
+  name: 'deliveryDate',
+  value: mergedFinanceList.customerState !== 'depositMade' ?
+    (<>
+
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant={"outline"}
+            className={cn(
+              "w-[240px] justify-start text-left font-normal",
+              !date && "text-muted-foreground"
+            )}
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {date ? format(date, "PPP") : <span>Pick a date</span>}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="single"
+            selected={date}
+            onSelect={setDate}
+            initialFocus
+          />
+        </PopoverContent>
+      </Popover>
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            variant={"outline"}
+            className={cn(
+              "w-[240px] px-4 text-foreground mx-auto  h-[55px] font-normal bg-transparent hover:bg-transparent hover:text-primary hover:border-primary",
+              !date && " text-foreground"
+            )}
+          >
+            <div className=' text-foreground  mx-auto flex justify-center  '>
+              <ClockIcon className="mr-2 size-8 " />
+              {currentTime ? (time) : <span>Pick a Time</span>}
+            </div>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[240px] bg-white p-0 text-black" align="start">
+          <div className='align-center my-3 flex justify-center   '>
+            <Select name='pickHour' value={hour} onValueChange={setHour}>
+              <SelectTrigger className="m-3 w-auto bg-transparent hover:bg-transparent hover:text-primary hover:border-primary" >
+                <SelectValue placeholder={hour} defaultValue={hour} />
+              </SelectTrigger>
+              <SelectContent className='bg-white text-black' >
+                <SelectGroup>
+                  <SelectLabel>Hour</SelectLabel>
+                  <SelectItem value="09">09</SelectItem>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="11">11</SelectItem>
+                  <SelectItem value="12">12</SelectItem>
+                  <SelectItem value="13">13</SelectItem>
+                  <SelectItem value="14">14</SelectItem>
+                  <SelectItem value="15">15</SelectItem>
+                  <SelectItem value="16">16</SelectItem>
+                  <SelectItem value="17">17</SelectItem>
+                  <SelectItem value="18">18</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Select name='pickMin' value={min} onValueChange={setMin} >
+              <SelectTrigger className="m-3 w-auto" >
+                <SelectValue placeholder={min} defaultValue={min} />
+              </SelectTrigger>
+              <SelectContent className='bg-white text-black'  >
+                <SelectGroup>
+                  <SelectLabel>Minute</SelectLabel>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="20">20</SelectItem>
+                  <SelectItem value="30">30</SelectItem>
+                  <SelectItem value="40">40</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </PopoverContent>
+      </Popover>
+
+
+    </>
+
+    ) :
+    mergedFinanceList.customerState !== 'pickUpSet' ?
+      (<Badge onClick={() => setPickUpCalendar(PickUpCalendar === 'yes' ? 'no' : 'yes')} className="cursor-pointer transform transform:translate-x-1 bg-green-600">{result}</Badge>) :
+      mergedFinanceList.customerState !== 'delivered' ?
+        (<Badge className="bg-green-600">Delivered</Badge>) :
+        (<Badge onClick={() => setPickUpCalendar(PickUpCalendar === 'yes' ? 'no' : 'yes')} className="cursor-pointer transform transform:translate-x-1 bg-green-600">{result}</Badge>
+        ),
+
+  label: 'Pick Up Date',
+}
+
+]
+
+* function SidebarNav({ mergedFinanceList, finance }) {
+function ImageSelectNav(brandId) {
+if (brandId === 'Can-Am') {
+  return (
+    <img
+      width="300"
+      height="166"
+      className="mx-auto"
+      src="https://logovectorseek.com/wp-content/uploads/2020/09/can-am-logo-vector.png"
+      alt="srry"
+    />
+  )
+}
+if (brandId === 'Can-Am-SXS') {
+  return (
+    <img
+      width="300"
+      height="166"
+      className="mx-auto"
+      src="https://logovectorseek.com/wp-content/uploads/2020/09/can-am-logo-vector.png"
+      alt="srry"
+    />
+  )
+}
+else if (brandId === 'Ski-Doo') {
+  return (
+    <img
+      width="300"
+      height="166"
+      className="mx-auto"
+      src="https://searchlogovector.com/wp-content/uploads/2020/04/ski-doo-logo-vector.png"
+      alt="steve"
+    />
+  )
+}
+else if (brandId === 'Sea-Doo') {
+  return (
+    <img
+      width="300"
+      height="166"
+      alt="steve"
+      className="mx-auto"
+      src="https://searchlogovector.com/wp-content/uploads/2020/04/sea-doo-logo-vector.png"
+    />
+  )
+}
+else if (brandId === 'Kawasaki') {
+  return (
+    <div className="flex justify-center mt-5">
+      <svg
+        className="mx-auto flex-1 mr-6"
+        width="260.5398px"
+        height="70.7005px"
+        viewBox="0 0 130.5398 35.7005"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlnsXlink="http://www.w3.org/1999/xlink">
+        <defs>
+          <polygon
+            id="path-1"
+            points="0 0 130.5398 0 130.5398 35.7005 0 35.7005"></polygon>
+        </defs>
+        <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+          <g transform="translate(-45.000000, -20.000000)">
+            <g transform="translate(45.000000, 20.000000)">
+              <mask fill="white">
+                <use xlinkHref="#path-1"></use>
+              </mask>
+              <g id="Clip-2"></g>
+              <path
+                d="M123.178,35.5435 L124.588,35.5435 L124.588,28.1385 L123.178,28.1385 L123.178,35.5435 Z M120.1,35.5435 L121.51,35.5435 L121.51,28.1385 L120.1,28.1385 L120.1,35.5435 Z M117.377,32.8915 C117.377,31.8545 116.89,31.1535 116.029,31.1535 C115.161,31.1535 114.684,31.8545 114.684,32.8915 C114.684,33.9295 115.161,34.6215 116.029,34.6215 C116.89,34.6215 117.377,33.9295 117.377,32.8915 L117.377,32.8915 Z M118.808,32.8915 C118.808,34.4775 117.678,35.6985 116.029,35.6985 C114.382,35.6985 113.253,34.4775 113.253,32.8915 C113.253,31.3075 114.382,30.0855 116.029,30.0855 C117.678,30.0855 118.808,31.3075 118.808,32.8915 L118.808,32.8915 Z M110.736,30.4465 C110.736,29.7725 110.302,29.4435 109.557,29.4435 L107.981,29.4435 L107.981,31.4625 L109.535,31.4625 C110.323,31.4625 110.736,31.0995 110.736,30.4465 L110.736,30.4465 Z M110.809,32.5085 L112.662,35.5435 L110.923,35.5435 L109.203,32.6845 L107.981,32.6845 L107.981,35.5435 L106.427,35.5435 L106.427,28.1385 L109.68,28.1385 C110.539,28.1385 111.182,28.3845 111.616,28.8315 C112.031,29.2555 112.281,29.7725 112.281,30.4375 C112.281,31.4715 111.742,32.1985 110.809,32.5085 L110.809,32.5085 Z M100.814,32.3135 C100.057,32.1565 99.352,32.1165 99.352,31.6605 C99.352,31.2765 99.715,31.0695 100.263,31.0695 C100.863,31.0695 101.226,31.2765 101.288,31.8455 L102.562,31.8455 C102.46,30.7775 101.682,30.0845 100.284,30.0845 C99.072,30.0845 98.118,30.6325 98.118,31.7835 C98.118,32.9445 99.05,33.2025 100.004,33.3905 C100.731,33.5345 101.401,33.5875 101.401,34.0955 C101.401,34.4675 101.051,34.7045 100.429,34.7045 C99.798,34.7045 99.361,34.4365 99.269,33.8245 L97.964,33.8245 C98.047,34.9535 98.906,35.6985 100.451,35.6985 C101.777,35.6985 102.688,35.0585 102.688,33.9905 C102.688,32.7475 101.703,32.4975 100.814,32.3135 L100.814,32.3135 Z M95.518,32.3115 C95.478,31.6375 95.031,31.1735 94.391,31.1735 C93.643,31.1735 93.28,31.6195 93.157,32.3115 L95.518,32.3115 Z M96.989,33.2845 L93.135,33.2845 C93.24,34.1035 93.696,34.6105 94.493,34.6105 C95.044,34.6105 95.364,34.3615 95.518,33.9585 L96.906,33.9585 C96.709,34.9005 95.872,35.7005 94.505,35.7005 C92.742,35.7005 91.747,34.4665 91.747,32.8815 C91.747,31.3085 92.815,30.0835 94.37,30.0835 C96.078,30.0835 96.989,31.3885 96.989,33.2845 L96.989,33.2845 Z M88.88,30.0855 C88.206,30.0855 87.646,30.4365 87.282,31.0175 L87.261,31.0175 C87.002,30.4575 86.464,30.0855 85.793,30.0855 C85.057,30.0855 84.537,30.4575 84.248,30.9445 L84.217,30.9445 L84.217,30.2295 L82.86,30.2295 L82.86,35.5455 L84.269,35.5455 L84.269,32.4585 C84.269,31.7535 84.651,31.2975 85.22,31.2975 C85.74,31.2975 86.039,31.6085 86.039,32.2085 L86.039,35.5455 L87.449,35.5455 L87.449,32.4585 C87.449,31.7535 87.812,31.2975 88.403,31.2975 C88.92,31.2975 89.221,31.6085 89.221,32.2085 L89.221,35.5455 L90.628,35.5455 L90.628,31.9685 C90.628,30.8085 89.997,30.0855 88.88,30.0855 L88.88,30.0855 Z M79.804,35.5435 L81.214,35.5435 L81.214,30.2285 L79.804,30.2285 L79.804,35.5435 Z M79.804,29.4035 L81.214,29.4035 L81.214,28.1385 L79.804,28.1385 L79.804,29.4035 Z M72.78,29.4025 L75.008,29.4025 L75.008,35.5425 L76.51,35.5425 L76.51,29.4025 L78.735,29.4025 L78.735,28.1375 L72.78,28.1375 L72.78,29.4025 Z M68.191,32.9235 C68.191,31.9075 67.859,31.2245 66.957,31.2245 C66.181,31.2245 65.787,31.9075 65.787,32.8925 C65.787,33.9175 66.19,34.5175 66.917,34.5175 C67.757,34.5175 68.191,33.8955 68.191,32.9235 L68.191,32.9235 Z M68.16,28.1375 L69.57,28.1375 L69.57,35.5455 L68.212,35.5455 L68.212,34.8495 L68.191,34.8495 C67.88,35.3575 67.351,35.6995 66.606,35.6995 C65.27,35.6995 64.359,34.6125 64.359,32.8925 C64.359,31.2335 65.301,30.0855 66.627,30.0855 C67.372,30.0855 67.84,30.4275 68.129,30.8735 L68.16,30.8735 L68.16,28.1375 Z M62.027,32.8915 C62.027,31.8545 61.541,31.1535 60.679,31.1535 C59.811,31.1535 59.334,31.8545 59.334,32.8915 C59.334,33.9295 59.811,34.6215 60.679,34.6215 C61.541,34.6215 62.027,33.9295 62.027,32.8915 L62.027,32.8915 Z M63.458,32.8915 C63.458,34.4775 62.328,35.6985 60.679,35.6985 C59.032,35.6985 57.903,34.4775 57.903,32.8915 C57.903,31.3075 59.032,30.0855 60.679,30.0855 C62.328,30.0855 63.458,31.3075 63.458,32.8915 L63.458,32.8915 Z M55.594,32.8915 C55.594,31.8545 55.107,31.1535 54.246,31.1535 C53.378,31.1535 52.901,31.8545 52.901,32.8915 C52.901,33.9295 53.378,34.6215 54.246,34.6215 C55.107,34.6215 55.594,33.9295 55.594,32.8915 L55.594,32.8915 Z M57.025,32.8915 C57.025,34.4775 55.895,35.6985 54.246,35.6985 C52.599,35.6985 51.47,34.4775 51.47,32.8915 C51.47,31.3075 52.599,30.0855 54.246,30.0855 C55.895,30.0855 57.025,31.3075 57.025,32.8915 L57.025,32.8915 Z M47.245,32.7675 L49.027,32.7675 L49.027,32.8105 C49.027,33.6265 48.27,34.4875 47.119,34.4875 C45.845,34.4875 45.048,33.3805 45.048,31.8655 C45.048,30.3945 45.743,29.2345 47.14,29.2345 C48.094,29.2345 48.642,29.7545 48.809,30.4685 L50.28,30.4685 C50.04,29.0185 48.975,27.9945 47.11,27.9945 C46.116,27.9945 45.328,28.2925 44.727,28.8435 C43.949,29.5575 43.515,30.6345 43.515,31.8655 C43.515,32.9855 43.866,33.9365 44.478,34.6235 C45.091,35.2945 45.959,35.7005 47.079,35.7005 C47.959,35.7005 48.652,35.3985 49.159,34.5495 L49.181,34.5495 L49.233,35.5435 L50.363,35.5435 L50.363,31.6075 L47.245,31.6075 L47.245,32.7675 Z M38.748,32.3115 C38.708,31.6375 38.262,31.1735 37.622,31.1735 C36.874,31.1735 36.511,31.6195 36.388,32.3115 L38.748,32.3115 Z M40.219,33.2845 L36.366,33.2845 C36.471,34.1035 36.926,34.6105 37.723,34.6105 C38.274,34.6105 38.594,34.3615 38.748,33.9585 L40.136,33.9585 C39.939,34.9005 39.102,35.7005 37.736,35.7005 C35.972,35.7005 34.978,34.4665 34.978,32.8815 C34.978,31.3085 36.046,30.0835 37.6,30.0835 C39.308,30.0835 40.219,31.3885 40.219,33.2845 L40.219,33.2845 Z M32.048,30.0835 C31.322,30.0835 30.888,30.3635 30.503,30.9235 L30.472,30.9235 L30.472,28.1385 L29.063,28.1385 L29.063,35.5435 L30.472,35.5435 L30.472,32.5305 C30.472,31.8045 30.928,31.3085 31.549,31.3085 C32.14,31.3085 32.473,31.7115 32.473,32.2815 L32.473,35.5435 L33.879,35.5435 L33.879,32.0755 C33.879,30.9145 33.144,30.0835 32.048,30.0835 L32.048,30.0835 Z M26.693,33.9785 L26.693,31.1625 L27.604,31.1625 L27.604,30.2295 L26.693,30.2295 L26.693,28.5715 L25.314,28.5715 L25.314,30.2295 L24.578,30.2295 L24.578,31.1625 L25.314,31.1625 L25.314,34.2805 C25.314,35.2835 26.071,35.5545 26.754,35.5545 C27.314,35.5545 27.634,35.5325 27.634,35.5325 L27.634,34.4985 C27.634,34.4985 27.394,34.5075 27.219,34.5075 C26.908,34.5075 26.693,34.3725 26.693,33.9785 L26.693,33.9785 Z M19.804,33.9785 L19.804,31.1625 L20.715,31.1625 L20.715,30.2295 L19.804,30.2295 L19.804,28.5715 L18.425,28.5715 L18.425,30.2295 L17.689,30.2295 L17.689,31.1625 L18.425,31.1625 L18.425,34.2805 C18.425,35.2835 19.182,35.5545 19.865,35.5545 C20.425,35.5545 20.746,35.5325 20.746,35.5325 L20.746,34.4985 C20.746,34.4985 20.505,34.5075 20.33,34.5075 C20.019,34.5075 19.804,34.3725 19.804,33.9785 L19.804,33.9785 Z M15.388,32.3115 C15.348,31.6375 14.902,31.1735 14.262,31.1735 C13.514,31.1735 13.151,31.6195 13.028,32.3115 L15.388,32.3115 Z M16.859,33.2845 L13.006,33.2845 C13.111,34.1035 13.566,34.6105 14.363,34.6105 C14.914,34.6105 15.234,34.3615 15.388,33.9585 L16.776,33.9585 C16.579,34.9005 15.742,35.7005 14.376,35.7005 C12.612,35.7005 11.618,34.4665 11.618,32.8815 C11.618,31.3085 12.686,30.0835 14.24,30.0835 C15.948,30.0835 16.859,31.3885 16.859,33.2845 L16.859,33.2845 Z M7.454,34.2565 L10.935,34.2565 L10.935,35.5095 L5.952,35.5095 L5.952,28.1045 L7.454,28.1045 L7.454,34.2565 Z"
+                id="Fill-1"
+                fill="#000000"
+                mask="url(#mask-2)"></path>
+              <path
+                d="M68.8788,13.291 C68.8788,13.291 66.6518,14.025 65.4028,14.567 C64.1568,15.111 64.7798,16.059 64.7798,16.059 C64.7798,16.059 65.4028,17.092 66.8958,16.712 C69.0418,16.143 68.8788,13.291 68.8788,13.291 L68.8788,13.291 Z M74.2588,9.412 C74.6108,14.54 73.8988,18.026 75.4238,20.023 L69.7458,20.023 C69.7458,20.023 69.2278,19.343 68.9578,18.692 C68.9578,18.692 67.4408,20.483 64.1838,20.483 C60.9278,20.483 59.0938,18.584 59.0938,16.143 C59.0938,13.7 60.5078,11.907 65.0508,11.094 C66.8688,10.769 68.4968,10.552 68.5778,9.547 C68.6598,8.542 67.2748,8.353 66.9228,8.353 C66.9228,8.353 64.8478,8.201 64.8258,10.506 L59.5278,10.506 C59.5278,10.506 58.4008,4.663 67.3018,4.663 C67.3018,4.663 73.9068,4.281 74.2588,9.412 L74.2588,9.412 Z M29.4108,13.291 C29.4108,13.291 27.1808,14.025 25.9348,14.567 C24.6858,15.111 25.3118,16.059 25.3118,16.059 C25.3118,16.059 25.9348,17.092 27.4278,16.712 C29.5728,16.143 29.4108,13.291 29.4108,13.291 L29.4108,13.291 Z M34.7928,9.412 C35.1428,14.54 34.4298,18.026 35.9558,20.023 L30.2778,20.023 C30.2778,20.023 29.7628,19.343 29.4888,18.692 C29.4888,18.692 27.9718,20.483 24.7158,20.483 C21.4598,20.483 19.6258,18.584 19.6258,16.143 C19.6258,13.7 21.0398,11.907 25.5798,11.094 C27.4008,10.769 29.0288,10.552 29.1128,9.547 C29.1908,8.542 27.8098,8.353 27.4548,8.353 C27.4548,8.353 25.3798,8.201 25.3578,10.506 L20.0568,10.506 C20.0568,10.506 18.9328,4.663 27.8338,4.663 C27.8338,4.663 34.4388,4.281 34.7928,9.412 L34.7928,9.412 Z M19.7558,0.003 L12.1578,0.003 L6.0758,6.101 L6.0758,0.003 L-0.0002,0.003 L-0.0002,20.019 L6.0738,20.019 L6.0738,14.095 L7.6468,12.469 L12.4258,20.016 L20.3328,20.016 L11.9978,7.981 L19.7558,0.003 Z M123.1618,5.542 L116.2948,5.542 L113.3338,8.982 L113.3338,0 L107.5048,0 L107.5048,20.019 L113.3338,20.019 L113.3338,15.942 L114.0848,15.137 L117.2868,20.013 L124.0158,20.013 L118.0858,10.941 L123.1618,5.542 Z M124.7098,20.016 L130.5398,20.016 L130.5398,5.548 L124.7098,5.548 L124.7098,20.016 Z M124.7098,4.079 L130.5398,4.079 L130.5398,0.005 L124.7098,0.005 L124.7098,4.079 Z M100.4808,13.291 C100.4808,13.291 98.2538,14.025 97.0048,14.567 C95.7558,15.111 96.3818,16.059 96.3818,16.059 C96.3818,16.059 97.0048,17.092 98.4978,16.712 C100.6428,16.143 100.4808,13.291 100.4808,13.291 L100.4808,13.291 Z M105.8628,9.412 C106.2148,14.54 105.5028,18.026 107.0278,20.023 L101.3468,20.023 C101.3468,20.023 100.8328,19.343 100.5618,18.692 C100.5618,18.692 99.0418,20.483 95.7828,20.483 C92.5298,20.483 90.6928,18.584 90.6928,16.143 C90.6928,13.7 92.1128,11.907 96.6548,11.094 C98.4698,10.769 100.0988,10.552 100.1818,9.547 C100.2608,8.542 98.8788,8.353 98.5248,8.353 C98.5248,8.353 96.4498,8.201 96.4308,10.506 L91.1288,10.506 C91.1288,10.506 90.0018,4.663 98.9068,4.663 C98.9068,4.663 105.5078,4.281 105.8628,9.412 L105.8628,9.412 Z M84.4268,10.568 C81.3338,10.162 80.9028,9.894 80.9028,9.217 C80.9028,8.699 81.5228,8.293 82.6368,8.293 C83.7498,8.293 84.4028,9.111 84.5108,9.897 L89.5818,9.897 C89.5818,7.182 87.7918,4.858 82.5008,4.858 C75.0378,4.858 75.4738,9.81 75.4738,9.81 C75.4738,13.854 80.3318,14.269 82.6118,14.61 C84.6468,14.938 84.5898,16.051 84.5898,16.051 C84.5898,16.051 84.6468,17.14 82.7988,17.14 C80.4938,17.14 80.5208,14.959 80.5208,14.959 L75.2008,14.959 C75.2008,19.573 79.2988,20.719 82.7478,20.719 C86.1908,20.719 90.0188,19.527 90.0188,15.864 C90.0188,12.199 87.9808,11.302 84.4268,10.568 L84.4268,10.568 Z M59.7548,5.55 L55.3048,20.013 L49.6348,20.013 L47.3538,12.932 L45.4008,20.013 L39.5138,20.013 L34.5188,5.55 L40.5708,5.55 L42.6318,12.336 L44.7638,5.55 L49.8238,5.55 L51.7778,12.336 L54.0308,5.55 L59.7548,5.55 Z"
+                id="Fill-3"
+                fill="#E60012"
+                mask="url(#mask-2)"></path>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+  )
+}
+else if (brandId === 'Manitou') {
+  return (
+    <img
+      width="599"
+      height="105"
+      alt=""
+      className="mx-auto"
+      src="data:image/jpg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCACNAyADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD5Hooor1SAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKK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567QSPfJ6mnUUUtBBQuQu3ouMbVwB9MADiiigAb51YHpu3beCpORyQR6Dp7CiiigAooopgFC/IqgdN27bwFByeQAPQ9Pc0UUgBvnDA/XPBBPqQR+lFFFGgBRRRTAKKKKAF9cEj0GThfm9iCePek59f5/40UUnZu47g3zdTkY4XGADRRRTEFFFFACYPy852jjOcA+2CCPzpefX+f+NFFToO4p5ORnd03Mc4H0pKKKLIQUUUVQBR9TkHqpHFFFIA578k9WJOf50rMS27cxbOdzMSfrk55pKKNB3CiiimIKKKKACl4+XqNp4OeQPbGAPypKKnQBCob7+H9MqOOmMZzjHOPqaWiiq6WAKKKKACiiigAooooAF+XocDHK4yCaOfX+f+NFFToANll2kkjnPJxzuPGSSOW9e1FFFCSQBRRRVAFFFFABRRRQAgXbu2jaWBywxkk9c4AzS8+v8/8AGiiloO4c+v8AP/Gjn1/n/jRRU8qC4c+v8/8AGjn1/n/jRRRyoLhz6/z/AMaOfX+f+NFFHKguHPr/AD/xob5upyMcLjABoop6CCiiiqAKKKKADn1/n/jRz6/z/wAaKKjlQ7hz6/z/AMaOfX+f+NFFHKguHPr/AD/xo59f5/40UUcqC4c+v8/8aOfX+f8AjRRRyoLgfmBDfMvQKQPlH1IOaKKKaSQhNvy4ySMbccAY9OnT2paKKa0HcKKKKYgooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwCiiii4BRRRRcAoooouAUUUUXAKKKKLgFFFFFwP//Z"
+    >
+    </img>
+  )
+}
+if (brandId === 'Spyder') {
+  return (
+    <img
+      width="300"
+      height="166"
+      className="mx-auto"
+      src="https://logovectorseek.com/wp-content/uploads/2020/09/can-am-logo-vector.png"
+      alt="srry"
+    />
+  )
+}
+if (brandId === 'Suzuki') {
+  return (
+    <img
+      width="250"
+      height="150"
+      className="mx-auto"
+      src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/Suzuki_logo_2.svg/500px-Suzuki_logo_2.svg.png"
+      alt="steve"
+    />
+  )
+}
+if (brandId === 'BMW-Motorrad') {
+  return (
+    <>
+      <img
+        width="150"
+        height="150"
+        className="mx-auto"
+        src={BMW}
+        alt="steve"
+      />
+    </>
+  )
+}
+if (brandId === 'Harley-Davidson') {
+  return (
+    <img
+      className="mx-auto "
+      src={Harley}
+      alt="steve"
+    />
+  )
+}
+if (brandId === 'Triumph') {
+  return (
+    <img
+      src="https://media.triumphmotorcycles.co.uk/image/upload/f_auto/q_auto/sitecoremedialibrary/media-library/misc/misc-images/logo.svg?la=en-US"
+      alt="Triumph Logo">
+    </img>
+  )
+}
+if (brandId === 'Indian') {
+  return (
+    <p>Coming Soon</p>
+  )
+}
+if (brandId === 'KTM') {
+  return (
+    <p>Coming Soon</p>
+  )
+}
+if (brandId === 'Yamaha') {
+  return (
+    <p>Coming Soon</p>
+  )
+}
+else if (brandId === 'Switch') {
+  return (
+    <img
+      width="300"
+      height="166"
+      alt="steve"
+      className="mx-auto"
+      src="https://searchlogovector.com/wp-content/uploads/2020/04/sea-doo-logo-vector.png"
+    />
+  )
+}
+
 
 }
-    */
+return (
+<div>
+  <nav
+    className={cn("sm:flex hidden  flex-col items-center gap-4 px-2 sm:py-4 mt-10",)}    >
+    {mergedFinanceList && mergedFinanceList.map((item, index) => {
+      const brand = item.brand
+      return (
+        <Tooltip key={index}>
+          <TooltipTrigger asChild>
+            <Link
+              to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 "
+            >
+              <Button variant="ghost" className="bg-transparent    hover:bg-transparent">
+                <div className="h-5 w-5 flex justify-center">
+                  <FaMotorcycle className='text-foreground text-3xl mx-auto' />
+
+                </div>
+              </Button>
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="right">  <div className='m-4'>
+            <p>{item.year} {item.brand}</p>
+            <p>{item.model.toString().slice(0, 28)}</p>
+            <Badge className="">{item.customerState}</Badge>
+          </div></TooltipContent>
+        </Tooltip>
+
+      );
+    })}
+  </nav >
+  <nav
+    className={cn(" sm:hidden flex  items-center gap-4 px-2 sm:py-4 mt-[10px] ml-[50px] ",)}    >
+    {mergedFinanceList && mergedFinanceList.map((item, index) => {
+      const brand = item.brand
+      return (
+        <Tooltip key={index}>
+          <TooltipTrigger asChild>
+            <Link
+              to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 "
+            >
+              <Button variant="ghost" className="bg-transparent    hover:bg-transparent">
+                <div className="h-5 w-5 flex justify-center">
+                  <FaMotorcycle className='text-foreground text-3xl mx-auto' />
+
+                </div>
+              </Button>
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="right">  <div className='m-4'>
+            <p>{item.year} {item.brand}</p>
+            <p>{item.model.toString().slice(0, 28)}</p>
+            <Badge className="">{item.customerState}</Badge>
+          </div></TooltipContent>
+        </Tooltip>
+
+
+      );
+    })}
+  </nav >
+</div>
+
+)
+}
+
+
+* if (brand === 'Triumph') {
+const modelData = await getDataTriumph(finance);
+return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
+}
+
+
+* if (brand === 'BMW-Motorrad') {
+const bmwMoto = await getLatestBMWOptions(financeId)
+const bmwMoto2 = await getLatestBMWOptions2(financeId)
+const modelData = await getDataBmwMoto(finance);
+return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, bmwMoto, bmwMoto2, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
+}
+*
+*  if (brand === 'Kawasaki') {
+const modelData = await getDataKawasaki(finance);
+return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
+}
+
+
+* if (brand === 'Switch') {
+const modelData = await getDataByModel(finance);
+const manOptions = await getLatestOptionsManitou(email)
+return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
+}
+
+
+*   if (brand === 'Manitou') {
+const modelData = await getDataByModelManitou(finance);
+const manOptions = await getLatestOptionsManitou(email)
+return json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, clientfileId, modelData, finance, deFees, manOptions, sliderWidth, user, financeNotes, userList, parts, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown })
+}
+*  if (brand === 'Harley-Davidson') {
+const modelData = await getDataHarley(finance);
+const apptFinance2 = await getAllFinanceApts2(financeId)
+const aptFinance3 = await getAllFinanceApts(financeId)
+return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, parts, clientfileId, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }));
+}
+  if (brand === 'Indian' || brand === 'Can-Am' || brand === 'Sea-Doo' || brand === 'Ski-Doo' || brand === 'Suzuki' || brand === 'Spyder' || brand === 'Can-Am-SXS') {
+const modelData = await getDataByModel(finance)
+return await cors(request, json({ ok: true, mergedFinanceList, getTemplates, SetClient66Cookie, Coms, merged, aptFinance3, docs: docTemplates, clientFile, modelData, finance, deFees, sliderWidth, user, financeNotes, financeId, userList, parts, clientUnit, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers }))
+
+}
+*/

@@ -319,7 +319,7 @@ const PaymentCalculatorEmail = ({ finance, user, modelData, formData }) => {
         <Hr style={hr} />
         <Text style={headingTwo}>Total</Text>
         <ul style={list}>
-          {discount > 0 && (
+          {discount && discount > 0 && (
             <li className='flex items-center content-center justify-between' style={listItems}>
               <Text style={leftColumn}> Total Before Discount</Text>
               <Text style={rightColumn}>${beforeDiscount}</Text>
@@ -594,7 +594,6 @@ const PaymentCalculatorEmail = ({ finance, user, modelData, formData }) => {
 
 
               <Hr style={hr} />
-              <Text style={headingTwo}>Standard Terms</Text>
               <Text style={headingTwo}>{finance.desiredPayments}</Text>
               <ul style={list}>
                 {finance.desiredPayments === 'Standard Payment' ?
@@ -733,7 +732,7 @@ const PaymentCalculatorEmail = ({ finance, user, modelData, formData }) => {
                 )}
 
                 {finance.tradeDesc && finance.tradeDesc.length > 0 && (
-                  <Text style={{ fontWeight: 'bold' }}>Trade Information</Text>
+                  <Text style={headingTwo}>Trade Information</Text>
                 )}
                 {finance.tradeYear && finance.tradeYear.length > 0 && (
                   <li className='flex items-center content-center justify-between' style={listItems}>

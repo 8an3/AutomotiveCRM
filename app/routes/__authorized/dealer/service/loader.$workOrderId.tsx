@@ -400,7 +400,17 @@ export async function loader({ request, params }: LoaderFunction) {
           color: true,
           location: true,
         }
-      }
+      },
+      WorkOrderNotes: {
+        select: {
+          id: true,
+          body: true,
+          userName: true,
+          userEmail: true,
+          workOrderId: true,
+          createdAt: true,
+        }
+      },
     },
   });
   return orderFirst

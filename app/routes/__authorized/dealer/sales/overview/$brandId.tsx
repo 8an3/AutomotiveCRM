@@ -140,7 +140,7 @@ import EmailPreview, { TemplatePreviewThree, TemplatePreviewTwo, TemplatePreview
 import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons";
 import { Calendar } from "~/components/ui/calendar";
 import { format } from "date-fns";
-import emitter from '~/routes/__authorized/dealer/emitter';
+import emitter from '~/routes/__authorized/dealer/features/addOn/emitter';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -174,9 +174,505 @@ export async function loader({ params, request }: DataFunctionArgs) {
 
   const userId = user?.id;
   let finance = await prisma.finance.findFirst({
-    orderBy: {
-      createdAt: "desc",
-    },
+    orderBy: { createdAt: "desc", },
+    select: {
+      financeManager: true,
+      userEmail: true,
+      userName: true,
+      financeManagerName: true,
+      //: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      phone: true,
+      name: true,
+      address: true,
+      city: true,
+      postal: true,
+      province: true,
+      dl: true,
+      typeOfContact: true,
+      timeToContact: true,
+      dob: true,
+      //: true,
+      othTax: true,
+      optionsTotal: true,
+      lienPayout: true,
+      leadNote: true,
+      sendToFinanceNow: true,
+      dealNumber: true,
+      iRate: true,
+      months: true,
+      discount: true,
+      total: true,
+      onTax: true,
+      on60: true,
+      biweekly: true,
+      weekly: true,
+      weeklyOth: true,
+      biweekOth: true,
+      oth60: true,
+      weeklyqc: true,
+      biweeklyqc: true,
+      qc60: true,
+      deposit: true,
+      biweeklNatWOptions: true,
+      weeklylNatWOptions: true,
+      nat60WOptions: true,
+      weeklyOthWOptions: true,
+      biweekOthWOptions: true,
+      oth60WOptions: true,
+      biweeklNat: true,
+      weeklylNat: true,
+      nat60: true,
+      qcTax: true,
+      otherTax: true,
+      totalWithOptions: true,
+      otherTaxWithOptions: true,
+      desiredPayments: true,
+      admin: true,
+      commodity: true,
+      pdi: true,
+      discountPer: true,
+      userLoanProt: true,
+      userTireandRim: true,
+      userGap: true,
+      userExtWarr: true,
+      userServicespkg: true,
+      deliveryCharge: true,
+      vinE: true,
+      lifeDisability: true,
+      rustProofing: true,
+      userOther: true,
+      //: true,
+      referral: true,
+      visited: true,
+      bookedApt: true,
+      aptShowed: true,
+      aptNoShowed: true,
+      testDrive: true,
+      metService: true,
+      metManager: true,
+      metParts: true,
+      sold: true,
+      depositMade: true,
+      refund: true,
+      turnOver: true,
+      financeApp: true,
+      approved: true,
+      signed: true,
+      pickUpSet: true,
+      demoed: true,
+      lastContact: true,
+      status: true,
+      customerState: true,
+      result: true,
+      timesContacted: true,
+      nextAppointment: true,
+      followUpDay: true,
+      deliveryDate: true,
+      delivered: true,
+      deliveredDate: true,
+      notes: true,
+      visits: true,
+      progress: true,
+      metSalesperson: true,
+      metFinance: true,
+      financeApplication: true,
+      pickUpDate: true,
+      pickUpTime: true,
+      depositTakenDate: true,
+      docsSigned: true,
+      tradeRepairs: true,
+      seenTrade: true,
+      lastNote: true,
+      applicationDone: true,
+      licensingSent: true,
+      liceningDone: true,
+      refunded: true,
+      cancelled: true,
+      lost: true,
+      dLCopy: true,
+      insCopy: true,
+      testDrForm: true,
+      voidChq: true,
+      loanOther: true,
+      signBill: true,
+      ucda: true,
+      tradeInsp: true,
+      customerWS: true,
+      otherDocs: true,
+      urgentFinanceNote: true,
+      funded: true,
+      leadSource: true,
+      financeDeptProductsTotal: true,
+      bank: true,
+      loanNumber: true,
+      idVerified: true,
+      dealerCommission: true,
+      financeCommission: true,
+      salesCommission: true,
+      firstPayment: true,
+      loanMaturity: true,
+      quoted: true,
+      //: true,
+      InPerson: true,
+      Phone: true,
+      SMS: true,
+      Email: true,
+      Other: true,
+      //------: true,
+      //: true,
+      paintPrem: true,
+      licensing: true,
+      stockNum: true,
+      options: true,
+      accessories: true,
+      freight: true,
+      labour: true,
+      year: true,
+      brand: true,
+      mileage: true,
+      model: true,
+      model1: true,
+      color: true,
+      modelCode: true,
+      msrp: true,
+      trim: true,
+      vin: true,
+      bikeStatus: true,
+      invId: true,
+      motor: true,
+      tag: true,
+      //: true,
+      tradeValue: true,
+      tradeDesc: true,
+      tradeColor: true,
+      tradeYear: true,
+      tradeMake: true,
+      tradeVin: true,
+      tradeTrim: true,
+      tradeMileage: true,
+      tradeLocation: true,
+      lien: true,
+      //: true,
+      id: true,
+      activixId: true,
+      theRealActId: true,
+      createdAt: true,
+      updatedAt: true,
+      clientfileId: true,
+      inventoryMotorcycleId: true,
+      InventoryMotorcycle: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          packageNumber: true,
+          packagePrice: true,
+          stockNumber: true,
+          type: true,
+          class: true,
+          year: true,
+          make: true,
+          model: true,
+          modelName: true,
+          submodel: true,
+          subSubmodel: true,
+          price: true,
+          exteriorColor: true,
+          mileage: true,
+          consignment: true,
+          onOrder: true,
+          expectedOn: true,
+          status: true,
+          orderStatus: true,
+          hdcFONumber: true,
+          hdmcFONumber: true,
+          vin: true,
+          age: true,
+          floorPlanDueDate: true,
+          location: true,
+          stocked: true,
+          stockedDate: true,
+          isNew: true,
+          actualCost: true,
+          mfgSerialNumber: true,
+          engineNumber: true,
+          plates: true,
+          keyNumber: true,
+          length: true,
+          width: true,
+          engine: true,
+          fuelType: true,
+          power: true,
+          chassisNumber: true,
+          chassisYear: true,
+          chassisMake: true,
+          chassisModel: true,
+          chassisType: true,
+          registrationState: true,
+          registrationExpiry: true,
+          grossWeight: true,
+          netWeight: true,
+          insuranceCompany: true,
+          policyNumber: true,
+          insuranceAgent: true,
+          insuranceStartDate: true,
+          insuranceEndDate: true,
+          sold: true,
+          freight: true,
+          financeId: true,
+        }
+      },
+      //  financeStorage
+      clientApts: {
+        select: {
+          id: true,
+          financeId: true,
+          title: true,
+          start: true,
+          end: true,
+          contactMethod: true,
+          completed: true,
+          apptStatus: true,
+          apptType: true,
+          note: true,
+          unit: true,
+          brand: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          phone: true,
+          address: true,
+          userEmail: true,
+          userId: true,
+          description: true,
+          userName: true,
+          attachments: true,
+          direction: true,
+          resultOfcall: true,
+          resourceId: true,
+          activixId: true,
+          activixNoteId: true,
+          createdAt: true,
+          updatedAt: true,
+          isPublished: true,
+        }
+      },
+      Comm: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          userEmail: true,
+          type: true,
+          body: true,
+          subject: true,
+          userName: true,
+          direction: true,
+          result: true,
+          financeId: true,
+        }
+      },
+      //FinanceDeptProducts
+      FinanceUnit: {
+        select: {
+          paintPrem: true,
+          licensing: true,
+          stockNum: true,
+          options: true,
+          accessories: true,
+          freight: true,
+          labour: true,
+          year: true,
+          brand: true,
+          mileage: true,
+          model: true,
+          model1: true,
+          color: true,
+          modelCode: true,
+          msrp: true,
+          trim: true,
+          vin: true,
+          bikeStatus: true,
+          invId: true,
+          location: true,
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          financeId: true,
+
+          // Finance
+          //WorkOrders
+        }
+      },
+      FinanceTradeUnit: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          financeId: true,
+          price: true,
+          brand: true,
+          model: true,
+          color: true,
+          accessories: true,
+          options: true,
+          year: true,
+          vin: true,
+          trim: true,
+          mileage: true,
+          location: true,
+          condition: true,
+          repairs: true,
+          stockNum: true,
+          licensing: true,
+          tradeEval: true,
+        }
+      },
+      AccOrders: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          userEmail: true,
+          userName: true,
+          dept: true,
+          sellingDept: true,
+          total: true,
+          discount: true,
+          discPer: true,
+          paid: true,
+          paidDate: true,
+          status: true,
+          workOrderId: true,
+          note: true,
+          financeId: true,
+          clientfileId: true,
+
+          // AccessoriesOnOrders
+          //Payments
+
+          // WorkOrder
+          //Finance
+          //AccHandoff
+          //Clientfile
+        }
+      },
+      WorkOrders: {
+        select: {
+          workOrderId: true,
+          unit: true,
+          mileage: true,
+          vin: true,
+          tag: true,
+          motor: true,
+          color: true,
+          budget: true,
+          waiter: true,
+          totalLabour: true,
+          totalParts: true,
+          subTotal: true,
+          total: true,
+          writer: true,
+          userEmail: true,
+          tech: true,
+          discDollar: true,
+          discPer: true,
+          techEmail: true,
+          notes: true,
+          customerSig: true,
+          status: true,
+          location: true,
+          quoted: true,
+          paid: true,
+          remaining: true,
+          FinanceUnitId: true,
+          ServiceUnitId: true,
+          financeId: true,
+          clientfileId: true,
+          note: true,
+          closedAt: true,
+          createdAt: true,
+          updatedAt: true,
+
+          // FinanceUnit
+          //onDelete
+          //ServiceUnit
+          //AccOrders
+          //Finance
+          //onDelete
+          //ServicesOnWorkOrders
+          //Payments
+          //WorkOrderApts
+          //WorkOrderClockEntries
+        }
+      },
+      Payments: {
+        select: {
+          id: true,
+          createdAt: true,
+          paymentType: true,
+          cardType: true,
+          amountPaid: true,
+          cardNum: true,
+          receiptId: true,
+          financeId: true,
+          userEmail: true,
+          accOrderId: true,
+          workOrderId: true,
+
+          // AccOrder
+          //Finance
+          //WorkOrder
+        }
+      },
+      FinanceNote: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          body: true,
+          userEmail: true,
+          userName: true,
+          clientfileId: true,
+          financeId: true,
+        }
+      },
+      Clientfile: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          financeId: true,
+          userId: true,
+          firstName: true,
+          lastName: true,
+          name: true,
+          email: true,
+          phone: true,
+          address: true,
+          city: true,
+          postal: true,
+          province: true,
+          dl: true,
+          typeOfContact: true,
+          timeToContact: true,
+          conversationId: true,
+          billingAddress: true,
+          dob: true,
+
+          // AccOrder
+          //Finance
+          //WorkOrder
+          //ServiceUnit
+        }
+      },
+      //  finManOptions
+      //bmwMotoOptions
+      //FinCanOptions
+    }
   });
   let newLook = false;
   // const brandId = params.brandId;
@@ -369,12 +865,16 @@ export function Overview({ outletSize }) {
   let bmwTotal = 0;
   let totalSum = 0;
 
+
+
+  const modelCode = !finance.modelCode ? 'No Model Code' : finance.modelCode
+
   const initial = {
     userLabour: parseInt(deFees.userLabour) || 0,
     accessories: finance.accessories ? parseFloat(finance.accessories) : 0,
     labour: parseInt(finance.labour) || 0,
     lien: parseInt(finance.lien) || 0,
-    msrp: parseInt(modelData.msrp) || 0,
+    msrp: parseInt(finance.msrp ? finance.msrp : modelData.msrp) || 0,
     financeId: finance.id,
     userDemo: parseFloat(deFees.userDemo) || 0,
     userGovern: parseFloat(deFees.userGovern) || 0,
@@ -394,10 +894,13 @@ export function Overview({ outletSize }) {
     lifeDisability: parseInt(deFees.lifeDisability) || 0,
     deliveryCharge: parseInt(finance.deliveryCharge) || 0,
     brand: finance.brand,
-    paintPrem: parseInt(modelData.paintPrem) || 0,
-    modelCode: modelData.modelCode || null,
-    model: modelData.model,
-    color: modelData.color,
+
+    paintPrem: 0, //parseInt(finance.paintPrem && finance.paintPrem > 0 ? finance.paintPrem : modelData.paintPrem && modelData.paintPrem > 0 ? modelData.paintPrem : 0),
+
+    modelCode: 0, //modelCode,
+
+    model: finance.model,
+    color: finance.color,
     stockNum: finance.stockNum,
     trade: parseInt(finance.tradeValue) || 0,
     freight: parseInt(deFees.userFreight) || 0,
@@ -1961,7 +2464,7 @@ export function Overview({ outletSize }) {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="   w-[200px] rounded-md bg-background text-foreground border-border"                >
-                  <DropdownMenuItem onClick={() => setOpenTemplate(true)} className=" w-[100%] cursor-pointer rounded-md  text-foreground hover:bg-muted/50">
+                  <DropdownMenuItem disabled onClick={() => setOpenTemplate(true)} className=" w-[100%] cursor-pointer rounded-md  text-foreground hover:bg-muted/50">
                     Inspect Templated Emails
                   </DropdownMenuItem>
                   <a
@@ -1982,7 +2485,7 @@ export function Overview({ outletSize }) {
                       Client File
                     </DropdownMenuItem>
                   </a>
-                  <DropdownMenuItem className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50" onClick={() => PrintReceipt(toReceipt)}>
+                  <DropdownMenuItem disabled className=" w-[100%] cursor-pointer rounded-md border-border bg-muted-background text-foreground hover:bg-muted/50" onClick={() => PrintReceipt(toReceipt)}>
                     Print Receipt
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -3631,9 +4134,9 @@ export function Overview({ outletSize }) {
               <Input type="hidden" defaultValue={formData.discountPer} name="discountPer" />
               <Input type="hidden" defaultValue={total} name="total" />
               <Input type="hidden" defaultValue={msrp} name="msrp" />
-              <Input type="hidden" defaultValue={modelData.color} name="color" />
-              <Input type="hidden" defaultValue={modelData.model1} name="model1" />
-              <Input type="hidden" defaultValue={modelData.modelCode} name="modelCode" />
+              <Input type="hidden" defaultValue={formData.color} name="color" />
+              <Input type="hidden" defaultValue={formData.model1} name="model1" />
+              <Input type="hidden" defaultValue={formData.modelCode} name="modelCode" />
               <Input type="hidden" defaultValue={onTax} name="onTax" />
               <Input type="hidden" defaultValue={qcTax} name="qcTax" />
               <Input type="hidden" defaultValue={otherTax} name="otherTax" />

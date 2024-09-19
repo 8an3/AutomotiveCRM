@@ -1,5 +1,5 @@
 import type { LinksFunction, LoaderArgs, } from "@remix-run/node";
-import { Input, Separator, PopoverTrigger, PopoverContent, Popover, TextArea, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "~/components/ui/index";
+import { Input, Separator, PopoverTrigger, PopoverContent, Popover, TextArea, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, SelectGroup, SelectLabel, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "~/components/ui/index";
 import * as React from "react"
 import { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, sortingFns, } from "@tanstack/react-table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu"
@@ -543,8 +543,33 @@ export default function UnitInv() {
     const [selectedColumn, setSelectedColumn] = useState("");
     const [selectedGlobal, setSelectedGlobal] = useState(false);
     const [todayfilterBy, setTodayfilterBy] = useState(null);
+    const [models, setModels] = useState([]);
+    const [modelName, setModelName] = useState([]);
+    const [subModel, setSubModel] = useState([]);
 
+    useEffect(() => {
+        async function fetchModels() {
+            const uniqueModels = [
+                ...new Set(tableData.map(wishList => wishList.model))
+            ];
+            const uniqueModels2 = [
+                ...new Set(tableData.map(wishList => wishList.modelName))
+            ];
+            const uniqueModels3 = [
+                ...new Set(tableData.map(wishList => wishList.subModel))
+            ];
+            setModels(uniqueModels);
+            setModelName(uniqueModels2);
+            setSubModel(uniqueModels3);
+        }
+
+        fetchModels();
+    }, []);
     const [date, setDate] = useState<Date>()
+
+    const handleDropdownChange = (value) => {
+        setGlobalFilter(value);
+    };
 
     const newDate = new Date()
     const [datefloorPlanDueDate, setDatefloorPlanDueDate] = useState<Date>()
@@ -675,13 +700,21 @@ export default function UnitInv() {
             accessorKey: "model",
             header: ({ column }) => {
                 return (
-                    <Button
-                        variant="ghost"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        Model
-                        <CaretSortIcon className="ml-2 h-4 w-4" />
-                    </Button>
+                    <Select name='model' onValueChange={handleDropdownChange}>
+                        <SelectTrigger className="  bg-background text-foreground border border-border">
+                            <SelectValue placeholder='Model' />
+                        </SelectTrigger>
+                        <SelectContent className='bg-background text-foreground border border-border '>
+                            <SelectGroup>
+                                <SelectLabel>Models</SelectLabel>
+                                {models.map((model, index) => (
+                                    <SelectItem key={index} value={model} className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                                        {model}
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 )
             },
 
@@ -692,13 +725,21 @@ export default function UnitInv() {
             accessorKey: "modelName",
             header: ({ column }) => {
                 return (
-                    <Button
-                        variant="ghost"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        Model Name
-                        <CaretSortIcon className="ml-2 h-4 w-4" />
-                    </Button>
+                    <Select name='model' onValueChange={handleDropdownChange}>
+                        <SelectTrigger className="  bg-background text-foreground border border-border">
+                            <SelectValue placeholder='Model Name' />
+                        </SelectTrigger>
+                        <SelectContent className='bg-background text-foreground border border-border '>
+                            <SelectGroup>
+                                <SelectLabel>Models</SelectLabel>
+                                {modelName.map((model, index) => (
+                                    <SelectItem key={index} value={model} className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                                        {model}
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 )
             },
 
@@ -709,13 +750,21 @@ export default function UnitInv() {
             accessorKey: "submodel",
             header: ({ column }) => {
                 return (
-                    <Button
-                        variant="ghost"
-                        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                    >
-                        Sub Model
-                        <CaretSortIcon className="ml-2 h-4 w-4" />
-                    </Button>
+                    <Select name='model' onValueChange={handleDropdownChange}>
+                        <SelectTrigger className="  bg-background text-foreground border border-border">
+                            <SelectValue placeholder='Sub Model' />
+                        </SelectTrigger>
+                        <SelectContent className='bg-background text-foreground border border-border '>
+                            <SelectGroup>
+                                <SelectLabel>Models</SelectLabel>
+                                {subModel.map((model, index) => (
+                                    <SelectItem key={index} value={model} className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline">
+                                        {model}
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 )
             },
 

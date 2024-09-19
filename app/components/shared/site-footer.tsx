@@ -6,7 +6,7 @@ import {
   ThemeToggleDropdownMenu,
 } from "~/components";
 import { configMeta, configSite } from "~/configs";
-import { Github, Twitter } from "~/icons";
+import { Github, Twitter } from "~/images/icons";
 import { cn, getCurrentYear } from "~/utils";
 
 interface Props {

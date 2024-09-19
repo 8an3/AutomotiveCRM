@@ -2123,29 +2123,32 @@ export default function Shight() {
     console.log(item.attribute, "attribute");
   }
 
-  function ClientAttributes({ items, ...props }) {
+  function ClientAttributes({ className, items, ...props }) {
     return (
       <nav
-        className={cn("flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1")}
+        className={cn(
+          "flex space-x-2 flex-row max-w-[95%] lg:flex-col lg:space-x-0 lg:space-y-1 mt-3",
+          className
+        )}
         {...props}
       >
         {items.map((item) => (
           <Button
-            key={item.title}
+            key={item.subject}
             variant="ghost"
             className={cn(
               buttonVariants({ variant: "ghost" }),
-              attribute === item.title
-              ? "bg-[#232324] hover:bg-muted/50 w-[90%]     "
-              : "hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  ",
-            "justify-start w-[90%] "
+              attribute === item.subject
+                ? "bg-[#232324] hover:bg-muted/50 w-[90%]     "
+                : "hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  ",
+              "justify-start w-[90%] "
             )}
             value={item.attribute}
             onClick={() => {
               AttributeClick(item);
             }}
           >
-            {item.title}
+            {item.subject}
           </Button>
         ))}
       </nav>
@@ -3201,7 +3204,7 @@ export default function Shight() {
                                       </Button>
                                     </HoverCardTrigger>
                                     <HoverCardContent className="h-auto max-h-[350px] w-80  overflow-y-auto border border-border bg-background text-foreground">
-                                        <ClientAttributes items={clientAtr} />
+                                      <ClientAttributes items={clientAtr} />
                                     </HoverCardContent>
                                   </HoverCard>
                                   <HoverCard>
@@ -3211,7 +3214,7 @@ export default function Shight() {
                                       </Button>
                                     </HoverCardTrigger>
                                     <HoverCardContent className="h-auto max-h-[350px] w-80  overflow-y-auto border border-border bg-background">
-                                        <ClientAttributes                                          items={wantedVehAttr}                                        />
+                                      <ClientAttributes items={wantedVehAttr} />
                                     </HoverCardContent>
                                   </HoverCard>
                                   <HoverCard>
@@ -3221,9 +3224,9 @@ export default function Shight() {
                                       </Button>
                                     </HoverCardTrigger>
                                     <HoverCardContent className="h-auto max-h-[350px] w-80  overflow-y-auto border border-border bg-background">
-                                        <ClientAttributes                                          items={tradeVehAttr}                                        />
-                                   </HoverCardContent>
-                                                                     </HoverCard>
+                                      <ClientAttributes items={tradeVehAttr} />
+                                    </HoverCardContent>
+                                  </HoverCard>
                                   <HoverCard>
                                     <HoverCardTrigger asChild>
                                       <Button className="mx-2" variant="link">
@@ -3231,7 +3234,7 @@ export default function Shight() {
                                       </Button>
                                     </HoverCardTrigger>
                                     <HoverCardContent className="h-auto max-h-[350px] w-80  overflow-y-auto border border-border bg-background">
-                                        <ClientAttributes                                          items={salesPersonAttr}                                        />
+                                      <ClientAttributes items={salesPersonAttr} />
                                     </HoverCardContent>
                                   </HoverCard>
                                   <HoverCard>
@@ -3241,7 +3244,7 @@ export default function Shight() {
                                       </Button>
                                     </HoverCardTrigger>
                                     <HoverCardContent className="h-auto max-h-[350px] w-80  overflow-y-auto border border-border bg-background">
-                                        <ClientAttributes items={FandIAttr} />
+                                      <ClientAttributes items={FandIAttr} />
                                     </HoverCardContent>
                                   </HoverCard>
                                   <HoverCard>
@@ -3251,7 +3254,7 @@ export default function Shight() {
                                       </Button>
                                     </HoverCardTrigger>
                                     <HoverCardContent className="h-auto max-h-[350px] w-80  overflow-y-auto border border-border bg-background">
-                                        <ClientAttributes items={dealerInfo} />
+                                      <ClientAttributes items={dealerInfo} />
                                     </HoverCardContent>
                                   </HoverCard>
                                   <HoverCard>
@@ -3351,59 +3354,59 @@ export const wantedVehAttr = [
   { subject: "VIN", attribute: "${vin}" },
   { subject: "Color", attribute: "${color}" },
   { subject: "Balance", attribute: "${balance}" },
-  { subject: "packageNumber", attribute: "${packageNumber}" },
-  { subject: "packagePrice", attribute: "${packagePrice}" },
-  { subject: "stockNumber", attribute: "${stockNumber}" },
-  { subject: "type", attribute: "${type}" },
-  { subject: "class", attribute: "${class}" },
-  { subject: "year", attribute: "${year}" },
-  { subject: "make", attribute: "${make}" },
-  { subject: "model", attribute: "${model}" },
-  { subject: "modelName", attribute: "${modelName}" },
-  { subject: "submodel", attribute: "${submodel}" },
-  { subject: "subSubmodel", attribute: "${subSubmodel}" },
-  { subject: "price", attribute: "${price}" },
-  { subject: "exteriorColor", attribute: "${exteriorColor}" },
-  { subject: "mileage", attribute: "${mileage}" },
-  { subject: "consignment", attribute: "${consignment}" },
-  { subject: "onOrder", attribute: "${onOrder}" },
-  { subject: "expectedOn", attribute: "${expectedOn}" },
-  { subject: "status", attribute: "${status}" },
-  { subject: "orderStatus", attribute: "${orderStatus}" },
-  { subject: "hdcFONumber", attribute: "${hdcFONumber}" },
-  { subject: "hdmcFONumber", attribute: "${hdmcFONumber}" },
-  { subject: "vin", attribute: "${vin}" },
-  { subject: "age", attribute: "${age}" },
-  { subject: "floorPlanDueDate", attribute: "${floorPlanDueDate}" },
-  { subject: "location", attribute: "${location}" },
-  { subject: "stocked", attribute: "${stocked}" },
-  { subject: "stockedDate", attribute: "${stockedDate}" },
-  { subject: "isNew", attribute: "${isNew}" },
-  { subject: "actualCost", attribute: "${actualCost}" },
-  { subject: "mfgSerialNumber", attribute: "${mfgSerialNumber}" },
-  { subject: "engineNumber", attribute: "${engineNumber}" },
-  { subject: "plates", attribute: "${plates}" },
-  { subject: "keyNumber", attribute: "${keyNumber}" },
-  { subject: "length", attribute: "${length}" },
-  { subject: "width", attribute: "${width}" },
-  { subject: "engine", attribute: "${engine}" },
-  { subject: "fuelType", attribute: "${fuelType}" },
-  { subject: "power", attribute: "${power}" },
-  { subject: "chassisNumber", attribute: "${chassisNumber}" },
-  { subject: "chassisYear", attribute: "${chassisYear}" },
-  { subject: "chassisMake", attribute: "${chassisMake}" },
-  { subject: "chassisModel", attribute: "${chassisModel}" },
-  { subject: "chassisType", attribute: "${chassisType}" },
-  { subject: "registrationState", attribute: "${registrationState}" },
-  { subject: "registrationExpiry", attribute: "${registrationExpiry}" },
-  { subject: "grossWeight", attribute: "${grossWeight}" },
-  { subject: "netWeight", attribute: "${netWeight}" },
-  { subject: "insuranceCompany", attribute: "${insuranceCompany}" },
-  { subject: "policyNumber", attribute: "${policyNumber}" },
-  { subject: "insuranceAgent", attribute: "${insuranceAgent}" },
-  { subject: "insuranceStartDate", attribute: "${insuranceStartDate}" },
-  { subject: "insuranceEndDate", attribute: "${insuranceEndDate}" },
-  { subject: "sold", attribute: "${sold}" },
+  { subject: "Package Number", attribute: "${packageNumber}" },
+  { subject: "Package Price", attribute: "${packagePrice}" },
+  { subject: "Stock Number", attribute: "${stockNumber}" },
+  { subject: "Type", attribute: "${type}" },
+  { subject: "Class", attribute: "${class}" },
+  { subject: "Year", attribute: "${year}" },
+  { subject: "Make", attribute: "${make}" },
+  { subject: "Model", attribute: "${model}" },
+  { subject: "Model Name", attribute: "${modelName}" },
+  { subject: "Sub Model", attribute: "${submodel}" },
+  { subject: "Sub Sub Model", attribute: "${subSubmodel}" },
+  { subject: "Price", attribute: "${price}" },
+  { subject: "Exterior Color", attribute: "${exteriorColor}" },
+  { subject: "Mileage", attribute: "${mileage}" },
+  { subject: "Consignment", attribute: "${consignment}" },
+  { subject: "On Order", attribute: "${onOrder}" },
+  { subject: "Expected On", attribute: "${expectedOn}" },
+  { subject: "Status", attribute: "${status}" },
+  { subject: "Order Status", attribute: "${orderStatus}" },
+  { subject: "hdcFO Number", attribute: "${hdcFONumber}" },
+  { subject: "hdmcFO Number", attribute: "${hdmcFONumber}" },
+  { subject: "VIN", attribute: "${vin}" },
+  { subject: "Age", attribute: "${age}" },
+  { subject: "Floor Plan Due Date", attribute: "${floorPlanDueDate}" },
+  { subject: "Location", attribute: "${location}" },
+  { subject: "Stocked", attribute: "${stocked}" },
+  { subject: "Stocked Date", attribute: "${stockedDate}" },
+  { subject: "Is New", attribute: "${isNew}" },
+  { subject: "Actual Cost", attribute: "${actualCost}" },
+  { subject: "mfg Serial Number", attribute: "${mfgSerialNumber}" },
+  { subject: "Engine Number", attribute: "${engineNumber}" },
+  { subject: "Plates", attribute: "${plates}" },
+  { subject: "Key Number", attribute: "${keyNumber}" },
+  { subject: "Length", attribute: "${length}" },
+  { subject: "Width", attribute: "${width}" },
+  { subject: "Engine", attribute: "${engine}" },
+  { subject: "Fuel Type", attribute: "${fuelType}" },
+  { subject: "Power", attribute: "${power}" },
+  { subject: "Chassis Number", attribute: "${chassisNumber}" },
+  { subject: "Chassis Year", attribute: "${chassisYear}" },
+  { subject: "Chassis Make", attribute: "${chassisMake}" },
+  { subject: "Chassis Model", attribute: "${chassisModel}" },
+  { subject: "Chassis Type", attribute: "${chassisType}" },
+  { subject: "Registration State", attribute: "${registrationState}" },
+  { subject: "Registration Expiry", attribute: "${registrationExpiry}" },
+  { subject: "Gross Weight", attribute: "${grossWeight}" },
+  { subject: "Net Weight", attribute: "${netWeight}" },
+  { subject: "Insurance Company", attribute: "${insuranceCompany}" },
+  { subject: "Policy Number", attribute: "${policyNumber}" },
+  { subject: "Insurance Agent", attribute: "${insuranceAgent}" },
+  { subject: "Insurance Start Date", attribute: "${insuranceStartDate}" },
+  { subject: "Insurance End Date", attribute: "${insuranceEndDate}" },
+  { subject: "Sold", attribute: "${sold}" },
 ];
 export const tradeVehAttr = [
   { subject: "Year", attribute: "${tradeYear}" },
@@ -3431,113 +3434,113 @@ export const FandIAttr = [
   { subject: "Cell #", attribute: "${fAndICell}" },
 ];
 export const dealerInfo = [
-  { subject: "dealerName", attribute: "${dealerName}" },
-  { subject: "dealerAddress", attribute: "${dealerAddress}" },
-  { subject: "dealerCity", attribute: "${dealerCity}" },
-  { subject: "dealerProv", attribute: "${dealerProv}" },
-  { subject: "dealerPostal", attribute: "${dealerPostal}" },
-  { subject: "dealerPhone", attribute: "${dealerPhone}" },
-  { subject: "userLoanProt", attribute: "${userLoanProt}" },
-  { subject: "userTireandRim", attribute: "${userTireandRim}" },
-  { subject: "userGap", attribute: "${userGap}" },
-  { subject: "userExtWarr", attribute: "${userExtWarr}" },
-  { subject: "userServicespkg", attribute: "${userServicespkg}" },
-  { subject: "vinE", attribute: "${vinE}" },
-  { subject: "lifeDisability", attribute: "${lifeDisability}" },
-  { subject: "rustProofing", attribute: "${rustProofing}" },
-  { subject: "userLicensing", attribute: "${userLicensing}" },
-  { subject: "userFinance", attribute: "${userFinance}" },
-  { subject: "userDemo", attribute: "${userDemo}" },
-  { subject: "userGasOnDel", attribute: "${userGasOnDel}" },
-  { subject: "userOMVIC", attribute: "${userOMVIC}" },
-  { subject: "userOther", attribute: "${userOther}" },
-  { subject: "userTax", attribute: "${userTax}" },
-  { subject: "userAirTax", attribute: "${userAirTax}" },
-  { subject: "userTireTax", attribute: "${userTireTax}" },
-  { subject: "userGovern", attribute: "${userGovern}" },
-  { subject: "userPDI", attribute: "${userPDI}" },
-  { subject: "userLabour", attribute: "${userLabour}" },
-  { subject: "userMarketAdj", attribute: "${userMarketAdj}" },
-  { subject: "userCommodity", attribute: "${userCommodity}" },
-  { subject: "destinationCharge", attribute: "${destinationCharge}" },
-  { subject: "userFreight", attribute: "${userFreight}" },
-  { subject: "userAdmin", attribute: "${userAdmin}" },
+  { subject: "Dealer Name", attribute: "${dealerName}" },
+  { subject: "Dealer Address", attribute: "${dealerAddress}" },
+  { subject: "Dealer City", attribute: "${dealerCity}" },
+  { subject: "Dealer Prov", attribute: "${dealerProv}" },
+  { subject: "Dealer Postal", attribute: "${dealerPostal}" },
+  { subject: "Dealer Phone", attribute: "${dealerPhone}" },
+  { subject: "Loan Prot", attribute: "${userLoanProt}" },
+  { subject: "Tire and Rim", attribute: "${userTireandRim}" },
+  { subject: "Gap", attribute: "${userGap}" },
+  { subject: "Ext Warr", attribute: "${userExtWarr}" },
+  { subject: "Services Pkg", attribute: "${userServicespkg}" },
+  { subject: "VinE", attribute: "${vinE}" },
+  { subject: "Life Disability", attribute: "${lifeDisability}" },
+  { subject: "Rust Proofing", attribute: "${rustProofing}" },
+  { subject: "Licensing", attribute: "${userLicensing}" },
+  { subject: "Finance", attribute: "${userFinance}" },
+  { subject: "Demo", attribute: "${userDemo}" },
+  { subject: "Gas On Del", attribute: "${userGasOnDel}" },
+  { subject: "OMVIC", attribute: "${userOMVIC}" },
+  { subject: "Other", attribute: "${userOther}" },
+  { subject: "Tax", attribute: "${userTax}" },
+  { subject: "Air Tax", attribute: "${userAirTax}" },
+  { subject: "Tire Tax", attribute: "${userTireTax}" },
+  { subject: "Govern", attribute: "${userGovern}" },
+  { subject: "PDI", attribute: "${userPDI}" },
+  { subject: "Labour", attribute: "${userLabour}" },
+  { subject: "Market Adj", attribute: "${userMarketAdj}" },
+  { subject: "Commodity", attribute: "${userCommodity}" },
+  { subject: "Destination Charge", attribute: "${destinationCharge}" },
+  { subject: "Freight", attribute: "${userFreight}" },
+  { subject: "Admin", attribute: "${userAdmin}" },
 ];
 export const financeInfo = [
   {
-    subject: "financeManager",
+    subject: "Finance Manager",
     attribute: "${financeManager}",
   },
   {
-    subject: "email",
+    subject: "Email",
     attribute: "${email}",
   },
   {
-    subject: "firstName",
+    subject: "First Name",
     attribute: "${firstName}",
   },
   {
-    subject: "mileage",
+    subject: "Mileage",
     attribute: "${mileage}",
   },
   {
-    subject: "lastName",
+    subject: "Last Name",
     attribute: "${lastName}",
   },
   {
-    subject: "phone",
+    subject: "Phone",
     attribute: "${phone}",
   },
   {
-    subject: "name",
+    subject: "Name",
     attribute: "${name}",
   },
   {
-    subject: "address",
+    subject: "Address",
     attribute: "${address}",
   },
   {
-    subject: "city",
+    subject: "City",
     attribute: "${city}",
   },
   {
-    subject: "postal",
+    subject: "Postal",
     attribute: "${postal}",
   },
   {
-    subject: "province",
+    subject: "Province",
     attribute: "${province}",
   },
   {
-    subject: "dl",
+    subject: "Driver Lic",
     attribute: "${dl}",
   },
   {
-    subject: "typeOfContact",
+    subject: "Type Of Contact",
     attribute: "${typeOfContact}",
   },
   {
-    subject: "timeToContact",
+    subject: "Time To Contact",
     attribute: "${timeToContact}",
   },
   {
-    subject: "iRate",
+    subject: "Int. Rate",
     attribute: "${iRate}",
   },
   {
-    subject: "months",
+    subject: "Months",
     attribute: "${months}",
   },
   {
-    subject: "discount",
+    subject: "Discount",
     attribute: "${discount}",
   },
   {
-    subject: "total",
+    subject: "Total",
     attribute: "${total}",
   },
   {
-    subject: "onTax",
+    subject: "With Tax",
     attribute: "${onTax}",
   },
   {
@@ -3545,19 +3548,19 @@ export const financeInfo = [
     attribute: "${on60}",
   },
   {
-    subject: "biweekly",
+    subject: "Bi-weekly",
     attribute: "${biweekly}",
   },
   {
-    subject: "weekly",
+    subject: "Weekly",
     attribute: "${weekly}",
   },
   {
-    subject: "weeklyOth",
+    subject: "Weekly Oth",
     attribute: "${weeklyOth}",
   },
   {
-    subject: "biweekOth",
+    subject: "Bi-weekOth",
     attribute: "${biweekOth}",
   },
   {
@@ -3565,11 +3568,11 @@ export const financeInfo = [
     attribute: "${oth60}",
   },
   {
-    subject: "weeklyqc",
+    subject: "Weeklyqc",
     attribute: "${weeklyqc}",
   },
   {
-    subject: "biweeklyqc",
+    subject: "Bi-weeklyqc",
     attribute: "${biweeklyqc}",
   },
   {
@@ -3577,7 +3580,7 @@ export const financeInfo = [
     attribute: "${qc60}",
   },
   {
-    subject: "deposit",
+    subject: "Deposit",
     attribute: "${deposit}",
   },
   {
@@ -3633,47 +3636,47 @@ export const financeInfo = [
     attribute: "${otherTaxWithOptions}",
   },
   {
-    subject: "desiredPayments",
+    subject: "Desired Payments",
     attribute: "${desiredPayments}",
   },
   {
-    subject: "freight",
+    subject: "Freight",
     attribute: "${freight}",
   },
   {
-    subject: "admin",
+    subject: "Admin",
     attribute: "${admin}",
   },
   {
-    subject: "commodity",
+    subject: "Commodity",
     attribute: "${commodity}",
   },
   {
-    subject: "pdi",
+    subject: "PDI",
     attribute: "${pdi}",
   },
   {
-    subject: "discountPer",
+    subject: "Discount %",
     attribute: "${discountPer}",
   },
   {
-    subject: "userLoanProt",
+    subject: "Loan Prot",
     attribute: "${userLoanProt}",
   },
   {
-    subject: "userTireandRim",
+    subject: "Tire and Rim",
     attribute: "${userTireandRim}",
   },
   {
-    subject: "userGap",
+    subject: "Gap",
     attribute: "${userGap}",
   },
   {
-    subject: "userExtWarr",
+    subject: "Ext Warr",
     attribute: "${userExtWarr}",
   },
   {
-    subject: "userServicespkg",
+    subject: "Services pkg",
     attribute: "${userServicespkg}",
   },
   {
@@ -3681,135 +3684,123 @@ export const financeInfo = [
     attribute: "${deliveryCharge}",
   },
   {
-    subject: "vinE",
+    subject: "VIN Etching",
     attribute: "${vinE}",
   },
   {
-    subject: "lifeDisability",
+    subject: "Life and Disability",
     attribute: "${lifeDisability}",
   },
   {
-    subject: "rustProofing",
+    subject: "Rust Proofing",
     attribute: "${rustProofing}",
   },
   {
-    subject: "userOther",
+    subject: "Other",
     attribute: "${userOther}",
   },
   {
-    subject: "paintPrem",
+    subject: "Paint Prem",
     attribute: "${paintPrem}",
   },
   {
-    subject: "licensing",
+    subject: "Licensing",
     attribute: "${licensing}",
   },
   {
-    subject: "stockNum",
+    subject: "Stock Num",
     attribute: "${stockNum}",
   },
   {
-    subject: "options",
+    subject: "Options",
     attribute: "${options}",
   },
   {
-    subject: "accessories",
+    subject: "Accessories",
     attribute: "${accessories}",
   },
   {
-    subject: "labour",
+    subject: "Labour",
     attribute: "${labour}",
   },
   {
-    subject: "year",
+    subject: "Year",
     attribute: "${year}",
   },
   {
-    subject: "brand",
+    subject: "Brand",
     attribute: "${brand}",
   },
   {
-    subject: "model",
+    subject: "Model",
     attribute: "${model}",
   },
   {
-    subject: "model1",
+    subject: "Model 1",
     attribute: "${model1}",
   },
   {
-    subject: "color",
+    subject: "Color",
     attribute: "${color}",
   },
   {
-    subject: "modelCode",
+    subject: "Model Code",
     attribute: "${modelCode}",
   },
   {
-    subject: "msrp",
+    subject: "MSRP",
     attribute: "${msrp}",
   },
   {
-    subject: "userEmail",
+    subject: "Sales Person Email",
     attribute: "${userEmail}",
   },
   {
-    subject: "tradeValue",
+    subject: "Trade Value",
     attribute: "${tradeValue}",
   },
   {
-    subject: "tradeDesc",
+    subject: "Trade Desc",
     attribute: "${tradeDesc}",
   },
   {
-    subject: "tradeColor",
+    subject: "Trade Color",
     attribute: "${tradeColor}",
   },
   {
-    subject: "tradeYear",
+    subject: "Trade Year",
     attribute: "${tradeYear}",
   },
   {
-    subject: "tradeMake",
+    subject: "Trade Make",
     attribute: "${tradeMake}",
   },
   {
-    subject: "tradeVin",
+    subject: "Trade Vin",
     attribute: "${tradeVin}",
   },
   {
-    subject: "tradeTrim",
+    subject: "Trade Trim",
     attribute: "${tradeTrim}",
   },
   {
-    subject: "tradeMileage",
+    subject: "Trade Mileage",
     attribute: "${tradeMileage}",
   },
   {
-    subject: "trim",
+    subject: "Trim",
     attribute: "${trim}",
   },
   {
-    subject: "vin",
+    subject: "VIN",
     attribute: "${vin}",
   },
   {
-    subject: "leadNote",
+    subject: "Lead Note",
     attribute: "${leadNote}",
   },
   {
-    subject: "sendToFinanceNow",
-    attribute: "${sendToFinanceNow}",
-  },
-  {
-    subject: "dealNumber",
-    attribute: "${dealNumber}",
-  },
-  {
-    subject: "bikeStatus",
-    attribute: "${bikeStatus}",
-  },
-  {
-    subject: "lien",
+    subject: "Lien",
     attribute: "${lien}",
   },
 ];

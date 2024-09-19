@@ -8,7 +8,7 @@ import { formatRelativeTime } from '~/utils';
 import { Sheet, SheetClose, SheetContent, SheetTrigger, } from "~/components/ui/sheet"
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "~/components/ui/tabs"
 import { DashboardSpeed, LogOut, Dashboard, Settings, User, AddDatabaseScript, MailIn, InputField, MoneySquare, Map } from "iconoir-react";
-import { Components, Keyboard, Users } from "~/icons";
+import { Components, Keyboard, Users } from "~/images/icons";
 import { getUserIsAllowed } from "~/helpers";
 import { configDev, } from "~/configs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "~/components/ui/card"
