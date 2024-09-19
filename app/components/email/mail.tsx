@@ -59,28 +59,24 @@ import { toast } from "sonner"
 import { Button } from "../ui"
 import { FaForward, FaReply, FaReplyAll, FaTrash } from "react-icons/fa"
 import { IoIosMail } from "react-icons/io"
+import useSWR, { SWRConfig, mutate, useSWRConfig } from 'swr';
+import ProvideAppContext, { useAppContext, } from "~/components/microsoft/AppContext";
 
-interface MailProps {
-  accounts: {
-    label: string
-    email: string
-    icon: React.ReactNode
-  }[]
-  mails: any
-  defaultLayout: number[] | undefined
-  defaultCollapsed?: boolean
-  navCollapsedSize: number
-  app: any
-}
+export function Mail({ defaultLayout = [20, 32, 48], defaultCollapsed = false, }) {
+  const navCollapsedSize = 4
+  const app = useAppContext();
 
-export function Mail({
-  mails,
-  defaultLayout = [20, 32, 48],
-  defaultCollapsed = false,
-  navCollapsedSize,
-  app,
-  setEmails
-}) {
+  const [emails, setEmails] = useState();
+  const mails = emails
+  const dataFetcher = testInbox(app.authProvider!);
+  const { data } = useSWR(dataFetcher, { refreshInterval: 15000 })
+  useEffect(() => {
+    if (data) {
+      setEmails(data.value)
+      console.log(data, 'data')
+    }
+  }, [data]);
+
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed)
   const [mail, setMail] = useState()
   const fetcher = useFetcher()
@@ -116,8 +112,9 @@ export function Mail({
       try {
         const folderName = "inbox";
         const response = await testInbox(app.authProvider!);
-        //  console.log(emails)
         setEmails(response.value);
+        console.log(emails)
+
       } catch (error) {
         console.error("Error fetching emails:", error);
       }
@@ -155,7 +152,7 @@ export function Mail({
       const response = await fetch("/dealer/api/templates");
       const data = await response.json();
       setTemplates(data);
-      //console.log(data, 'data')
+      console.log(data, 'data')
     };
     fetchTemplates();
 

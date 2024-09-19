@@ -158,7 +158,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
 
 
   const dataFetcher = (url) => fetch(url).then(res => res.json());
-  const { data, error, isLoading } = useSWR(getDomain + `/dealer/notifications/notifications/${user.email}`, dataFetcher, { refreshInterval: 180000 });
+  const { data, error, isLoading } = useSWR(getDomain + `/dealer/systems/notifications/notifications/${user.email}`, dataFetcher, { refreshInterval: 180000 });
   //if (error) return <div>Loading...</div>;
   ///  if (isLoading) return <div>Error loading data</div>;
   const notificationsList = data//.notifications
