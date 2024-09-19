@@ -93,12 +93,12 @@ Now if you had that in your sales pitch?
 
 You would be able to switch over so many clients to your product. But... no one does... Don't be Dave...
 
-You get no headaches and save 100's of thousands in salaries a year in switching.
+You get no headaches, actually comes to think of it less headaches since its removing your current problems, and save 100's of thousands in salaries a year in the process.
 It would not only be detremental to your business / dealer AND your bottom line NOT to switch, but plainly put, your a moron if you don't...
 Sorry if that offends you, but theres no downside which means theres only an upside to switching. So why do you even need to think about it? You don't. I just came from the heavens and I am handing you a great solution to your problems (Some of them, you didn't even know you had.) with no draw backs.
 Do you hate money sir?
 Do you hate it when your employees can work better and be more effecient at completing tasks, which in turn... gives you even more money in the end?
-If you still say no, you hate money and you just want to willow in the pain of your own existence that you call life and give youself nothing but headaches and take the hard path in your agonizing quest through life.
+If you still say no, you hate money and you just want to willow in the pain of your own existence and give youself nothing but headaches and take the hard path in your agonizing quest through life.
 
 Give me one objection at this point that can't be overcome with an easy answer?
 
