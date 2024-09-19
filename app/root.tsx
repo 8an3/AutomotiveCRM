@@ -30,6 +30,7 @@ import { FaCheck } from "react-icons/fa";
 import Spinner from "./components/shared/spinner";
 import { themeSessionResolver } from "~/sessions";
 import sonner from "~/styles/sonner.css";
+import money from '~/images/favicons/money.svg'
 
 import {
   PreventFlashOnWrongTheme,
@@ -44,7 +45,7 @@ export const links: LinksFunction = () => [
   { rel: "stylesheet", href: font },
   { rel: "stylesheet", href: rbc },
   { rel: "stylesheet", href: slider },
-  { rel: "icon", type: "image/svg", href: "/favicons/money.svg" },
+  { rel: "icon", type: "image/svg", href: money },
   { rel: "stylesheet", href: sonner },
   { rel: "stylesheet", href: secondary },
 ];
