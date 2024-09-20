@@ -55,8 +55,8 @@ type AppProps = {
 };
 
 export async function loader({ request }: LoaderArgs) {
-  const findMany = await prisma.user.findMany()
-  console.log(findMany, ' find many in prod root')
+  //const findMany = await prisma.user.findMany()
+  //console.log(findMany, ' find many in prod root')
   const ENV = getEnv();
   const userSession = await getSession(request.headers.get("Cookie"));
   const email = userSession.get("email");

@@ -1,23 +1,10 @@
-import {
-  AuthenticatedTemplate,
-  UnauthenticatedTemplate,
-  MsalProvider,
-} from "@azure/msal-react";
+import { MsalProvider, AuthenticatedTemplate, useMsal, UnauthenticatedTemplate } from '@azure/msal-react';
+import { useState, useEffect, useRef } from 'react'
 import { json, redirect, type LoaderFunction } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
-import {
-  getSession,
-  commitSession,
-  authSessionStorage,
-  destroySession,
-} from "~/sessions/auth-session.server";
-import { GetUser } from "~/utils/loader.server";
 import { ClientOnly } from "remix-utils";
-import ProvideAppContext, {
-  useAppContext,
-} from "~/components/microsoft/AppContext";
+import ProvideAppContext, { useAppContext, } from "~/components/microsoft/AppContext";
 
-//import ProvideAppContext from './auth/AppContext';
 import {
   PublicClientApplication,
   EventType,
@@ -35,6 +22,7 @@ export async function loader({ request, params, req }: LoaderFunction) {
 
 export default function Root() {
   const { PROD_CALLBACK_URL } = useLoaderData()
+
 
   const config = {
     auth: {
@@ -86,7 +74,6 @@ export default function Root() {
 
   msalInstance.addEventCallback((event: EventMessage) => {
     if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
-      // Set the active account - this simplifies token acquisition
       const authResult = event.payload as AuthenticationResult;
       console.log(authResult, authResult.account);
       msalInstance.setActiveAccount(authResult.account);

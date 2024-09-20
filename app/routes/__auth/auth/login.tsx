@@ -3,11 +3,10 @@ import { Link, useSubmit, useNavigate, useLocation } from '@remix-run/react';
 import { MsalProvider, AuthenticatedTemplate, useMsal, UnauthenticatedTemplate } from '@azure/msal-react';
 import { useAppContext } from '~/components/microsoft/AppContext';
 import { TfiMicrosoft } from "react-icons/tfi";
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { type ActionFunction, json, type LoaderFunction, redirect } from "@remix-run/node"
 import { getUser } from '~/components/microsoft/GraphService';
-//import { config, msalConfig } from '~/components/microsoft/Config';
 import {
   Card,
   CardContent,
@@ -15,8 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card"
-
-
+import { LogLevel } from '@azure/msal-browser';
 
 export async function action({ request }: ActionFunction) {
   const formPayload = Object.fromEntries(await request.formData());
@@ -29,7 +27,6 @@ export async function action({ request }: ActionFunction) {
 export default function Welcome() {
   const app = useAppContext();
   const { instance } = useMsal();
-  const navigate = useNavigate()
   const activeAccount = instance.getActiveAccount();
   const email = activeAccount?.username || '';
   const name = activeAccount?.name || '';
@@ -62,6 +59,9 @@ export default function Welcome() {
   }, []);
   const [host, setHost] = useState("http://localhost:3000")
   let config
+
+  const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
+
   useEffect(() => {
     const currentHost =
       typeof window !== "undefined" ? window.location.host : null;
@@ -78,6 +78,34 @@ export default function Welcome() {
           authority: `https://login.microsoftonline.com/common`,
           postLogoutRedirectUri: "/",
           prompt: "loginRedirect",
+          scopes: [
+            'User.Read',
+            'Mail.ReadWrite',
+            'Mail.send',
+            'email',
+            'openid',
+            'profile',
+            "Calendars.ReadWrite",
+            "Notes.ReadWrite.All",
+            "Calendars.ReadWrite.Shared",
+            "Contacts.ReadWrite",
+            "Contacts.ReadWrite.Shared",
+            "Files.ReadWrite.All",
+            "Files.ReadWrite.AppFolder",
+            "Files.ReadWrite.Selected",
+            "Mail.ReadWrite.Shared",
+            "Mail.Send.Shared",
+            "Mail.Send",
+            "Mail.ReadWrite",
+            "MailboxSettings.ReadWrite",
+            "Notes.Create",
+            "Notes.ReadWrite.All",
+            "Schedule.ReadWrite.All",
+            "Tasks.ReadWrite.Shared",
+            "User.Read",
+            "User.ReadWrite.All",
+            "User.ReadWrite",
+          ],
         },
         cache: {
           cacheLocation: 'localStorage',
@@ -112,8 +140,6 @@ export default function Welcome() {
       }
     }
   }, []);
-
-
   const OnClick = async () => {
     console.log(user, 'user')
     instance.loginPopup(config).catch(e => {
@@ -122,13 +148,6 @@ export default function Welcome() {
     //  const signIn = app.signIn!
     // return signIn
   }
-
-  const OnClickContinue = async () => {
-    console.log(user, 'user')
-    const goTo = navigate()
-    return goTo
-  }
-
   const OnClickLogout = async () => {
     console.log(user, 'user')
     instance.logoutPopup({
@@ -214,8 +233,6 @@ export default function Welcome() {
               </div>
             </CardContent>
           </Card>
-
-
         </AuthenticatedTemplate>
       </div>
     </>

@@ -111,11 +111,11 @@ export default function EmailClient({
       console.log(currentHost, 'currentHost')
       if (iFrameRef.current) {
         if (currentHost === "localhost:3000") {
-          iFrameRef.current.src = "http://localhost:3000/dealer/email/dashboardClient";
+          iFrameRef.current.src = "http://localhost:3000/dealer/features/email/dashboard/client";
         }
         if (currentHost === "dealersalesassistant.ca") {
           iFrameRef.current.src =
-            "https://www.dealersalesassistant.ca/dealer/email/dashboardClient";
+            "https://www.dealersalesassistant.ca/dealer/features/email/dashboard/client";
         }
         window.addEventListener("message", handleHeightMessage);
 
@@ -149,7 +149,6 @@ export default function EmailClient({
             className=" border-none"
             style={{
               minHeight: "250px"
-
             }}
           />
         </div>

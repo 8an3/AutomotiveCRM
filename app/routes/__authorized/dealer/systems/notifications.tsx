@@ -88,12 +88,12 @@ export default function NotificationSystem(interruptionsData, getEmails) {
 
 
   const { data: leadData, error: leadError, isLoading: leadLoading, isValidating } = useSWR(
-    `http://localhost:3000/dealer/notifications/newLead`,
+    `http://localhost:3000/dealer/systems/notifications/newLead`,
     dataFetcher,
     { refreshInterval: 180000 }
   );
 
-  const { data: updateData, error: updateError, isLoading: updateLoading } = useSWR('http://localhost:3000/dealer/notifications/updates', dataFetcher, { refreshInterval: 180000 });
+  const { data: updateData, error: updateError, isLoading: updateLoading } = useSWR('http://localhost:3000/dealer/systems/notifications/updates', dataFetcher, { refreshInterval: 180000 });
   //const { data: emailData } = useSWR('http://localhost:3000/dealer/email/server', dataFetcher, { refreshInterval: 180000 });
   // 60,000 ms is one min
   useEffect(() => {
