@@ -291,15 +291,15 @@ export default function NewCLient() {
   const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed)
 
   console.log('clientclienttwo before return', emails)
+  const emailsSafe = Array.isArray(emails) ? emails : [];
   return (
     <>
-      <div className=' mt-10 m-5 border border-border border-md' >
+
+      <div className='mt-10 m-5 border border-border border-md'>
         <TooltipProvider delayDuration={0}>
           <ResizablePanelGroup
             direction="horizontal"
-            onLayout={(sizes: number[]) => {
-
-            }}
+            onLayout={(sizes: number[]) => { }}
             className="h-full max-h-[800px] items-stretch"
           >
             <ResizablePanel
@@ -308,23 +308,14 @@ export default function NewCLient() {
               collapsible={true}
               minSize={15}
               maxSize={20}
-              onCollapse={() => {
-                setIsCollapsed(true)
-              }}
-              onResize={() => {
-                setIsCollapsed(false)
-              }}
-              className={cn(
-                isCollapsed &&
-                "min-w-[50px] transition-all duration-300 ease-in-out"
-              )}
+              onCollapse={() => setIsCollapsed(true)}
+              onResize={() => setIsCollapsed(false)}
+              className={cn(isCollapsed && "min-w-[50px] transition-all duration-300 ease-in-out")}
             >
-
               <Separator className='mt-[39px]' />
               <Nav isCollapsed={isCollapsed} links={primaryLinks} />
               <Separator />
               <Nav isCollapsed={isCollapsed} links={secondaryLinks} />
-
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
@@ -332,18 +323,8 @@ export default function NewCLient() {
                 <div className="flex items-center px-4 py-2">
                   <h1 className="text-xl font-bold">Inbox</h1>
                   <TabsList className="ml-auto">
-                    <TabsTrigger
-                      value="all"
-                      className="text-zinc-600 dark:text-zinc-200"
-                    >
-                      All mail
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="unread"
-                      className="text-zinc-600 dark:text-zinc-200"
-                    >
-                      Unread
-                    </TabsTrigger>
+                    <TabsTrigger value="all" className="text-zinc-600 dark:text-zinc-200">All mail</TabsTrigger>
+                    <TabsTrigger value="unread" className="text-zinc-600 dark:text-zinc-200">Unread</TabsTrigger>
                   </TabsList>
                 </div>
                 <Separator />
@@ -356,7 +337,7 @@ export default function NewCLient() {
                   </form>
                 </div>
                 <TabsContent value="all" className="m-0">
-                  {emails && Array.isArray(emails) && !emails || emails.length === 0 ?
+                  {emailsSafe.length === 0 ? (
                     <div className="flex items-center space-x-4">
                       <Skeleton className="h-12 w-12 rounded-full" />
                       <div className="space-y-2">
@@ -364,13 +345,16 @@ export default function NewCLient() {
                         <Skeleton className="h-4 w-[200px]" />
                       </div>
                     </div>
-                    :
-                    <MailList emails={emails} setMail={setMail} mail={mail} />
-                  }
+                  ) : (
+                    <MailList emails={emailsSafe} setMail={setMail} mail={mail} />
+                  )}
                 </TabsContent>
                 <TabsContent value="unread" className="m-0">
-                  {emails && Array.isArray(emails) && !emails || emails.length === 0 ? <p className='text-center mt-5 text-muted-foreground'>No emails to currently display.</p> :
-                    <MailList emails={emails.filter((item) => item.isRead === false)} setMail={setMail} mail={mail} />}
+                  {emailsSafe.length === 0 ? (
+                    <p className='text-center mt-5 text-muted-foreground'>No emails to currently display.</p>
+                  ) : (
+                    <MailList emails={emailsSafe.filter(item => !item.isRead)} setMail={setMail} mail={mail} />
+                  )}
                 </TabsContent>
               </Tabs>
             </ResizablePanel>

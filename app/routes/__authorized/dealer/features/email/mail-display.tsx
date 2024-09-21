@@ -262,22 +262,22 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           <div className="flex items-start p-4">
             <div className="flex items-start gap-4 text-sm">
               <Avatar>
-                <AvatarImage alt={mail.ownerName} />
+                <AvatarImage alt={mail.form?.emailAddress.name} />
                 <AvatarFallback>
-                  {getFirstLetter(mail.ownerName)}
+                  {getFirstLetter(mail.form?.emailAddress.name)}
                 </AvatarFallback>
               </Avatar>
               <div className="grid gap-1">
-                <div className="font-semibold">{mail.ownerName}</div>
+                <div className="font-semibold">{mail.form?.emailAddress.name}</div>
                 <div className="line-clamp-1 text-xs">{mail.generatedFrom}</div>
                 <div className="line-clamp-1 text-xs">
-                  <span className="font-medium">Reply-To:</span> {mail.ownerEmail}
+                  <span className="font-medium">Reply-To:</span> {mail.form?.emailAddress.address}
                 </div>
               </div>
             </div>
-            {mail.createdAt && (
+            {mail.createdDateTime && (
               <div className="ml-auto text-xs text-muted-foreground">
-                {new Date(mail.createdAt).toLocaleDateString("en-US", options2)}
+                {new Date(mail.createdDateTime).toLocaleDateString("en-US", options2)}
               </div>
             )}
           </div>

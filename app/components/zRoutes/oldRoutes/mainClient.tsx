@@ -42,9 +42,9 @@ import {
 import useSWR, { SWRConfig, mutate, useSWRConfig } from 'swr';
 import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip"
-import { MailDisplay } from "./mail-display"
-import { MailList } from "./mail-list"
-import { Nav } from "./nav"
+import { MailDisplay } from "../../../routes/__authorized/dealer/features/email/mail-display"
+import { MailList } from "../../../routes/__authorized/dealer/features/email/mail-list"
+import { Nav } from "../../../routes/__authorized/dealer/features/email/nav"
 import { cn } from "~/components/ui/utils"
 import {
   ResizableHandle,

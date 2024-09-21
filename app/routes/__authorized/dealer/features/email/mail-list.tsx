@@ -45,7 +45,7 @@ export function MailList({ emails, setMail, mail }: MailListProps) {
               <div className="flex w-full flex-col gap-1">
                 <div className="flex items-center">
                   <div className="flex items-center gap-2">
-                    <div className="font-semibold">{email.form?.emailAddress.name || 'Unknown Sender'}</div>
+                    <div className="font-semibold">{email.form?.emailAddress.name}</div>
                     {email.isRead === false && (
                       <span className="flex h-2 w-2 rounded-full bg-blue-600" />
                     )}
@@ -64,7 +64,7 @@ export function MailList({ emails, setMail, mail }: MailListProps) {
               <div className="line-clamp-2 text-xs text-muted-foreground">
                 {email.bodyPreview?.substring(0, 300) || 'No Preview Available'}
               </div>
-              {email.labels.length ? (
+              {email && email.labels && email.labels.length ? (
                 <div className="flex items-center gap-2">
                   {email.labels.map((label) => (
                     <Badge key={label} variant={getBadgeVariantFromLabel(label)}>
