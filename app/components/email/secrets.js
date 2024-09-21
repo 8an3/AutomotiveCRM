@@ -1,15 +1,21 @@
-const config = {
-  tenantId: "507d0fc2-5fcd-4a08-9eb3-1470dc063b3e",
-  clientId: "663ff8e3-4a92-4c26-9d0b-358cb60c97f6",
-  clientSecret: "e638cba5-4f97-46d0-b9dd-e6658695d9a6",
-  scopes: [
-    "User.ReadWrite",
-    "mailboxsettings.read",
-    "calendars.readwrite",
-    "mail.readwrite",
-    "Mail.Send",
-    "Notes.ReadWrite.All",
-  ]
-}
+const tenantId = "fa812bd2-3d1f-455b-9ce5-4bfd0a4dfba6";
+const clientId = "0fa1346a-ab27-4b54-bffd-e76e9882fcfe"
+const clientSecret = "rut8Q~s5LpXMnEjujrxkcJs9H3KpUzxO~LfAOc-D"
+const scopes = ["user.read", "mail.send"]
+const port = 3000
 
-export default config;
+const redirectUri = `http://localhost:3000/auth/login`;
+const authorityHost = "https://login.microsoftonline.com";
+
+// const scopes =  ["openid", "User.ReadWrite", "Mail.ReadWrite", "offline_access"]
+const Info = {
+  tenantId: tenantId,
+  clientId: clientId,
+  clientSecret: clientSecret,
+  scopes: scopes,
+  port: port,
+  redirectUri: redirectUri,
+  authorityHost: authorityHost,
+
+}
+export default Info

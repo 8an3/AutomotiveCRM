@@ -1,13 +1,15 @@
 import { loginRequest, graphConfig } from "./config.server";
-import { msalInstance } from "root";
+import { useMsal } from "@azure/msal-react";
 
 export async function callMsGraph() {
-  const account = msalInstance.getActiveAccount();
+  const { instance, accounts, inProgress } = useMsal();
+
+  const account = instance.getActiveAccount();
   if (!account) {
     throw Error("No active account! Verify a user has been signed in and setActiveAccount has been called.");
   }
 
-  const response = await msalInstance.acquireTokenSilent({
+  const response = await instance.acquireTokenSilent({
     ...loginRequest,
     account: account
   });

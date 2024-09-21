@@ -302,11 +302,11 @@ export default function ClientEmail() {
         typeof window !== "undefined" ? window.location.host : null;
       if (iFrameRef.current) {
         if (currentHost === "localhost:3000") {
-          iFrameRef.current.src = "http://localhost:3000/dealer/features/body";
+          iFrameRef.current.src = "http://localhost:3000/dealer/body";
         }
         if (currentHost === "dealersalesassistant.ca") {
           iFrameRef.current.src =
-            "https://www.dealersalesassistant.ca/dealer/features/body";
+            "https://www.dealersalesassistant.ca/dealer/body";
         }
         window.addEventListener("message", handleHeightMessage);
       }
@@ -1080,16 +1080,19 @@ export default function ClientEmail() {
     setSelectShrink(true);
     setSelectedScript(true);
   };
+
   const handleSubcategoryClick = () => {
     setSelectedSubcategory(true);
     setSelectedScript(true);
     setSelectShrink(false);
   };
+
   const handleScriptClick = () => {
     // setSelectedSubcategory(false);
     setSelectedScript(true);
     // setSelectShrink(false)
   };
+
   const handleReplyClick = () => {
     setSelectedCategorySize(false);
     setSelectGrow(true);

@@ -32,8 +32,13 @@
     "app/routes/roadmap.list.tsx.bk",
     "app/routes/faq.tsx.bk",
     "app/routes/roadmap.tsx.bk",
-    "app/routes/_auth.microStrat.js"
-, "app/components/microsoft/secrets.js", "app/routes/__auth/demo", "app/components/barcodeReader/Scanner.jsx", "app/routes/__customerLandingPages/questionnaire"  ],
+    "app/routes/_auth.microStrat.js",
+    "app/components/microsoft/secrets.js",
+    "app/routes/__auth/demo",
+    "app/components/barcodeReader/Scanner.jsx",
+    "app/routes/__customerLandingPages/questionnaire",
+    "app/routes/__authorized/dealer/features/email/clientClientTwotsx"
+  ],
   "ts-node": {
     "swc": true
   }

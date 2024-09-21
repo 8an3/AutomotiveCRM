@@ -1,5 +1,5 @@
-import { Mail } from '~/components/email/mail'
-import { Link, useSubmit, useNavigate, useLocation } from '@remix-run/react';
+import { Mail } from '~/routes/__authorized/dealer/features/email/mail'
+import { Link, useSubmit, useNavigate, useLocation, useFetcher } from '@remix-run/react';
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { json, type LoaderFunction, type ActionFunction, redirect, LoaderArgs } from '@remix-run/node';
@@ -15,7 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card"
-import { Button, Separator } from '~/components';
+import { Button, Input, Separator } from '~/components';
 import { TfiMicrosoft } from 'react-icons/tfi';
 import {
   deleteMessage,
@@ -41,24 +41,37 @@ import {
 } from "~/components/microsoft/GraphService";
 import useSWR, { SWRConfig, mutate, useSWRConfig } from 'swr';
 import { toast } from 'sonner';
-
-export const loader = async ({ request }: LoaderArgs) => {
-  const cookieHeader = request.headers.get("Cookie");
-  const layoutCookie2 = (await layoutCookie.parse(cookieHeader)) || [33, 67];
-  const collapsedCookie2 = (await collapsedCookie.parse(cookieHeader)) || false;
-  return json({ layoutCookie2, collapsedCookie2 });
-}
-
-
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "~/components/ui/tooltip"
+import { MailDisplay } from "./mail-display"
+import { MailList } from "./mail-list"
+import { Nav } from "./nav"
+import { cn } from "~/components/ui/utils"
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "~/components/ui/resizable"
+import {
+  AlertCircle,
+  Archive,
+  ArchiveX,
+  File,
+  Inbox,
+  MessagesSquare,
+  Search,
+  Send,
+  ShoppingCart,
+  Trash2,
+  Users2,
+} from "lucide-react"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "~/components/ui/tabs"
 
 export default function MainClient() {
-  const { layoutCookie2, collapsedCookie2 } = useLoaderData()
-
-  const layout = layoutCookie2
-  const collapsed = collapsedCookie2
-
-  const defaultLayout = layout
-  const defaultCollapsed = collapsed
   const app = useAppContext();
   const { instance } = useMsal();
   const activeAccount = instance.getActiveAccount();
@@ -66,26 +79,20 @@ export default function MainClient() {
   const name = activeAccount?.name || '';
   const idToken = activeAccount?.idToken || '';
   console.log(email, 'email', name, 'name', idToken, 'idToken', activeAccount)
+
+  const layout = 30//layoutCookie2
+  const collapsed = false// collapsedCookie2
+
+  const defaultLayout = [20, 32, 48]
+  const defaultCollapsed = collapsed
+
   const [user, setUser] = useState();
 
   const [emails, setEmails] = useState();
-  const [data, setData] = useState();
-  const mails = emails
+  const [mails, setMails] = useState();
+  // const [data, setData] = useState();
 
 
-  useEffect(() => {
-    async function Testy() {
-      const data = await testInbox(app.authProvider!)
-      setData(data)
-    }
-    Testy()
-    console.log(data, 'data')
-
-    if (data) {
-      setEmails(data.value)
-      console.log(data, 'data')
-    }
-  }, []);
 
   const [subject, setSubject] = useState("");
   const [to, setTo] = useState("");
@@ -103,7 +110,32 @@ export default function MainClient() {
   const [text, setText] = useState("");
   const [selectedEmail, setSelectedEmail] = useState();
 
+  const dataFetcher = testInbox(app.authProvider!); //(url) => fetch(url).then(res => res.json());
+  const { data, error, isLoading, isValidating } = useSWR(dataFetcher, { refreshInterval: 15000 })
   useEffect(() => {
+    if (error) {
+      console.log(error, 'error')
+    }
+    if (data) {
+      console.log(data, 'data,swre')
+      setEmails(data.value);
+      setMails(data.value);
+    }
+  }, [data, error]);
+
+  useEffect(() => {
+    const fetchEmails = async () => {
+      try {
+        const response = await testInbox(app.authProvider!);
+        console.log(response, 'response')
+        setEmails(response.value);
+        setMails(response.value);
+
+      } catch (error) {
+        console.error("Error fetching emails:", error);
+      }
+    };
+    fetchEmails();
     // folder list
     const fetchFolders = async () => {
       const fetchedFolders = await getAllFolders(app.authProvider!);
@@ -282,10 +314,173 @@ export default function MainClient() {
   async function handlesetToUnread(id) {
     messageUnRead(app.authProvider!, id);
   }
+  console.log(emails, 'emails emailclient')
+
+
+
+  // --------------------- mail component
+  const navCollapsedSize = 4
+  const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed)
+  //const [collapsedSize, setCollapsedSize] = React.useState()
+
+  useEffect(() => {
+    console.log(mails, 'mails')
+    if (mails && mails.length > 0) {
+      setMail(mails[0])
+    }
+  }, []);
+
+  const [mail, setMail] = useState()
+  const fetcher = useFetcher()
+
+  // from old email client
+
+  console.log(mails, activeAccount, 'mails maillist')
+
+  const primaryLinks = [
+    {
+      title: "Inbox",
+      label: "128", // Dynamic count
+      icon: Inbox,
+      variant: "default",
+    },
+    {
+      title: "Drafts",
+      label: "9",
+      icon: File,
+      variant: "ghost",
+    },
+    {
+      title: "Sent Items",
+      label: "", // Sent items may not have a count
+      icon: Send,
+      variant: "ghost",
+    },
+    {
+      title: "Junk Email",
+      label: "23",
+      icon: ArchiveX,
+      variant: "ghost",
+    },
+    {
+      title: "Trash",
+      label: "",
+      icon: Trash2,
+      variant: "ghost",
+    },
+    {
+      title: "Archive",
+      label: "",
+      icon: Archive,
+      variant: "ghost",
+    },
+  ];
+  const secondaryLinks = [
+    {
+      title: "Social",
+      label: "972",
+      icon: Users2,
+      variant: "ghost",
+    },
+    {
+      title: "Updates",
+      label: "342",
+      icon: AlertCircle,
+      variant: "ghost",
+    },
+    {
+      title: "Forums",
+      label: "128",
+      icon: MessagesSquare,
+      variant: "ghost",
+    },
+    {
+      title: "Promotions",
+      label: "21",
+      icon: Archive,
+      variant: "ghost",
+    },
+  ];
+
   return (
     <>
-      <div className='border border-border rounded-md'>
-        <Mail mails={mails} defaultLayout={defaultLayout} defaultCollapsed={defaultCollapsed} instance={instance} activeAccount={activeAccount} />
+      <div className=' mt-10 m-b border border-border border-md' >
+        <TooltipProvider delayDuration={0}>
+          <ResizablePanelGroup
+            direction="horizontal"
+            onLayout={(sizes: number[]) => {
+
+            }}
+            className="h-full max-h-[800px] items-stretch"
+          >
+            <ResizablePanel
+              defaultSize={defaultLayout[0]}
+              collapsedSize={navCollapsedSize}
+              collapsible={true}
+              minSize={15}
+              maxSize={20}
+              onCollapse={() => {
+                setIsCollapsed(true)
+              }}
+              onResize={() => {
+                setIsCollapsed(false)
+              }}
+              className={cn(
+                isCollapsed &&
+                "min-w-[50px] transition-all duration-300 ease-in-out"
+              )}
+            >
+
+              <Separator className='mt-[39px]' />
+              <Nav isCollapsed={isCollapsed} links={primaryLinks} />
+              <Separator />
+              <Nav isCollapsed={isCollapsed} links={secondaryLinks} />
+
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
+              <Tabs defaultValue="unread">
+                <div className="flex items-center px-4 py-2">
+                  <h1 className="text-xl font-bold">Inbox</h1>
+                  <TabsList className="ml-auto">
+                    <TabsTrigger
+                      value="all"
+                      className="text-zinc-600 dark:text-zinc-200"
+                    >
+                      All mail
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="unread"
+                      className="text-zinc-600 dark:text-zinc-200"
+                    >
+                      Unread
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
+                <Separator />
+                <div className="bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+                  <form>
+                    <div className="relative">
+                      <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Input placeholder="Search" className="pl-8" />
+                    </div>
+                  </form>
+                </div>
+                <TabsContent value="all" className="m-0">
+                  <MailList items={mails} setMail={setMail} mail={mail} />
+                </TabsContent>
+                <TabsContent value="unread" className="m-0">
+                  {!mails || mails.length === 0 ? <p className='text-center mt-5 text-muted-foreground'>No emails to currently display.</p> :
+                    <MailList items={mails.filter((item) => item.isRead === false)} setMail={setMail} mail={mail} />}
+                </TabsContent>
+              </Tabs>
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel defaultSize={defaultLayout[2]} minSize={30}>
+              <MailDisplay mail={mail} />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </TooltipProvider>
       </div>
     </>
   )
