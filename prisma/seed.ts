@@ -6970,6 +6970,7 @@ export async function Board() {
     { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
 
     { board: "dev", column: "IDEAS", item: "import / export allow to downlaod a template example so people can see the columns needed for that dataset" },
+    { board: "dev", column: "IDEAS", item: "sales / cust / profile put in email client / text client so if customer emails in without reply to a finance file email atleast you stil get the email and keep it looged to the customer" },
     { board: "dev", column: "IDEAS", item: "admin dashboard - when going over clients and other objects ie for clients open dialog on left have nave menu with a first level of items such as finance, work order, acc order and the when you click on it you can then click on the tabs for each layer on that data segment" },
 
     { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH SMS AND EMAIL TESTING BEFORE RELEASE -----" },

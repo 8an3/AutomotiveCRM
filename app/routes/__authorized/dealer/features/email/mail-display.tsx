@@ -6,16 +6,27 @@ import {
   Archive,
   ArchiveX,
   Clock,
+  Download,
   Forward,
   MoreVertical,
+  Paperclip,
   Reply,
   ReplyAll,
   Trash2,
 } from "lucide-react"
-
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "~/components/ui/resizable"
 import {
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from "~/components/ui/dropdown-menu"
 import {
   Avatar,
@@ -43,14 +54,45 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip"
 import React, { useCallback, useEffect, useRef, useState } from "react";
-
+import { ScrollArea } from "~/components"
+import { EmailClientTextEditor } from "./textEditor"
+import {
+  deleteMessage,
+  getDrafts,
+  getDraftsList,
+  getInbox,
+  getInboxList,
+  getJunk,
+  getList,
+  getSent,
+  getTrash,
+  messageRead,
+  messageUnRead,
+  getUser,
+  testInbox,
+  getFolders,
+  getAllFolders,
+  getEmailById,
+  MoveEmail,
+  createReplyDraft,
+  ComposeEmail,
+  SendNewEmail,
+  getAttachment,
+} from "~/components/microsoft/GraphService";
 //import { Mail } from "@/app/(app)/examples/mail/data"
 
 interface MailDisplayProps {
   mail: Mail | null
+  app: any
+  handleDeleteClick: any
+  handlesetToUnread: any
+  setFolder: any
+  attachment: any
 }
 
-export function MailDisplay({ mail }: MailDisplayProps) {
+export function MailDisplay({ mail, app, handleDeleteClick, handlesetToUnread, setFolder, attachment }: MailDisplayProps) {
+  const user = getUser(app.authProvider!);
+
   const today = new Date()
   const getFirstLetter = (name) => {
     return name ? name.charAt(0).toUpperCase() : '';
@@ -65,67 +107,17 @@ export function MailDisplay({ mail }: MailDisplayProps) {
     second: '2-digit',
   };
 
-  const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
-
-  const MyIFrameComponent = () => {
-    const [isLoading, setIsLoading] = useState(true);
-    useEffect(() => {
-      const handleHeightMessage = (event: MessageEvent) => {
-        if (
-          event.data &&
-          event.data.type === "iframeHeight" &&
-          event.data.height
-        ) {
-          setIsLoading(false);
-          if (iFrameRef.current) {
-            iFrameRef.current.style.height = `${event.data.height}px`;
-          }
-        }
-      };
-      const currentHost =
-        typeof window !== "undefined" ? window.location.host : null;
-      if (iFrameRef.current) {
-        if (currentHost === "localhost:3000") {
-          iFrameRef.current.src = "http://localhost:3000/dealer/features/body";
-        }
-        if (currentHost === "dealersalesassistant.ca") {
-          iFrameRef.current.src =
-            "https://www.dealersalesassistant.ca/dealer/features/body";
-        }
-        window.addEventListener("message", handleHeightMessage);
-      }
-      return () => {
-        if (iFrameRef.current) {
-          window.removeEventListener("message", handleHeightMessage);
-        }
-      };
-    }, []);
-
-    return (
-      <>
-        <div className="size-full ">
-          <iframe
-            ref={iFrameRef}
-            title="my-iframe"
-            width="100%"
-            className=" border-none"
-            style={{
-              minHeight: "60vh",
-            }}
-          />
-        </div>
-      </>
-    );
-  };
-
-
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center p-2">
         <div className="flex items-center gap-2">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
+              <Button
+                onClick={() => {
+                  setFolder(mail, 'archive')
+                }}
+                variant="ghost" size="icon" disabled={!mail}>
                 <Archive className="h-4 w-4" />
                 <span className="sr-only">Archive</span>
               </Button>
@@ -134,7 +126,11 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
+              <Button
+                onClick={() => {
+                  setFolder(mail, 'junkemail')
+                }}
+                variant="ghost" size="icon" disabled={!mail}>
                 <ArchiveX className="h-4 w-4" />
                 <span className="sr-only">Move to junk</span>
               </Button>
@@ -143,7 +139,11 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
+              <Button
+                onClick={() => {
+                  handleDeleteClick(mail.id)
+                }}
+                variant="ghost" size="icon" disabled={!mail}>
                 <Trash2 className="h-4 w-4" />
                 <span className="sr-only">Move to trash</span>
               </Button>
@@ -155,14 +155,18 @@ export function MailDisplay({ mail }: MailDisplayProps) {
             <Popover>
               <PopoverTrigger asChild>
                 <TooltipTrigger asChild>
-                  <Button variant="ghost" size="icon" disabled={!mail}>
+                  <Button className='ml-auto'
+                    onClick={() => {
+                      setFolder(mail, 'scheduled')
+                    }}
+                    variant="ghost" size="icon" disabled={!mail}>
                     <Clock className="h-4 w-4" />
                     <span className="sr-only">Snooze</span>
                   </Button>
                 </TooltipTrigger>
               </PopoverTrigger>
-              <PopoverContent className="flex w-[535px] p-0">
-                <div className="flex flex-col gap-2 border-r px-2 py-4">
+              <PopoverContent className="flex w-[535px] p-0 border-border">
+                <div className="flex flex-col gap-2 border-r border-border px-2 py-4">
                   <div className="px-4 text-sm font-medium">Snooze until</div>
                   <div className="grid min-w-[250px] gap-1">
                     <Button
@@ -213,33 +217,49 @@ export function MailDisplay({ mail }: MailDisplayProps) {
         </div>
         <div className="ml-auto flex items-center gap-2">
           <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
-                <Reply className="h-4 w-4" />
-                <span className="sr-only">Reply</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Reply</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
-                <ReplyAll className="h-4 w-4" />
-                <span className="sr-only">Reply all</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Reply all</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" disabled={!mail}>
-                <Forward className="h-4 w-4" />
-                <span className="sr-only">Forward</span>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>Forward</TooltipContent>
+            <Popover>
+              <PopoverTrigger asChild>
+                <TooltipTrigger asChild>
+                  <Button className='ml-auto'
+                    onClick={() => {
+                    }}
+                    variant="ghost" size="icon" disabled={!mail}>
+                    <Paperclip className="h-4 w-4" />
+                    <span className="sr-only">Attachments</span>
+                  </Button>
+                </TooltipTrigger>
+              </PopoverTrigger>
+              <PopoverContent className="flex w-[535px] p-0 border-border">
+                <div className="flex flex-col gap-2 border-r px-2 py-4">
+                  <div className="px-4 text-sm font-medium">Attachments</div>
+                  <div className="grid min-w-[250px] gap-1">
+                    {attachment && attachment.length > 0 ? (attachment.map((attach, index) => (
+                      <Button
+                        key={index}
+                        variant="ghost"
+                        className="justify-start font-normal"
+                        onClick={() => {
+                          getAttachment(app.authProvider!, mail.id, attach.id)
+                        }}
+                      >
+                        <Download className="h-4 w-4" />
+                        <span className="ml-auto text-muted-foreground">
+                          {attach.name}
+                        </span>
+                      </Button>
+                    ))) : (<><p className='text-center mt-5'>No Attachments in email.</p></>)}
+
+                  </div>
+                </div>
+                <div className="p-2">
+                  <Calendar />
+                </div>
+              </PopoverContent>
+            </Popover>
+            <TooltipContent>Snooze</TooltipContent>
           </Tooltip>
         </div>
+
         <Separator orientation="vertical" className="mx-2 h-6" />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -248,11 +268,51 @@ export function MailDisplay({ mail }: MailDisplayProps) {
               <span className="sr-only">More</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>Mark as unread</DropdownMenuItem>
-            <DropdownMenuItem>Star thread</DropdownMenuItem>
-            <DropdownMenuItem>Add label</DropdownMenuItem>
-            <DropdownMenuItem>Mute thread</DropdownMenuItem>
+          <DropdownMenuContent align="end" className='border-border'>
+            <DropdownMenuItem
+              onSelect={() => {
+                handlesetToUnread(mail.id)
+              }}>
+              Mark as unread
+            </DropdownMenuItem>
+            <DropdownMenuItem disabled>Star thread</DropdownMenuItem>
+            <DropdownMenuItem disabled>Add label</DropdownMenuItem>
+            <DropdownMenuItem disabled>Mute thread</DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Move</DropdownMenuSubTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent className='border-border'>
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      setFolder(mail, 'junkemail')
+                    }}>
+                    Inbox</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      setFolder(mail, 'junkemail')
+                    }}>
+                    Junk Email</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      setFolder(mail, 'archive')
+                    }}>
+                    Archive</DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      setFolder(mail, 'clutter	')
+                    }}>
+                    Clutter</DropdownMenuItem>
+
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      setFolder(mail, 'deleteditems')
+                    }}
+                  >Trash</DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -262,17 +322,15 @@ export function MailDisplay({ mail }: MailDisplayProps) {
           <div className="flex items-start p-4">
             <div className="flex items-start gap-4 text-sm">
               <Avatar>
-                <AvatarImage alt={mail.form?.emailAddress.name} />
+                <AvatarImage alt={mail.from?.emailAddress.name} />
                 <AvatarFallback>
-                  {getFirstLetter(mail.form?.emailAddress.name)}
+                  {getFirstLetter(mail.from?.emailAddress.name)}
                 </AvatarFallback>
               </Avatar>
               <div className="grid gap-1">
-                <div className="font-semibold">{mail.form?.emailAddress.name}</div>
-                <div className="line-clamp-1 text-xs">{mail.generatedFrom}</div>
-                <div className="line-clamp-1 text-xs">
-                  <span className="font-medium">Reply-To:</span> {mail.form?.emailAddress.address}
-                </div>
+                <div className="font-semibold">{mail.from?.emailAddress.name}</div>
+                <div className="line-clamp-1 text-xs">{mail.subject}</div>
+                <div className="line-clamp-1 text-xs">{mail.from?.emailAddress.address}</div>
               </div>
             </div>
             {mail.createdDateTime && (
@@ -281,37 +339,32 @@ export function MailDisplay({ mail }: MailDisplayProps) {
               </div>
             )}
           </div>
-          <Separator />
-          <div className="flex-1 whitespace-pre-wrap p-4 text-sm">
-            {mail.message}
-          </div>
-          <Separator className="mt-auto" />
-          <div className="p-4">
-            <form>
-              <div className="grid gap-4">
-                <TextArea
-                  className="p-4"
-                  placeholder={`Reply ${mail.ownerName}...`}
+          <ResizablePanelGroup
+            direction="vertical"
+            className="min-h-[65vh]  border border-border "
+          >
+            <ResizablePanel defaultSize={80}>
+              <ScrollArea className="h-[65vh]">
+
+                <div className="flex-1 swhitespace-pre-wrap p-4 text-sm " dangerouslySetInnerHTML={{ __html: mail.body.content }} />
+              </ScrollArea>
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel defaultSize={20}>
+              <div className="p-4">
+                <EmailClientTextEditor
+                  to={mail.from?.emailAddress.address}
+                  subject={mail.subject}
+                  app={app}
+                  user={user}
+                  mail={mail}
                 />
-                <div className="flex items-center">
-                  <Label
-                    htmlFor="mute"
-                    className="flex items-center gap-2 text-xs font-normal"
-                  >
-                    <Switch id="mute" aria-label="Mute thread" /> Mute this
-                    thread
-                  </Label>
-                  <Button
-                    onClick={(e) => e.preventDefault()}
-                    size="sm"
-                    className="ml-auto"
-                  >
-                    Send
-                  </Button>
-                </div>
               </div>
-            </form>
-          </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+
+
+
         </div>
       ) : (
         <p className=" text-muted-foreground text-center mt-5">

@@ -16,7 +16,7 @@ export default function EmailBody() {
 
   return (
     <>
-      <div className='p-3 m-3 h-[100%] flex-grow mx-auto rounded-md items-center' dangerouslySetInnerHTML={{ __html: htmlBody }} />
+      <div className='p-3 m-3 h-[100%] w-[100%] flex-grow mx-auto ' dangerouslySetInnerHTML={{ __html: htmlBody }} />
     </>
   )
 }

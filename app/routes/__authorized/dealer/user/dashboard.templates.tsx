@@ -154,6 +154,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
+
+
 export const meta = () => {
   return [
     { subject: "Toolbox - Dealer Sales Assistant" },
@@ -2116,44 +2118,9 @@ export default function Shight() {
       .run();
   });
 
-  const [attribute, setAttribute] = useState("");
-  function AttributeClick(item) {
-    setAttribute(item.title);
-    editor.commands.insertContent(item.attribute);
-    console.log(item.attribute, "attribute");
-  }
 
-  function ClientAttributes({ className, items, ...props }) {
-    return (
-      <nav
-        className={cn(
-          "flex space-x-2 flex-row max-w-[95%] lg:flex-col lg:space-x-0 lg:space-y-1 mt-3",
-          className
-        )}
-        {...props}
-      >
-        {items.map((item) => (
-          <Button
-            key={item.subject}
-            variant="ghost"
-            className={cn(
-              buttonVariants({ variant: "ghost" }),
-              attribute === item.subject
-                ? "bg-[#232324] hover:bg-muted/50 w-[90%]     "
-                : "hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  ",
-              "justify-start w-[90%] "
-            )}
-            value={item.attribute}
-            onClick={() => {
-              AttributeClick(item);
-            }}
-          >
-            {item.subject}
-          </Button>
-        ))}
-      </nav>
-    );
-  }
+
+
   const contentNewTemplate = "";
   const [editTemplate, setEditTemplate] = useState(false);
 
@@ -2233,6 +2200,44 @@ export default function Shight() {
     );
   }
 
+  const [attribute, setAttribute] = useState("");
+  function AttributeClick(item) {
+    setAttribute(item.title);
+    editor.commands.insertContent(item.attribute);
+    console.log(item.attribute, "attribute");
+  }
+
+  function ClientAttributes({ className, items, ...props }) {
+    return (
+      <nav
+        className={cn(
+          "flex space-x-2 flex-row max-w-[95%] lg:flex-col lg:space-x-0 lg:space-y-1 mt-3",
+          className
+        )}
+        {...props}
+      >
+        {items.map((item) => (
+          <Button
+            key={item.subject}
+            variant="ghost"
+            className={cn(
+              buttonVariants({ variant: "ghost" }),
+              attribute === item.subject
+                ? "bg-[#232324] hover:bg-muted/50 w-[90%]     "
+                : "hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  ",
+              "justify-start w-[90%] "
+            )}
+            value={item.attribute}
+            onClick={() => {
+              AttributeClick(item);
+            }}
+          >
+            {item.subject}
+          </Button>
+        ))}
+      </nav>
+    );
+  }
   return (
     <>
       <div className="flex">
@@ -3331,6 +3336,7 @@ export default function Shight() {
     </>
   );
 }
+
 
 export const clientAtr = [
   { subject: "Mr/Mrs", attribute: "${clientTitle}" },

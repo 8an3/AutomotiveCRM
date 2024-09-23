@@ -1980,7 +1980,7 @@ export const salesNavSidebarNav = [
   },
   {
     title: "Email Client",
-    to: "/dealer/email/client",
+    to: "/dealer/features/email/emailClient",
   },
   {
     title: "Calendar",
@@ -2020,7 +2020,7 @@ export const activixNavSidebarNav = [
 export const financeNavSidebarNav = [
   {
     title: "Email Client",
-    to: "/dealer/email/client",
+    to: "/dealer/features/email/emailClient",
   },
   {
     title: "Finance Dashboard",

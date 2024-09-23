@@ -107,11 +107,12 @@ export default function Root() {
   msalInstance.addEventCallback((event: EventMessage) => {
     if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
       const authResult = event.payload as AuthenticationResult;
-      console.log(authResult, authResult.account);
+      //   console.log(authResult, authResult.account);
       msalInstance.setActiveAccount(authResult.account);
-      console.log(authResult, authResult.account)
+      /// console.log(authResult, authResult.account)
     }
   });
+
   return (
     <ClientOnly fallback={<SimplerStaticVersion />}>
       {() => (

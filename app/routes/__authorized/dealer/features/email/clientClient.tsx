@@ -302,11 +302,11 @@ export default function ClientEmail() {
         typeof window !== "undefined" ? window.location.host : null;
       if (iFrameRef.current) {
         if (currentHost === "localhost:3000") {
-          iFrameRef.current.src = "http://localhost:3000/dealer/body";
+          iFrameRef.current.src = "http://localhost:3000/dealer/features/body";
         }
         if (currentHost === "dealersalesassistant.ca") {
           iFrameRef.current.src =
-            "https://www.dealersalesassistant.ca/dealer/body";
+            "https://www.dealersalesassistant.ca/dealer/features/body";
         }
         window.addEventListener("message", handleHeightMessage);
       }
@@ -452,9 +452,7 @@ export default function ClientEmail() {
       const folder = folders.find(
         (folder) => folder.displayName === displayName
       );
-      if (folder) {
-        displayedFolders.push(folder);
-      }
+
     });
 
     // Add custom folders that are not in displayNameOrder

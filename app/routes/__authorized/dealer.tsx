@@ -11,7 +11,7 @@ import UserSideBar from '~/components/zRoutes/oldComps/userSideBar';
 import Interruptions from '~/components/shared/interruptions';
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
 import GetData from './dealer/features/email/notifications.client';
-import SearchFunction from './dealer/systems/search';
+import SearchFunction from './dealer/search';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,9 +42,9 @@ import { getUserIsAllowed } from "~/helpers";
 
 import { ButtonIcon } from "~/components";
 import { Moon, Sun } from "~/images/icons";
-import SearchFunction2 from './dealer/systems/searchTable';
+import SearchFunction2 from './dealer/searchTable';
 import useSWR from 'swr';
-import SearchByOrderFunction from './dealer/systems/searchByOrder';
+import SearchByOrderFunction from './dealer/searchByOrder';
 import { toast } from 'sonner';
 import Warning from '~/overviewUtils/images/warning.svg'
 import MainDropwdown from '~/components/shared/dropdownNav'

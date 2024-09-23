@@ -1304,6 +1304,7 @@ model Clientfile {
   Finance     Finance[]
   WorkOrder   WorkOrder[]
   ServiceUnit ServiceUnit[]
+  Comm        Comm[]
 }
 
 // -----------------------------------------------------------------------------
@@ -1889,17 +1890,20 @@ model Comm {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userEmail String?
-  type      String?
-  body      String?
-  subject   String?
-  userName  String?
-  direction String?
-  result    String?
-  financeId String
-  Finance   Finance @relation(fields: [financeId], references: [id], onDelete: Cascade)
+  userEmail    String?
+  type         String?
+  body         String?
+  subject      String?
+  userName     String?
+  direction    String?
+  result       String?
+  ClientfileId String?
+  Clientfile   Clientfile? @relation(fields: [ClientfileId], references: [id], onDelete: Cascade)
+  financeId    String?
+  Finance      Finance?    @relation(fields: [financeId], references: [id], onDelete: Cascade)
 
   @@index([financeId])
+  @@index([ClientfileId])
 }
 
 model FinanceDeptProducts {

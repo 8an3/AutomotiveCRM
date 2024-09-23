@@ -198,8 +198,19 @@ export async function getList(
 ) {
   ensureClient(authProvider);
   var email = await graphClient!
-    .api(`/me/MailFolders/${folderName}/messages`)
-    .top(50)
+    .api(`/me/mailFolders/${folderName}/messages`)
+
+    .get();
+  return email;
+}
+export async function getCount(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  folderName: any
+) {
+  ensureClient(authProvider);
+  var email = await graphClient!
+    .api(`/me/mailFolders/${folderName}/messages`)
+
     .get();
   return email;
 }
@@ -208,9 +219,8 @@ export async function testInbox(
 ) {
   ensureClient(authProvider);
   var email = await graphClient!
-    .api(`/me/MailFolders/inbox/messages`)
-    .filter("isRead ne true")
-    .top(50)
+    .api(`/me/messages`)
+    .top(75)
     .get();
   return email;
 }
@@ -230,7 +240,7 @@ export async function getAllFolders(
 ) {
   ensureClient(authProvider);
   var email = await graphClient!
-    .api(`/me/mailFolders/?includeHiddenFolders=true`)
+    .api(`/me/mailFolders`)
     .get();
   return email;
 }
@@ -268,6 +278,20 @@ export async function messageRead(
 
   return email;
 }
+export async function setFolder(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  id: any,
+  folder: any
+) {
+  ensureClient(authProvider);
+  const message = {
+    destinationId: folder,
+  };
+  var email = await graphClient!.api(`/me/messages/${id}/move`)
+    .post(message);
+
+  return email;
+}
 export async function messageUnRead(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   id: any
@@ -299,6 +323,7 @@ export async function replyMessage(
   toAddresses: string[],
   toNames: string[],
   body: string,
+  subject: string
 ) {
   ensureClient(authProvider);
 
@@ -315,12 +340,15 @@ export async function replyMessage(
       toRecipients: toRecipients,
     },
     comment: body,
+    isDeliveryReceiptRequested: true,
+    subject: subject,
   };
 
   try {
     const email = await graphClient!
       .api(`/me/messages/${id}/reply`)
       .post(reply);
+    const to = toAddresses
     await SaveComs(to, body, subject)
 
     return email;
@@ -333,11 +361,15 @@ export async function replyMessage(
 export async function replyAllEmail(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   id: any,
-  body: any
+  body: any,
+  subject: string,
+  to: string,
 ) {
   ensureClient(authProvider);
   const replyAll = {
-    comment: body
+    comment: body,
+    isDeliveryReceiptRequested: true,
+    subject: subject,
   };
   var email = await graphClient!.api(`/me/messages/${id}/replyAll`)
     .post(replyAll);
@@ -378,7 +410,8 @@ export async function forwardEmail(
   id: any,
   body: any,
   toAddress: any,
-
+  subject: string,
+  toName: any,
 ) {
   ensureClient(authProvider);
   const forward = {
@@ -386,14 +419,17 @@ export async function forwardEmail(
     toRecipients: [
       {
         emailAddress: {
-          name: '',
+          name: toName,
           address: toAddress
         }
       }
-    ]
+    ],
+    isDeliveryReceiptRequested: true,
+    subject: subject,
   };
   var email = await graphClient!.api(`/me/messages/${id}/forward`)
     .post(forward);
+  const to = toAddress
   await SaveComs(to, body, subject)
 
   return email;
@@ -405,6 +441,17 @@ export async function listAttachment(
   ensureClient(authProvider);
 
   var email = await graphClient!.api(`/me/messages/${id}/attachments`)
+    .get();
+  return email;
+}
+export async function getAttachment(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  id: any,
+  attachId: any
+) {
+  ensureClient(authProvider);
+
+  var email = await graphClient!.api(`/me/messages/${id}/attachments/${attachId}`)
     .get();
   return email;
 }
@@ -680,7 +727,7 @@ export async function deleteFile(authProvider, fileId) {
 async function SaveComs(to, body, subject) {
   const { user } = useRootLoaderData()
   const finance = await prisma.finance.findFirst({ where: { email: to } })
-  await prisma.previousComms.create({
+  await prisma.comm.create({
     data: {
       financeId: finance.id,
       body: body,

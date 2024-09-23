@@ -12,12 +12,13 @@ interface MailListProps {
   emails: any
   setMail: any
   mail: any
+  ReadMessage: any
 }
 
-export function MailList({ emails, setMail, mail }: MailListProps) {
+export function MailList({ emails, setMail, mail, ReadMessage }: MailListProps) {
   // ----- sales card model and brand ---- //
 
-  console.log('mail list before return', emails)
+  /// console.log('mail list before return', emails)
   // --------- the sacred timeline -------//
   const options2 = {
     weekday: 'short',
@@ -28,7 +29,7 @@ export function MailList({ emails, setMail, mail }: MailListProps) {
     minute: '2-digit',
     second: '2-digit',
   };
-  console.log(emails, 'in maillist')
+  //console.log(emails, 'in maillist')
   return (
     <ScrollArea className="h-screen">
       <div className="flex flex-col gap-2 p-4 pt-0">
@@ -40,12 +41,15 @@ export function MailList({ emails, setMail, mail }: MailListProps) {
                 "flex flex-col items-start gap-2 rounded-lg border border-border p-3 text-left text-sm transition-all hover:bg-accent",
                 mail?.id === email.id && "bg-muted"
               )}
-              onClick={() => setMail(email)}
+              onClick={() => {
+                setMail(email)
+                ReadMessage(email)
+              }}
             >
               <div className="flex w-full flex-col gap-1">
                 <div className="flex items-center">
                   <div className="flex items-center gap-2">
-                    <div className="font-semibold">{email.form?.emailAddress.name}</div>
+                    <div className="font-semibold">{email.from?.emailAddress.name}</div>
                     {email.isRead === false && (
                       <span className="flex h-2 w-2 rounded-full bg-blue-600" />
                     )}
@@ -59,14 +63,14 @@ export function MailList({ emails, setMail, mail }: MailListProps) {
                     {new Date(email.createdDateTime).toLocaleDateString("en-US", options2)}
                   </div>
                 </div>
-                <div className="text-xs font-medium">{email.subject || 'No Subject'}</div>
+                <div className="text-xs font-medium">{email.subject}</div>
               </div>
               <div className="line-clamp-2 text-xs text-muted-foreground">
                 {email.bodyPreview?.substring(0, 300) || 'No Preview Available'}
               </div>
-              {email && email.labels && email.labels.length ? (
+              {email && email.flag && email.flag.length > 0 ? (
                 <div className="flex items-center gap-2">
-                  {email.labels.map((label) => (
+                  {email.flag.status.map((label) => (
                     <Badge key={label} variant={getBadgeVariantFromLabel(label)}>
                       {label}
                     </Badge>
