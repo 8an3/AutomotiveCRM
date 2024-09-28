@@ -648,6 +648,9 @@ export default function Dashboard() {
                         <TableHead className="text-center ">
                           Work Order ID
                         </TableHead>
+                        <TableHead className="text-center ">
+                          Date Created
+                        </TableHead>
                         <TableHead className=" text-right">
                           Actions
                         </TableHead>
@@ -683,6 +686,9 @@ export default function Dashboard() {
                             </TableCell>
                             <TableCell className="text-center  hidden md:table-cell">
                               {result.workOrderId}
+                            </TableCell>
+                            <TableCell className="text-center  hidden md:table-cell">
+                              {result.createdAt}
                             </TableCell>
                             <TableCell className="text-right flex">
                               <Tooltip>

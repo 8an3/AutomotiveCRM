@@ -1198,13 +1198,13 @@ export const meta = () => {
     },
   ];
 };
-const calculateTotalAccessoriesCost = (order) => {
+export const calculateTotalAccessoriesCost = (order) => {
   if (!order || !order.AccessoriesOnOrders) { return 0; }
   return order.AccessoriesOnOrders.reduce((total, accessoryOnOrder) => {
     return total + (accessoryOnOrder.quantity * accessoryOnOrder.accessory.price);
   }, 0);
 };
-const calculateTotalAmountPaid = (order) => {
+export const calculateTotalAmountPaid = (order) => {
   if (!order || !order.Payments) { return 0; }
   return order.Payments.reduce((total, payment) => {
     return total + payment.amountPaid;
@@ -2054,7 +2054,7 @@ const MySidebar = ({
 };
 
 
-function PACTable({ tableData, setValue, showPrevOrderById, options2, navigate, dept }) {
+export function PACTable({ tableData, setValue, showPrevOrderById, options2, navigate, dept }) {
   return (
     <Table>
       <TableHeader>

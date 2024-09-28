@@ -72,7 +72,7 @@
     "@microsoft/microsoft-graph-client": "^3.0.7",
     "@pdfme/common": "^4.0.0",
     "@pdfme/generator": "^4.0.0",
-    "@pdfme/ui": "^4.0.0",
+    "@pdfme/ui": "file:../../@pdfme/ui",
     "@phosphor-icons/react": "^2.0.15",
     "@primer/react": "^36.17.0",
     "@prisma/client": "^4.16.2",

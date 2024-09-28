@@ -12,7 +12,7 @@ import { Link } from "@remix-run/react"
 
 interface NavProps {
   isCollapsed: boolean
-  setLabel: any
+  GetEmailByFolder: any
   label: any
   links: {
     title: string
@@ -22,34 +22,34 @@ interface NavProps {
   }[]
 }
 
-export function Nav({ links, isCollapsed, label, setLabel }: NavProps) {
+export function Nav({ links, isCollapsed, label, GetEmailByFolder }: NavProps) {
   return (
     <div
       data-collapsed={isCollapsed}
       className="group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2"
     >
-      <nav className="  group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2  flex space-x-2 flex-row max-w-[95%] lg:flex-col lg:space-x-0 lg:space-y-1 mt-3">
-        {links.map((link, index) =>
+      <nav className="  group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2  flex space-x-2 flex-col max-w-[95%] lg:space-x-0 lg:space-y-1 mt-3">
+        {links.map((link) =>
           isCollapsed ? (
             <Tooltip
-              key={index} delayDuration={0}
+              key={link.title}
+              delayDuration={0}
             >
               <TooltipTrigger asChild >
                 <Button variant='ghost'
-                  key={index}
                   size='icon'
                   onClick={() => {
-                    setLabel(link.title)
+                    GetEmailByFolder(link.title)
                   }}
                   className={cn(
                     buttonVariants({ variant: "ghost" }),
                     label === link.title
-                      ? "bg-[#232324] hover:bg-muted/50 w-[90%]     "
-                      : "hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  ",
-                    "justify-start w-[90%] "
+                      ? "bg-[#232324] hover:bg-muted/50 w-[95%]  mx-auto   "
+                      : "hover:bg-muted/50 text-[#a1a1aa]  w-[95%] mx-auto ",
+                    "w-[95%] "
                   )} >
-                  <div className='flex justify-between'>
-                    <div>
+                  <div className="flex items-center justify-between w-full">
+                    <div className="flex items-center">
                       <link.icon className="mr-2 h-4 w-4" />
                       <p>{link.title}</p>
                     </div>
@@ -57,15 +57,13 @@ export function Nav({ links, isCollapsed, label, setLabel }: NavProps) {
                       <span
                         className={cn(
                           "ml-auto",
-                          label === link.title &&
-                          "text-background dark:text-white"
+                          label === link.title && "text-background dark:text-white"
                         )}
                       >
                         {link.label}
                       </span>
                     )}
                   </div>
-
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right" className="flex items-center gap-4">
@@ -79,20 +77,21 @@ export function Nav({ links, isCollapsed, label, setLabel }: NavProps) {
             </Tooltip>
           ) : (
             <Button variant='ghost'
-              key={index}
+              key={link.title}
               size='sm'
               onClick={() => {
-                setLabel(link.title)
+                GetEmailByFolder(link.title)
               }}
               className={cn(
                 buttonVariants({ variant: "ghost" }),
+
                 label === link.title
-                  ? "bg-[#232324] hover:bg-muted/50 w-[90%]     "
-                  : "hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  ",
-                "justify-start w-[90%] "
+                  ? "bg-[#232324] hover:bg-muted/50 w-[95%]     "
+                  : "hover:bg-muted/50 text-[#a1a1aa]  w-[95%]  ",
+                "w-[95%] "
               )} >
-              <div className='flex justify-between'>
-                <div>
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center">
                   <link.icon className="mr-2 h-4 w-4" />
                   <p>{link.title}</p>
                 </div>
@@ -100,8 +99,7 @@ export function Nav({ links, isCollapsed, label, setLabel }: NavProps) {
                   <span
                     className={cn(
                       "ml-auto",
-                      label === link.title &&
-                      "text-background dark:text-white"
+                      label === link.title && "text-background dark:text-white"
                     )}
                   >
                     {link.label}

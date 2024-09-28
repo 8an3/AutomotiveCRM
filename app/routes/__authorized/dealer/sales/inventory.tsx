@@ -1,5 +1,5 @@
-import type { LinksFunction, LoaderArgs, } from "@remix-run/node";
-import { Input, Separator, PopoverTrigger, PopoverContent, Popover, TextArea, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, SelectGroup, SelectLabel, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "~/components/ui/index";
+import type { LoaderArgs, } from "@remix-run/node";
+import { Input, Separator, PopoverTrigger, PopoverContent, Popover, TextArea, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup, SelectLabel } from "~/components/ui/index";
 import * as React from "react"
 import { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, sortingFns, } from "@tanstack/react-table"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu"
@@ -23,13 +23,9 @@ import { format } from "date-fns"
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';
 import { cn } from "~/components/ui/utils";
 import AddUnitDialog from "~/components/dashboard/inventory/addUnitDiaolog";
-import motoIcon from '~/images/favicons/moto.svg'
 
-export const links: LinksFunction = () => [
-    { rel: "icon", type: "image/svg", href: motoIcon, },
-]
 
-function Consignment({ data }) {
+export function Consignment({ data }) {
     const fetcher = useFetcher();
 
     return (
@@ -54,7 +50,7 @@ function Consignment({ data }) {
         </Select>
     )
 }
-function OnOrder({ data }) {
+export function OnOrder({ data }) {
     const fetcher = useFetcher();
 
     return (
@@ -79,7 +75,7 @@ function OnOrder({ data }) {
         </Select>
     )
 }
-function Sold({ data }) {
+export function Sold({ data }) {
     const fetcher = useFetcher();
 
     return (
@@ -104,7 +100,7 @@ function Sold({ data }) {
         </Select>
     )
 }
-function Status({ data }) {
+export function Status({ data }) {
     const fetcher = useFetcher();
 
     return (
@@ -129,7 +125,7 @@ function Status({ data }) {
         </Select>
     )
 }
-function OrderStatus({ data }) {
+export function OrderStatus({ data }) {
     const fetcher = useFetcher();
 
     return (
@@ -156,7 +152,7 @@ function OrderStatus({ data }) {
         </Select>
     )
 }
-function IsNew({ data }) {
+export function IsNew({ data }) {
     const fetcher = useFetcher();
 
     return (
@@ -181,7 +177,7 @@ function IsNew({ data }) {
         </Select>
     )
 }
-function Stocked({ data }) {
+export function Stocked({ data }) {
     const fetcher = useFetcher();
 
     return (
@@ -212,7 +208,432 @@ export const loader = async ({ request }) => {
     const email = session.get("email")
     const user = await GetUser(email)
     if (!user) { redirect('/login') }
-    const inventoryMotorcycle = await prisma.inventoryMotorcycle.findMany({})
+    const inventoryMotorcycle = await prisma.inventoryMotorcycle.findMany({
+        select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            packageNumber: true,
+            packagePrice: true,
+            stockNumber: true,
+            type: true,
+            class: true,
+            year: true,
+            make: true,
+            model: true,
+            modelName: true,
+            submodel: true,
+            subSubmodel: true,
+            price: true,
+            exteriorColor: true,
+            mileage: true,
+            consignment: true,
+            onOrder: true,
+            expectedOn: true,
+            status: true,
+            orderStatus: true,
+            hdcFONumber: true,
+            hdmcFONumber: true,
+            vin: true,
+            age: true,
+            floorPlanDueDate: true,
+            location: true,
+            stocked: true,
+            stockedDate: true,
+            isNew: true,
+            actualCost: true,
+            mfgSerialNumber: true,
+            engineNumber: true,
+            plates: true,
+            keyNumber: true,
+            length: true,
+            width: true,
+            engine: true,
+            fuelType: true,
+            power: true,
+            chassisNumber: true,
+            chassisYear: true,
+            chassisMake: true,
+            chassisModel: true,
+            chassisType: true,
+            registrationState: true,
+            registrationExpiry: true,
+            grossWeight: true,
+            netWeight: true,
+            insuranceCompany: true,
+            policyNumber: true,
+            insuranceAgent: true,
+            insuranceStartDate: true,
+            insuranceEndDate: true,
+            sold: true,
+            freight: true,
+            financeId: true,
+
+            Finance: {
+                select: {
+                    financeManager: true,
+                    userEmail: true,
+                    userName: true,
+                    financeManagerName: true,
+                    //: true,
+                    email: true,
+                    firstName: true,
+                    lastName: true,
+                    phone: true,
+                    name: true,
+                    address: true,
+                    city: true,
+                    postal: true,
+                    province: true,
+                    dl: true,
+                    typeOfContact: true,
+                    timeToContact: true,
+                    dob: true,
+                    //: true,
+                    othTax: true,
+                    optionsTotal: true,
+                    lienPayout: true,
+                    leadNote: true,
+                    sendToFinanceNow: true,
+                    dealNumber: true,
+                    iRate: true,
+                    months: true,
+                    discount: true,
+                    total: true,
+                    onTax: true,
+                    on60: true,
+                    biweekly: true,
+                    weekly: true,
+                    weeklyOth: true,
+                    biweekOth: true,
+                    oth60: true,
+                    weeklyqc: true,
+                    biweeklyqc: true,
+                    qc60: true,
+                    deposit: true,
+                    biweeklNatWOptions: true,
+                    weeklylNatWOptions: true,
+                    nat60WOptions: true,
+                    weeklyOthWOptions: true,
+                    biweekOthWOptions: true,
+                    oth60WOptions: true,
+                    biweeklNat: true,
+                    weeklylNat: true,
+                    nat60: true,
+                    qcTax: true,
+                    otherTax: true,
+                    totalWithOptions: true,
+                    otherTaxWithOptions: true,
+                    desiredPayments: true,
+                    admin: true,
+                    commodity: true,
+                    pdi: true,
+                    discountPer: true,
+                    userLoanProt: true,
+                    userTireandRim: true,
+                    userGap: true,
+                    userExtWarr: true,
+                    userServicespkg: true,
+                    deliveryCharge: true,
+                    vinE: true,
+                    lifeDisability: true,
+                    rustProofing: true,
+                    userOther: true,
+                    //: true,
+                    referral: true,
+                    visited: true,
+                    bookedApt: true,
+                    aptShowed: true,
+                    aptNoShowed: true,
+                    testDrive: true,
+                    metService: true,
+                    metManager: true,
+                    metParts: true,
+                    sold: true,
+                    depositMade: true,
+                    refund: true,
+                    turnOver: true,
+                    financeApp: true,
+                    approved: true,
+                    signed: true,
+                    pickUpSet: true,
+                    demoed: true,
+                    lastContact: true,
+                    status: true,
+                    customerState: true,
+                    result: true,
+                    timesContacted: true,
+                    nextAppointment: true,
+                    followUpDay: true,
+                    deliveryDate: true,
+                    delivered: true,
+                    deliveredDate: true,
+                    notes: true,
+                    visits: true,
+                    progress: true,
+                    metSalesperson: true,
+                    metFinance: true,
+                    financeApplication: true,
+                    pickUpDate: true,
+                    pickUpTime: true,
+                    depositTakenDate: true,
+                    docsSigned: true,
+                    tradeRepairs: true,
+                    seenTrade: true,
+                    lastNote: true,
+                    applicationDone: true,
+                    licensingSent: true,
+                    liceningDone: true,
+                    refunded: true,
+                    cancelled: true,
+                    lost: true,
+                    dLCopy: true,
+                    insCopy: true,
+                    testDrForm: true,
+                    voidChq: true,
+                    loanOther: true,
+                    signBill: true,
+                    ucda: true,
+                    tradeInsp: true,
+                    customerWS: true,
+                    otherDocs: true,
+                    urgentFinanceNote: true,
+                    funded: true,
+                    leadSource: true,
+                    financeDeptProductsTotal: true,
+                    bank: true,
+                    loanNumber: true,
+                    idVerified: true,
+                    dealerCommission: true,
+                    financeCommission: true,
+                    salesCommission: true,
+                    firstPayment: true,
+                    loanMaturity: true,
+                    quoted: true,
+                    //: true,
+                    InPerson: true,
+                    Phone: true,
+                    SMS: true,
+                    Email: true,
+                    Other: true,
+                    //------: true,
+                    //: true,
+                    paintPrem: true,
+                    licensing: true,
+                    stockNum: true,
+                    options: true,
+                    accessories: true,
+                    freight: true,
+                    labour: true,
+                    year: true,
+                    brand: true,
+                    mileage: true,
+                    model: true,
+                    model1: true,
+                    color: true,
+                    modelCode: true,
+                    msrp: true,
+                    trim: true,
+                    vin: true,
+                    bikeStatus: true,
+                    invId: true,
+                    motor: true,
+                    tag: true,
+                    //: true,
+                    tradeValue: true,
+                    tradeDesc: true,
+                    tradeColor: true,
+                    tradeYear: true,
+                    tradeMake: true,
+                    tradeVin: true,
+                    tradeTrim: true,
+                    tradeMileage: true,
+                    tradeLocation: true,
+                    lien: true,
+                    //: true,
+                    id: true,
+                    activixId: true,
+                    theRealActId: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    clientfileId: true,
+                    inventoryMotorcycleId: true,
+
+                    ///InventoryMotorcycle
+                    Clientfile: {
+                        select: {
+                            id: true,
+                            createdAt: true,
+                            updatedAt: true,
+                            financeId: true,
+                            userId: true,
+                            firstName: true,
+                            lastName: true,
+                            name: true,
+                            email: true,
+                            phone: true,
+                            address: true,
+                            city: true,
+                            postal: true,
+                            province: true,
+                            dl: true,
+                            typeOfContact: true,
+                            timeToContact: true,
+                            conversationId: true,
+                            billingAddress: true,
+                            dob: true,
+
+                            // AccOrder
+                            //Finance
+                            //WorkOrder
+                            //ServiceUnit
+                            //Comm
+                        }
+                    }
+                }
+            },
+            workOrders: {
+                select: {
+                    workOrderId: true,
+                    unit: true,
+                    mileage: true,
+                    vin: true,
+                    tag: true,
+                    motor: true,
+                    color: true,
+                    budget: true,
+                    waiter: true,
+                    totalLabour: true,
+                    totalParts: true,
+                    subTotal: true,
+                    total: true,
+                    writer: true,
+                    userEmail: true,
+                    tech: true,
+                    discDollar: true,
+                    discPer: true,
+                    techEmail: true,
+                    notes: true,
+                    customerSig: true,
+                    status: true,
+                    location: true,
+                    quoted: true,
+                    paid: true,
+                    remaining: true,
+                    FinanceUnitId: true,
+                    ServiceUnitId: true,
+                    financeId: true,
+                    clientfileId: true,
+                    note: true,
+                    closedAt: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    ServicesOnWorkOrders: {
+                        select: {
+                            id: true,
+                            createdAt: true,
+                            updatedAt: true,
+                            quantity: true,
+                            hr: true,
+                            status: true,
+                            workOrderId: true,
+                            serviceId: true,
+                            service: {
+                                select: {
+                                    id: true,
+                                    createdAt: true,
+                                    updatedAt: true,
+                                    description: true,
+                                    estHr: true,
+                                    service: true,
+                                    price: true,
+                                }
+                            }
+                        }
+                    },
+                    AccOrders: {
+                        select: {
+                            id: true,
+                            createdAt: true,
+                            updatedAt: true,
+                            userEmail: true,
+                            userName: true,
+                            dept: true,
+                            sellingDept: true,
+                            total: true,
+                            discount: true,
+                            discPer: true,
+                            paid: true,
+                            paidDate: true,
+                            status: true,
+                            workOrderId: true,
+                            note: true,
+                            financeId: true,
+                            clientfileId: true,
+
+                            AccessoriesOnOrders: {
+                                select: {
+                                    id: true,
+                                    quantity: true,
+                                    accOrderId: true,
+                                    status: true,
+                                    orderNumber: true,
+                                    OrderInvId: true,
+                                    accessoryId: true,
+                                    service: true,
+                                    hour: true,
+
+                                    // orderInventory
+                                    accessory: {
+                                        select: {
+                                            id: true,
+                                            createdAt: true,
+                                            updatedAt: true,
+                                            partNumber: true,
+                                            brand: true,
+                                            name: true,
+                                            price: true,
+                                            cost: true,
+                                            quantity: true,
+                                            minQuantity: true,
+                                            description: true,
+                                            category: true,
+                                            subCategory: true,
+                                            onOrder: true,
+                                            distributer: true,
+                                            location: true,
+                                            note: true,
+                                            workOrderSuggestion: true,
+                                        }
+                                    },
+                                    //accOrder
+                                }
+                            },
+                            //   Payments
+                            //  WorkOrder
+                            //  Finance
+                            AccHandoff: {
+                                select: {
+                                    id: true,
+                                    createdAt: true,
+                                    updatedAt: true,
+                                    sendTo: true,
+                                    handOffTime: true,
+                                    status: true,
+                                    sendToCompleted: true,
+                                    completedTime: true,
+                                    notes: true,
+                                    handOffDept: true,
+                                    AccOrderId: true,
+                                }
+                            }
+                            //  Clientfile
+                        }
+                    },
+                }
+            }
+        }
+    })
 
     return json({ user, inventoryMotorcycle, });
 }
@@ -222,18 +643,13 @@ export const action: ActionFunction = async ({ request, params }) => {
     const userSession = await getSession(request.headers.get("Cookie"));
     if (!userSession) { return json({ status: 302, redirect: 'login' }); };
     const email = userSession.get("email");
-    const user = await prisma.user.findUnique({
-        where: { email: email },
-        select: {
-            id: true,
-            ColumnStateInventory: {
-                select: {
-                    id: true,
-                    state: true,
-                }
-            }
-        }
-    })
+    const user = await GetUser(email)
+
+    const userIsManager = user.positions.some(
+        (pos) => pos.position === 'Manager' || pos.position === 'Administrator'
+    );
+
+
     const intent = formData.intent
     if (intent === 'columnState') {
         const update = await prisma.columnStateInventory.update({
@@ -431,7 +847,6 @@ export default function UnitInv() {
     const { inventoryMotorcycle, user } = useLoaderData()
     const [data, setPaymentData,] = useState(inventoryMotorcycle);
     const fetcher = useFetcher();
-    const submit = useSubmit();
     const [referrer, setReferrer] = useState()
     useEffect(() => {
         const referer = document.referrer;
@@ -483,7 +898,6 @@ export default function UnitInv() {
 
 
 
-    console.log(referrer, 'referer')
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
@@ -547,6 +961,7 @@ export default function UnitInv() {
     const [modelName, setModelName] = useState([]);
     const [subModel, setSubModel] = useState([]);
 
+
     useEffect(() => {
         async function fetchModels() {
             const uniqueModels = [
@@ -565,11 +980,15 @@ export default function UnitInv() {
 
         fetchModels();
     }, []);
-    const [date, setDate] = useState<Date>()
+
+    const assignUnit = useFetcher()
 
     const handleDropdownChange = (value) => {
         setGlobalFilter(value);
     };
+
+
+    const [date, setDate] = useState<Date>()
 
     const newDate = new Date()
     const [datefloorPlanDueDate, setDatefloorPlanDueDate] = useState<Date>()
@@ -587,27 +1006,7 @@ export default function UnitInv() {
     };
 
     const columns = [
-        {
-            id: 'select',
-            header: ({ table }) => (
-                <IndeterminateCheckbox
-                    checked={table.getIsAllRowsSelected()}
-                    indeterminate={table.getIsSomeRowsSelected()}
-                    onChange={table.getToggleAllRowsSelectedHandler()}
-                    className='border-primary mx-auto'
-                />
-            ),
-            cell: ({ row }) => (
-                <div className="px-1">
-                    <IndeterminateCheckbox
-                        checked={row.getIsSelected()}
-                        indeterminate={row.getIsSomeSelected()}
-                        onChange={row.getToggleSelectedHandler()}
-                        className='border-primary mx-auto'
-                    />
-                </div>
-            ),
-        },
+
         {
             id: 'Unit File',
             accessorKey: "Unit File",
@@ -627,17 +1026,6 @@ export default function UnitInv() {
             cell: ({ row }) => (
                 <div className="capitalize">{row.getValue("id")}</div>
             ),
-        },
-        {
-            accessorKey: "unitInfo",
-            cell: ({ row, column: { id } }) => {
-                const data = row.original
-                return (
-                    <UnitDialog data={data} />
-                )
-            },
-            filterFn: fuzzyFilter,
-            sortingFn: fuzzySort,
         },
         {
             accessorKey: "stockNumber",
@@ -1914,7 +2302,7 @@ export default function UnitInv() {
 
 export const meta: MetaFunction = () => {
     return [
-        { title: 'Inventory || SALES || Dealer Sales Assistant' },
+        { title: 'Unit Inventory || ADMIN || Dealer Sales Assistant' },
         {
             property: "og:title",
             content: "Your very own assistant!",

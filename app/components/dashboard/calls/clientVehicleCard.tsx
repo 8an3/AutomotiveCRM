@@ -80,27 +80,27 @@ export default function ClientVehicleCard({ data, }) {
     { name: "userOther", value: data.userOther, placeholder: 'Other data Package' },
   ];
 
-  const [clientUnit, setClientUnit] = useState([]);
-
-  useEffect(() => {
-    async function fetchUnit() {
-      try {
-        if (data.stockNum) {
-          const unit = await prisma.inventoryMotorcycle.findFirst({
-            where: {
-              stockNumber: data.stockNum
-            }
-          });
-          setClientUnit(unit);
+  /**  const [clientUnit, setClientUnit] = useState([]);
+  
+    useEffect(() => {
+      async function fetchUnit() {
+        try {
+          if (data.stockNum.length > 2) {
+            const unit = await prisma.inventoryMotorcycle.findFirst({
+              where: {
+                stockNumber: data.stockNum
+              }
+            });
+            setClientUnit(unit);
+          }
+        } catch (error) {
+          console.error('Error fetching unit:', error);
         }
-      } catch (error) {
-        console.error('Error fetching unit:', error);
       }
-    }
-
-    fetchUnit();
-  }, [data.stockNum]);
-
+  
+      fetchUnit();
+    }, [data.stockNum]);
+   */
   const navigate = useNavigate();
   const options = [
     "BMW-Motorrad",

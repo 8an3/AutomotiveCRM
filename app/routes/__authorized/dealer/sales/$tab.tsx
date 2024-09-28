@@ -85,6 +85,7 @@ import IndeterminateCheckbox, { fuzzyFilter, fuzzySort, login, getToken, invaria
 import { DataTablePagination } from "~/components/dashboard/calls/pagination";
 import { TextFunction } from '~/components/dashboard/calls/massSms';
 import money from '~/images/favicons/money.svg'
+import ComposeClient from '../features/email/composeClient';
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: secondary },
@@ -413,6 +414,11 @@ export function MainDashbaord({ user }) {
     function capitalizeFirstLetter(string) {
         return string[0].toUpperCase() + string.slice(1);
     }
+    /**    <ComposeClient
+                            data={data}
+                            open={open}
+                            setOpen={setOpen}
+                        />*/
 
     const columns = [
         {
@@ -586,6 +592,7 @@ export function MainDashbaord({ user }) {
                             className="cursor-pointer text-foreground target:text-primary hover:text-primary" >
                             <Mail />
                         </Button>
+
                         <EmailClient
                             data={data}
                             open={open}
@@ -594,6 +601,7 @@ export function MainDashbaord({ user }) {
                             customerName={customerName}
                             customerEmail={customerEmail}
                         />
+
                         <Button
                             variant='ghost'
                             size='icon'
@@ -2262,6 +2270,7 @@ export function MainDashbaord({ user }) {
 
     const responseFetcher = async () => {
         const getLocked = await prisma.lockFinanceTerminals.findFirst({ where: { salesEmail: user.email, locked: false, response: false } })
+        console.log(getLocked, 'getlocked')
         if (getLocked !== null) {
             setLockData(getLocked)
             setOpenResponse(true)

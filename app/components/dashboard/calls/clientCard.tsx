@@ -179,42 +179,6 @@ export default function ClientCard({ data }) {
                                     </div>
                                 ))}
 
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <div className="relative mt-3">
-
-                                        <Button
-                                            variant={"outline"}
-                                            className={cn(
-                                                "w-[100%] pl-3 text-left font-normal  ",
-                                                !date && "text-muted-foreground"
-                                            )}
-                                        >
-                                            {date ? (
-                                                format(date, "PPP")
-                                            ) : (
-                                                <span>DOB not yet entered</span>
-                                            )}
-                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                        </Button>
-                                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">DOB</label>
-                                    </div>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                        className='w-auto'
-                                        mode="single"
-                                        fromYear={1900}
-                                        selected={date}
-                                        onSelect={setDate}
-                                        disabled={(date) =>
-                                            date > new Date() || date < new Date("1900-01-01")
-                                        }
-                                        initialFocus
-                                    />
-                                </PopoverContent>
-                            </Popover>
-                            <input type='hidden' value={String(date)} name='dob' />
 
                             <div className="relative mt-5">
                                 <Select name='timeToContact' defaultValue={data.timeToContact}  >
@@ -522,3 +486,39 @@ export default function ClientCard({ data }) {
 }
 
 // onSubmit={handleSubmit} >
+/**     <Popover>
+                                <PopoverTrigger asChild>
+                                    <div className="relative mt-3">
+
+                                        <Button
+                                            variant={"outline"}
+                                            className={cn(
+                                                "w-[100%] pl-3 text-left font-normal  ",
+                                                !date && "text-muted-foreground"
+                                            )}
+                                        >
+                                            {date ? (
+                                                format(date, "PPP")
+                                            ) : (
+                                                <span>DOB not yet entered</span>
+                                            )}
+                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                        </Button>
+                                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">DOB</label>
+                                    </div>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                        className='w-auto'
+                                        mode="single"
+                                        fromYear={1900}
+                                        selected={date}
+                                        onSelect={setDate}
+                                        disabled={(date) =>
+                                            date > new Date() || date < new Date("1900-01-01")
+                                        }
+                                    />
+                                </PopoverContent>
+                            </Popover>
+                            <input type='hidden' value={String(date)} name='dob' />
+ */

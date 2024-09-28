@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Template, checkTemplate } from "@pdfme/common";
 import { Form, Viewer, Designer } from "@pdfme/ui";
-
 import {
   getFontsData,
   getTemplate,
@@ -31,9 +30,12 @@ import {
   RemixForm, Card, CardContent, Input, Label, Avatar, AvatarFallback, AvatarImage, PopoverTrigger, PopoverContent, Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, Popover, CardHeader, CardTitle, CardDescription,
   SelectContent, SelectLabel, SelectGroup,
   SelectValue, Select, SelectTrigger, SelectItem,
+  Separator,
 } from "~/components";
 import { generate } from "@pdfme/generator";
 import { ClientOnly } from "remix-utils";
+
+
 export default function DesignerApp() {
 
   return (
@@ -214,16 +216,16 @@ export function PrintButton() {
       try {
         let url = window.location.href;
         let response;
-        if (url === "http://localhost:3002/") {
-          response = await fetch("http://localhost:5066/documents", {
+        if (url === "http://localhost:3000/") {
+          response = await fetch("http://localhost:3000/dealer/document/save", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
           });
-        } else if (url === "https://third-kappa.vercel.app/") {
-          response = await fetch("https://third-kappa.vercel.app/api/postDocuments", {
+        } else if (url === "https://www.dealersalesassistant.ca/") {
+          response = await fetch("https://www.dealersalesassistant.ca/dealer/document/save", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -524,16 +526,34 @@ export function PrintButton() {
     }
   };
 
-  /** <div className="grid w-full max-w-xs items-center gap-1.5">
-            <Label className="text-foreground"  >Change BasePDF</Label>
-            <Input className="text-foreground border-white" type="file" accept="application/pdf" onChange={onChangeBasePDF} />
-          </div>
-               <div className="grid w-full max-w-xs items-center gap-1.5">
-          <Label className="text-foreground" > Load Template</Label>
-          <Input className="text-foreground border-white" type="file" accept="application/json" onChange={(e) => handleLoadTemplate(e, designer.current)} />
-        </div>
-         */
+  ///-------------------------dnd
+  const [list, setList] = useState('Documentation')
+  const [theList, setTheList] = useState([])
+  const copyText = (text) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        setCopiedText(text);
+        setTimeout(() => setCopiedText(""), 3000); // Reset after 3 seconds
+      })
+      .catch((error) => {
+        console.error("Failed to copy text: ", error);
+      });
+  };
+  const [copiedText, setCopiedText] = useState("");
+  const timerRef = useRef(0);
+
+  useEffect(() => {
+    return () => clearTimeout(timerRef.current);
+  }, []);
+
+
+  const [open, setOpen] = useState(false)
+
+
+
   return (
+
     <div className='mt-[35px]'>
       <header className='mb-3 items-center' style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginRight: 120, marginLeft: 50 }}>
         <div className="relative ml-2 mt-4">
@@ -560,9 +580,6 @@ export function PrintButton() {
             Load Template
           </label>
         </div>
-
-
-
         <div className="relative ">
           <Select name='userRole' onValueChange={onLoadTemplate} >
             <SelectTrigger className="w-[250px] mx-2 bg-background text-foreground border border-border">
@@ -607,7 +624,6 @@ export function PrintButton() {
           </Select>
           <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground"> Templates</label>
         </div>
-
         <Button
           className='mx-2' onClick={onDownloadTemplate}>
           Download Template
@@ -627,8 +643,10 @@ export function PrintButton() {
           Generate PDF w inputs
         </Button>
 
+
       </header>
       <div ref={designerRef} style={{ width: '100%', height: `calc(100vh - ${headerHeight}px)` }} />
+
     </div>
   );
 }
@@ -648,7 +666,35 @@ export const meta = () => {
     },
   ];
 };
+/**  {open && (
+          <div className={`  border-[5px] border-black rounded-[12px] bg-white text-black p-5 w-[250px] h-screen z-100`}>
+            <div className='grid grid-cols-1 mx-auto justify-center'>
+              <p
+                className={`text-3xl text-center`}>DB Glossary</p>
+              <Separator className='w-[80%] text-border border-border bg-border mb-5' />
 
+              <Select onValueChange={(value) => {
+                setList(value)
+              }}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select Type Of Document" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Documents</SelectLabel>
+                    <SelectItem value="BOS">BOS</SelectItem>
+                    <SelectItem value="Licensing">Licensing</SelectItem>
+                    <SelectItem value="Work Order">Work Order</SelectItem>
+                    <SelectItem value="Receipt">Receipt</SelectItem>
+                    <SelectItem value="All">All</SelectItem>
+                    <SelectItem value="Documentation">Documentation</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
+            </div>
+          </div>
+        )} */
 
 /**
  * import { useEffect, useRef, useState } from "react";

@@ -127,8 +127,22 @@ export default function SettingsGenerral() {
                   <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="UnitInventory">Unit Inventory</SelectItem>
                   <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="Deals">Deals</SelectItem>
                   <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="Accessories">Accessories</SelectItem>
-                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" disabled value="Accessories">Work Orders</SelectItem>
-                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" disabled value="Accessories">Accessory Orders</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="workOrders">Work Orders</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="AccessoriesOnOrders">Accessory Orders</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="Users" disabled>Users</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="StaffMessages" disabled>Staff Messages</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="TimeEntry" disabled>Time Entry</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="EmailTemplates" disabled>Email Templates</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="TimeEntry" disabled>Time Entry</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="ClientApts" disabled>Client Apts</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="OrderInventory" disabled>Order Inventory</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="FinancePayment" disabled>Finance Payment</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="FinanceNote" disabled>FinanceNote</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="WorkOrderApts" disabled>Work Order Apts</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="WorkOrderClockEntry" disabled>Work Order Clock Entry</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="Services" disabled>Services</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="WorkOrderApts" disabled>Work Order Apts</SelectItem>
+                  <SelectItem className="cursor-pointer  hover:bg-muted/50 w-[95%] rounded-md" value="WorkOrderApts" disabled>Work Order Apts</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>

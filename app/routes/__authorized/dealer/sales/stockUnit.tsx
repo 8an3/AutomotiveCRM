@@ -1,3 +1,37 @@
+import type { LoaderArgs, } from "@remix-run/node";
+import { Input, Separator, PopoverTrigger, PopoverContent, Popover, TextArea, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectLabel, SelectGroup } from "~/components/ui/index";
+import * as React from "react"
+import { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, sortingFns, } from "@tanstack/react-table"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
+import { useEffect, useState } from "react";
+import { Form, useLoaderData, useSubmit, useFetcher, useNavigate } from "@remix-run/react";
+import { getSession } from "~/sessions/auth-session.server";
+import { type MetaFunction, redirect, type LoaderFunctionArgs, json, ActionFunction } from '@remix-run/node'
+import { GetUser } from "~/utils/loader.server";
+import { fuzzyFilter, fuzzySort, TableMeta, getTableMeta, DebouncedInput } from "~/components/shared/shared";
+import { Cross2Icon, CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons";
+import IndeterminateCheckbox, { EditableText, Filter } from '~/components/shared/shared'
+import { X } from "lucide-react";
+import { toast } from "sonner";
+import { DataTablePagination } from "~/components/dashboard/calls/pagination";
+import financeFormSchema from "~/overviewUtils/financeFormSchema";
+import UnitDialog from '~/components/dashboard/inventory/diaolog'
+import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
+import { format } from "date-fns"
+import { Calendar as SmallCalendar } from '~/components/ui/calendar';
+import { cn } from "~/components/ui/utils";
+import AddUnitDialog from "~/components/dashboard/inventory/addUnitDiaolog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog"
+
 
 import {
   Tooltip,
@@ -30,48 +64,655 @@ import {
   compareItems,
 } from '@tanstack/match-sorter-utils'
 import { HelpCircle } from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/dialog"
-
-import StockUnit from '~/components/dashboard/unitPicker/table'
-
-import type { LinksFunction, LoaderArgs, } from "@remix-run/node";
-import { Input, Separator, PopoverTrigger, PopoverContent, Popover, TextArea, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, SelectGroup, SelectLabel, Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "~/components/ui/index";
-import * as React from "react"
-import { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, sortingFns, } from "@tanstack/react-table"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
-import { useEffect, useState } from "react";
-import { Form, useLoaderData, useSubmit, useFetcher, useNavigate } from "@remix-run/react";
-import { getSession } from "~/sessions/auth-session.server";
-import { prisma } from "~/libs";
-import { type MetaFunction, redirect, type LoaderFunctionArgs, json, ActionFunction } from '@remix-run/node'
-import { GetUser } from "~/utils/loader.server";
-import { fuzzyFilter, fuzzySort, TableMeta, getTableMeta, DebouncedInput } from "~/components/shared/shared";
-import { Cross2Icon, CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons";
-import IndeterminateCheckbox, { EditableText, Filter } from '~/components/shared/shared'
-import { X } from "lucide-react";
-import { toast } from "sonner";
-import { DataTablePagination } from "~/components/dashboard/calls/pagination";
-import financeFormSchema from "~/overviewUtils/financeFormSchema";
-import UnitDialog from '~/components/dashboard/inventory/diaolog'
-import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
-import { format } from "date-fns"
-import { Calendar as SmallCalendar } from '~/components/ui/calendar';
-import { cn } from "~/components/ui/utils";
-import AddUnitDialog from "~/components/dashboard/inventory/addUnitDiaolog";
 import motoIcon from '~/images/favicons/moto.svg'
+import { prisma } from "~/libs";
+import StockUnit from '~/components/dashboard/unitPicker/table'
+import { Stocked, IsNew, OrderStatus, Status, Sold, OnOrder, Consignment } from '~/routes/__authorized/dealer/sales/inventory'
 
-export const links: LinksFunction = () => [
-  { rel: "icon", type: "image/svg", href: motoIcon, },
-]
+export const loader = async ({ request }) => {
+  const session = await getSession(request.headers.get("Cookie"));
+  const email = session.get("email")
+  const user = await GetUser(email)
+  if (!user) { redirect('/login') }
+  const inventoryMotorcycle = await prisma.inventoryMotorcycle.findMany({
+    select: {
+      id: true,
+      createdAt: true,
+      updatedAt: true,
+      packageNumber: true,
+      packagePrice: true,
+      stockNumber: true,
+      type: true,
+      class: true,
+      year: true,
+      make: true,
+      model: true,
+      modelName: true,
+      submodel: true,
+      subSubmodel: true,
+      price: true,
+      exteriorColor: true,
+      mileage: true,
+      consignment: true,
+      onOrder: true,
+      expectedOn: true,
+      status: true,
+      orderStatus: true,
+      hdcFONumber: true,
+      hdmcFONumber: true,
+      vin: true,
+      age: true,
+      floorPlanDueDate: true,
+      location: true,
+      stocked: true,
+      stockedDate: true,
+      isNew: true,
+      actualCost: true,
+      mfgSerialNumber: true,
+      engineNumber: true,
+      plates: true,
+      keyNumber: true,
+      length: true,
+      width: true,
+      engine: true,
+      fuelType: true,
+      power: true,
+      chassisNumber: true,
+      chassisYear: true,
+      chassisMake: true,
+      chassisModel: true,
+      chassisType: true,
+      registrationState: true,
+      registrationExpiry: true,
+      grossWeight: true,
+      netWeight: true,
+      insuranceCompany: true,
+      policyNumber: true,
+      insuranceAgent: true,
+      insuranceStartDate: true,
+      insuranceEndDate: true,
+      sold: true,
+      freight: true,
+      financeId: true,
+
+      Finance: {
+        select: {
+          financeManager: true,
+          userEmail: true,
+          userName: true,
+          financeManagerName: true,
+          //: true,
+          email: true,
+          firstName: true,
+          lastName: true,
+          phone: true,
+          name: true,
+          address: true,
+          city: true,
+          postal: true,
+          province: true,
+          dl: true,
+          typeOfContact: true,
+          timeToContact: true,
+          dob: true,
+          //: true,
+          othTax: true,
+          optionsTotal: true,
+          lienPayout: true,
+          leadNote: true,
+          sendToFinanceNow: true,
+          dealNumber: true,
+          iRate: true,
+          months: true,
+          discount: true,
+          total: true,
+          onTax: true,
+          on60: true,
+          biweekly: true,
+          weekly: true,
+          weeklyOth: true,
+          biweekOth: true,
+          oth60: true,
+          weeklyqc: true,
+          biweeklyqc: true,
+          qc60: true,
+          deposit: true,
+          biweeklNatWOptions: true,
+          weeklylNatWOptions: true,
+          nat60WOptions: true,
+          weeklyOthWOptions: true,
+          biweekOthWOptions: true,
+          oth60WOptions: true,
+          biweeklNat: true,
+          weeklylNat: true,
+          nat60: true,
+          qcTax: true,
+          otherTax: true,
+          totalWithOptions: true,
+          otherTaxWithOptions: true,
+          desiredPayments: true,
+          admin: true,
+          commodity: true,
+          pdi: true,
+          discountPer: true,
+          userLoanProt: true,
+          userTireandRim: true,
+          userGap: true,
+          userExtWarr: true,
+          userServicespkg: true,
+          deliveryCharge: true,
+          vinE: true,
+          lifeDisability: true,
+          rustProofing: true,
+          userOther: true,
+          //: true,
+          referral: true,
+          visited: true,
+          bookedApt: true,
+          aptShowed: true,
+          aptNoShowed: true,
+          testDrive: true,
+          metService: true,
+          metManager: true,
+          metParts: true,
+          sold: true,
+          depositMade: true,
+          refund: true,
+          turnOver: true,
+          financeApp: true,
+          approved: true,
+          signed: true,
+          pickUpSet: true,
+          demoed: true,
+          lastContact: true,
+          status: true,
+          customerState: true,
+          result: true,
+          timesContacted: true,
+          nextAppointment: true,
+          followUpDay: true,
+          deliveryDate: true,
+          delivered: true,
+          deliveredDate: true,
+          notes: true,
+          visits: true,
+          progress: true,
+          metSalesperson: true,
+          metFinance: true,
+          financeApplication: true,
+          pickUpDate: true,
+          pickUpTime: true,
+          depositTakenDate: true,
+          docsSigned: true,
+          tradeRepairs: true,
+          seenTrade: true,
+          lastNote: true,
+          applicationDone: true,
+          licensingSent: true,
+          liceningDone: true,
+          refunded: true,
+          cancelled: true,
+          lost: true,
+          dLCopy: true,
+          insCopy: true,
+          testDrForm: true,
+          voidChq: true,
+          loanOther: true,
+          signBill: true,
+          ucda: true,
+          tradeInsp: true,
+          customerWS: true,
+          otherDocs: true,
+          urgentFinanceNote: true,
+          funded: true,
+          leadSource: true,
+          financeDeptProductsTotal: true,
+          bank: true,
+          loanNumber: true,
+          idVerified: true,
+          dealerCommission: true,
+          financeCommission: true,
+          salesCommission: true,
+          firstPayment: true,
+          loanMaturity: true,
+          quoted: true,
+          //: true,
+          InPerson: true,
+          Phone: true,
+          SMS: true,
+          Email: true,
+          Other: true,
+          //------: true,
+          //: true,
+          paintPrem: true,
+          licensing: true,
+          stockNum: true,
+          options: true,
+          accessories: true,
+          freight: true,
+          labour: true,
+          year: true,
+          brand: true,
+          mileage: true,
+          model: true,
+          model1: true,
+          color: true,
+          modelCode: true,
+          msrp: true,
+          trim: true,
+          vin: true,
+          bikeStatus: true,
+          invId: true,
+          motor: true,
+          tag: true,
+          //: true,
+          tradeValue: true,
+          tradeDesc: true,
+          tradeColor: true,
+          tradeYear: true,
+          tradeMake: true,
+          tradeVin: true,
+          tradeTrim: true,
+          tradeMileage: true,
+          tradeLocation: true,
+          lien: true,
+          //: true,
+          id: true,
+          activixId: true,
+          theRealActId: true,
+          createdAt: true,
+          updatedAt: true,
+          clientfileId: true,
+          inventoryMotorcycleId: true,
+
+          ///InventoryMotorcycle
+          Clientfile: {
+            select: {
+              id: true,
+              createdAt: true,
+              updatedAt: true,
+              financeId: true,
+              userId: true,
+              firstName: true,
+              lastName: true,
+              name: true,
+              email: true,
+              phone: true,
+              address: true,
+              city: true,
+              postal: true,
+              province: true,
+              dl: true,
+              typeOfContact: true,
+              timeToContact: true,
+              conversationId: true,
+              billingAddress: true,
+              dob: true,
+
+              // AccOrder
+              //Finance
+              //WorkOrder
+              //ServiceUnit
+              //Comm
+            }
+          }
+        }
+      },
+      workOrders: {
+        select: {
+          workOrderId: true,
+          unit: true,
+          mileage: true,
+          vin: true,
+          tag: true,
+          motor: true,
+          color: true,
+          budget: true,
+          waiter: true,
+          totalLabour: true,
+          totalParts: true,
+          subTotal: true,
+          total: true,
+          writer: true,
+          userEmail: true,
+          tech: true,
+          discDollar: true,
+          discPer: true,
+          techEmail: true,
+          notes: true,
+          customerSig: true,
+          status: true,
+          location: true,
+          quoted: true,
+          paid: true,
+          remaining: true,
+          FinanceUnitId: true,
+          ServiceUnitId: true,
+          financeId: true,
+          clientfileId: true,
+          note: true,
+          closedAt: true,
+          createdAt: true,
+          updatedAt: true,
+          ServicesOnWorkOrders: {
+            select: {
+              id: true,
+              createdAt: true,
+              updatedAt: true,
+              quantity: true,
+              hr: true,
+              status: true,
+              workOrderId: true,
+              serviceId: true,
+              service: {
+                select: {
+                  id: true,
+                  createdAt: true,
+                  updatedAt: true,
+                  description: true,
+                  estHr: true,
+                  service: true,
+                  price: true,
+                }
+              }
+            }
+          },
+          AccOrders: {
+            select: {
+              id: true,
+              createdAt: true,
+              updatedAt: true,
+              userEmail: true,
+              userName: true,
+              dept: true,
+              sellingDept: true,
+              total: true,
+              discount: true,
+              discPer: true,
+              paid: true,
+              paidDate: true,
+              status: true,
+              workOrderId: true,
+              note: true,
+              financeId: true,
+              clientfileId: true,
+
+              AccessoriesOnOrders: {
+                select: {
+                  id: true,
+                  quantity: true,
+                  accOrderId: true,
+                  status: true,
+                  orderNumber: true,
+                  OrderInvId: true,
+                  accessoryId: true,
+                  service: true,
+                  hour: true,
+
+                  // orderInventory
+                  accessory: {
+                    select: {
+                      id: true,
+                      createdAt: true,
+                      updatedAt: true,
+                      partNumber: true,
+                      brand: true,
+                      name: true,
+                      price: true,
+                      cost: true,
+                      quantity: true,
+                      minQuantity: true,
+                      description: true,
+                      category: true,
+                      subCategory: true,
+                      onOrder: true,
+                      distributer: true,
+                      location: true,
+                      note: true,
+                      workOrderSuggestion: true,
+                    }
+                  },
+                  //accOrder
+                }
+              },
+              //   Payments
+              //  WorkOrder
+              //  Finance
+              AccHandoff: {
+                select: {
+                  id: true,
+                  createdAt: true,
+                  updatedAt: true,
+                  sendTo: true,
+                  handOffTime: true,
+                  status: true,
+                  sendToCompleted: true,
+                  completedTime: true,
+                  notes: true,
+                  handOffDept: true,
+                  AccOrderId: true,
+                }
+              }
+              //  Clientfile
+            }
+          },
+        }
+      }
+    }
+  })
+
+  return json({ user, inventoryMotorcycle, });
+}
+export const action: ActionFunction = async ({ request, params }) => {
+  const formPayload = Object.fromEntries(await request.formData());
+  let formData = financeFormSchema.parse(formPayload)
+  const userSession = await getSession(request.headers.get("Cookie"));
+  if (!userSession) { return json({ status: 302, redirect: 'login' }); };
+  const email = userSession.get("email");
+  const user = await prisma.user.findUnique({
+    where: { email: email },
+    select: {
+      id: true,
+      ColumnStateInventory: {
+        select: {
+          id: true,
+          state: true,
+        }
+      }
+    }
+  })
+  const intent = formData.intent
+  if (intent === 'columnState') {
+    const update = await prisma.columnStateInventory.update({
+      where: { id: user.ColumnStateInventory.id },
+      data: { state: JSON.parse(formPayload.state) }
+    })
+    return json({ update })
+  }
+  if (intent === 'addUnit') {
+    const update = await prisma.inventoryMotorcycle.create({
+      data: {
+        packageNumber: formPayload.packageNumber,
+        packagePrice: formPayload.packagePrice,
+        stockNumber: formPayload.stockNumber,
+        type: formPayload.type,
+        class: formPayload.class,
+        year: formPayload.year,
+        make: formPayload.make,
+        model: formPayload.model,
+        modelName: formPayload.modelName,
+        submodel: formPayload.submodel,
+        subSubmodel: formPayload.subSubmodel,
+        price: formPayload.price,
+        exteriorColor: formPayload.exteriorColor,
+        mileage: formPayload.mileage,
+        consignment: Boolean(formPayload.consignment),
+        onOrder: Boolean(formPayload.onOrder),
+        expectedOn: formPayload.expectedOn,
+        status: formPayload.status,
+        orderStatus: formPayload.orderStatus,
+        hdcFONumber: formPayload.hdcFONumber,
+        hdmcFONumber: formPayload.hdmcFONumber,
+        vin: formPayload.vin,
+        age: parseInt(formPayload.age),
+        floorPlanDueDate: formPayload.floorPlanDueDate,
+        location: formPayload.location,
+        stocked: Boolean(formPayload.stocked),
+        stockedDate: formPayload.stockedDate,
+        isNew: Boolean(formPayload.isNew),
+        actualCost: formPayload.actualCost,
+        mfgSerialNumber: formPayload.mfgSerialNumber,
+        engineNumber: formPayload.engineNumber,
+        plates: formPayload.plates,
+        keyNumber: formPayload.keyNumber,
+        length: formPayload.length,
+        width: formPayload.width,
+        engine: formPayload.engine,
+        fuelType: formPayload.fuelType,
+        power: formPayload.power,
+        chassisNumber: formPayload.chassisNumber,
+        chassisYear: formPayload.chassisYear,
+        chassisMake: formPayload.chassisMake,
+        chassisModel: formPayload.chassisModel,
+        chassisType: formPayload.chassisType,
+        registrationState: formPayload.registrationState,
+        registrationExpiry: formPayload.registrationExpiry,
+        grossWeight: formPayload.grossWeight,
+        netWeight: formPayload.netWeight,
+        insuranceCompany: formPayload.insuranceCompany,
+        policyNumber: formPayload.policyNumber,
+        insuranceAgent: formPayload.insuranceAgent,
+        insuranceStartDate: formPayload.insuranceStartDate,
+        insuranceEndDate: formPayload.insuranceEndDate,
+        sold: Boolean(formPayload.sold),
+        financeId: formPayload.financeId,
+      }
+    })
+    return json({ update })
+  }
+  if (intent === 'updateUnit') {
+    const update = await prisma.inventoryMotorcycle.update({
+      where: { id: formData.id },
+      data: {
+        packageNumber: formData.packageNumber,
+        packagePrice: formData.packagePrice,
+        stockNumber: formData.stockNumber,
+        type: formData.type,
+        class: formData.class,
+        year: formData.year,
+        make: formData.make,
+        model: formData.model,
+        modelName: formData.modelName,
+        submodel: formData.submodel,
+        subSubmodel: formData.subSubmodel,
+        price: formData.price,
+        exteriorColor: formData.exteriorColor,
+        mileage: formData.mileage,
+        orderStatus: formData.orderStatus,
+        hdcFONumber: formData.hdcFONumber,
+        hdmcFONumber: formData.hdmcFONumber,
+        vin: formData.vin,
+        age: parseInt(formData.age),
+        location: formData.location,
+        actualCost: formData.actualCost,
+        mfgSerialNumber: formData.mfgSerialNumber,
+        engineNumber: formData.engineNumber,
+        plates: formData.plates,
+        keyNumber: formData.keyNumber,
+        length: formData.length,
+        width: formData.width,
+        engine: formData.engine,
+        fuelType: formData.fuelType,
+        power: formData.power,
+        chassisNumber: formData.chassisNumber,
+        chassisYear: formData.chassisYear,
+        chassisMake: formData.chassisMake,
+        chassisModel: formData.chassisModel,
+        chassisType: formData.chassisType,
+        registrationState: formData.registrationState,
+        registrationExpiry: formData.registrationExpiry,
+        grossWeight: formData.grossWeight,
+        netWeight: formData.netWeight,
+        insuranceCompany: formData.insuranceCompany,
+        policyNumber: formData.policyNumber,
+        insuranceAgent: formData.insuranceAgent,
+        insuranceStartDate: formData.insuranceStartDate,
+        insuranceEndDate: formData.insuranceEndDate,
+      }
+    })
+    return json({ update })
+  }
+  if (intent === 'consignment') {
+    const update = await prisma.inventoryMotorcycle.update({
+      where: { id: formData.id },
+      data: { consignment: Boolean(formPayload.consignment) }
+    })
+    return json({ update })
+  }
+  if (intent === 'onOrder') {
+    const update = await prisma.inventoryMotorcycle.update({
+      where: { id: formData.id },
+      data: { onOrder: Boolean(formPayload.onOrder) }
+    })
+    return json({ update })
+  }
+  if (intent === 'expectedOn') {
+    const update = await prisma.inventoryMotorcycle.update({
+      where: { id: formData.id },
+      data: { expectedOn: String(formPayload.expectedOn) }
+    })
+    return json({ update })
+  }
+  if (intent === 'status') {
+    const update = await prisma.inventoryMotorcycle.update({
+      where: { id: formData.id },
+      data: { status: String(formPayload.status) }
+    })
+    return json({ update })
+  }
+  if (intent === 'orderStatus') {
+    const update = await prisma.inventoryMotorcycle.update({
+      where: { id: formData.id },
+      data: { orderStatus: String(formPayload.orderStatus) }
+    })
+    return json({ update })
+  }
+  if (intent === 'floorPlanDueDate') {
+    const update = await prisma.inventoryMotorcycle.update({
+      where: { id: formData.id },
+      data: { floorPlanDueDate: String(formPayload.floorPlanDueDate) }
+    })
+    return json({ update })
+  }
+  if (intent === 'isNew') {
+    const update = await prisma.inventoryMotorcycle.update({
+      where: { id: formData.id },
+      data: { isNew: Boolean(formPayload.isNew) }
+    })
+    return json({ update })
+  }
+  if (intent === 'sold') {
+    const update = await prisma.inventoryMotorcycle.update({
+      where: { id: formData.id },
+      data: {
+        sold: Boolean(formPayload.sold),
+        status: formPayload.sold ? "Reserved" : null,
+        orderStatus: formPayload.sold ? "Reserved" : null,
+      }
+    })
+    return json({ update })
+  }
+
+
+  if (intent === 'stocked') {
+    const update = await prisma.inventoryMotorcycle.update({
+      where: { id: formData.id },
+      data: { stocked: Boolean(formPayload.stocked), stockedDate: formPayload.stocked ? String(new Date()) : null }
+    })
+    return json({ update })
+  }
+  return json({ message: 'Invalid intent' }, { status: 400 });
+}
 export default function UnitPicker({ finance, tableData, user }) {
 
 
@@ -93,54 +734,11 @@ export default function UnitPicker({ finance, tableData, user }) {
 
   )
 }
-
-/**export const loader = async ({ request }) => {
-  const session = await getSession(request.headers.get("Cookie"));
-  const email = session.get("email")
-  const user = await GetUser(email)
-  if (!user) { redirect('/login') }
-  const inventoryMotorcycle = await prisma.inventoryMotorcycle.findMany({})
-
-  return json({ user, inventoryMotorcycle, });
-} */
-export const action: ActionFunction = async ({ request, params }) => {
-  const formPayload = Object.fromEntries(await request.formData());
-  let formData = financeFormSchema.parse(formPayload)
-  const userSession = await getSession(request.headers.get("Cookie"));
-  if (!userSession) { return json({ status: 302, redirect: 'login' }); };
-  const email = userSession.get("email");
-  const user = await prisma.user.findUnique({
-    where: { email: email },
-    select: {
-      id: true,
-      ColumnStateInventory: {
-        select: {
-          id: true,
-          state: true,
-        }
-      }
-    }
-  })
-  const intent = formData.intent
-
-
-  return json({ message: 'Invalid intent' }, { status: 400 });
-}
-
-export function UnitInv({ finance, user, tableData }) {
-  /// const { inventoryMotorcycle, user } = useLoaderData()
-
-
-  const [data, setPaymentData] = useState([]);
-
-
+export function UnitInv({ finance, tableData, user }) {
+  const [data, setPaymentData,] = useState([]);
 
   useEffect(() => {
     setPaymentData(tableData)
-
-    /**     if (tableData) {
-           const filtered = tableData.filter((moto) => moto.model === finance.model)
-         } */
   }, []);
 
   const fetcher = useFetcher();
@@ -152,23 +750,51 @@ export function UnitInv({ finance, user, tableData }) {
       setReferrer(referer)
     }
   }, []);
+  console.log(user, 'inventory units')
   const userIsManager = user.positions.some(
     (pos) => pos.position === 'Manager' || pos.position === 'Administrator'
   );
 
-  let defaultColumn = {
-    cell: ({ row, column: { id } }) => {
-      const data = row.original
-      return (
-        <p
-          className="text-center py-1 px-2 text-foreground mx-auto flex justify-center"
-        >
-          {row.getValue(id)}
-        </p>
-      )
-    },
+
+  let defaultColumn
+  if (userIsManager) {
+    defaultColumn = {
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <EditableText
+            value={row.getValue(id)}
+            fieldName="name"
+            inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 "
+            buttonClassName="text-center py-1 px-2 text-foreground mx-auto flex justify-center"
+            buttonLabel={`Edit "${id}"`}
+            inputLabel={`Edit "${id}"`}
+          >
+            <input type="hidden" name="intent" value='updateDefaultColumn' />
+            <input type="hidden" name="id" value={data.id} />
+            <input type="hidden" name="colName" value={id} />
+          </EditableText>
+        )
+      },
+    }
+  } else {
+    defaultColumn = {
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <p
+            className="text-center py-1 px-2 text-foreground mx-auto flex justify-center"
+          >
+            {row.getValue(id)}
+          </p>
+        )
+      },
+    }
   }
 
+
+
+  console.log(referrer, 'referer')
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -219,8 +845,8 @@ export function UnitInv({ finance, user, tableData }) {
     );
   }, [columnVisibility]);
 
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [globalFilter, setGlobalFilter] = useState(finance.model)
+  const [rowSelection, setRowSelection] = useState({});
+  const [globalFilter, setGlobalFilter] = useState('')
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedModel, setSelectedModel] = useState({})
   const [filterBy, setFilterBy] = useState('');
@@ -228,9 +854,15 @@ export function UnitInv({ finance, user, tableData }) {
   const [selectedColumn, setSelectedColumn] = useState("");
   const [selectedGlobal, setSelectedGlobal] = useState(true);
   const [todayfilterBy, setTodayfilterBy] = useState(null);
+
   const [models, setModels] = useState([]);
   const [modelName, setModelName] = useState([]);
   const [subModel, setSubModel] = useState([]);
+
+
+  useEffect(() => {
+    setGlobalFilter(finance.model)
+  }, []);
 
   useEffect(() => {
     async function fetchModels() {
@@ -251,6 +883,17 @@ export function UnitInv({ finance, user, tableData }) {
     fetchModels();
   }, []);
 
+  const assignUnit = useFetcher()
+
+  const handleDropdownChange = (value) => {
+    setGlobalFilter(value);
+  };
+
+  const [date, setDate] = useState<Date>()
+
+  const newDate = new Date()
+  const [datefloorPlanDueDate, setDatefloorPlanDueDate] = useState<Date>()
+
   const options2 = {
     weekday: "short",
     year: "numeric",
@@ -263,12 +906,8 @@ export function UnitInv({ finance, user, tableData }) {
     timeZoneName: "short"
   };
 
-  const handleDropdownChange = (value) => {
-    setGlobalFilter(value);
-  };
-
-  const assignUnit = useFetcher()
   const columns = [
+
     {
       id: 'Assign Unit',
       accessorKey: "Assign Unit",
@@ -301,36 +940,23 @@ export function UnitInv({ finance, user, tableData }) {
       },
     },
     {
-      id: 'Unit File',
-      accessorKey: "Unit File",
-      filterFn: 'fuzzy',
-      sortingFn: fuzzySort,
-
-      cell: ({ row, column: { id } }) => {
-        const data = row.original
-        return (
-          <UnitDialog data={data} user={user} />
-        )
-      },
-    },
-    {
       accessorKey: "id",
       header: "id",
       cell: ({ row }) => (
         <div className="capitalize">{row.getValue("id")}</div>
       ),
     },
-    /**    {
-          accessorKey: "unitInfo",
-          cell: ({ row, column: { id } }) => {
-            const data = row.original
-            return (
-              <UnitDialog data={data} />
-            )
-          },
-          filterFn: fuzzyFilter,
-          sortingFn: fuzzySort,
-        }, */
+    {
+      accessorKey: "unitInfo",
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <UnitDialog data={data} user={user} />
+        )
+      },
+      filterFn: fuzzyFilter,
+      sortingFn: fuzzySort,
+    },
     {
       accessorKey: "stockNumber",
       header: ({ column }) => {
@@ -530,7 +1156,128 @@ export function UnitInv({ finance, user, tableData }) {
       },
 
     },
+    {
+      filterFn: fuzzyFilter,
+      sortingFn: fuzzySort,
+      accessorKey: "consignment",
+      header: ({ column }) => {
+        return <>
+          <Select onValueChange={(value) => {
+            const status = table.getColumn("consignment")
+            status?.setFilterValue(value)
+          }}                                >
+            <SelectTrigger className="w-full bg-background text-foreground border border-border">
+              <SelectValue placeholder='Consignment' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+              <SelectItem value="true">true</SelectItem>
+              <SelectItem value="false">false</SelectItem>
+            </SelectContent>
+          </Select>
+        </>
+      },
+      cell: ({ row }) => {
+        const data = row.original
+        return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+          <Consignment data={data} />
+        </div>
+      },
+    },
+    {
+      filterFn: fuzzyFilter,
+      sortingFn: fuzzySort,
+      accessorKey: "onOrder",
+      header: ({ column }) => {
+        return <>
+          <Select onValueChange={(value) => {
+            const status = table.getColumn("onOrder")
+            status?.setFilterValue(value)
+          }}                                >
+            <SelectTrigger className="w-full bg-background text-foreground border border-border">
+              <SelectValue placeholder='On Order' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+              <SelectItem value="true">true</SelectItem>
+              <SelectItem value="false">false</SelectItem>
+            </SelectContent>
+          </Select>
+        </>
+      },
+      cell: ({ row }) => {
+        const data = row.original
+        //
 
+        return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+          <OnOrder data={data} />
+        </div>
+      },
+
+    },
+    {
+      filterFn: fuzzyFilter,
+      sortingFn: fuzzySort,
+      accessorKey: "expectedOn",
+      header: ({ column }) => {
+        return (
+          <Button
+            className='mx-auto'
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Expected On
+            <CaretSortIcon className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        const data = row.original
+
+        return <div className="w-[175px]  bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+          {data.expectedOn ? (<p>{new Date(data.expectedOn).toLocaleDateString("en-US", options2)}</p>) : (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  size='sm'
+                  variant={"outline"}
+                  className={cn(
+                    "  justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date ? format(date, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 border-border" align="start">
+                <div className="mx-auto w-[280px] rounded-md border-border bg-background px-3 text-foreground " >
+                  <div className='  my-3 flex justify-center   '>
+                    <CalendarIcon className="mr-2 size-8 " />
+                    {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
+                  </div>
+                  <SmallCalendar
+                    className='mx-auto w-auto   bg-background text-foreground'
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                  />
+                  <Button size='sm' className='mx-auto m-3' onClick={() => {
+                    const formData = new FormData();
+                    formData.append("id", data.id);
+                    formData.append("expectedOn", new Date(date).toLocaleDateString("en-US", options2));
+                    formData.append("intent", 'expectedOn');
+                    console.log(formData, 'formData');
+                    fetcher.submit(formData, { method: "post" });
+                  }} >
+                    Submit
+                  </Button>
+                </div>
+              </PopoverContent >
+            </Popover >
+          )}
+        </div >
+      },
+    },
     {
       filterFn: fuzzyFilter,
       sortingFn: fuzzySort,
@@ -556,7 +1303,7 @@ export function UnitInv({ finance, user, tableData }) {
         //
 
         return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
-          <p>{data.sold}</p>
+          <Sold data={data} />
         </div>
       },
     },
@@ -585,7 +1332,7 @@ export function UnitInv({ finance, user, tableData }) {
         //
 
         return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
-          <p>{data.status}</p>
+          <Status data={data} />
         </div>
       },
 
@@ -617,7 +1364,7 @@ export function UnitInv({ finance, user, tableData }) {
         //
 
         return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
-          <p>{data.orderStatus}</p>
+          <OrderStatus data={data} />
         </div>
       },
     },
@@ -655,7 +1402,72 @@ export function UnitInv({ finance, user, tableData }) {
       },
 
     },
+    {
+      filterFn: fuzzyFilter,
+      sortingFn: fuzzySort,
+      accessorKey: "floorPlanDueDate",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Floor Plan Due Date
+            <CaretSortIcon className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        const data = row.original
 
+
+        return <div className="w-[175px] bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+          {data.floorPlanDueDate ? (<p>{new Date(data.floorPlanDueDate).toLocaleDateString("en-US", options2)}</p>) : (
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  size='sm'
+                  variant={"outline"}
+                  className={cn(
+                    "  justify-start text-left font-normal",
+                    !datefloorPlanDueDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {datefloorPlanDueDate ? format(datefloorPlanDueDate, "PPP") : <span>Pick a date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 border-border" align="start">
+                <div className="mx-auto w-[280px] rounded-md border-border bg-background px-3 text-foreground " >
+                  <div className='  my-3 flex justify-center   '>
+                    <CalendarIcon className="mr-2 size-8 " />
+                    {datefloorPlanDueDate ? format(datefloorPlanDueDate, "PPP") : <span>{format(newDate, "PPP")}</span>}
+                  </div>
+                  <SmallCalendar
+                    className='mx-auto w-auto   bg-background text-foreground'
+                    mode="single"
+                    selected={datefloorPlanDueDate}
+                    onSelect={setDatefloorPlanDueDate}
+                    initialFocus
+                  />
+                  <Button size='sm' className='mx-auto m-3' onClick={() => {
+                    const formData = new FormData();
+                    formData.append("id", data.id);
+                    formData.append("floorPlanDueDate", new Date(datefloorPlanDueDate).toLocaleDateString("en-US", options2));
+                    formData.append("intent", 'floorPlanDueDate');
+                    console.log(formData, 'formData');
+                    fetcher.submit(formData, { method: "post" });
+                  }} >
+                    Submit
+                  </Button>
+                </div>
+              </PopoverContent >
+            </Popover >
+          )}
+        </div >
+      },
+    },
     {
       filterFn: fuzzyFilter,
       sortingFn: fuzzySort,
@@ -698,7 +1510,7 @@ export function UnitInv({ finance, user, tableData }) {
         //
 
         return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
-          <p>{data.isNew}</p>
+          <IsNew data={data} />
         </div>
       },
     },
@@ -777,8 +1589,7 @@ export function UnitInv({ finance, user, tableData }) {
         //
 
         return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center  uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
-
-          <p>{data.stocked}</p>
+          <Stocked data={data} />
         </div>
       },
     },
@@ -942,6 +1753,10 @@ export function UnitInv({ finance, user, tableData }) {
     enableRowSelection: true,
   });
 
+  // -------- my components --------  //
+
+
+
   // clears filters
   const setAllFilters = () => {
     setColumnFilters([]);
@@ -963,6 +1778,7 @@ export function UnitInv({ finance, user, tableData }) {
     console.log("value", value);
     table.getColumn(selectedColumn)?.setFilterValue(value);
   };
+
   const CallsList = [
     {
       key: "inStock",
@@ -1135,7 +1951,8 @@ export function UnitInv({ finance, user, tableData }) {
 
     return `${year}-${month}`;
   };
-  const now = new Date();
+
+  const now = new Date(); // Current date and time
   const formattedDate = formatDate(now);
   function getToday() {
     const today = new Date();
@@ -1415,7 +2232,7 @@ export function UnitInv({ finance, user, tableData }) {
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'Stock Unit - Dealer Sales Assistant' },
+    { title: 'Unit Inventory || ADMIN || Dealer Sales Assistant' },
     {
       property: "og:title",
       content: "Your very own assistant!",
@@ -1427,3 +2244,6 @@ export const meta: MetaFunction = () => {
     },
   ];
 };
+
+
+

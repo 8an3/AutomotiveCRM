@@ -6620,6 +6620,12 @@ export async function Board() {
   const completed = [
     { board: "dev", column: "ROLES", item: "forgot driver, need to add delivery schedule, add it as a resource like the techs need to give the ability to set deliveries to everyoneyt" },
     { board: "dev", column: "ISSUE", item: "with production demo site, problem started after you manually had to update the files from remote because github action was not working" },
+    { board: "dev", column: "ISSUE", item: "redesign index" },
+    { board: "dev", column: "USER", item: "documents  - ok - need to add legend so peopole can upload the document themselves" },
+    { board: "dev", column: "IDEAS", item: "import / export allow to downlaod a template example so people can see the columns needed for that dataset" },
+
+    { board: "dev", column: "DONE NEEDS TESTING", item: "email - somehow auth is now broken? havent touched in months but now just doesnt work... convert to .client" },
+    { board: "dev", column: "DONE NEEDS TESTING", item: "email - update styling so its not akward" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "instead of input for tax on quotes do a drop down with actual provines taxes done in payument calc only!!!!" },
     { board: "dev", column: "SALES", item: "have it so if you sdelect clientfile it just goes to client file and then you can select a unit if you want to but it displays orders, and work orders under clients name not under a unit bought there" },
     { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
@@ -6969,13 +6975,14 @@ export async function Board() {
   const getDoneNow = [
     { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
 
-    { board: "dev", column: "IDEAS", item: "import / export allow to downlaod a template example so people can see the columns needed for that dataset" },
     { board: "dev", column: "IDEAS", item: "sales / cust / profile put in email client / text client so if customer emails in without reply to a finance file email atleast you stil get the email and keep it looged to the customer" },
     { board: "dev", column: "IDEAS", item: "admin dashboard - when going over clients and other objects ie for clients open dialog on left have nave menu with a first level of items such as finance, work order, acc order and the when you click on it you can then click on the tabs for each layer on that data segment" },
+    { board: "dev", column: "IDEAS", item: "email create custom values in microsft to input client and finance ids to easily bring them up where you need to, use comms records for the quick look up where it may not be possible to use the microsoft libraries" },
+    { board: "dev", column: "IDEAS", item: "client also needs to beon dashboard,finance file and client file" },
+
 
     { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH SMS AND EMAIL TESTING BEFORE RELEASE -----" },
-    { board: "dev", column: "DONE NEEDS TESTING", item: "email - somehow auth is now broken? havent touched in months but now just doesnt work... convert to .client" },
-    { board: "dev", column: "DONE NEEDS TESTING", item: "email - update styling so its not akward" },
+
     { board: "dev", column: "DONE NEEDS TESTING", item: "sms" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "webhook for incoming emails, save notifiation and messeages" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "use same system as notifications to check on new mail - USE SWR" },
@@ -7008,8 +7015,8 @@ export async function Board() {
 
     { board: "dev", column: "SALES", item: "----- SALES -----" },
     { board: "dev", column: "USER", item: "QUOTE - ok" },
-    { board: "dev", column: "USER", item: "unit picker - set the customers unit as a search instead of a filter on all units, that way the user can delete the unit currently and grab a new - need to make sure it updates the pricing if they are going with a total different unit and leave a not for the user stating to check pricing because fof this too" },
-    { board: "dev", column: "USER", item: "overview - ok but go over each input one more time to ensure you didnt miss anything" },
+    { board: "dev", column: "USER", item: "unit picker - ok" },
+    { board: "dev", column: "USER", item: "overview - ok " },
 
     { board: "dev", column: "USER", item: "----- USER -----" },
     { board: "dev", column: "USER", item: "payment calculator - ok" },
@@ -7017,7 +7024,7 @@ export async function Board() {
     { board: "dev", column: "USER", item: "roadmap  - ok" },
     { board: "dev", column: "USER", item: "scripts - ok " },
     { board: "dev", column: "USER", item: "templates  - ok " },
-    { board: "dev", column: "USER", item: "documents  - ok - need to add legend so peopole can upload the document themselves" },
+    { board: "dev", column: "USER", item: "documents  - ok" },
     { board: "dev", column: "USER", item: "getting started   - ok - may need a few more for dealers " },
     { board: "dev", column: "USER", item: "board - board not saving" },
 

@@ -67,7 +67,7 @@ export default function DashboardPage() {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mx-auto">
           <div>
-            <p className='text-2xl'>Roadmap Menu</p>
+            <p className='text-2xl'>Roadmap</p>
             <Separator className='border-border bg-border text-border w-[90%] mb-3' />
             <div className="max-h-[500px] h-full overflow-y-auto">
               <nav className={cn("flex space-x-2 flex-row max-w-[95%] lg:flex-col lg:space-x-0 lg:space-y-1 mt-3",)}    >
@@ -213,6 +213,9 @@ export const metadata = {
 const completed = [
   { board: "dev", column: "ROLES", item: "forgot driver, need to add delivery schedule, add it as a resource like the techs need to give the ability to set deliveries to everyoneyt" },
   { board: "dev", column: "ISSUE", item: "with production demo site, problem started after you manually had to update the files from remote because github action was not working" },
+  { board: "dev", column: "DONE NEEDS TESTING", item: "email - somehow auth is now broken? havent touched in months but now just doesnt work... convert to .client" },
+  { board: "dev", column: "DONE NEEDS TESTING", item: "email - update styling so its not akward" },
+  { board: "dev", column: "DONE NEEDS TESTING", item: "instead of input for tax on quotes do a drop down with actual provines taxes done in payument calc only!!!!" },
   { board: "dev", column: "SALES", item: "have it so if you sdelect clientfile it just goes to client file and then you can select a unit if you want to but it displays orders, and work orders under clients name not under a unit bought there" },
   { board: "dev", column: "GET DONE NOW", item: "use financeUnit for when you pick a unit out of stock to sell financeUnit/tradeunit " },
   { board: "dev", column: "ISSUE", item: "need to be able to choose one resource id in calendar and display it in service" },
@@ -561,12 +564,17 @@ const completed = [
 const getDoneNow = [
   { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
 
-  { board: "dev", column: "DONE NEEDS TESTING", item: "instead of input for tax on quotes do a drop down with actual provines taxes done in payument calc only!!!!" },
   { board: "dev", column: "IDEAS", item: "import / export allow to downlaod a template example so people can see the columns needed for that dataset" },
+  { board: "dev", column: "IDEAS", item: "sales / cust / profile put in email client / text client so if customer emails in without reply to a finance file email atleast you stil get the email and keep it looged to the customer" },
+  { board: "dev", column: "IDEAS", item: "admin dashboard - when going over clients and other objects ie for clients open dialog on left have nave menu with a first level of items such as finance, work order, acc order and the when you click on it you can then click on the tabs for each layer on that data segment" },
+
+
+  { board: "dev", column: "IDEAS", item: "email create custom values in microsft to input client and finance ids to easily bring them up where you need to, use comms records for the quick look up where it may not be possible to use the microsoft libraries" },
+  { board: "dev", column: "IDEAS", item: "client also needs to beon dashboard,finance file and client file" },
+
 
   { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH SMS AND EMAIL TESTING BEFORE RELEASE -----" },
-  { board: "dev", column: "DONE NEEDS TESTING", item: "email" },
-  { board: "dev", column: "DONE NEEDS TESTING", item: "email - update styling so its not akward" },
+
   { board: "dev", column: "DONE NEEDS TESTING", item: "sms" },
   { board: "dev", column: "DONE NEEDS TESTING", item: "webhook for incoming emails, save notifiation and messeages" },
   { board: "dev", column: "DONE NEEDS TESTING", item: "use same system as notifications to check on new mail - USE SWR" },
@@ -658,6 +666,7 @@ const getDoneNow = [
 ]
 const issue = [
   { board: "dev", column: "ISSUE", item: "end of day report, sales people arent printing out" },
+  { board: "dev", column: "ISSUE", item: "need to set up dummy dealer for single user to start" },
   { board: "dev", column: "accessories", item: "dealer/accessories/newOrder/cm06lhi4u0001lb03xvaq4gwu print receipt not working in prod" },
   { board: "dev", column: "ISSUE", item: "man / dash fix sales stats section and finish page... just redo the leadersboard section in manager menu x sales people and have a section of all open contracts and have filters on the table to easily search for customers with refunds, certain amount of time not contacted etc tabs have dash like sales person then have a tab for each  sales person and their stats" },
 ]
@@ -681,6 +690,7 @@ const BACKBURNER = [
 
 ]
 const ideas = [
+  { board: "dev", column: "SALES", item: "free for single users? with paid upgrades? ie email, sms, phone calls" },
   { board: "dev", column: "SALES", item: "sales bot - take care of some of the sales process - uses natural language processing and machine learning to assist in automated contract negotiations based on predefined parameters." },
   { board: "dev", column: "SALES", item: "sales bot 2 - customer onboarding" },
   { board: "dev", column: "SALES", item: "sales bot 3 - after sales" },
@@ -788,6 +798,7 @@ export {
   paidfeature,
   dash,
   parts,
+  communications,
   docs,
   owner,
   quote,

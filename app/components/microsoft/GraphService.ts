@@ -224,6 +224,25 @@ export async function testInbox(
     .get();
   return email;
 }
+export async function searchEmail(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  emailToSearch: string
+) {
+  ensureClient(authProvider);
+
+  var email = await graphClient!
+    .api(`/me/messages`)
+    .filter(
+      `(sender/emailAddress/address eq '${emailToSearch}' or toRecipients/any(r: r/emailAddress/address eq '${emailToSearch}'))`
+    )
+    .select('sender,subject,toRecipients')
+    .top(2)
+    .get();
+  console.log(email, 'email in searchemail')
+
+  return email;
+}
+
 export async function getTestInbox(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
 ) {
@@ -318,6 +337,47 @@ export async function messageDone(
 }
 // need to test
 export async function replyMessage(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  id: any,
+  toAddresses: string[],
+  toNames: string[],
+  body: string,
+  subject: string
+) {
+  ensureClient(authProvider);
+
+
+  const toRecipients = toAddresses.map((address, index) => ({
+    emailAddress: {
+      address: address,
+      name: toNames[index] || '',
+    },
+  }));
+
+  const reply = {
+    message: {
+      toRecipients: toRecipients,
+    },
+    comment: body,
+    isDeliveryReceiptRequested: true,
+    subject: subject,
+  };
+
+  try {
+    const email = await graphClient!
+      .api(`/me/messages/${id}/reply`)
+      .post(reply);
+    const to = toAddresses
+    await SaveComs(to, body, subject)
+
+    return email;
+  } catch (error) {
+    console.error('Error replying to message:', error);
+    throw error;
+  }
+}
+
+export async function replyMessageMultiToo(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   id: any,
   toAddresses: string[],
@@ -577,11 +637,14 @@ export async function ComposeEmailTwo(
   subject: any,
   body: any,
   to: any,
+  name: any
 ) {
   ensureClient(authProvider);
   console.log(subject, to, body, ' emails tff')
   const sendMail = {
     message: {
+
+      isReadReceiptRequested: true,
       subject: subject,
       body: {
         contentType: 'HTML',
@@ -590,7 +653,8 @@ export async function ComposeEmailTwo(
       toRecipients: [
         {
           emailAddress: {
-            address: to
+            address: to,
+            name: name
           }
         }
       ]

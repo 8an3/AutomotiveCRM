@@ -92,10 +92,10 @@ export function Editor(content, setText, handleUpdate) {
     ],
     editorProps: { attributes: { class: "prose-config" } },
     onUpdate({ editor }) {
-      setText(editor.getHTML())
-      if (handleUpdate) {
-        handleUpdate(editor.getHTML())
-      }
+      // setText(editor.getHTML())
+      // if (handleUpdate) {
+      //    handleUpdate(editor.getHTML())
+      //   }
     },
   })
   return editor

@@ -142,12 +142,26 @@ import { loginRequest } from "~/components/microsoft/Config";
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: secondary },
 ];
+/** */
+//   console.log(getToken, 'getToken')
+
+/**  const dataFetcher = testInbox(app.authProvider!)
+  const { data, error, isLoading, isValidating } = useSWR(dataFetcher, { refreshInterval: 15000 })
+
+  useEffect(() => {
+    if (data) {
+      setEmails(data.value);
+    }
+  }, [data]); */
+
+
 
 export default function NewCLient() {
   const app = useAppContext();
   const { instance, accounts, inProgress } = useMsal();
   let search = useFetcher();
   let ref = useRef();
+  const user = getUser(app.authProvider!);
 
   const [emails, setEmails] = useState();
   const [getCountOf, setGetCountOf] = useState('');
@@ -160,16 +174,168 @@ export default function NewCLient() {
   const [folders, setFolders] = useState([]);
   const [attachment, setAttachment] = useState()
   const navigate = useNavigate()
+  console.log(folders, 'folgers')
 
-  /**  const dataFetcher = testInbox(app.authProvider!)
-    const { data, error, isLoading, isValidating } = useSWR(dataFetcher, { refreshInterval: 15000 })
 
-    useEffect(() => {
-      if (data) {
-        setEmails(data.value);
+  useEffect(() => {
+    // fetch emails
+    const fetchEmails = async () => {
+      try {
+        const response = await testInbox(app.authProvider!);
+        setEmails(response.value);
+        console.log('emails succesfull fetched,', response.value)
+
+      } catch (error) {
+        console.error("Error fetching emails:", error);
+
+        try {
+          const response = await testInbox(app.authProvider!);
+          setEmails(response.value);
+
+        } catch (error) {
+          console.error("Error fetching emails 222:", error);
+        }
       }
-    }, [data]); */
+    };
+    fetchEmails()
+    const fetchFolders = async () => {
+      const fetchedFolders = await getAllFolders(app.authProvider!);
+      console.log(fetchedFolders, 'fetchedFolders')
+      setFolders(fetchedFolders.value);
+    }
+    fetchFolders();
+  }, []);
 
+  async function SetNewEmails() {
+    if (label === "Deleted Items") {
+      const response = await getList(app.authProvider!, "deleteditems");
+      return response.value
+    }
+    if (label === "Junk Email") {
+      const response = await getList(app.authProvider!, "junkemail");
+      return response.value
+    }
+    if (label === "Sent Items") {
+      const response = await getList(app.authProvider!, "sentitems");
+      return response.value
+    }
+    if (label === "Conversation History") {
+      const response = await getList(app.authProvider!, "conversationhistory");
+      return response.value
+    }
+    if (label === "Drafts") {
+      const response = await getList(app.authProvider!, 'drafts');
+      return response.value
+    }
+    if (label === "Archive") {
+      const response = await getList(app.authProvider!, "archive");
+      return response.value
+    }
+  }
+  async function GetEmailByFolder(labelName) {
+    setLabel(labelName);
+    const data = await SetNewEmails();
+    setEmails(data);
+  }
+
+  useEffect(() => {
+    async function GetAttachments() {
+      const getAttach = await listAttachment(app.authProvider!, mail.id)
+      return getAttach.value
+    }
+    if (mail && mail.hasAttachments && mail.hasAttachments === true) {
+      const NewEmails = async () => {
+        const data = await GetAttachments();
+        return data
+      }
+      setAttachment(NewEmails)
+
+    }
+
+  }, [mail]);
+
+  const navCollapsedSize = 4
+  const layout = 30//layoutCookie2
+  const collapsed = false// collapsedCookie2
+
+  const defaultLayout = [20, 32, 48]
+  const defaultCollapsed = collapsed
+
+  const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed)
+
+  const emailsSafe = Array.isArray(emails) ? emails : [];
+  const [filter, setFilter] = useState('');
+  const [globalFilter, setGlobalFilter] = useState('');
+
+  function FilterSearch(z) {
+    let s = z
+    if (globalFilter) {
+      s = globalFilter;
+    }
+    if (filter) {
+      s = filter;
+    }
+    s = s.toLowerCase();
+    let result
+    if (s.length > 1) {
+      result = emails.filter(
+        (email) =>
+          email.from?.emailAddress.name?.toLowerCase().includes(s) ||
+          email.subject?.toLowerCase().includes(s) ||
+          email.from?.emailAddress.address?.toLowerCase().includes(s)
+      );
+      setEmails(result);
+    }
+  }
+
+  const ReadMessage = (email) => {
+    messageRead(app.authProvider!, email.id);
+  }
+  async function handlesetToUnread(email) {
+    messageUnRead(app.authProvider!, email.id);
+  }
+  async function handlesetFolder(email, folder) {
+    setFolder(app.authProvider!, email.id, folder);
+  }
+  async function GetNextEmail() {
+    const emailMessage = emails[1]
+    setMail(emailMessage);
+  }
+
+  function getUnreadAndTotalCounts(folders) {
+    let result = {
+      inbox: {
+        unreadItemCount: 0,
+        totalItemCount: 0,
+      },
+      junkEmail: {
+        unreadItemCount: 0,
+        totalItemCount: 0,
+      },
+    };
+
+    folders.forEach((folder) => {
+      if (folder.displayName === "Inbox") {
+        result.inbox.unreadItemCount = folder.unreadItemCount;
+        result.inbox.totalItemCount = folder.totalItemCount;
+      } else if (folder.displayName === "Junk Email") {
+        result.junkEmail.unreadItemCount = folder.unreadItemCount;
+        result.junkEmail.totalItemCount = folder.totalItemCount;
+      }
+    });
+
+    return result;
+  }
+
+  const counts = getUnreadAndTotalCounts(folders);
+
+  const handleDeleteClick = async (id) => {
+    const emailMessage = emails[1]
+    setMail(emailMessage);
+    await deleteMessage(app.authProvider!, id);
+    toast.success(`Email moved to trash.`);
+    setLabel(label)
+  };
   const displayNameOrder = [
     "Inbox",
     "Sent Items",
@@ -193,7 +359,7 @@ export default function NewCLient() {
   const primaryLinks = [
     {
       title: "Inbox",
-      label: unread,
+      label: counts.inbox.unreadItemCount,
       icon: Inbox,
       variant: "default",
     },
@@ -211,7 +377,7 @@ export default function NewCLient() {
     },
     {
       title: "Junk Email",
-      label: unreadJunkCount,
+      label: counts.junkEmail.unreadItemCount,
       icon: ArchiveX,
       variant: "ghost",
     },
@@ -254,223 +420,9 @@ export default function NewCLient() {
       variant: "ghost",
     },
   ];
-  const defaultIcon = MessagesSquare;
-  const defaultVariant = "ghost";
 
-  const primaryTitles = primaryLinks.map(link => link.title);
-
-  const secondaryLinks = folders.value.filter(folder => !primaryTitles.includes(folder.displayName));
-
-  const transformedSecondaryLinks = secondaryLinks.map(folder => ({
-    title: folder.displayName,               // Use the displayName as the title
-    label: folder.unreadItemCount || "",     // Use unreadItemCount or default to empty string
-    icon: defaultIcon,                       // Provide a default icon (or set based on folder name)
-    variant: defaultVariant                  // Provide a default variant
-  }));
-
-  console.log(transformedSecondaryLinks);
-
-  useEffect(() => {
-    // fetch emails
-    const fetchEmails = async () => {
-      try {
-        const response = await testInbox(app.authProvider!);
-        setEmails(response.value);
-        console.log('emails succesfull fetched,', response.value)
-
-      } catch (error) {
-        console.error("Error fetching emails:", error);
-        /** const getToken = await instance.acquireTokenSilent({
-           scopes: [
-             'User.Read',
-             'Mail.ReadWrite',
-             'Mail.send',
-             'email',
-             'openid',
-             'profile',
-             "Calendars.ReadWrite",
-             "Notes.ReadWrite.All",
-             "Calendars.ReadWrite.Shared",
-             "Contacts.ReadWrite",
-             "Contacts.ReadWrite.Shared",
-             "Files.ReadWrite.All",
-             "Files.ReadWrite.AppFolder",
-             "Files.ReadWrite.Selected",
-             "Mail.ReadWrite.Shared",
-             "Mail.Send.Shared",
-             "Mail.Send",
-             "Mail.ReadWrite",
-             "MailboxSettings.ReadWrite",
-             "Notes.Create",
-             "Notes.ReadWrite.All",
-             "Schedule.ReadWrite.All",
-             "Tasks.ReadWrite.Shared",
-             "User.Read",
-             "User.ReadWrite.All",
-             "User.ReadWrite",
-           ],
-         });
-         const jsontoken = JSON.stringify(getToken)
-         window.localStorage.setItem("remix-stutter-66-3145", jsontoken); */
-        //   console.log(getToken, 'getToken')
-        try {
-          const response = await testInbox(app.authProvider!);
-          setEmails(response.value);
-          //      console.log('2nd try to get meails succesfull,', response.value)
-        } catch (error) {
-          console.error("Error fetching emails 222:", error);
-        }
-      }
-    };
-    fetchEmails()
-    const fetchFolders = async () => {
-      const fetchedFolders = await getAllFolders(app.authProvider!);
-      if (
-        Array.isArray(fetchedFolders.value) &&
-        fetchedFolders.value.length > 0
-      ) {
-        const foldersArray = fetchedFolders.value.map((folder: any) => ({
-          name: folder.displayName,
-          ...folder,
-        }));
-        setFolders(foldersArray);
-      }
-    };
-    fetchFolders();
-  }, []);
-
-  useEffect(() => {
-    async function SetNewEmails() {
-      let labelList
-      let folderId
-      console.log(folders, 'folders',)
-
-      const findFolderByDisplayName = (displayName) =>
-        folders.value.find((folder) => folder.displayName.toLowerCase() === displayName.toLowerCase());
-
-
-      switch (label) {
-        case "Drafts":
-          const draftsFolder = findFolderByDisplayName('Drafts');
-          if (draftsFolder) {
-            labelList = await getList(app.authProvider!, draftsFolder.id);
-            setEmails(labelList.value);
-            console.log('Drafts folder emails:', labelList);
-          }
-          break;
-
-        case "Unread":
-          labelList = await testInbox(app.authProvider!);
-          setEmails(labelList.value);
-          console.log('Unread emails:', labelList);
-          break;
-
-        default:
-          const folderNameMap = {
-            'deleted items': 'Deleted Items',
-            'junk email': 'Junk Email',
-            'sent items': 'Sent Items',
-            'conversation history': 'Conversation History',
-            'archive': 'Archive',
-            'outbox': 'Outbox',
-            'inbox': 'Inbox',
-            'scheduled': 'Scheduled',
-            'clutter': 'Clutter',
-          };
-
-          const matchedFolder = findFolderByDisplayName(folderNameMap[label.toLowerCase()]);
-
-          if (matchedFolder) {
-            folderId = matchedFolder.id;
-            labelList = await getList(app.authProvider!, folderId);
-            setEmails(labelList.value);
-            console.log(`${label} folder emails:`, labelList);
-          } else {
-            console.log('No matching folder found for:', label);
-          }
-          break;
-      }
-    }
-
-    SetNewEmails();
-  }, [label]);
-
-  useEffect(() => {
-    async function GetAttachments() {
-      const getAttach = await listAttachment(app.authProvider!, mail.id)
-      setAttachment(getAttach.value)
-    }
-    if (mail && mail.hasAttachments && mail.hasAttachments === true) {
-      GetAttachments()
-    }
-  }, [mail]);
-
-
-
-  const navCollapsedSize = 4
-  const layout = 30//layoutCookie2
-  const collapsed = false// collapsedCookie2
-
-  const defaultLayout = [20, 32, 48]
-  const defaultCollapsed = collapsed
-
-  const [isCollapsed, setIsCollapsed] = React.useState(defaultCollapsed)
-
-  // console.log('clientclienttwo before return', emails)
-  const emailsSafe = Array.isArray(emails) ? emails : [];
-  const [filter, setFilter] = useState('');
-  const [globalFilter, setGlobalFilter] = useState('');
-
-  useEffect(() => {
-    let s
-
-    if (globalFilter) {
-      s = globalFilter;
-    }
-    if (filter) {
-      s = filter;
-    }
-    if (!filter) {
-      setEmails(emails);
-      return;
-    }
-    // let s = filter;
-
-    s = s.toLowerCase();
-    const result = emails.filter(
-      (email) =>
-        email.from?.emailAddress.name?.toLowerCase().includes(s) ||
-        email.subject?.toLowerCase().includes(s) ||
-        email.from?.emailAddress.address?.toLowerCase().includes(s)
-    );
-
-    setEmails(result);
-  }, [filter, globalFilter]);
-
-  const ReadMessage = (email) => {
-    messageRead(app.authProvider!, email.id);
-  }
-  async function handlesetToUnread(email) {
-    messageUnRead(app.authProvider!, email.id);
-  }
-  async function handlesetFolder(email, folder) {
-    setFolder(app.authProvider!, email.id, folder);
-  }
-  async function GetNextEmail() {
-    const emailMessage = emails[1]
-    setMail(emailMessage);
-  }
-
-  const handleDeleteClick = async (id) => {
-    const emailMessage = emails[1]
-    setMail(emailMessage);
-    await deleteMessage(app.authProvider!, id);
-    toast.success(`Email moved to trash.`);
-    setLabel(label)
-  };
   return (
     <>
-
       <div className='mt-10 m-5 border border-border rounded-md'>
         <TooltipProvider delayDuration={0}>
           <ResizablePanelGroup
@@ -494,17 +446,17 @@ export default function NewCLient() {
                 links={primaryLinks}
                 label={label}
                 setGetCountOf={setGetCountOf}
-                setLabel={setLabel} />
+                GetEmailByFolder={GetEmailByFolder} />
               <Separator />
               <Nav
                 isCollapsed={isCollapsed}
-                links={transformedSecondaryLinks}
+                links={secondaryLinks2}
                 label={label}
-                setLabel={setLabel} />
+                GetEmailByFolder={GetEmailByFolder} />
             </ResizablePanel>
             <ResizableHandle />
             <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
-              <Tabs defaultValue="unread">
+              <Tabs defaultValue="all">
                 <div className="flex items-center px-4 py-2">
                   <h1 className="text-xl font-bold">{label}</h1>
                   <TabsList className="ml-auto">
@@ -521,12 +473,13 @@ export default function NewCLient() {
                       placeholder="Search"
                       className="pl-8"
                       onChange={(e) => {
-                        setFilter(e.target.value)
+                        FilterSearch(e.target.value)
                       }}
                     />
                     <Button
                       onClick={() => {
-                        navigate(0)
+                        // navigate(0)
+                        GetEmailByFolder(label)
                       }}
                       size="icon"
                       className='bg-background mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
@@ -545,18 +498,18 @@ export default function NewCLient() {
                     </div>
                   ) : (
                     <MailList
-                      emails={emailsSafe}
+                      emails={emails}
                       ReadMessage={ReadMessage}
                       setMail={setMail}
                       mail={mail} />
                   )}
                 </TabsContent>
                 <TabsContent value="unread" className="m-0">
-                  {emailsSafe.length === 0 ? (
-                    <p className='text-center mt-5 text-muted-foreground'>No emails to currently display. If there are no e-mails listed you may need to re-log in to your microsoft account to update the login session.</p>
+                  {emails?.length === 0 ? (
+                    <p className='text-center mt-5 text-muted-foreground w-[75%]'>No emails to currently display. If there are no e-mails listed you may need to re-log in to your microsoft account to update the login session.</p>
                   ) : (
                     <MailList
-                      emails={emailsSafe.filter(item => !item.isRead)}
+                      emails={emails?.filter(item => !item.isRead)}
                       setMail={setMail}
                       ReadMessage={ReadMessage}
                       mail={mail} />
@@ -573,6 +526,7 @@ export default function NewCLient() {
                 handlesetToUnread={handlesetToUnread}
                 setFolder={setFolder}
                 attachment={attachment}
+                user={user}
               />
             </ResizablePanel>
           </ResizablePanelGroup>

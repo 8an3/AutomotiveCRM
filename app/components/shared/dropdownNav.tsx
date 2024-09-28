@@ -358,8 +358,30 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
     minute: '2-digit',
     second: '2-digit',
   };
-
-
+  let docPathname
+  switch (pathname) {
+    case '/dealer/user/dashboard/settings':
+      docPathname = '/'
+      break;
+    case '/dealer/user/dashboard/scripts':
+      docPathname = '/'
+      break;
+    case '/dealer/user/dashboard/templates':
+      docPathname = ''
+      break;
+    case '/dealer/document/builder/client':
+      docPathname = ''
+      break;
+    case '/dealer/user/dashboard/finance/board':
+      docPathname = ''
+      break;
+    case '/dealer/user/dashboard/contact':
+      docPathname = ''
+      break;
+    default:
+      docPathname = ''
+      break;
+  }
   if (user.email === 'skylerzanth@outlook.com') {
     return (
       <>
@@ -438,6 +460,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                     }) : (
                       <DropdownMenuItem>No messages available</DropdownMenuItem>
                     )}
+                    {messages.length === 0 && <DropdownMenuItem>No messages available</DropdownMenuItem>}
 
 
                   </DropdownMenuSubContent>
@@ -493,6 +516,8 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
 
                         </DropdownMenuItem>
                       )) : <DropdownMenuItem>No new leads available</DropdownMenuItem>}
+                      {lead.length === 0 && <DropdownMenuItem>No leads available</DropdownMenuItem>}
+
                     </Form>
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
@@ -545,6 +570,8 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
 
                       </DropdownMenuItem>
                     )) : <DropdownMenuItem>No updates available</DropdownMenuItem>}
+                    {updates.length === 0 && <DropdownMenuItem>No updates available</DropdownMenuItem>}
+
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
@@ -596,6 +623,8 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                         </div>
                       </DropdownMenuItem>
                     ))) : <DropdownMenuItem>No interruptions available</DropdownMenuItem>}
+                    {interruptions.length === 0 && <DropdownMenuItem>No interruptions available</DropdownMenuItem>}
+
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
@@ -1066,6 +1095,11 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                   {theme === Theme.DARK ? <Sun size={16} /> : <Moon size={16} />}
                 </DropdownMenuShortcut>
               </DropdownMenuItem>
+              <NavLink to={docPathname} disabled={docPathname === ''} >
+                <DropdownMenuItem disabled className='flex items-center'>
+                  Documentation
+                </DropdownMenuItem>
+              </NavLink>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className='cursor-pointer'>Shortcut Reference</DropdownMenuSubTrigger>
                 <DropdownMenuPortal>
@@ -1199,6 +1233,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                       <DropdownMenuItem>No messages available</DropdownMenuItem>
                     )}
 
+                    {messages.length === 0 && <DropdownMenuItem>No messages available</DropdownMenuItem>}
 
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
@@ -1253,6 +1288,8 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
 
                         </DropdownMenuItem>
                       )) : <DropdownMenuItem>No new leads available</DropdownMenuItem>}
+                      {lead.length === 0 && <DropdownMenuItem>No leads available</DropdownMenuItem>}
+
                     </Form>
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
@@ -1305,6 +1342,8 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
 
                       </DropdownMenuItem>
                     )) : <DropdownMenuItem>No updates available</DropdownMenuItem>}
+                    {updates.length === 0 && <DropdownMenuItem>No updates available</DropdownMenuItem>}
+
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
@@ -1356,6 +1395,8 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                         </div>
                       </DropdownMenuItem>
                     ))) : <DropdownMenuItem>No interruptions available</DropdownMenuItem>}
+                    {interruptions.length === 0 && <DropdownMenuItem>No interruptions available</DropdownMenuItem>}
+
                   </DropdownMenuSubContent>
                 </DropdownMenuPortal>
               </DropdownMenuSub>
@@ -1839,6 +1880,9 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                 <DropdownMenuShortcut>
                   {theme === Theme.DARK ? <Sun size={16} /> : <Moon size={16} />}
                 </DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuItem disabled className='flex items-center'>
+                Documentation
               </DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className='cursor-pointer'>Shortcut Reference</DropdownMenuSubTrigger>

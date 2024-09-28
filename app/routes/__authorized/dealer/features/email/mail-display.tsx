@@ -88,10 +88,10 @@ interface MailDisplayProps {
   handlesetToUnread: any
   setFolder: any
   attachment: any
+  user: any
 }
 
-export function MailDisplay({ mail, app, handleDeleteClick, handlesetToUnread, setFolder, attachment }: MailDisplayProps) {
-  const user = getUser(app.authProvider!);
+export function MailDisplay({ mail, app, handleDeleteClick, handlesetToUnread, setFolder, attachment, user }: MailDisplayProps) {
 
   const today = new Date()
   const getFirstLetter = (name) => {
@@ -230,7 +230,7 @@ export function MailDisplay({ mail, app, handleDeleteClick, handlesetToUnread, s
                 </TooltipTrigger>
               </PopoverTrigger>
               <PopoverContent className="flex w-[535px] p-0 border-border">
-                <div className="flex flex-col gap-2 border-r px-2 py-4">
+                <div className="flex flex-col gap-2 border-r border px-2 py-4">
                   <div className="px-4 text-sm font-medium">Attachments</div>
                   <div className="grid min-w-[250px] gap-1">
                     {attachment && attachment.length > 0 ? (attachment.map((attach, index) => (
@@ -251,12 +251,9 @@ export function MailDisplay({ mail, app, handleDeleteClick, handlesetToUnread, s
 
                   </div>
                 </div>
-                <div className="p-2">
-                  <Calendar />
-                </div>
               </PopoverContent>
             </Popover>
-            <TooltipContent>Snooze</TooltipContent>
+            <TooltipContent>Attachments</TooltipContent>
           </Tooltip>
         </div>
 
