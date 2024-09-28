@@ -9,13 +9,13 @@ const authorityHost = "https://login.microsoftonline.com";
 
 // const scopes =  ["openid", "User.ReadWrite", "Mail.ReadWrite", "offline_access"]
 const Info = {
-    tenantId: tenantId,
-    clientId: clientId,
-    clientSecret: clientSecret,
-    scopes: scopes,
-    port: port,
-    redirectUri: redirectUri,
-    authorityHost: authorityHost,
+  tenantId: tenantId,
+  clientId: clientId,
+  clientSecret: clientSecret,
+  scopes: scopes,
+  port: port,
+  redirectUri: redirectUri,
+  authorityHost: authorityHost,
 
 }
 export default Info

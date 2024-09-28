@@ -61,7 +61,7 @@ model User {
   ColumnStateClient     ColumnStateClient?
   customerSync          CustomerSync?
   userRoleId            String?
-  role                  UserRole              @relation("UserRole", fields: [roleId], references: [id], onUpdate: Cascade)
+  role                  UserRole              @relation("UserRole", fields: [roleId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   NotificationsUser     NotificationsUser[]
   // not needed
   profile               UserProfile           @relation("UserProfile", fields: [profileId], references: [id], onUpdate: Cascade, onDelete: Cascade)
@@ -69,7 +69,7 @@ model User {
   notes                 Note[]                @relation("UserNotes")
   SavedDocuments        SavedDocuments[]
   dealerId              Int?
-  Dealer                Dealer?               @relation(fields: [dealerId], references: [id])
+  Dealer                Dealer?               @relation(fields: [dealerId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@index([dealerId])
   @@index([profileId])
@@ -166,9 +166,8 @@ model ColumnStateInventory {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   state     Json
-
-  user      User   @relation(fields: [userEmail], references: [email])
-  userEmail String @unique
+  user      User     @relation(fields: [userEmail], references: [email], onUpdate: Cascade, onDelete: Cascade)
+  userEmail String   @unique
 }
 
 model ColumnStateClient {
@@ -468,9 +467,8 @@ model Board {
   boardId   String?
   color     String?
   name      String   @unique
-
-  columns Column[]
-  items   Item[]
+  columns   Column[]
+  items     Item[]
 }
 
 model Column {
@@ -493,12 +491,10 @@ model Item {
   title     String
   content   String?
   order     Float?
-
-  Board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  boardId String
-
-  Column   Column @relation(fields: [columnId], references: [id], onDelete: Cascade)
-  columnId String
+  Board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId   String
+  Column    Column   @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  columnId  String
 
   @@index([boardId])
   @@index([columnId])

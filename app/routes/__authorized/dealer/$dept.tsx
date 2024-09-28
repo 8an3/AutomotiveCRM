@@ -289,7 +289,28 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
               </NavLink>
             </nav>
           )}
-          {item.title === "Customers" && pathname.includes(`/dealer/${params.dept}/customers`) && (
+
+          {pathname.includes(`/dealer/admin/settings/general`) && (
+            <nav className="grid gap-4 text-sm text-muted-foreground ml-6">
+              <NavLink
+                to={`/dealer/admin/settings/general`}
+                className={`flex items-center gap-2  md:text-base  ml-[30px]
+              ${pathname === `/dealer/admin/settings/general` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%] '}`}
+              >
+                Settings
+              </NavLink>
+
+            </nav>
+          )}
+        </Fragment>
+      ))
+
+      }
+    </nav >
+  )
+}
+
+/**  {item.title === "Customers" && pathname.includes(`/dealer/${params.dept}/customers`) && (
             <nav className="grid gap-4 text-sm text-muted-foreground ml-6">
               <NavLink
                 to={`/dealer/${params.dept}/customers/all`}
@@ -320,14 +341,7 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
                 PAC
               </NavLink>
             </nav>
-          )}
-        </Fragment>
-      ))
-
-      }
-    </nav >
-  )
-}
+          )} */
 
 export async function loader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));

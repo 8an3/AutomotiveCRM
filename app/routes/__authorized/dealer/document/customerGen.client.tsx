@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Designer } from "@pdfme/ui";
+import { Designer } from "@eightanthreepdfme/ui"//"@pdfme/ui";
 
 import {
     getFontsData,

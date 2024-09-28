@@ -19,7 +19,7 @@ export async function getBoardData(boardId: string) {
 }
 
 export async function updateBoardName(
-  boardId: number,
+  boardId: string,
   name: string,
   userId: string,
 ) {
@@ -31,7 +31,7 @@ export async function updateBoardName(
 
 export function upsertItem(
   mutation: ItemMutation & { boardId: string },
-  userId: string,
+  content: string
 ) {
   return prisma.item.upsert({
     where: {
@@ -40,10 +40,12 @@ export function upsertItem(
     create: {
       ...mutation,
       boardId: mutation.boardId,
+      content: content
     },
     update: {
       ...mutation,
       boardId: mutation.boardId,
+      content: content
     },
   });
 }
@@ -65,10 +67,10 @@ export async function createColumn(
   boardId: string,
   name: string,
   id: string,
-  userId: string,
+  userEmail: string,
 ) {
   let columnCount = await prisma.column.count({
-    where: { boardId, Board: { userId } },
+    where: { boardId, Board: { userEmail } },
   });
   return prisma.column.create({
     data: {
@@ -87,12 +89,12 @@ export async function deleteBoard(boardId: string, userId: string) {
   });
 }
 
-export async function createBoard(userId: string, name: string, color: string) {
+export async function createBoard(userEmail: string, name: string, color: string) {
   return prisma.board.create({
     data: {
       name,
       color,
-      userId,
+      userEmail,
     },
   });
 }

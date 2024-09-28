@@ -157,133 +157,177 @@ export default function Welcome() {
     //  const signOut = app.signOut!
     // return signOut
   }
-  return (
-    <>
-      <div className="p-5 mb-4 bg-light rounded-3">
-        <UnauthenticatedTemplate>
-          <Card className="max-w-[350px] w-[350px]  fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] bg-background">
-            <CardHeader>
-              <CardTitle className="text-2xl">Login</CardTitle>
-              <CardDescription>
-                Login with your microsoft account
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4">
-                <Button
-                  onClick={OnClick}
-                  variant="outline"
-                  className=" w-full text-foreground bg-primary"  >
-                  <p className="mr-1">Login with </p>
-                  <TfiMicrosoft className="text-[28px]" />{" "}
-                </Button>
-                <Separator className="border-border" />
-                <Link to="/privacy">
-                  <Button variant='outline' type="submit" className="w-full bg-background">
-                    <p className="text-muted-foreground">To review our Privacy Policy</p>
-                  </Button>
-                </Link>
-                <div className="mt-4 text-center text-sm">
-                  No account?{" "}
-                  <Link to="/subscribe" className="underline">
-                    Sign up
+  if (host === "https://www.dealersalesassistant.ca") {
+    return (
+      <>
+        <div className="p-5 mb-4 bg-light rounded-3">
+          <UnauthenticatedTemplate>
+            <Card className="max-w-[350px] w-[350px]  fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
+              <CardHeader>
+                <CardTitle className="text-2xl">Demo Dealer</CardTitle>
+                <CardDescription>
+
+                  Welcome to the demo, plea   <button
+                    onClick={OnClick}
+                    className=" "  >
+                    s
+                  </button>e login with your given credentials
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  <Form method='post' >
+                    <Input name='email' placeholder='email@email.com' className=" w-full text-foreground bg-background border border-border mb-3" />
+                    <Button
+                      type='submit'
+                      name='intent'
+                      value='demoLogin'
+                      variant="outline"
+                      className=" w-full text-foreground bg-primary"  >
+                      <p className="mr-1">Login  </p>
+                    </Button>
+                  </Form>
+                  <Separator className="border-border" />
+                  <Link to="/privacy">
+                    <Button variant='outline' type="submit" className="w-full bg-background">
+                      <p className="text-muted-foreground">To review our Privacy Policy</p>
+                    </Button>
                   </Link>
+                  <div className="mt-4 text-center text-sm">
+                    No account?{" "}
+                    <Link to="/subscribe" className="underline">
+                      Sign up
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-        </UnauthenticatedTemplate>
-      </div>
-      <div className="p-5 mb-4 bg-light rounded-3">
-        <AuthenticatedTemplate>
-          <Card className="max-w-[350px] w-[350px] fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] bg-background">
-            <CardHeader>
-              <CardTitle className="text-2xl"> Welcome back {activeAccount?.name}!
-              </CardTitle>
-              <CardDescription>
-                Have a nice day!
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4">
-                <Link to={`/createSession?email=${email}&name=${name}`} >
-                  <Button
-                    onClick={() => {
-                    }}
-                    variant="outline"
-                    className=" w-full text-foreground bg-primary"  >
-                    Continue...
-                  </Button>
-                </Link>
-
-                <Separator className="border-border" />
-                <Link to="/privacy">
-                  <Button onClick={OnClickLogout} className="w-full  text-foreground ">
-                    <p className="mr-1">Logout of your </p>
-                    <TfiMicrosoft className="text-[28px]" />{" "}
-                    <p className="ml-2">account</p>
-                  </Button>
-                </Link>
-                <Link to="/privacy">
-                  <Button variant='outline' type="submit" className="w-full">
-                    <p className=" text-foreground ">To review our Privacy Policy</p>
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        </AuthenticatedTemplate>
-      </div>
-    </>
-  );
-}
-/** <div className="grid  w-full grid-cols-1">
-            <div className="w-[50%]">
-              <div className="flex items-center justify-center text-center">
-
-                <div className=" fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
-                  <h1 className="text-foreground">Have a nice day!</h1>
-                  <p className="mt-5 text-foreground">
-                    Welcome {activeAccount?.name} to D.S.A.!
-                  </p>
-                  <div className='grid grid-cols-1'>
+          </UnauthenticatedTemplate>
+        </div>
+        <div className="p-5 mb-4 bg-light rounded-3">
+          <AuthenticatedTemplate>
+            <Card className="max-w-[350px] w-[350px] fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
+              <CardHeader>
+                <CardTitle className="text-2xl"> Welcome back {activeAccount?.name}!
+                </CardTitle>
+                <CardDescription>
+                  Have a nice day!
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  <Link to={`/createSession?email=${email}&name=${name}`} >
                     <Button
                       onClick={() => {
-                        OnClickContinue()
                       }}
-                      variant="outline" className="mt-5 w-auto rounded-xl border border-white px-8 py-5 text-xl text-foreground "  >
-                      <p className="mr-1">Continue...</p>
+                      variant="outline"
+                      className=" w-full text-foreground bg-primary"  >
+                      Continue...
                     </Button>
+                  </Link>
 
-                    <Button onClick={OnClickLogout} variant="outline" className="mt-5 w-auto rounded-xl border border-white px-8 py-5 text-xl text-foreground bg-[#c72323] "  >
+                  <Separator className="border-border" />
+                  <Link to="/privacy">
+                    <Button onClick={OnClickLogout} className="w-full  text-foreground ">
                       <p className="mr-1">Logout of your </p>
                       <TfiMicrosoft className="text-[28px]" />{" "}
                       <p className="ml-2">account</p>
                     </Button>
-                  </div>
-
-                  <hr className="solid mb-5 mt-5 text-foreground" />
+                  </Link>
                   <Link to="/privacy">
-                    <p className="text-foreground">To review our Privacy Policy</p>
+                    <Button variant='outline' type="submit" className="w-full">
+                      <p className=" text-foreground ">To review our Privacy Policy</p>
+                    </Button>
                   </Link>
                 </div>
-
-              </div>
-            </div>
-          </div>
- */
-
-/**  <>
-      <div className="p-5 mb-4 bg-light rounded-3">
-        <UnauthenticatedTemplate>
-
-        </UnauthenticatedTemplate>
-      </div>
-      <div className="p-5 mb-4 bg-light rounded-3">
-        <AuthenticatedTemplate>
+              </CardContent>
+            </Card>
 
 
-        </AuthenticatedTemplate>
-      </div>
-    </> */
+          </AuthenticatedTemplate>
+        </div>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <div className="p-5 mb-4 bg-light rounded-3">
+          <UnauthenticatedTemplate>
+            <Card className="max-w-[350px] w-[350px]  fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] bg-background">
+              <CardHeader>
+                <CardTitle className="text-2xl">Login</CardTitle>
+                <CardDescription>
+                  Login with your microsoft account
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  <Button
+                    onClick={OnClick}
+                    variant="outline"
+                    className=" w-full text-foreground bg-primary"  >
+                    <p className="mr-1">Login with </p>
+                    <TfiMicrosoft className="text-[28px]" />{" "}
+                  </Button>
+                  <Separator className="border-border" />
+                  <Link to="/privacy">
+                    <Button variant='outline' type="submit" className="w-full bg-background">
+                      <p className="text-muted-foreground">To review our Privacy Policy</p>
+                    </Button>
+                  </Link>
+                  <div className="mt-4 text-center text-sm">
+                    No account?{" "}
+                    <Link to="/subscribe" className="underline">
+                      Sign up
+                    </Link>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </UnauthenticatedTemplate>
+        </div>
+        <div className="p-5 mb-4 bg-light rounded-3">
+          <AuthenticatedTemplate>
+            <Card className="max-w-[350px] w-[350px] fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] bg-background">
+              <CardHeader>
+                <CardTitle className="text-2xl"> Welcome back {activeAccount?.name}!
+                </CardTitle>
+                <CardDescription>
+                  Have a nice day!
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4">
+                  <Link to={`/createSession?email=${email}&name=${name}`} >
+                    <Button
+                      onClick={() => {
+                      }}
+                      variant="outline"
+                      className=" w-full text-foreground bg-primary"  >
+                      Continue...
+                    </Button>
+                  </Link>
+                  <Separator className="border-border" />
+                  <Link to="/privacy">
+                    <Button onClick={OnClickLogout} className="w-full  text-foreground ">
+                      <p className="mr-1">Logout of your </p>
+                      <TfiMicrosoft className="text-[28px]" />{" "}
+                      <p className="ml-2">account</p>
+                    </Button>
+                  </Link>
+                  <Link to="/privacy">
+                    <Button variant='outline' type="submit" className="w-full">
+                      <p className=" text-foreground ">To review our Privacy Policy</p>
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </AuthenticatedTemplate>
+        </div>
+      </>
+    );
+  }
+
+}

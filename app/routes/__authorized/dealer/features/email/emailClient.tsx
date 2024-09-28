@@ -136,7 +136,7 @@ import { AlertCircle, Archive, ArchiveX, File, Inbox, MessagesSquare, Search, Se
 import { MailList } from "./mail-list";
 import { MailDisplay } from "./mail-display";
 import { AccountInfo, InteractionRequiredAuthError, InteractionStatus } from "@azure/msal-browser";
-import { callMsGraph } from "~/utils/microsoft/MsGraphApiCall";
+import { callMsGraph } from "~/routes/__authorized/dealer/features/email/MsGraphApiCall";
 import { loginRequest } from "~/components/microsoft/Config";
 
 export const links: LinksFunction = () => [

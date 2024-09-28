@@ -1,4 +1,4 @@
-import { Input, Button, Dialog as DialogRoot, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, TextArea, Card, CardContent, CardHeader, CardFooter, CardTitle, TooltipProvider, Tooltip, TooltipTrigger, TooltipContent, } from "~/components";
+import { Input, Button, Dialog as DialogRoot, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, TextArea, Card, CardContent, CardHeader, CardFooter, CardTitle, TooltipProvider, Tooltip, TooltipTrigger, TooltipContent, Avatar, AvatarFallback, AvatarImage, } from "~/components";
 import { useLoaderData, Form, useFetcher, useLocation, useNavigation, useSearchParams, useSubmit } from "@remix-run/react";
 import { Tabs, TabsContent, TabsList, TabsTrigger, } from "~/components/ui/tabs"
 import React, { useCallback, useEffect, useRef, useState } from "react"
@@ -9,6 +9,16 @@ import { CheckIcon, PaperPlaneIcon, PlusIcon } from "@radix-ui/react-icons"
 import { prisma } from "~/libs";
 import { Message, Conversation, Participant, Client, ConnectionState, Paginator, } from "@twilio/conversations";
 import axios from "axios";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "~/components/ui/command"
 
 const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
 const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
@@ -58,8 +68,8 @@ async function login(username, password, setToken,) {
   }
 }
 
-export default function SmsClientDash({ data, searchData, openSMS, setOpenSMS, smsDetails, conversationsData, text, setText, messagesConvo }) {
-  const { user, conversations, financeNotes, latestNotes, } = useLoaderData();
+export default function SmsClientDash({ data, openSMS, setOpenSMS, smsDetails, userList, user, }) {
+  const [selectedUsers, setSelectedUsers] = useState([])
 
   const [financeNotesList, setFinanceNoteList] = useState([])
   const [conversationsList, setConversationsList] = useState([])
@@ -70,24 +80,17 @@ export default function SmsClientDash({ data, searchData, openSMS, setOpenSMS, s
   let fetcher = useFetcher();
   let formRef = useRef();
   const inputLength = smsInput.trim().length
+  const [openNote, setOpenNote] = useState(false)
+  const [input, setInput] = useState("")
+  const inputLengthwtwo = input.trim().length
 
   useEffect(() => {
-    function getNotesByFinanceId(notes, financeId) {
-      return notes.filter(note => note.financeId === financeId);
-    }
-    const filteredNotes = getNotesByFinanceId(financeNotes, data.id);
-    setFinanceNoteList(filteredNotes)
-    function GetConversationsByID(conversations, financeId) {
-      return conversations.filter(conversation => conversation.conversationSid === financeId);
-    }
-    const filteredConversations = GetConversationsByID(messagesConvo, user.conversationSid);
-    setConversationsList(filteredConversations)
-  }, [messagesConvo]);
+    setFinanceNoteList(data.FinanceNote)
+    setConversationsList(data.Comm)
+  }, [data]);
+
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [latestNote, setlatestNote] = useState([])
-  useEffect(() => {
-    setlatestNote(latestNotes[0])
-  }, []);
+  const [latestNote, setlatestNote] = useState(data.FinanceNote[0])
 
   useEffect(() => {
     const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
@@ -200,6 +203,40 @@ GetNumber()
     }*/
   }, [smsDetails]);
 
+  const [aiMessages, setAiMessages] = useState([
+    { role: "system", content: "You are an AI sales assistant. Your goal is to assist in selling a product or service. Great! Our product is selling automotive vehicles/products. You will help with writing sales copy for emails and text messages and coming up with new ideas in order to have a reason to reach out to clients again without making it seem like your bothering the client with needless contact. You will receive incomplete text messages, emails and templates or a set of ideas to base the correspondence around. You are to give email, text and sales copy suggestions to improve closing ratios, appointment booking and customer relations." },
+    { author: 'assistant', content: "Welcome, what do you need help with today?" }
+  ])
+  const [userMessage, setUserMessage] = useState("")
+  const userMessageLength = userMessage.trim().length
+  async function SubmitAi() {
+    setAiMessages([...aiMessages, { author: 'user', content: userMessage }]);
+    const data = {
+      model: "gpt-3.5-turbo-0125",
+      messages: aiMessages,
+      temperature: 1,
+      max_tokens: 256,
+      top_p: 1,
+      frequency_penalty: 0,
+      presence_penalty: 0,
+    };
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+      body: JSON.stringify(data)
+    })
+      .then(response => response.json())
+      .then(result => {
+        console.log(result);
+        setAiMessages([...aiMessages, { author: 'assistant', content: String(result.choices[0].message.content) }]);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    setUserMessage("")
+    console.log(aiMessages, 'aiMessages')
+
+  }
   return (
     <Dialog.Root open={openSMS} onOpenChange={setOpenSMS} >
 
@@ -286,61 +323,94 @@ GetNumber()
                 </Card>
               </TabsContent>
               <TabsContent value="notes" className="">
-                <div className='h-auto '>
+                <div className='max-h-[900px] '>
                   <>
-                    <Card className="overflow-hidden text-foreground w-auto mx-auto" x-chunk="dashboard-05-chunk-4 "  >
+                    <Card className="overflow-hidden text-foreground w-[600px] mx-auto " x-chunk="dashboard-05-chunk-4 "  >
                       <CardHeader className="flex flex-row items-start bg-muted-background">
                         <div className="grid gap-0.5">
                           <CardTitle className="group flex items-center gap-2 text-lg">
                             Notes
                           </CardTitle>
                         </div>
-
+                        <div className="ml-auto flex items-center gap-1">
+                          <TooltipProvider delayDuration={0}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button size="icon" variant="outline" className="ml-auto rounded-full" onClick={() => setOpen(true)}  >
+                                  <PlusIcon className="h-4 w-4" />
+                                  <span className="sr-only">CC Employee</span>
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent sideOffset={10} className='bg-primary'>CC Employee</TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
                       </CardHeader>
-                      <CardContent className="flex-grow !grow overflow-x-clip p-6 text-sm bg-background">
-                        <div className="grid gap-3  ">
-                          <Card className=" flex flex-col-reverse   max-h-[70vh] h-auto overflow-y-scroll  ">
+                      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip p-6 text-sm bg-background">
+                        <div className="grid gap-3 max-h-[70vh] h-auto">
+                          <Card>
                             <CardContent>
                               <div className="space-y-4 mt-5">
-                                {latestNote ? (
+                                {financeNotesList && financeNotesList.map((message, index) => (
                                   <div
+                                    key={index}
                                     className={cn(
                                       "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                                      latestNote.userEmail === user.email
+                                      message.userEmail === user.email
                                         ? "ml-auto bg-primary text-foreground"
                                         : "bg-[#262626]"
                                     )}
                                   >
                                     <div className='grid grid-cols-1'>
-                                      {latestNote.userEmail !== user.email && (
-                                        <p className='text-[#8c8c8c]'>
-                                          {latestNote.userName}
+                                      {message.userEmail !== user.email && (
+                                        <p className='text-muted-foreground'>
+                                          {message.userName}
                                         </p>
                                       )}
-                                      {latestNote.body}
+                                      {message.body}
+                                      {message.selectedUsers.length > 0 && (
+                                        <div className="flex -space-x-2 overflow-hidden">
+                                          {message.selectedUsers.map((user) => (
+                                            <Tooltip key={user.email}>
+                                              <TooltipTrigger asChild>
+                                                <Avatar className="inline-block  border border-border"                                >
+                                                  <AvatarImage src={user.avatar} />
+                                                  <AvatarFallback>{user.selectedName[0]}</AvatarFallback>
+                                                </Avatar>
+                                              </TooltipTrigger>
+                                              <TooltipContent side="right" className='text-center grid grid-cols-1 border border-border'>
+                                                <p>{user.selectedName}</p>
+                                                <p>{user.selectedEmail}</p>
+                                              </TooltipContent>
+                                            </Tooltip>
+                                          ))}
+                                        </div>
+                                      )}
                                     </div>
                                   </div>
-                                ) : (
-                                  <p>No notes on file.</p>
-                                )}
+                                ))}
+                                {!financeNotesList || financeNotesList.length === 0 && <p className='mt-10 text-center'>No notes left at this time.</p>}
                               </div>
                             </CardContent>
-                          </Card >
+                          </Card>
                         </div>
                       </CardContent>
-                      <CardFooter className="flex flex-row items-center bg-muted-background px-6 py-3">
+                      <CardFooter className="flex flex-row items-center border-t border-border bg-muted-background px-6 py-3">
+
                         <fetcher.Form ref={formRef} method="post" className="flex w-full items-center space-x-2" >
                           <input type='hidden' name='financeId' defaultValue={data.id} />
+                          <input type='hidden' name='selectedUsers' defaultValue={JSON.stringify(selectedUsers)} />
                           <input type='hidden' name='userEmail' defaultValue={user.email} />
                           <input type='hidden' name='clientfileId' defaultValue={data.clientfileId} />
                           <input type='hidden' name='userName' defaultValue={user.name} />
+                          <input type='hidden' name='name' defaultValue={data.name} />
                           <Input
                             id="message"
                             placeholder="Type your message..."
-                            className="flex-1 bg-muted-background border-border"
+                            className="flex-1  bg-muted/50  border-border"
                             autoComplete="off"
-                            value={smsInput}
-                            onChange={(event) => setSmsInput(event.target.value)}
+                            value={input}
+                            onChange={(event) => setInput(event.target.value)}
                             name="body"
                           />
                           <Button
@@ -356,21 +426,148 @@ GetNumber()
                             <PaperPlaneIcon className="h-4 w-4" />
                             <span className="sr-only">Send</span>
                           </Button>
-                          <TooltipProvider delayDuration={0}>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button size="icon" variant="outline" className="ml-auto rounded-md" onClick={() => setOpen(true)}  >
-                                  <PlusIcon className="h-4 w-4" />
-                                  <span className="sr-only">CC Employee</span>
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent sideOffset={10} className='bg-primary'>CC Employee</TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
+
                         </fetcher.Form>
+                        <DialogRoot open={openNote} onOpenChange={setOpenNote}>
+                          <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
+                            <DialogHeader className="px-4 pb-4 pt-5">
+                              <DialogTitle>CC Employee</DialogTitle>
+                              <DialogDescription>
+                                Invite a user to this thread.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <Command className="overflow-hidden rounded-t-none border-t border-border bg-transparent">
+                              <CommandInput placeholder="Search user..." className=' bg-muted/50  text-foreground' />
+                              <CommandList>
+                                <CommandEmpty>No users found.</CommandEmpty>
+                                <CommandGroup className="p-2">
+                                  {userList.map((user) => (
+                                    <CommandItem
+                                      key={user.email}
+                                      className="flex items-center px-2"
+                                      onSelect={() => {
+                                        if (selectedUsers.includes(user)) {
+                                          return setSelectedUsers(
+                                            selectedUsers.filter(
+                                              (selectedUser) => selectedUser !== user
+                                            )
+                                          )
+                                        }
+
+                                        return setSelectedUsers(
+                                          [...userList].filter((u) =>
+                                            [...selectedUsers, user].includes(u)
+                                          )
+                                        )
+                                      }}
+                                    >
+                                      <Avatar>
+                                        <AvatarImage src='/avatars/02.png' alt="Image" />
+                                        <AvatarFallback>{user.name[0]}</AvatarFallback>
+                                      </Avatar>
+                                      <div className="ml-2">
+                                        <p className="text-sm font-medium leading-none">
+                                          {user.name}
+                                        </p>
+                                        <p className="text-sm text-muted-foreground">
+                                          {user.email}
+                                        </p>
+                                      </div>
+                                      {selectedUsers.includes(user) ? (
+                                        <CheckIcon className="ml-auto flex h-5 w-5 text-primary" />
+                                      ) : null}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                            <DialogFooter className="flex items-center border-t border-border p-4 sm:justify-between">
+                              {selectedUsers.length > 0 ? (
+                                <div className="flex -space-x-2 overflow-hidden">
+                                  {selectedUsers.map((user) => (
+                                    <Avatar
+                                      key={user.email}
+                                      className="inline-block  border border-border"
+                                    >
+                                      <AvatarImage src={user.avatar} />
+                                      <AvatarFallback>{user.name[0]}</AvatarFallback>
+                                    </Avatar>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-sm text-muted-foreground">
+                                  Select users to add to this thread.
+                                </p>
+                              )}
+
+                              <Button
+                                disabled={selectedUsers.length < 1}
+                                onClick={() => {
+                                  setOpenNote(false)
+                                }}
+                              >
+                                Continue
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </DialogRoot>
                       </CardFooter>
                     </Card>
                   </>
+                </div>
+              </TabsContent>
+              <TabsContent value="scripter" className="">
+                <div className="parent-container h-auto bg-background" >
+                  <Card className="">
+                    <CardContent>
+                      <div className=' flex flex-col-reverse  space-y-4   max-h-[450px] h-auto overflow-y-auto'>
+
+                        {aiMessages && aiMessages.slice(1).reverse().map((message, index) => (
+                          <div
+                            key={index}
+                            className={cn(
+                              "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm my-2",
+                              message.author === 'user'
+                                ? "ml-auto bg-primary text-foreground"
+                                : "bg-[#262626]"
+                            )}
+                          >
+                            <div className='grid grid-cols-1 '>
+                              {message.author !== 'user' && (
+                                <p className='text-[#8c8c8c]'>
+                                  Scripty
+                                </p>
+                              )}
+                              {message.content}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                  <div className="flex w-full items-center   mt-5" >
+                    <Input
+                      id="message"
+                      placeholder="Start writing your email or give the assistant a short desc. or a set of parameters to work with..."
+                      className="flex-1 bg-muted-background border-border mr-2"
+                      autoComplete="off"
+                      value={userMessage}
+                      // ref={textareaRef}
+                      onChange={(e) => setUserMessage(e.target.value)}
+                      name="message"
+                    />
+                    <Button
+                      size="icon"
+                      onClick={() => {
+                        toast.success(`Asking AI sales assistant!`)
+                        SubmitAi()
+                      }}
+                      disabled={userMessageLength === 0}
+                      className='bg-primary mr-2'>
+                      <PaperPlaneIcon className="h-4 w-4" />
+                      <span className="sr-only">Send</span>
+                    </Button>
+                  </div>
                 </div>
               </TabsContent>
             </Tabs>

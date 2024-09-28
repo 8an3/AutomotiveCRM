@@ -17,12 +17,40 @@ import {
   AccordionTrigger,
 } from "~/components/ui/accordion"
 
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "~/components/ui/command"
+
+
 //import OpenAI from "openai";
 //const openai = new OpenAI({  apiKey: "sk-proj-7hkkODMuRYEpSasZrZSHT3BlbkFJJPxyAFK2GS5xC2Q6bZVo"//process.env.OPEN_AI_SECRET_KEY,
 //});
 const apiKey = 'sk-proj-7hkkODMuRYEpSasZrZSHT3BlbkFJJPxyAFK2GS5xC2Q6bZVo';
 const url = 'https://api.openai.com/v1/chat/completions';
+//  const [customerEmail, setCustomerEmail] = useState('')
+//  const [customerName, setCustomerName] = useState('')
+//  const [customerfinanceId, setCustomerfinanceId] = useState('')
+// const [convos, setConvos] = useState([])
 
+/**
+ *
+ *     function getNotesByFinanceId(notes, financeId) {
+        return notes.filter(note => note.financeId === financeId);
+      }
+      const filteredNotes = getNotesByFinanceId(financeNotes, data.financeId);
+    function GetConversationsByID(conversations, financeId) {
+      return conversations.filter(conversation => conversation.conversationSid === financeId);
+    }
+    const filteredConversations = GetConversationsByID(messagesConvo, user.conversationSid);
+
+ */
 
 export default function EmailClient({
   data,
@@ -30,10 +58,11 @@ export default function EmailClient({
   setOpen,
   customerEmail,
   customerName,
-  customerfinanceId
+  customerfinanceId,
+  userList,
+  user,
 }) {
-  const { user, conversations, financeNotes, latestNotes, } = useLoaderData();
-  const [convos, setConvos] = useState([])
+  const { conversations, financeNotes, latestNotes, } = useLoaderData();
   const [financeNotesList, setFinanceNoteList] = useState([])
   const [conversationsList, setConversationsList] = useState([])
   const [emailData, setEmailData] = useState([])
@@ -53,26 +82,10 @@ export default function EmailClient({
 
   useEffect(() => {
     if (data) {
-
-      function getNotesByFinanceId(notes, financeId) {
-        return notes.filter(note => note.financeId === financeId);
-      }
-      const filteredNotes = getNotesByFinanceId(financeNotes, data.financeId);
-
-      setFinanceNoteList(filteredNotes)
-
-      function GetConversationsByID(conversations, financeId) {
-        return conversations.filter(conversation => conversation.financeId === financeId);
-      }
-      const filteredConversations = GetConversationsByID(conversations, data.financeId);
-
-      setConversationsList(filteredConversations)
+      setFinanceNoteList(data.FinanceNote)
+      setConversationsList(data.Comm)
     }
-
-  }, [data.financeId]);
-  //  const [customerEmail, setCustomerEmail] = useState('')
-  //  const [customerName, setCustomerName] = useState('')
-  //  const [customerfinanceId, setCustomerfinanceId] = useState('')
+  }, [data]);
 
 
   useEffect(() => {
@@ -124,8 +137,6 @@ export default function EmailClient({
       }
     }
   }, []);
-
-
 
   const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
 
@@ -222,6 +233,16 @@ export default function EmailClient({
     console.log(aiMessages, 'aiMessages')
 
   }
+  const options2 = {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  };
+
   /**  const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo-0125",
       messages: [
@@ -287,7 +308,7 @@ export default function EmailClient({
                             </TabsContent>
                           </Tabs>
                           <div className="space-y-4 mt-5">
-                            {conversationsList.map((message, index) => (
+                            {conversationsList && conversationsList.length > 0 && conversationsList.map((message, index) => (
                               <div
                                 key={index}
                                 className={cn(
@@ -422,6 +443,89 @@ export default function EmailClient({
                           </Button>
 
                         </fetcher.Form>
+                        <Dialog open={open} onOpenChange={setOpen}>
+                          <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
+                            <DialogHeader className="px-4 pb-4 pt-5">
+                              <DialogTitle>CC Employee</DialogTitle>
+                              <DialogDescription>
+                                Invite a user to this thread.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <Command className="overflow-hidden rounded-t-none border-t border-border bg-transparent">
+                              <CommandInput placeholder="Search user..." className=' bg-muted/50  text-foreground' />
+                              <CommandList>
+                                <CommandEmpty>No users found.</CommandEmpty>
+                                <CommandGroup className="p-2">
+                                  {userList.map((user) => (
+                                    <CommandItem
+                                      key={user.email}
+                                      className="flex items-center px-2"
+                                      onSelect={() => {
+                                        if (selectedUsers.includes(user)) {
+                                          return setSelectedUsers(
+                                            selectedUsers.filter(
+                                              (selectedUser) => selectedUser !== user
+                                            )
+                                          )
+                                        }
+
+                                        return setSelectedUsers(
+                                          [...userList].filter((u) =>
+                                            [...selectedUsers, user].includes(u)
+                                          )
+                                        )
+                                      }}
+                                    >
+                                      <Avatar>
+                                        <AvatarImage src='/avatars/02.png' alt="Image" />
+                                        <AvatarFallback>{user.name[0]}</AvatarFallback>
+                                      </Avatar>
+                                      <div className="ml-2">
+                                        <p className="text-sm font-medium leading-none">
+                                          {user.name}
+                                        </p>
+                                        <p className="text-sm text-muted-foreground">
+                                          {user.email}
+                                        </p>
+                                      </div>
+                                      {selectedUsers.includes(user) ? (
+                                        <CheckIcon className="ml-auto flex h-5 w-5 text-primary" />
+                                      ) : null}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                            <DialogFooter className="flex items-center border-t border-border p-4 sm:justify-between">
+                              {selectedUsers.length > 0 ? (
+                                <div className="flex -space-x-2 overflow-hidden">
+                                  {selectedUsers.map((user) => (
+                                    <Avatar
+                                      key={user.email}
+                                      className="inline-block  border border-border"
+                                    >
+                                      <AvatarImage src={user.avatar} />
+                                      <AvatarFallback>{user.name[0]}</AvatarFallback>
+                                    </Avatar>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-sm text-muted-foreground">
+                                  Select users to add to this thread.
+                                </p>
+                              )}
+
+                              <Button
+                                disabled={selectedUsers.length < 1}
+                                onClick={() => {
+                                  setOpen(false)
+                                }}
+                              >
+                                Continue
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
                       </CardFooter>
                     </Card>
                   </>

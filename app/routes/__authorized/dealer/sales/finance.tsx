@@ -1,57 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Form, Link, useActionData, useLoaderData, useNavigation, useNavigate, useSubmit } from '@remix-run/react'
+import React, { HTMLAttributes, HTMLProps, useState, useEffect, Suspense, useRef, } from 'react'
+import { Await, Form, Link, useActionData, useFetcher, useLoaderData, useLocation, useNavigation, useSubmit } from '@remix-run/react'
 import {
-    Button,
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-    Input,
-    Label,
-    ScrollArea,
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger
-} from "~/components";
-import { CaretSortIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons"
-import { Checkbox, Flex, Text } from '@radix-ui/themes';
-import type {
-    Column,
-    ColumnDef,
-    ColumnFiltersState,
-    ExpandedState,
-    FilterFn,
-    SortingFn,
-    SortingState,
-    Table,
-    VisibilityState,
-} from "@tanstack/react-table";
-import {
-    flexRender,
-    getCoreRowModel,
-    getFacetedMinMaxValues,
-    getFacetedRowModel,
-    getFacetedUniqueValues,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    sortingFns,
-    useReactTable
-} from "@tanstack/react-table";
+    Input, Separator, Checkbox, PopoverTrigger, PopoverContent, Popover, Button, ScrollArea, Tabs, TabsList, TabsTrigger, TabsContent, Label, Select, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectGroup, Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "~/components/ui/index";
+import { CaretSortIcon, ChevronDownIcon, DotsHorizontalIcon, } from "@radix-ui/react-icons"
+import { getExpandedRowModel, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, getFacetedRowModel, getFacetedUniqueValues, getFacetedMinMaxValues, sortingFns } from "@tanstack/react-table";
+import { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState, } from "@tanstack/react-table"
 import { toast } from "sonner"
-import EditWishList from '~/components/dashboard/wishlist/WishListEdit';
-import { Table as Table2, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
-import { json, type LinksFunction } from '@remix-run/node';
-import { compareItems, type RankingInfo, rankItem, } from '@tanstack/match-sorter-utils'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "~/components/ui/table"
+import { type LinksFunction, type DataFunctionArgs, } from '@remix-run/node';
+import { type RankingInfo, rankItem, compareItems, } from '@tanstack/match-sorter-utils'
+import { DataTable } from "~/components/dashboard/data-table"
 import { type dashBoardType } from "~/components/dashboard/schema";
 import { DataTableColumnHeader } from "~/components/dashboard/calls/header"
 import ClientCard from '~/components/dashboard/calls/clientCard';
@@ -60,39 +25,47 @@ import EmailClient from '~/components/dashboard/calls/emailClient';
 import ClientStatusCard from '~/components/dashboard/calls/ClientStatusCard';
 import CompleteCall from '~/components/dashboard/calls/completeCall';
 import TwoDaysFromNow from '~/components/dashboard/calls/2DaysFromNow';
-import { dashboardAction, dashboardLoader } from "~/components/actions/financeCalls";
-import { CalendarCheck, Landmark } from "lucide-react";
+import { dashboardAction, dashboardLoader } from "~/components/actions/dashboardCalls";
+import { ButtonLoading } from "~/components/ui/button-loading";
 import AttemptedOrReached from "~/components/dashboard/calls/setAttOrReached";
 import ContactTimesByType from "~/components/dashboard/calls/ContactTimesByType";
 import LogCall from "~/components/dashboard/calls/logCall";
 import Logtext from "~/components/dashboard/calls/logText";
 import { Badge } from "~/components/ui/badge";
-import * as Dialog from '@radix-ui/react-dialog';
-import {
-    Dialog as RootDialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "~/components/ui/dialog"
-import AddCustomer from '~/components/dashboard/calls/addCustomer';
-import { DataTablePagination } from '~/components/dashboard/calls/pagination';
-import { FinanceModal } from '~/components/dashboard/calls/financeModal';
-import { ButtonLoading } from "~/components/ui/button-loading";
-import useSWR from 'swr';
-import LastNote from '~/components/dashboard/calls/lastNote';
 import WishList from '~/components/dashboard/wishlist/wishList'
-import { Message, Conversation, Participant, Client, ConnectionState, Paginator, } from "@twilio/conversations";
+import secondary from "~/styles/secondary.css";
+import DemoDay from '~/components/dashboard/demoDay/demoDay';
+import useSWR, { SWRConfig, mutate, useSWRConfig } from 'swr';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "~/components/ui/card"
+import SearchLeads from '~/components/dashboard/demoDay/searchLeads';
 import { SmDataTable } from '~/components/dashboard/smData-table';
-import { DataTable } from "~/components/dashboard/data-table"
 import SmClientCard from '~/components/dashboard/calls/smClientCard';
-import { Mail, MessageSquare } from 'lucide-react';
-import IndeterminateCheckbox from "~/components/dashboard/calls/InderterminateCheckbox"
-import { FinanceDialog } from '~/components/dashboard/calls/finance';
-import { prisma } from '~/libs';
-import axios from 'axios'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuSub,
+    DropdownMenuCheckboxItem,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu"
+import WebLeads from '~/components/dashboard/demoDay/webLeads';
+import { CalendarCheck, Mail, MessageSquare, UserPlus, X } from 'lucide-react';
+import { Message, Conversation, Participant, Client, ConnectionState, Paginator, } from "@twilio/conversations";
+import emitter from '~/routes/__authorized/dealer/features/addOn/emitter';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -104,1206 +77,628 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "~/components/ui/alert-dialog"
+import PresetFollowUpDay from '~/components/dashboard/calls/presetFollowUpDay';
+import { prisma } from '~/libs';
+import IndeterminateCheckbox, { fuzzyFilter, fuzzySort, login, getToken, invariant, Loading, checkForMobileDevice, TableMeta, Filter, DebouncedInput, defaultColumn } from '~/components/shared/shared'
+import { DataTablePagination } from "~/components/dashboard/calls/pagination";
+import { TextFunction } from '~/components/dashboard/calls/massSms';
+import money from '~/images/favicons/money.svg'
+import ComposeClient from '../features/email/composeClient';
+import { getSession, commitSession } from '~/sessions/auth-session.server';
+import { GetUser } from "~/utils/loader.server";
+import { json, type ActionFunction, createCookie, type LoaderFunction, redirect, defer } from "@remix-run/node";
+import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
+import { FinanceDialog } from '~/components/dashboard/calls/finance';
 
-export let loader = dashboardLoader
+export const links: LinksFunction = () => [
+    { rel: "stylesheet", href: secondary },
+    { rel: "icon", type: "image/svg", href: money, },
+];
+
+// const financeNotes = finance.FinanceNote //await prisma.financeNote.findMany({ orderBy: { createdAt: "desc" }, });
+/**  const fetchLatestNotes = async (webLeadData) => {
+  const promises = webLeadData.map(async (webLeadData) => {
+      try {
+          const latestNote = await prisma.financeNote.findFirst({
+              where: { financeId: webLeadData.financeId },
+              orderBy: { createdAt: 'desc' },
+          });
+          return latestNote;
+      } catch (error) {
+          console.error('Error fetching note:', error);
+          return null;
+      }
+  });
+
+  return Promise.all(promises);
+}; */
+// const latestNotes = await fetchLatestNotes(finance);
+// const conversations = await prisma.comm.findMany({ orderBy: { createdAt: "desc" }, });
+// await prisma.columnStateSales.findUnique({        where: { userEmail }    });
+// const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
+
+export async function loader({ request, params }: LoaderFunction) {
+    const session2 = await getSession(request.headers.get("Cookie"));
+    const email = session2.get("email")
+    const user = await GetUser(email)
+    if (!user) { redirect('/login') }
+    const proxyPhone = '+12176347250'
+    const deFees = user?.Dealer
+
+    const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: user.email, }, });
+    const finance = await prisma.finance.findMany({
+        where: { userEmail: user?.email },
+        select: {
+            financeManager: true,
+            userEmail: true,
+            userName: true,
+            financeManagerName: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            phone: true,
+            name: true,
+            address: true,
+            city: true,
+            postal: true,
+            province: true,
+            dl: true,
+            typeOfContact: true,
+            timeToContact: true,
+            dob: true,
+            othTax: true,
+            optionsTotal: true,
+            lienPayout: true,
+            leadNote: true,
+            sendToFinanceNow: true,
+            dealNumber: true,
+            iRate: true,
+            months: true,
+            discount: true,
+            total: true,
+            onTax: true,
+            on60: true,
+            biweekly: true,
+            weekly: true,
+            weeklyOth: true,
+            biweekOth: true,
+            oth60: true,
+            weeklyqc: true,
+            biweeklyqc: true,
+            qc60: true,
+            deposit: true,
+            biweeklNatWOptions: true,
+            weeklylNatWOptions: true,
+            nat60WOptions: true,
+            weeklyOthWOptions: true,
+            biweekOthWOptions: true,
+            oth60WOptions: true,
+            biweeklNat: true,
+            weeklylNat: true,
+            nat60: true,
+            qcTax: true,
+            otherTax: true,
+            totalWithOptions: true,
+            otherTaxWithOptions: true,
+            desiredPayments: true,
+            admin: true,
+            commodity: true,
+            pdi: true,
+            discountPer: true,
+            userLoanProt: true,
+            userTireandRim: true,
+            userGap: true,
+            userExtWarr: true,
+            userServicespkg: true,
+            deliveryCharge: true,
+            vinE: true,
+            lifeDisability: true,
+            rustProofing: true,
+            userOther: true,
+            referral: true,
+            visited: true,
+            bookedApt: true,
+            aptShowed: true,
+            aptNoShowed: true,
+            testDrive: true,
+            metService: true,
+            metManager: true,
+            metParts: true,
+            sold: true,
+            depositMade: true,
+            refund: true,
+            turnOver: true,
+            financeApp: true,
+            approved: true,
+            signed: true,
+            pickUpSet: true,
+            demoed: true,
+            lastContact: true,
+            status: true,
+            customerState: true,
+            result: true,
+            timesContacted: true,
+            nextAppointment: true,
+            followUpDay: true,
+            deliveryDate: true,
+            delivered: true,
+            deliveredDate: true,
+            notes: true,
+            visits: true,
+            progress: true,
+            metSalesperson: true,
+            metFinance: true,
+            financeApplication: true,
+            pickUpDate: true,
+            pickUpTime: true,
+            depositTakenDate: true,
+            docsSigned: true,
+            tradeRepairs: true,
+            seenTrade: true,
+            lastNote: true,
+            applicationDone: true,
+            licensingSent: true,
+            liceningDone: true,
+            refunded: true,
+            cancelled: true,
+            lost: true,
+            dLCopy: true,
+            insCopy: true,
+            testDrForm: true,
+            voidChq: true,
+            loanOther: true,
+            signBill: true,
+            ucda: true,
+            tradeInsp: true,
+            customerWS: true,
+            otherDocs: true,
+            urgentFinanceNote: true,
+            funded: true,
+            leadSource: true,
+            financeDeptProductsTotal: true,
+            bank: true,
+            loanNumber: true,
+            idVerified: true,
+            dealerCommission: true,
+            financeCommission: true,
+            salesCommission: true,
+            firstPayment: true,
+            loanMaturity: true,
+            quoted: true,
+            InPerson: true,
+            Phone: true,
+            SMS: true,
+            Email: true,
+            Other: true,
+            paintPrem: true,
+            licensing: true,
+            stockNum: true,
+            options: true,
+            accessories: true,
+            freight: true,
+            labour: true,
+            year: true,
+            brand: true,
+            mileage: true,
+            model: true,
+            model1: true,
+            color: true,
+            modelCode: true,
+            msrp: true,
+            trim: true,
+            vin: true,
+            bikeStatus: true,
+            invId: true,
+            motor: true,
+            tag: true,
+            tradeValue: true,
+            tradeDesc: true,
+            tradeColor: true,
+            tradeYear: true,
+            tradeMake: true,
+            tradeVin: true,
+            tradeTrim: true,
+            tradeMileage: true,
+            tradeLocation: true,
+            lien: true,
+            id: true,
+            activixId: true,
+            theRealActId: true,
+            createdAt: true,
+            updatedAt: true,
+            clientfileId: true,
+            inventoryMotorcycleId: true,
+            //InventoryMotorcycle
+            ////
+            //financeStorage
+            //clientApts
+            Comm: {
+                select: {
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    userEmail: true,
+                    type: true,
+                    body: true,
+                    subject: true,
+                    userName: true,
+                    direction: true,
+                    result: true,
+                    ClientfileId: true,
+                    // Clientfile: true,
+                    financeId: true,
+                    // Finance
+                }
+            },
+            //FinanceDeptProducts
+            //FinanceUnit
+            //FinanceTradeUnit
+            //AccOrders
+            //WorkOrders
+            //Payments
+            FinanceNote: {
+                select: {
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    body: true,
+                    userEmail: true,
+                    userName: true,
+                    clientfileId: true,
+                    financeId: true,
+                    //finance
+                    selectedUsers: {
+                        select: {
+                            id: true,
+                            createdAt: true,
+                            selectedName: true,
+                            selectedEmail: true,
+                            FinanceNoteId: true,
+                        }
+                    }
+                }
+            },
+            ////
+            //Clientfile
+            ////
+            //finManOptions
+            //bmwMotoOptions
+            //uCDAForm
+            //FinCanOptions
+        }
+    });
+
+    const urlSegmentsDashboard = new URL(request.url).pathname.split("/");
+    const dashBoardCustURL = urlSegmentsDashboard.slice(0, 3).join("/");
+
+    const wishList = await prisma.wishList.findMany({ where: { userId: user?.id }, })
+    const inventory = await prisma.inventoryMotorcycle.findMany({
+        select: { make: true, model: true, status: true, }
+    })
+
+    function calculateSimilarity(modelName1, modelName2, make) {
+        let components1
+        if (make === 'Harley-Davidson') {
+            components1 = modelName1.split(' - ')[2].toLowerCase();
+        } else {
+            components1 = modelName1.split(' - ').map(component => component.toLowerCase());
+        }
+        const components2 = modelName2.split(' ')[0].toLowerCase()
+
+        const multiSearchAtLeastN = (text, searchWords, minimumMatches) => (
+            searchWords.some(word => text.includes(word) && --minimumMatches <= 0)
+        );
+        let name = modelName2.toLowerCase()
+        let spl = name.split(' - ');
+        let passed = multiSearchAtLeastN(modelName1.toLowerCase(), spl, 1);
+        // console.log(name, modelName1.toLowerCase(), 'checking final verification ')
+        //  console.log(passed);
+        return passed
+    }
+    const filteredEmailsSet = new Set();
+
+    async function processWishList() {
+        for (const wishListItem of wishList) {
+            for (const inventoryItem of inventory) {
+                const similarityScore = calculateSimilarity(wishListItem.model, inventoryItem.model, inventoryItem.make);
+                if (
+                    wishListItem.notified !== 'true' &&
+                    wishListItem.brand === inventoryItem.make &&
+                    similarityScore === true
+                    // && inventoryItem.status === 'available'
+                ) {
+                    filteredEmailsSet.add(`${wishListItem.email} -- ${wishListItem.model}`);
+                    if (!wishListItem.notified) {
+                        await prisma.notificationsUser.create({
+                            data: {
+                                title: `Bike found for ${wishListItem.firstName} ${wishListItem.lastName}`,
+                                content: `${wishListItem.model} just came in - ${wishListItem.email} ${wishListItem.phone}`,
+                                read: 'false',
+                                type: 'updates',
+                                from: 'Wish List Update',
+                                userId: user?.id,
+                            }
+                        });
+                        await prisma.wishList.update({
+                            where: { id: wishListItem.id },
+                            data: { notified: 'true' }
+                        });
+                    }
+                }
+            }
+        }
+    }
+    const wishlistMatches = processWishList().then(() => {
+    }).catch(error => {
+        console.error('Error processing wish list:', error);
+    });
+
+    const getDemoDay = await prisma.demoDay.findMany({ orderBy: { createdAt: 'desc', }, where: { userEmail: 'skylerzanth@outlook.com' } });
+
+    const webLeadData = finance.filter(finance =>
+        finance.userEmail === null || finance.userEmail === ''
+    );
+
+    let callToken;
+    let username = 'skylerzanth'//localStorage.getItem("username") ?? "";
+    let password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
+    if (username.length > 0 && password.length > 0) {
+        const token = await getToken(username, password)
+        callToken = token
+    }
+
+    const accountSid = 'AC9b5b398f427c9c925f18f3f1e204a8e2';
+    const authToken = 'd38e2fd884be4196d0f6feb0b970f63f';
+    const godClient = require('twilio')(accountSid, authToken);
+    const client = godClient
+
+    let convoList = {}
+    let conversationSid;
+    let participantSid;
+    let userSid;
+    let conversationChatServiceSid;
+    let newToken;
+
+    const firstTime = await prisma.twilioSMSDetails.findUnique({ where: { userEmail: 'skylerzanth@gmail.com', } })//user?.email } })
+
+    if (!firstTime) {
+        function delay(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+
+        async function performOperations() {
+            try {
+                // Create a conversation
+                const conversation = await client.conversations.v1.conversations.create({ friendlyName: 'My test' });
+                const conversationSid = conversation.sid;
+
+                // Fetch conversation details
+                await delay(50);
+                try {
+                    const fetchedConversation = await client.conversations.v1.conversations(conversationSid).fetch();
+                    conversationChatServiceSid = fetchedConversation.body;
+                } catch (error) { console.error('Error fetching conversation:', error); }
+
+                // Create a participant/customer
+                await delay(50);
+                try {
+                    const participant = await client.conversations.v1.conversations(conversationSid).participants.create({
+                        'messagingBinding.address': `+1${user?.phone}`, // customers number
+                        'messagingBinding.proxyAddress': proxyPhone,
+                    });
+                    participantSid = participant.sid;
+                } catch (error) { console.error('Error creating participant:', error); }
+
+                // Create a user // need tog et rid of this when when wqe use this to create convos
+                await delay(50);
+                try {
+                    const createdUser = await client.conversations.v1.users.create({ identity: `${username}` });
+                    userSid = createdUser.sid;
+                } catch (error) { console.error('Error creating user:', error); }
+
+                // Create a participant for the user/employee
+                await delay(50);
+                try {
+                    const userParticipant = await client.conversations.v1.conversations(conversationSid)
+                        .participants
+                        .create({ identity: `${username}` });
+                    userSid = userParticipant.sid
+                } catch (error) { console.error('Error creating user:', error); }
+
+                // List user conversations
+                await delay(50);
+                try {
+                    convoList = await client.conversations.v1.users(userSid).userConversations.list({ limit: 50 });
+                    //   userConversations.forEach(u => console.log(u.friendlyName));
+                } catch (error) { console.error('Error creating user:', error); }
+
+
+            } catch (error) { console.error('Error performing operations:', error); }
+        }
+
+        // Call the function
+        performOperations();
+
+        await prisma.twilioSMSDetails.create({
+            data: {
+                conversationSid: conversationSid,
+                participantSid: participantSid,
+                userSid: userSid,
+                username: username,
+                userEmail: 'skylerzanth@gmail.com', // email,
+                passClient: password,
+                proxyPhone: proxyPhone,
+            }
+        })
+
+    }
+    let getConvos;
+
+    if (!Array.isArray(convoList) || convoList.length === 0) {
+        getConvos = await client.conversations.v1.users(`${username}`).userConversations.list({ limit: 50 });
+        // .then(userConversations => userConversations.forEach(u => console.log(u.friendlyName)))
+        convoList = getConvos;
+    }
+
+    const conversation = await prisma.getConversation.findFirst({
+        where: { userEmail: 'skylerzanth@gmail.com'/*user.email*/ },
+        orderBy: {
+            createdAt: 'desc', // or updatedAt: 'desc'
+        },
+    });
+    let getText
+    if (conversation) {
+        const storeObject = JSON.parse(conversation.jsonData);
+        // console.log(storeObject);
+
+        // Extract conversationSid from the first object in the array
+        const conversationSid = storeObject[0].conversationSid;
+
+        if (conversationSid) {
+            //  console.log(conversationSid, 'channels');
+            getText = await client.conversations.v1.conversations(conversationSid)
+                .messages
+                .list({ limit: 200 });
+        } else {
+            console.log('conversationSid is undefined');
+        }
+    }
+
+    let products = await prisma.board.findMany({
+        select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            userEmail: true,
+            boardId: true,
+            color: true,
+            name: true,
+            columns: {
+                select: {
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    name: true,
+                    order: true,
+                    Board: true,
+                    boardId: true,
+                    items: {
+                        select: {
+                            id: true,
+                            createdAt: true,
+                            updatedAt: true,
+                            title: true,
+                            content: true,
+                            order: true,
+                            boardId: true,
+                            columnId: true,
+                            //Board
+                            //Column
+                        }
+                    },
+                }
+            },
+            items: {
+                select: {
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    title: true,
+                    content: true,
+                    order: true,
+                    boardId: true,
+                    columnId: true,
+                    //Board
+                    //Column
+
+                }
+            }
+        }
+    });
+    products = products.filter((board) =>
+        board.name === 'Finance Product Board'
+    );
+    console.log(products, 'produicts')
+    const userAgent = request.headers.get('User-Agent');
+    const isMobileDevice = checkForMobileDevice(userAgent);
+    const rotationList = await prisma.user.findMany()
+    const userList = rotationList
+    const columnState = user.columnStateSales
+    return json({
+        products,
+        userList,
+        columnState,
+        getDemoDay,
+        finance,
+        deFees,
+        webLeadData,
+        user,
+        dashBoardCustURL,
+        getTemplates,
+        request,
+        wishlistMatches,
+        callToken,
+        convoList, username, newToken, password, getText, isMobileDevice, email,
+        rotationList
+    }, { headers: { "Set-Cookie": await commitSession(session2), }, })
+}
 
 export let action = dashboardAction
 
-export const links: LinksFunction = () => [
-    { rel: "icon", type: "image/svg", href: '/dashboard.svg' },
-]
-
-let url = '/dealer/api/finance'
-
 export default function Mainboard() {
-    const { user } = useLoaderData()
-    const submit = useSubmit();
-    const navigate = useNavigate();
-    const navigation = useNavigation();
-    const isSubmitting = navigation.state === "submitting";
-    const [selectedTab, setSelectedTab] = useState("dashboard");
-
-
+    const { user, } = useLoaderData();
 
 
     return (
-        <>
-            <Tabs className='mt-[50px] ' defaultValue="dashboard">
-                <TabsList className="ml-[5px]">
-                    <TabsTrigger onClick={() => {
-                        setSelectedTab("null")
-                        setSelectedTab("dashboard")
-                    }}
-                        value="dashboard">Finance Dashboard</TabsTrigger>
-                    <TabsTrigger onClick={() => {
-                        setSelectedTab("null")
-                        setSelectedTab("newLeads")
-                    }}
-                        value="newLeads">New Leads</TabsTrigger>
-
-                </TabsList>
-                {selectedTab === "dashboard" && (
-                    <TabsContent className="w-[98%] mx-auto mt-5" value="dashboard">
-                        <FinanceBoard />
-                    </TabsContent>
-                )}
-                {selectedTab === "newLeads" && (
-                    <TabsContent className="w-[98%]" value="newLeads">
-                        <WebleadsTable />
-                    </TabsContent>
-                )}
-
+        <div className='bg-background'>
+            <Tabs defaultValue="dashboard" className='mt-[50px] '>
+                <div className=" hidden md:block ">
+                    <TabsList className="ml-[5px]">
+                        <TabsTrigger value="dashboard">Finance Dashboard</TabsTrigger>
+                        <TabsTrigger value="newLeads">New Leads</TabsTrigger>
+                    </TabsList>
+                </div>
+                <TabsContent className="w-[98%] mx-auto mt-5" value="dashboard"><MainDashbaord user={user} /></TabsContent>
+                <TabsContent className="w-[98%]" value="newLeads"><WebLeads /></TabsContent>
             </Tabs>
-
-
-        </>
+        </div>
     )
 }
-
 
 declare module '@tanstack/table-core' {
     interface FilterFns {
         fuzzy: FilterFn<unknown>
     }
-
     interface FilterMeta {
         itemRank: RankingInfo
     }
 }
 
-const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
-    // Rank the item
-    const itemRank = rankItem(row.getValue(columnId), value)
+export async function getData(): Promise<dashBoardType[]> {
 
-    // Store the itemRank info
-    addMeta({
-        itemRank,
-    })
-
-    // Return if the item should be filtered in/out
-    return itemRank.passed
-}
-const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
-    let dir = 0
-
-    // Only sort by rank if the column has ranking information
-    if (rowA.columnFiltersMeta[columnId]) {
-        dir = compareItems(
-            rowA.columnFiltersMeta[columnId]?.itemRank!,
-            rowB.columnFiltersMeta[columnId]?.itemRank!
-        )
+    //turn into dynamic route and have them call the right loader like q  uote qand overview
+    const res = await fetch('/dealer/api/dashboard/calls/loader')
+    if (!res.ok) {
+        throw new Error("Failed to fetch data");
     }
-
-    // Provide an alphanumeric fallback for when the item ranks are equal
-    return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir
+    return res.json();
 }
 
-function Filter({
-    column,
-    table,
-}: {
-    column: Column<any, unknown>
-    table: Table<any>
-}) {
-    const firstValue = table
-        .getPreFilteredRowModel()
-        .flatRows[0]?.getValue(column.id)
-
-    const columnFilterValue = column.getFilterValue()
-
-    const sortedUniqueValues = React.useMemo(
-        () =>
-            typeof firstValue === 'number'
-                ? []
-                : Array.from(column.getFacetedUniqueValues().keys()).sort(),
-        [column.getFacetedUniqueValues()]
-    )
-
-    return typeof firstValue === 'number' ? (
-        <div>
-            <div className="flex space-x-2">
-                <DebouncedInput
-                    type="number"
-                    min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
-                    max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
-                    value={(columnFilterValue as [number, number])?.[0] ?? ''}
-                    onChange={value =>
-                        column.setFilterValue((old: [number, number]) => [value, old?.[1]])
-                    }
-                    placeholder={`Min ${column.getFacetedMinMaxValues()?.[0]
-                        ? `(${column.getFacetedMinMaxValues()?.[0]})`
-                        : ''
-                        }`}
-                    className="w-24 rounded border shadow"
-                />
-                <DebouncedInput
-                    type="number"
-                    min={Number(column.getFacetedMinMaxValues()?.[0] ?? '')}
-                    max={Number(column.getFacetedMinMaxValues()?.[1] ?? '')}
-                    value={(columnFilterValue as [number, number])?.[1] ?? ''}
-                    onChange={value =>
-                        column.setFilterValue((old: [number, number]) => [old?.[0], value])
-                    }
-                    placeholder={`Max ${column.getFacetedMinMaxValues()?.[1]
-                        ? `(${column.getFacetedMinMaxValues()?.[1]})`
-                        : ''
-                        }`}
-                    className="w-24 rounded border shadow"
-                />
-            </div>
-            <div className="h-1" />
-        </div>
-    ) : (
-        <>
-            <datalist id={column.id + 'list'}>
-                {sortedUniqueValues.slice(0, 5000).map((value: any) => (
-                    <option value={value} key={value} />
-                ))}
-            </datalist>
-            <DebouncedInput
-                type="text"
-                value={(columnFilterValue ?? '') as string}
-                onChange={value => column.setFilterValue(value)}
-                placeholder={`Search... (${column.getFacetedUniqueValues().size})`}
-                className="w-36 rounded border shadow"
-                list={column.id + 'list'}
-            />
-            <div className="h-1" />
-        </>
-    )
-}
-
-function DebouncedInput({
-    value: initialValue,
-    onChange,
-    debounce = 500,
-    ...props
-}: {
-    value: string | number
-    onChange: (value: string | number) => void
-    debounce?: number
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
-    const [value, setValue] = React.useState(initialValue)
-
-    React.useEffect(() => {
-        setValue(initialValue)
-    }, [initialValue])
-
-    React.useEffect(() => {
-        const timeout = setTimeout(() => {
-            onChange(value)
-        }, debounce)
-
-        return () => clearTimeout(timeout)
-    }, [value])
-
-    return (
-        <Input {...props} value={value} onChange={e => setValue(e.target.value)} />
-    )
-}
-
-export function invariant(
-    condition: any,
-    message: string | (() => string),
-): asserts condition {
-    if (!condition) {
-        throw new Error(typeof message === 'function' ? message() : message)
-    }
-}
-
-// search table
-export function SearchTable() {
-    const { searchData } = useLoaderData();
-    const data = searchData
-    type Payment = {
-        id: string
-        firstName: string
-        lastName: string
-        email: string
-        phone: number
-        address: string
-        prov: string
-    }
-    const [sorting, setSorting] = React.useState<SortingState>([])
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-        []
-    )
-    const [globalFilter, setGlobalFilter] = React.useState('')
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({ id: false, })
-    const [rowSelection, setRowSelection] = React.useState({})
-
-    const columns: ColumnDef<Payment>[] = [
-
-        {
-            accessorKey: "id",
-            header: "Id",
-            cell: ({ row }) => (
-                <div className="capitalize">{row.getValue("id")}</div>
-            ),
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "firstName",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            First Name
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-
-            },
-            cell: ({ row }) => <div className="text-center  lowercase">
-                <a target="_blank" href={`/customer/${row.getValue("id")}`} rel="noreferrer">
-                    {row.getValue("firstName")}
-                </a>
-            </div>
-
-        },
-
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "lastName",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            Last Name
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-            },
-            cell: ({ row }) => <div className="text-center  lowercase">
-                <a target="_blank" href={`/customer/${row.getValue("id")}`} rel="noreferrer">
-                    {row.getValue("lastName")}
-                </a>
-            </div>,
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "email",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            Email
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-            },
-            cell: ({ row }) => <div className="text-center lowercase">
-                <a target="_blank" href={`/customer/${row.getValue("id")}`} rel="noreferrer">
-                    {row.getValue("email")}
-                </a>
-            </div>,
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "phone",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            phone #
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-
-            },
-            cell: ({ row }) => <div className="text-center lowercase">
-                <a target="_blank" href={`/customer/${row.getValue("id")}`} rel="noreferrer">
-                    {row.getValue("phone")}
-                </a>
-            </div>,
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "address",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            Address
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-            },
-            cell: ({ row }) => <div className="text-center lowercase">
-                <a target="_blank" href={`/customer/${row.getValue("id")}`} rel="noreferrer">
-                    {row.getValue("address")}
-                </a>
-            </div>,
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "prov",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            Province
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-            },
-            cell: ({ row }) => <div className="text-center lowercase">
-                <a target="_blank" href={`/customer/${row.getValue("id")}`} rel="noreferrer">
-                    {row.getValue("prov")}
-                </a></div>,
-        },
-
-        {
-            id: "actions",
-            enableHiding: false,
-            cell: ({ row }) => {
-                const payment = row.original
-
-                return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Open menu</span>
-                                <DotsHorizontalIcon className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem
-                                onClick={() => navigator.clipboard.writeText(payment.id)}
-                            >
-                                Copy payment ID
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>View customer</DropdownMenuItem>
-                            <DropdownMenuItem>View payment details</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                )
-            },
-        },
-    ]
-    const table = useReactTable({
-        data,
-        columns,
-        filterFns: {
-            fuzzy: fuzzyFilter,
-        },
-        onGlobalFilterChange: setGlobalFilter,
-        globalFilterFn: fuzzyFilter,
-        onSortingChange: setSorting,
-        onColumnFiltersChange: setColumnFilters,
-        getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        onColumnVisibilityChange: setColumnVisibility,
-        onRowSelectionChange: setRowSelection,
-        getFacetedRowModel: getFacetedRowModel(),
-        getFacetedUniqueValues: getFacetedUniqueValues(),
-        getFacetedMinMaxValues: getFacetedMinMaxValues(),
-
-        state: {
-            sorting,
-            columnFilters,
-            columnVisibility,
-            rowSelection,
-            globalFilter,
-        },
-    })
-
-    const [filterBy, setFilterBy] = useState('');
-
-    const handleInputChange = (name) => {
-        setFilterBy(name);
-    };
-    // clears filters
-    const setAllFilters = () => {
-        setColumnFilters([]);
-        setSorting([])
-        setFilterBy('')
-    };
-
-    // toggle column filters
-    const [showFilter, setShowFilter] = useState(false);
-
-    const toggleFilter = () => {
-        setShowFilter(!showFilter);
-    };
-    return (
-        <div className="mx-auto w-[95%] ">
-            <div className="flex items-center py-4">
-                <DebouncedInput
-                    value={globalFilter ?? ''}
-                    onChange={value => setGlobalFilter([value])}
-                    className="font-lg border-block w-[400px] border border-[#878787] bg-[#363a3f] p-2 text-[#fff] shadow"
-                    placeholder="Search all columns..."
-                />
-                <Input
-                    placeholder={`Search phone # ...`}
-                    value={
-                        (table.getColumn('phone')?.getFilterValue() as string) ?? ""
-                    }
-                    onChange={(event) =>
-                        table.getColumn('phone')?.setFilterValue(event.target.value)
-                    }
-                    className="ml-2 max-w-sm border-[#878787] bg-[#363a3f] text-[#fff]"
-                />
-
-
-                <Button onClick={() => setAllFilters([])} name='intent' type='submit' variant='outline'
-                    className="active:bg-black  mx-2 my-auto h-7  cursor-pointer rounded bg-background px-3 py-2  text-center text-xs  font-bold uppercase text-foreground shadow outline-none  transition-all duration-150 ease-linear hover:border-primary  hover:text-primary hover:shadow-md focus:outline-none"
-                >
-                    Clear
-                </Button>
-            </div>
-            <div className="rounded-md border border-border ">
-                <Table2 className='w-full overflow-x-auto border-border text-foreground'>
-                    <TableHeader>
-                        {table.getHeaderGroups().map((headerGroup) => (
-                            <TableRow key={headerGroup.id} className=' border-border'>
-                                {headerGroup.headers.map((header) => {
-                                    return (
-                                        <TableHead className='items-center ' key={header.id}>
-                                            {header.isPlaceholder
-                                                ? null
-                                                : flexRender(
-                                                    header.column.columnDef.header,
-                                                    header.getContext()
-                                                )}
-                                            {header.column.getCanFilter() && showFilter && (
-                                                <div
-                                                    className="mx-auto cursor-pointer items-center justify-center border-border text-center">
-                                                    <Filter column={header.column} table={table} />
-                                                </div>
-                                            )}
-                                        </TableHead>
-                                    )
-                                })}
-                            </TableRow>
-                        ))}
-                    </TableHeader>
-                    <TableBody>
-                        {table.getRowModel().rows?.length ? (
-                            table.getRowModel().rows.map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    className='cursor-pointer border-border bg-background p-4 capitalize text-foreground hover:text-primary'
-                                    data-state={row.getIsSelected() && "selected"}
-                                >
-                                    {row.getVisibleCells().map((cell) => (
-                                        <TableCell className='justify-center' key={cell.id}>
-                                            {flexRender(
-                                                cell.column.columnDef.cell,
-                                                cell.getContext()
-                                            )}
-                                        </TableCell>
-                                    ))}
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={columns.length}
-                                    className="h-24 cursor-pointer bg-background text-center capitalize text-foreground hover:text-primary"
-                                >
-                                    No results.
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table2>
-            </div>
-            <div className="flex items-center justify-end space-x-2 py-4">
-
-                <div className="space-x-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.previousPage()}
-                        disabled={!table.getCanPreviousPage()}
-                        className="border-slate1 text-foreground"
-                    >
-                        Previous
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => table.nextPage()}
-                        className="border-slate1 text-foreground"
-
-                        disabled={!table.getCanNextPage()}
-                    >
-                        Next
-                    </Button>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-// web leads table
-export function WebleadsTable() {
-    const { financeNewLead, user } = useLoaderData();
-    const [data, setData] = useState([])
-    useEffect(() => {
-        const fetchData = async () => {
-            const data = await prisma.finance.findMany({
-                where: { customerState: 'turnOver' }
-            })
-            setData(data)
-        };
-        fetchData();
-        // Set interval to call fetchData every 120 seconds (120000 milliseconds)
-        const intervalId = setInterval(fetchData, 120000);
-
-        // Clean up the interval on component unmount
-        return () => {
-            clearInterval(intervalId);
-        };
-    }, []);
-    const [sorting, setSorting] = React.useState<SortingState>([])
-
-    type newLead = {
-        contact: string
-        brand: string
-        model: string
-        year: string
-        tradeDesc: string
-        tradeYear: string
-        tradeMake: string
-        tradeMileage: string
-        financeId: string
-        clientfileId: string
-        clientfile: string
-        financeNote: string
-        customContent: string
-        author: string
-        customerId: string
-    }
-
-    type Payment = {
-        id: string
-        firstName: string
-        lastName: string
-        email: string
-        phone: number
-        address: string
-        prov: string
-        subRows?: newLead[]
-    }
-
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-        []
-    );
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({ id: false, });
-    const [rowSelection, setRowSelection] = React.useState({})
-    const [showFilter, setShowFilter] = useState(false);
-    const [expanded, setExpanded] = React.useState<ExpandedState>({})
-
-    const columns: ColumnDef<Payment>[] = [
-
-
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "firstName",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            className='mx-auto justify-center text-center'
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            First Name
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-
-            },
-            cell: ({ row }) => <div className="mx-auto justify-center text-center lowercase">
-                {row.getValue("firstName")}
-
-            </div>
-
-        },
-
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "lastName",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            Last Name
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-            },
-            cell: ({ row }) => <div className="mx-auto justify-center text-center  lowercase">
-                {row.getValue("lastName")}
-            </div>
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "customerState",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            customerState
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-
-                )
-            },
-            cell: ({ row }) => <div className="mx-auto justify-center text-center  lowercase">
-                {row.getValue("customerState")}
-            </div>,
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "email",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            Email
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-
-                )
-            },
-            cell: ({ row }) => <div className="mx-auto justify-center text-center  lowercase">
-                {row.getValue("email")}
-            </div>,
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "phone",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            phone #
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-
-            },
-            cell: ({ row }) => <div className="mx-auto justify-center text-center  lowercase">
-                {row.getValue("phone")}
-            </div>,
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "address",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            Address
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-            },
-            cell: ({ row }) => <div className="mx-auto justify-center text-center  lowercase">
-                {row.getValue("address")}
-            </div>,
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "prov",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            Province
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-            },
-            cell: ({ row }) => <div className="mx-auto justify-center text-center  lowercase">
-                {row.getValue("prov")}
-            </div>,
-        },
-        {
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            accessorKey: "leadNote",
-            header: ({ column }) => {
-                return (
-                    <div className="mx-auto justify-center text-center lowercase">
-                        <Button
-                            variant="ghost"
-                            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                        >
-                            Lead Note's
-                            <CaretSortIcon className="ml-2 h-4 w-4" />
-                        </Button>
-                    </div>
-                )
-            },
-            cell: ({ row }) => <div className="mx-auto justify-center text-center  lowercase">
-                {row.getValue("leadNote")}
-            </div>,
-        },
-        {
-            accessorKey: "id",
-            header: "Id",
-            cell: ({ row }) => <div className="mx-auto justify-center text-center lowercase">
-                {row.getValue("id")}
-            </div>
-
-        },
-
-        {
-            id: "actions",
-            enableHiding: false,
-            cell: ({ row }) => {
-                const payment = row.original
-
-                return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Open menu</span>
-                                <DotsHorizontalIcon className="h-4 w-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem
-                                onClick={() => navigator.clipboard.writeText(payment.id)}
-                            >
-                                Copy payment ID
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>View customer</DropdownMenuItem>
-                            <DropdownMenuItem>View payment details</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                )
-            },
-        },
-    ]
-
-
-    const table = useReactTable({
-        data,
-        columns,
-        filterFns: {
-            fuzzy: fuzzyFilter,
-        },
-        globalFilterFn: fuzzyFilter,
-
-        onSortingChange: setSorting,
-        onColumnFiltersChange: setColumnFilters,
-        getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        onColumnVisibilityChange: setColumnVisibility,
-        onRowSelectionChange: setRowSelection,
-        state: {
-            sorting,
-            columnFilters,
-            columnVisibility,
-            rowSelection,
-
-        },
-    })
-    const [globalFilter, setGlobalFilter] = React.useState('')
-
-    const [isRowSelected, setIsRowSelected] = useState(false);
-    const [selectedRowId, setSelectedRowId] = React.useState('');
-    const [clientId, setClientId] = React.useState('');
-    const [clientEmail, setClientEmail] = React.useState('');
-    const [clientFirstName, setClientFirstName] = React.useState('');
-    const [clientLastName, setClientLastName] = React.useState('');
-    const [selectedRowData, setSelectedRowData] = React.useState([]);
-    const [clientPhone, setClientPhone] = React.useState([]);
-    const [clientAddress, setClientAddress] = React.useState([]);
-    const [clientLeadNote, setClientLeadNote] = React.useState([]);
-    const [clientFinanceId, setClientFinanceId] = React.useState([]);
-    const [isButtonPressed, setIsButtonPressed] = useState(false);
-    const navigation = useNavigation();
-    const isSubmitting = navigation.state === "submitting";
-    const contactMethod = data.contactMethod
-    const [isComplete, setIsComplete] = useState(false)
-    const errors = useActionData() as Record<string, string | null>;
-
-    const handleRowClick = (row) => {
-        setIsRowSelected(true);
-        setSelectedRowId(row.original.id);
-        setSelectedRowData(row.original)
-        setClientId(row.original.id)
-        setClientEmail(row.original.email)
-        setClientFirstName(row.original.firstName)
-        setClientLastName(row.original.lastName)
-        setClientPhone(row.original.phone)
-        setClientAddress(row.original.address)
-        setClientLeadNote(row.original.leadNote)
-        setClientFinanceId(row.original.id)
-        setSelectedRowData(row);
-        setIsModalOpen(true);
-        setOpen(true)
-        console.log(selectedRowData, selectedRowId, row, 'row')
-    };
-
-    const userEmail = user?.email;
-    const [brandId, setBrandId] = useState('');
-
-    const handleBrand = (e) => {
-        setBrandId(e.target.value);
-    };
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [open, setOpen] = React.useState(false);
-
-    return (
-        <div className="mx-auto mt-[75px] w-[95%] justify-center ">
-
-            <>
-                <div className="rounded-md border border-border ">
-                    <Table2 className='w-full overflow-x-auto border-border text-foreground '>
-                        <TableHeader>
-                            {table.getHeaderGroups().map((headerGroup) => (
-                                <TableRow key={headerGroup.id} className=' border-border'>
-                                    {headerGroup.headers.map((header) => {
-                                        return (
-                                            <TableHead className='items-center' key={header.id}>
-                                                {header.isPlaceholder
-                                                    ? null
-                                                    : flexRender(
-                                                        header.column.columnDef.header,
-                                                        header.getContext()
-                                                    )}
-                                                {header.column.getCanFilter() && showFilter && (
-                                                    <div className="mx-auto cursor-pointer items-center justify-center text-center ">
-                                                        <Filter column={header.column} table={table} />
-                                                    </div>
-                                                )}
-                                            </TableHead>
-                                        )
-                                    })}
-                                </TableRow>
-                            ))}
-                        </TableHeader>
-                        <TableBody>
-                            {table.getRowModel().rows?.length ? (
-                                table.getRowModel().rows.map((row) => (
-                                    <TableRow
-                                        key={row.id}
-                                        className='cursor-pointer border-border bg-background p-4 capitalize text-foreground hover:text-primary'
-                                        data-state={row.getIsSelected() && "selected"}
-                                        onClick={() => {
-                                            handleRowClick(row);
-                                            ;
-                                        }}
-                                    >
-                                        {row.getVisibleCells().map((cell) => (
-                                            <TableCell className='justify-center' key={cell.id}>
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext()
-                                                )}
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell
-                                        colSpan={columns.length}
-                                        className="h-24 cursor-pointer bg-background text-center capitalize text-foreground hover:text-primary"
-                                    >
-                                        No results.
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table2>
-                </div>
-                <div className="flex items-center justify-end space-x-2 py-4">
-
-                    <div className="space-x-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => table.previousPage()}
-                            disabled={!table.getCanPreviousPage()}
-                            className="border-slate1 text-foreground"
-                        >
-                            Previous
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => table.nextPage()}
-                            className="border-slate1 text-foreground"
-
-                            disabled={!table.getCanNextPage()}
-                        >
-                            Next
-                        </Button>
-                    </div>
-                </div>
-            </>
-
-            {isModalOpen && (
-                <RootDialog open={open} onOpenChange={setOpen}>
-                    <DialogTrigger asChild>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px] bg-white">
-                        <Form
-                        // onSubmit={(event) => {
-                        //     wait().then(() => setOpen(false));
-                        //</DialogContent>    event.preventDefault();
-                        // }}
-                        >
-                            <div className=" gap-4 py-4">
-                                <p>Claim and start the finance process...</p>
-                                <Button variant="outline" name="intent" value='claimCustomer' className='text-black border-black'>
-                                    Claim
-                                </Button>
-                            </div>
-                            <input type='hidden' name='financeId' defaultValue={clientFinanceId} />
-                            <input type='hidden' name='email' defaultValue={user.email} />
-                        </Form>
-                    </DialogContent>
-                </RootDialog>
-            )}
-
-
-        </div>
-    )
-}
-
-
-
-export type Payment = {
-    id: string
-    fiannceId: string
-    userEmail: string
-    isSubmitting: any
-    firstName: string
-    lastName: string
-    phone: number
-    email: string
-    address: string
-    postal: string
-    city: string
-    province: string
-    contactMethod: string
-    brand: string
-    model: string
-    year: number
-    color: string
-    note: string
-    lastContact: string
-    status: 'Active' | 'Duplicate' | 'Invalid' | 'Lost'
-    customerState: string
-    result: string
-    timesContacted: number
-    nextAppointment: string
-    completeCall: string
-    followUpDay: number
-    state: string
-    typeOfContact: string | null;
-    timeToContact: 'Morning' | 'Afternoon' | 'Evening' | 'Anytime' | 'Do Not Call'
-    notes: string
-    visits: number
-    progress: number
-    visited: string
-    metManager: string
-    metSalesperson: string
-    metFinance: string
-    metService: string
-    metParts: string
-    financeApplication: string
-    approved: string
-    docsSigned: string
-    delivered: string
-    pickUpSet: string
-    demoed: string
-    seenTrade: string
-    tradeRepairs: string
-    dashData: string
-    twoDaysFromNow: string
-    referral: string
-    dl: string
-    timeOfDay: string
-    discount: string
-    total: string
-    onTax: string
-    deliveryCharge: string
-    userLoanProt: string
-    userTireandRim: string
-    userGap: string
-    userExtWarr: string
-    userServicespkg: string
-    vinE: string
-    lifeDisability: string
-    rustProofing: string
-    userOther: string
-    deposit: string
-    paintPrem: string
-    discountPer: string
-    weeklyOthWOptions: string
-    qcTax: string
-    otherTax: string
-    totalWithOptions: string
-    otherTaxWithOptions: string
-    stockNum: string
-    model1: string
-    modelCode: string
-    tradeValue: string
-    undefined: string
-    pickUpDate: string
-    pickUpTime: string
-    lastNote: string
-    singleFinNote: string
-    documentUpload: string
-    depositMade: string
-    financeApp: string
-    signed: string
-    deliveredDate: string
-    contactTimesByType: string
-    InPerson: string
-    Phone: string
-    SMS: string
-    Email: string
-
-}
-export type TableMeta = {
-    updateData: (rowIndex: number, columnId: string, value: unknown) => void
-}
-export const defaultColumn: Partial<ColumnDef<Payment>> = {
-    cell: ({ getValue, row: { index }, column: { id }, table }) => {
-        const initialValue = getValue()
-        // We need to keep and update the state of the cell normally
-        const [value, setValue] = useState(initialValue)
-
-        // When the input is blurred, we'll call our table meta's updateData function
-        const onBlur = () => {
-            ; (table.options.meta as TableMeta).updateData(index, id, value)
-        }
-
-        // If the initialValue is changed external, sync it up with our state
-        useEffect(() => {
-            setValue(initialValue)
-        }, [initialValue])
-
-        return (
-            <input
-                value={value as string}
-                onChange={e => setValue(e.target.value)}
-                onBlur={onBlur}
-            />
-        )
-    },
-}
-export const meta: MetaFunction = () => {
-    return [
-        { title: 'Finance Leads - Dealer Sales Assistant' },
-        {
-            property: "og:title",
-            content: "Your very own assistant!",
-        },
-        {
-            name: "description",
-            content: "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
-            keywords: 'Automotive Sales, dealership sales, automotive CRM',
-        },
-    ];
-};
-interface DataTableProps<TData, TValue> {
-    columns: ColumnDef<TData, TValue>[];
-    data: TData[];
-    dashData: TData[];
-}
-export function FinanceBoard() {
+export function MainDashbaord({ user }) {
     let username = 'skylerzanth'//localStorage.getItem("username") ?? "";
     let password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
     //const username = user?.username.toLowerCase().replace(/\s/g, '');//'skylerzanth'//localStorage.getItem("username") ?? "";
     //const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
     const proxyPhone = '+12176347250'
 
-    const { finance, searchData, user, getTemplates, callToken, conversationsData, convoList, newToken, deFees, products, emailTemplatesDropdown } = useLoaderData();
+    const { finance, searchData, getTemplates, callToken, deFees, convoList, newToken, columnState, userList, products } = useLoaderData();
     const [data, setPaymentData,] = useState<dashBoardType[]>(finance);
     const [messagesConvo, setMessagesConvo] = useState([]);
     const [selectedChannelSid, setSelectedChannelSid] = useState([]);
-    const [selectedConversation, setSelectedConversation] = useState([]);
     const [templates, setTemplates] = useState(getTemplates);
     const [selectedTemplate, setSelectedTemplate] = useState(null);
     const [conversationSID, setConversationSID] = useState('')
     const [loggedIn, setLoggedIn] = useState(user.email);
     const [statusString, setStatusString] = useState("Fetching credentials…");
-
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [text, setText] = useState('');
 
     let multipliedConvoList = [];
@@ -1339,11 +734,8 @@ export function FinanceBoard() {
     const [conversation, SetConversation] = useState('list');
     const [conversationsList, setConversationsList] = useState([])
     const [customer, setCustomer] = useState()
-
+    let fetcher = useFetcher();
     const [convos, setConvos] = useState([])
-    const navigation = useNavigation();
-    const isSubmitting = navigation.state === "submitting";
-
 
     useEffect(() => {
         const data = async () => {
@@ -1353,8 +745,19 @@ export function FinanceBoard() {
         data()
     }, []);
 
+    const [getDomain, setGetDomain] = useState("http://localhost:3000");
+
+    useEffect(() => {
+        const currentHost = typeof window !== "undefined" ? window.location.host : null;
+        if (currentHost === "dealersalesassistant.ca") {
+            setGetDomain("https://www.dealersalesassistant.ca")
+        }
+    }, []);
+
+    const navigation = useNavigation();
+    const isSubmitting = navigation.state === "submitting";
     const dataFetcher = (url) => fetch(url).then(res => res.json());
-    const { data: swrData } = useSWR(isSubmitting ? 'http://localhost:3000/dealer/api/dashboard/calls/loader' : null, dataFetcher, {})
+    const { data: swrData } = useSWR(isSubmitting ? getDomain + `/dealer/api/dashboard/calls/loader/${user.email}` : null, dataFetcher, {})
 
     useEffect(() => {
         if (swrData) {
@@ -1363,32 +766,6 @@ export function FinanceBoard() {
         }
     }, [swrData]);
     const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
-
-    const defaultColumn: Partial<ColumnDef<Payment>> = {
-        cell: ({ getValue, row: { index }, column: { id }, table }) => {
-            const initialValue = getValue()
-            // We need to keep and update the state of the cell normally
-            const [value, setValue] = useState(initialValue)
-
-            // When the input is blurred, we'll call our table meta's updateData function
-            const onBlur = () => {
-                ; (table.options.meta as TableMeta).updateData(index, id, value)
-            }
-
-            // If the initialValue is changed external, sync it up with our state
-            useEffect(() => {
-                setValue(initialValue)
-            }, [initialValue])
-
-            return (
-                <input
-                    value={value as string}
-                    onChange={e => setValue(e.target.value)}
-                    onBlur={onBlur}
-                />
-            )
-        },
-    }
 
     const [open, setOpen] = useState(false);
     const [openSMS, setOpenSMS] = useState(false);
@@ -1524,8 +901,11 @@ export function FinanceBoard() {
 
     const messagesRef = useRef(null);
 
-    const columns: ColumnDef<Payment>[] = [
-        {
+    function capitalizeFirstLetter(string) {
+        return string[0].toUpperCase() + string.slice(1);
+    }
+
+    /** {
             id: 'select',
             header: ({ table }) => (
                 <div className='flex mx-auto my-auto'>
@@ -1533,13 +913,9 @@ export function FinanceBoard() {
                         checked={table.getIsAllRowsSelected()}
                         indeterminate={table.getIsSomeRowsSelected()}
                         onChange={table.getToggleAllRowsSelectedHandler()}
-                        className='border-[#c72323]'
-
+                        className='border-primary'
                     />
-
                 </div>
-
-
             ),
             cell: ({ row }) => (
                 <div className="px-1">
@@ -1547,33 +923,53 @@ export function FinanceBoard() {
                         checked={row.getIsSelected()}
                         indeterminate={row.getIsSomeSelected()}
                         onChange={row.getToggleSelectedHandler()}
-                        className='border-[#c72323]'
-
+                        className='border-primary'
                     />
                 </div>
             ),
-        },
+        }, */
+    const columns = [
+
         {
-            accessorKey: "bank",
-            header: ({ column }) => {
-                return <>
-                    <DataTableColumnHeader column={column} title="Finance" />
-                </>
-            },
+            id: 'financeFile',
+            accessorKey: "financeFile",
+            filterFn: 'fuzzy',
+            sortingFn: fuzzySort,
+            header: ({ column }) => (
+                <p className="text-center">Finance </p>
+            ),
             cell: ({ row }) => {
                 const data = row.original
-                //<FinanceDialog data={data} user={user} deFees={deFees} products={products} emailTemplatesDropdown={emailTemplatesDropdown} />
-                return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
-                    <a href={`/dealer/leads/finance/${data.id}`} target="_blank">
-                        <Button variant="outline"><Landmark color="#fcfcfc" /></Button>
-                    </a>
+                return <Button size='sm' variant="outline" className='mx-auto' onClick={() => {
 
-
-                </div>
+                }} >Finance </Button>
             },
         },
         {
+            id: 'financeFile',
+            accessorKey: "financeFile",
+            filterFn: 'fuzzy',
+            sortingFn: fuzzySort,
+            header: ({ column }) => (
+                <p className="text-center">Finance </p>
+            ),
+            cell: ({ row }) => {
+                const data = row.original
+                return <FinanceDialog
+                    data={data}
+                    user={user}
+                    deFees={deFees}
+                    products={products}
+                    emailTemplatesDropdown={getTemplates}
+                />
+            },
+        },
+
+        {
+            id: 'firstName',
             accessorKey: "firstName",
+            filterFn: 'fuzzy',
+            sortingFn: fuzzySort,
             header: ({ column }) => {
                 return <>
                     <DataTableColumnHeader column={column} title="First Name" />
@@ -1581,51 +977,83 @@ export function FinanceBoard() {
             },
             cell: ({ row }) => {
                 const data = row.original
-                //
-                return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] uppercase leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
+                return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px] leading-none  text-foreground  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
                     <ClientCard data={data} row={row} />
                 </div>
             },
         },
         {
+            id: 'lastName',
             accessorKey: "lastName",
+            filterFn: 'fuzzy',
+            sortingFn: fuzzySort,
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="LastName" />
             ),
             cell: ({ row }) => {
                 const data = row.original
-                return <div className="bg-transparent flex w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px]  uppercase leading-none text-[#EEEEEE] outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-primary hover:text-primary focus:text-primary  focus:outline-none  active:bg-primary ">
-                    {(row.getValue("lastName"))}
+                return <div className="bg-transparent flex w-[175px] flex-1 items-center justify-center px-5 text-center text-[15px]  leading-none text-foreground outline-none transition-all duration-150  ease-linear  first:rounded-tl-md  last:rounded-tr-md target:text-primary hover:text-primary focus:text-primary  focus:outline-none  active:bg-primary ">
+                    {capitalizeFirstLetter((row.getValue("lastName")))}
                 </div>
             },
+
         },
         {
+            id: 'status',
             accessorKey: "status",
+            filterFn: 'equalsString',
             header: ({ column }) => {
                 return <>
-                    <DataTableColumnHeader column={column} title="Status" />
+                    <Select onValueChange={(value) => {
+                        const status = table.getColumn("status")
+                        status?.setFilterValue(value)
+                    }}                                >
+                        <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                            <SelectValue placeholder='Status' />
+                        </SelectTrigger>
+                        <SelectContent className='bg-background text-foreground border border-border'>
+                            <SelectGroup>
+                                <SelectLabel>Status</SelectLabel>
+                                <SelectItem value='Active' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                    Active
+                                </SelectItem>
+                                <SelectItem value='Duplicate' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                    Duplicate
+                                </SelectItem>
+                                <SelectItem value='Invalid' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                    Invalid
+                                </SelectItem>
+                                <SelectItem value='Lost' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                    Lost
+                                </SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
                 </>
             },
             cell: ({ row }) => {
                 const data = row.original
-                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
                     <ClientStatusCard data={data} />
                 </div>
             },
         },
         {
+            id: 'nextAppointment',
             accessorKey: "nextAppointment",
+            filterFn: 'equalsString',
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Next Appt" />
             ),
             cell: ({ row }) => {
                 const data = row.original;
-                return <div className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-primary hover:text-primary  focus:text-primary  focus:outline-none  active:bg-primary  ">
+                return <div className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-foreground  outline-none  transition-all  duration-150 ease-linear target:text-primary hover:text-primary  focus:text-primary  focus:outline-none  active:bg-primary  ">
                     {String(data.nextAppointment)}
                 </div>
             },
         },
         {
+            id: 'customerState',
             accessorKey: "customerState",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="State" />
@@ -1633,17 +1061,18 @@ export function FinanceBoard() {
                 const data = row.original
                 //  const id = data.id ? data.id.toString() : '';
                 return <div className="  flex h-[45px] w-[95%] items-center justify-center   text-[15px] uppercase leading-none outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none active:bg-primary">
+
                     {data.customerState === 'Pending' ? (<AttemptedOrReached data={data} />
                     ) : data.customerState === 'Attempted' ? (<AttemptedOrReached data={data} />
-                    ) : data.customerState === 'Reached' ? (<Badge className="bg-jade9">Reached</Badge>
-                    ) : data.customerState === 'sold' ? (<Badge className="bg-jade9">Sold</Badge>
-                    ) : data.customerState === 'depositMade' ? (<Badge className="bg-jade9">Deposit</Badge>
-                    ) : data.customerState === 'turnOver' ? (<Badge className="bg-blue-9">Turn Over</Badge>
-                    ) : data.customerState === 'financeApp' ? (<Badge className="bg-blue-9">Application Done</Badge>
-                    ) : data.customerState === 'approved' ? (<Badge className="bg-jade9">Approved</Badge>
-                    ) : data.customerState === 'signed' ? (<Badge className="bg-jade9">Signed</Badge>
-                    ) : data.customerState === 'pickUpSet' ? (<Badge className="bg-jade9">Pick Up Set</Badge>
-                    ) : data.customerState === 'delivered' ? (<Badge className="bg-jade9">Delivered</Badge>
+                    ) : data.customerState === 'Reached' ? (<Badge className="bg-[#29a383] text-foreground">Reached</Badge>
+                    ) : data.customerState === 'sold' ? (<Badge className="bg-[#29a383] text-foreground">Sold</Badge>
+                    ) : data.customerState === 'depositMade' ? (<Badge className="bg-[#29a383] text-foreground">Deposit</Badge>
+                    ) : data.customerState === 'turnOver' ? (<Badge className="bg-[#0090ff]  text-foreground">Turn Over</Badge>
+                    ) : data.customerState === 'financeApp' ? (<Badge className="bg-[#0090ff]  text-foreground">Application Done</Badge>
+                    ) : data.customerState === 'approved' ? (<Badge className="bg-[#29a383] text-foreground">Approved</Badge>
+                    ) : data.customerState === 'signed' ? (<Badge className="bg-[#29a383] text-foreground">Signed</Badge>
+                    ) : data.customerState === 'pickUpSet' ? (<Badge className="bg-[#29a383] text-foreground">Pick Up Set</Badge>
+                    ) : data.customerState === 'delivered' ? (<Badge className="bg-[#29a383] text-foreground">Delivered</Badge>
                     ) : data.customerState === 'refund' ? (<Badge className="bg-[#cf5454]">Refunded</Badge>
                     ) : data.customerState === 'funded' ? (<Badge className="bg-[#cf5454]">Funded</Badge>
                     ) : (
@@ -1653,13 +1082,16 @@ export function FinanceBoard() {
             },
         },
         {
+            id: 'contact',
             accessorKey: "contact",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Contact" />
             ),
             cell: ({ row }) => {
                 const data = row.original
+
                 let channelContent
+
                 if (selectedChannelSid) {
                     channelContent = selectedChannelSid
                 } else if (statusString !== "success") {
@@ -1677,8 +1109,9 @@ export function FinanceBoard() {
                             size='icon'
                             onClick={() => handleButtonClick(data)}
                             className="cursor-pointer text-foreground target:text-primary hover:text-primary" >
-                            <Mail className="" />
+                            <Mail />
                         </Button>
+
                         <EmailClient
                             data={data}
                             open={open}
@@ -1686,7 +1119,10 @@ export function FinanceBoard() {
                             customerfinanceId={customerfinanceId}
                             customerName={customerName}
                             customerEmail={customerEmail}
+                            userList={userList}
+                            user={user}
                         />
+
                         <Button
                             variant='ghost'
                             size='icon'
@@ -1694,101 +1130,61 @@ export function FinanceBoard() {
                                 handleButtonClickSMS(data)
                             }}
                             className="cursor-pointer text-foreground target:text-primary hover:text-primary" >
-                            <MessageSquare color="#ffffff" />
+                            <MessageSquare />
                         </Button>
                         <Logtext
                             data={data}
-                            searchData={searchData}
+                            // searchData={searchData}
                             openSMS={openSMS}
                             setOpenSMS={setOpenSMS}
                             smsDetails={smsDetails}
-                            text={text}
-                            setText={setText}
-                            conversationsData={conversationsData}
-                            messagesConvo={messagesConvo}
+                            //  text={text}
+                            ///  setText={setText}
+                            ///  conversationsData={conversationsData}
+                            //  messagesConvo={messagesConvo}
+                            userList={userList}
+                            user={user}
                         />
                     </div>
                 </>
             },
         },
         {
+            id: 'model',
             accessorKey: "model",
+            filterFn: 'fuzzy',
+            sortingFn: fuzzySort,
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Model" />
             ),
             cell: ({ row }) => {
                 const data = row.original
-                return <div className="w-[275px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE] hover:text-primary">
+                return <div className="w-[275px] cursor-pointer  text-center text-[14px]  text-foreground hover:text-primary">
                     <ClientVehicleCard data={data} />
                 </div>
             },
         },
         {
+            id: 'tradeDesc',
             accessorKey: "tradeDesc",
+            filterFn: 'fuzzy',
+            sortingFn: fuzzySort,
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Trade" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("tradeDesc"))}</div>
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("tradeDesc"))}</div>
             },
 
         },
         {
-            accessorKey: "lastNote",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Last Note" />
-            ),
-            cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("lastNote"))}</div>
-            },
-
-        },
-        {
-            accessorKey: "singleFinNote",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Notes" />
-            ),
-            cell: ({ row }) => {
-                const data = row.original;
-                const single = data.singleFinNote;
-                const last = data.lastNote
-                if (single) {
-                    return (
-                        { single }
-                    )
-                }
-                else if (last) {
-                    return (
-                        { last }
-                    )
-                }
-                else
-                    return null;
-            },
-        },
-        {
-            accessorKey: "followUpDay",
-            header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Preset F/U Day" />
-            ),
-            cell: ({ row }) => {
-                const data = row.original
-                return <>
-
-                    <div className='w-[150px]'>
-                        <PresetFollowUpDay data={data} />
-                    </div>
-                </>
-            },
-        },
-        {
+            id: 'twoDaysFromNow',
             accessorKey: "twoDaysFromNow",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Set New Apt." />
             ),
             cell: ({ row }) => {
-                const navigation = useNavigation();
-                const isSubmitting = navigation.state === "submitting";
+
                 const data = row.original
                 return <>
 
@@ -1799,6 +1195,7 @@ export function FinanceBoard() {
             },
         },
         {
+            id: 'completeCall',
             accessorKey: "completeCall",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Complete Call" />
@@ -1816,6 +1213,7 @@ export function FinanceBoard() {
             },
         },
         {
+            id: 'contactTimesByType',
             accessorKey: "contactTimesByType",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Contact Times By Type" />
@@ -1831,16 +1229,18 @@ export function FinanceBoard() {
             },
         },
         {
+            id: 'pickUpDate',
             accessorKey: "pickUpDate",
+            enableGlobalFilter: true,
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Pick Up Date" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary " />
+                <DataTableColumnHeader column={column} title="Pick Up Date" className="bg-transparent text-foreground mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary " />
             ),
             cell: ({ row }) => {
                 const data = row.original
                 if (data.pickUpDate) {
                     const pickupDate = data.pickUpDate
                     return (
-                        <div className="bg-transparent :text-primary text-grbg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
+                        <div className="bg-transparent :text-primary text-grbg-transparent text-foreground mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
                             {pickupDate === '1969-12-31 19:00' || pickupDate === null ? 'TBD' : pickupDate}
                         </div>
                     );
@@ -1849,9 +1249,10 @@ export function FinanceBoard() {
             },
         },
         {
+            id: 'lastContact',
             accessorKey: "lastContact",
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Last Contacted" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary" />
+                <DataTableColumnHeader column={column} title="Last Contacted" className="bg-transparent text-foreground mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary" />
             ),
             cell: ({ row }) => {
                 const data = row.original
@@ -1867,7 +1268,7 @@ export function FinanceBoard() {
                 };
                 if (date) {
                     return (
-                        <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
+                        <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
                             {date === 'TBD' ? <p>TBD</p> : date.toLocaleDateString('en-US', options)}
                         </div>
                     );
@@ -1877,6 +1278,7 @@ export function FinanceBoard() {
 
         },
         {
+            id: 'unitPicker',
             accessorKey: "unitPicker",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Turnover" />
@@ -1925,7 +1327,6 @@ export function FinanceBoard() {
                 </>
             },
         },
-
         {
             accessorKey: "id",
 
@@ -1940,39 +1341,46 @@ export function FinanceBoard() {
 
         },
         {
+            id: 'email',
             accessorKey: "email",
+            enableGlobalFilter: true,
             header: ({ column }) => (
                 <p className="text-center">email</p>
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("email"))}</div>
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("email"))}</div>
             },
 
         },
         {
+            id: 'phone',
             accessorKey: "phone",
+            enableGlobalFilter: true,
             header: ({ column }) => (
                 <p className="text-center">phone</p>
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("phone"))}</div>
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("phone"))}</div>
             },
 
         },
         {
+            id: 'address',
             accessorKey: "address",
+            enableGlobalFilter: true,
             header: ({ column }) => (
                 <p className="text-center">address</p>
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("address"))}</div>
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("address"))}</div>
             },
 
         },
         {
+            id: 'postal',
             accessorKey: "postal",
             header: ({ column }) => (
                 <p className="text-center">postal</p>
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
@@ -1982,11 +1390,12 @@ export function FinanceBoard() {
 
         },
         {
+            id: 'city',
             accessorKey: "city",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="city" />
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
@@ -1996,11 +1405,12 @@ export function FinanceBoard() {
 
         },
         {
+            id: 'province',
             accessorKey: "province",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="province" />
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
@@ -2010,6 +1420,7 @@ export function FinanceBoard() {
 
         },
         {
+            id: 'financeId',
             accessorKey: "financeId",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="financeId" />
@@ -2019,12 +1430,13 @@ export function FinanceBoard() {
 
         },
         {
+            id: 'userEmail',
             accessorKey: "userEmail",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="userEmail" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
@@ -2034,12 +1446,13 @@ export function FinanceBoard() {
 
         },
         {
+            id: 'pickUpTime',
             accessorKey: "pickUpTime",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Pick Up Time" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary  hover:text-primary  focus:text-primary focus:outline-none active:bg-primary ">
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary  hover:text-primary  focus:text-primary focus:outline-none active:bg-primary ">
                     {(row.getValue("pickUpTime"))}
                 </div>
             },
@@ -2047,229 +1460,291 @@ export function FinanceBoard() {
         },
 
         {
+            id: 'timeToContact',
             accessorKey: "timeToContact",
             header: "model1",
         },
         {
+            id: 'deliveredDate',
             accessorKey: "deliveredDate",
             header: "deliveredDate",
         },
         {
+            id: 'timeOfDay',
             accessorKey: "timeOfDay",
             header: "timeOfDay",
         },
         {
+            id: 'msrp',
             accessorKey: "msrp",
             header: "msrp",
         },
         {
+            id: 'freight',
             accessorKey: "freight",
             header: "freight",
         },
         {
+            id: 'pdi',
             accessorKey: "pdi",
             header: "pdi",
         },
         {
+            id: 'admin',
             accessorKey: "admin",
             header: "admin",
         },
         {
+            id: 'commodity',
             accessorKey: "commodity",
             header: "commodity",
         },
         {
+            id: 'accessories',
             accessorKey: "accessories",
             header: "accessories",
         },
         {
+            id: 'labour',
             accessorKey: "labour",
             header: "labour",
         },
         {
+            id: 'painPrem',
             accessorKey: "painPrem",
             header: "painPrem",
         },
         {
+            id: 'licensing',
             accessorKey: "licensing",
             header: "licensing",
         },
+
+
+
+
+
+
         {
+            id: 'trailer',
             accessorKey: "trailer",
             header: "trailer",
         },
         {
+            id: 'depositMade',
             accessorKey: "depositMade",
             header: "depositMade",
         },
         {
+            id: 'months',
             accessorKey: "months",
             header: "months",
         },
         {
+            id: 'iRate',
             accessorKey: "iRate",
             header: "iRate",
         },
         {
+            id: 'on60',
             accessorKey: "on60",
             header: "on60",
         },
         {
+            id: 'biweekly',
             accessorKey: "biweekly",
             header: "biweekly",
         },
         {
+            id: 'weekly',
             accessorKey: "weekly",
             header: "weekly",
         },
         {
+            id: 'qc60',
             accessorKey: "qc60",
             header: "qc60",
         },
         {
+            id: 'biweeklyqc',
             accessorKey: "biweeklyqc",
             header: "biweeklyqc",
         },
         {
+            id: 'weeklyqc',
             accessorKey: "weeklyqc",
             header: "weeklyqc",
         },
         {
+            id: 'nat60',
             accessorKey: "nat60",
             header: "nat60",
         },
         {
+            id: 'biweeklNat',
             accessorKey: "biweeklNat",
             header: "biweeklNat",
         },
         {
+            id: 'weeklylNat',
             accessorKey: "weeklylNat",
             header: "weeklylNat",
         },
         {
+            id: 'oth60',
             accessorKey: "oth60",
             header: "oth60",
         },
         {
+            id: 'biweekOth',
             accessorKey: "biweekOth",
             header: "biweekOth",
         },
         {
+            id: 'weeklyOth',
             accessorKey: "weeklyOth",
             header: "weeklyOth",
         },
         {
+            id: 'nat60WOptions',
             accessorKey: "nat60WOptions",
             header: "nat60WOptions",
         },
         {
+            id: 'desiredPayments',
             accessorKey: "desiredPayments",
             header: "desiredPayments",
         },
         {
+            id: 'biweeklNatWOptions',
             accessorKey: "biweeklNatWOptions",
             header: "biweeklNatWOptions",
         },
         {
+            id: 'weeklylNatWOptions',
             accessorKey: "weeklylNatWOptions",
             header: "weeklylNatWOptions",
         },
         {
+            id: 'oth60WOptions',
             accessorKey: "oth60WOptions",
             header: "oth60WOptions",
         },
         {
+            id: 'biweekOthWOptions',
             accessorKey: "biweekOthWOptions",
             header: "biweekOthWOptions",
         },
         {
+            id: 'visited',
             accessorKey: "visited",
             header: "visited",
         },
         {
+            id: 'aptShowed',
             accessorKey: "aptShowed",
             header: "aptShowed",
         },
         {
+            id: 'bookedApt',
             accessorKey: "bookedApt",
             header: "bookedApt",
         },
         {
+            id: 'aptNoShowed',
             accessorKey: "aptNoShowed",
             header: "aptNoShowed",
         },
         {
+            id: 'testDrive',
             accessorKey: "testDrive",
             header: "testDrive",
         },
         {
+            id: 'metParts',
             accessorKey: "metParts",
             header: "metParts",
         },
         {
+            id: 'sold',
             accessorKey: "sold",
             header: "sold",
         },
 
         {
+            id: 'refund',
             accessorKey: "refund",
             header: "refund",
         },
         {
+            id: 'turnOver',
             accessorKey: "turnOver",
             header: "turnOver",
         },
         {
+            id: 'financeApp',
             accessorKey: "financeApp",
             header: "financeApp",
         },
         {
+            id: 'approved',
             accessorKey: "approved",
             header: "approved",
         },
         {
+            id: 'signed',
             accessorKey: "signed",
             header: "signed",
         },
 
         {
+            id: 'pickUpSet',
             accessorKey: "pickUpSet",
             header: "pickUpSet",
         },
         {
+            id: 'demoed',
             accessorKey: "demoed",
             header: "demoed",
         },
 
         {
+            id: 'tradeMake',
             accessorKey: "tradeMake",
             header: "tradeMake",
         },
         {
+            id: 'tradeYear',
             accessorKey: "tradeYear",
             header: "tradeYear",
         },
         {
+            id: 'tradeTrim',
             accessorKey: "tradeTrim",
             header: "tradeTrim",
         },
         {
+            id: 'tradeColor',
             accessorKey: "tradeColor",
             header: "tradeColor",
         },
         {
+            id: 'tradeVin',
             accessorKey: "tradeVin",
             header: "tradeVin",
         },
         {
+            id: 'delivered',
             accessorKey: "delivered",
             header: "delivered",
         },
         {
+            id: 'desiredPayments',
             accessorKey: "desiredPayments",
             header: "desiredPayments",
         },
         {
+            id: 'result',
             accessorKey: "result",
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="Result" />
@@ -2282,149 +1757,182 @@ export function FinanceBoard() {
 
         },
         {
+            id: 'referral',
             accessorKey: "referral",
             header: "referral",
         },
         {
+            id: 'metService',
             accessorKey: "metService",
             header: "metService",
         },
-
         {
+            id: 'metManager',
             accessorKey: "metManager",
             header: "metManager",
         },
         {
+            id: 'metParts',
             accessorKey: "metParts",
             header: "metParts",
         },
         {
+            id: 'timesContacted',
             accessorKey: "timesContacted",
             header: "timesContacted",
         },
-
         {
+            id: 'visits',
             accessorKey: "visits",
             header: "visits",
         },
         {
+            id: 'financeApplication',
             accessorKey: "financeApplication",
             header: "financeApplication",
         },
         {
+            id: 'progress',
             accessorKey: "progress",
             header: "progress",
         },
-
         {
+            id: 'metFinance',
             accessorKey: "metFinance",
             header: "metFinance",
         },
         {
+            id: 'metSalesperson',
             accessorKey: "metSalesperson",
             header: "metSalesperson",
         },
         {
+            id: 'seenTrade',
             accessorKey: "seenTrade",
             header: "seenTrade",
         },
         {
+            id: 'docsSigned',
             accessorKey: "docsSigned",
             header: "docsSigned",
         },
         {
+            id: 'tradeRepairs',
             accessorKey: "tradeRepairs",
             header: "tradeRepairs",
         },
         {
+            id: 'tradeValue',
             accessorKey: "tradeValue",
             header: "tradeValue",
         },
         {
+            id: 'modelCode',
             accessorKey: "modelCode",
             header: "modelCode",
         },
         {
+            id: 'color',
             accessorKey: "color",
             header: "color",
         },
         {
+            id: 'model1',
             accessorKey: "model1",
             header: "model1",
         },
         {
+            id: 'stockNum',
             accessorKey: "stockNum",
             header: "stockNum",
         },
         {
+            id: 'otherTaxWithOptions',
             accessorKey: "otherTaxWithOptions",
             header: "otherTaxWithOptions",
         },
         {
+            id: 'totalWithOptions',
             accessorKey: "totalWithOptions",
             header: "totalWithOptions",
         },
         {
+            id: 'otherTax',
             accessorKey: "otherTax",
             header: "otherTax",
         },
         {
+            id: 'qcTax',
             accessorKey: "qcTax",
-            header: "lastContact",
+            header: "qcTax",
         },
         {
+            id: 'deposit',
             accessorKey: "deposit",
-            header: "tradeValue",
+            header: "deposit",
         },
         {
+            id: 'rustProofing',
             accessorKey: "rustProofing",
-            header: "modelCode",
+            header: "rustProofing",
         },
         {
+            id: 'lifeDisability',
             accessorKey: "lifeDisability",
-            header: "color",
+            header: "lifeDisability",
         },
         {
+            id: 'userServicespkg',
             accessorKey: "userServicespkg",
-            header: "model1",
+            header: "userServicespkg",
         },
         {
+            id: 'userExtWarr',
             accessorKey: "userExtWarr",
             header: "userExtWarr",
         },
         {
+            id: 'userGap',
             accessorKey: "userGap",
             header: "userGap",
         },
         {
+            id: 'userTireandRim',
             accessorKey: "userTireandRim",
             header: "userTireandRim",
         },
         {
+            id: 'userLoanProt',
             accessorKey: "userLoanProt",
             header: "userLoanProt",
         },
         {
+            id: 'deliveryCharge',
             accessorKey: "deliveryCharge",
-            header: "lastContact",
+            header: "deliveryCharge",
         },
         {
+            id: 'onTax',
             accessorKey: "onTax",
-            header: "tradeValue",
+            header: "onTax",
         },
         {
+            id: 'total',
             accessorKey: "total",
-            header: "modelCode",
+            header: "total",
         },
         {
+            id: 'typeOfContact',
             accessorKey: "typeOfContact",
             header: "typeOfContact",
         },
         {
+            id: 'contactMethod',
             accessorKey: "contactMethod",
             header: "contactMethod",
         },
         {
+            id: 'note',
             accessorKey: "note",
             header: "note",
         },
@@ -2432,7 +1940,7 @@ export function FinanceBoard() {
 
 
     ]
-    const smColumns: ColumnDef<Payment>[] = [
+    const smColumns = [
         {
             accessorKey: "firstName",
             header: ({ column }) => {
@@ -2443,7 +1951,7 @@ export function FinanceBoard() {
             cell: ({ row }) => {
                 const data = row.original
                 //
-                return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px]   leading-none  text-[#EEEEEE]  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
+                return <div className="bg-transparent flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center px-5 text-center  text-[15px]   leading-none  text-foreground  outline-none  transition-all duration-150 ease-linear target:text-primary  hover:text-primary  focus:text-primary focus:outline-none">
                     <SmClientCard data={data} searchData={searchData} />
                 </div>
             },
@@ -2458,7 +1966,7 @@ export function FinanceBoard() {
             },
             cell: ({ row }) => {
                 const data = row.original
-                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
+                return <div className="bg-transparent my-auto  flex h-[45px] flex-1 cursor-pointer items-center justify-center text-center text-[15px] uppercase leading-none text-foreground  outline-none transition-all duration-150 ease-linear target:text-primary hover:text-primary focus:text-primary focus:outline-none  active:bg-primary">
                     <ClientStatusCard data={data} />
                 </div>
             },
@@ -2482,7 +1990,7 @@ export function FinanceBoard() {
                     second: '2-digit',
                 };
 
-                return <div className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-[#EEEEEE]  outline-none  transition-all  duration-150 ease-linear target:text-primary hover:text-primary  focus:text-primary  focus:outline-none  active:bg-primary  ">
+                return <div className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-foreground  outline-none  transition-all  duration-150 ease-linear target:text-primary hover:text-primary  focus:text-primary  focus:outline-none  active:bg-primary  ">
                     {String(data.nextAppointment)}
                 </div>
             },
@@ -2498,15 +2006,15 @@ export function FinanceBoard() {
 
                     {data.customerState === 'Pending' ? (<AttemptedOrReached data={data} />
                     ) : data.customerState === 'Attempted' ? (<AttemptedOrReached data={data} />
-                    ) : data.customerState === 'Reached' ? (<Badge className="bg-jade9">Reached</Badge>
-                    ) : data.customerState === 'sold' ? (<Badge className="bg-jade9">Sold</Badge>
-                    ) : data.customerState === 'depositMade' ? (<Badge className="bg-jade9">Deposit</Badge>
-                    ) : data.customerState === 'turnOver' ? (<Badge className="bg-blue-9">Turn Over</Badge>
-                    ) : data.customerState === 'financeApp' ? (<Badge className="bg-blue-9">Application Done</Badge>
-                    ) : data.customerState === 'approved' ? (<Badge className="bg-jade9">Approved</Badge>
-                    ) : data.customerState === 'signed' ? (<Badge className="bg-jade9">Signed</Badge>
-                    ) : data.customerState === 'pickUpSet' ? (<Badge className="bg-jade9">Pick Up Set</Badge>
-                    ) : data.customerState === 'delivered' ? (<Badge className="bg-jade9">Delivered</Badge>
+                    ) : data.customerState === 'Reached' ? (<Badge className="bg-[#29a383] text-foreground">Reached</Badge>
+                    ) : data.customerState === 'sold' ? (<Badge className="bg-[#29a383] text-foreground">Sold</Badge>
+                    ) : data.customerState === 'depositMade' ? (<Badge className="bg-[#29a383] text-foreground">Deposit</Badge>
+                    ) : data.customerState === 'turnOver' ? (<Badge className="bg-[#0090ff]">Turn Over</Badge>
+                    ) : data.customerState === 'financeApp' ? (<Badge className="bg-[#0090ff]">Application Done</Badge>
+                    ) : data.customerState === 'approved' ? (<Badge className="bg-[#29a383] text-foreground">Approved</Badge>
+                    ) : data.customerState === 'signed' ? (<Badge className="bg-[#29a383] text-foreground">Signed</Badge>
+                    ) : data.customerState === 'pickUpSet' ? (<Badge className="bg-[#29a383] text-foreground">Pick Up Set</Badge>
+                    ) : data.customerState === 'delivered' ? (<Badge className="bg-[#29a383] text-foreground">Delivered</Badge>
                     ) : data.customerState === 'refund' ? (<Badge className="bg-[#cf5454]">Refunded</Badge>
                     ) : data.customerState === 'funded' ? (<Badge className="bg-[#cf5454]">Funded</Badge>
                     ) : (
@@ -2529,7 +2037,7 @@ export function FinanceBoard() {
                         searchData,
                         data
                     }
-                    console.log(iFrameData, 'iFrameData')
+                    // console.log(iFrameData, 'iFrameData')
                     iFrameRef.current?.contentWindow?.postMessage(iFrameData, '*');
                 }
                 return <>
@@ -2550,7 +2058,7 @@ export function FinanceBoard() {
             ),
             cell: ({ row }) => {
                 const data = row.original
-                return <div className="w-[275px] cursor-pointer  text-center text-[14px]  text-[#EEEEEE]">
+                return <div className="w-[275px] cursor-pointer  text-center text-[14px]  text-foreground">
                     <ClientVehicleCard data={data} />
                 </div>
             },
@@ -2561,7 +2069,7 @@ export function FinanceBoard() {
                 <DataTableColumnHeader column={column} title="Trade" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("tradeDesc"))}</div>
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[250px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[13px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("tradeDesc"))}</div>
             },
 
         },
@@ -2571,7 +2079,7 @@ export function FinanceBoard() {
                 <DataTableColumnHeader column={column} title="Last Note" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("lastNote"))}</div>
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("lastNote"))}</div>
             },
 
         },
@@ -2665,14 +2173,14 @@ export function FinanceBoard() {
         {
             accessorKey: "pickUpDate",
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Pick Up Date" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary " />
+                <DataTableColumnHeader column={column} title="Pick Up Date" className="bg-transparent text-foreground mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary " />
             ),
             cell: ({ row }) => {
                 const data = row.original
                 if (data.pickUpDate) {
                     const pickupDate = data.pickUpDate
                     return (
-                        <div className="bg-transparent :text-primary text-grbg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
+                        <div className="bg-transparent :text-primary text-grbg-transparent text-foreground mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
                             {pickupDate === '1969-12-31 19:00' || pickupDate === null ? 'TBD' : pickupDate}
                         </div>
                     );
@@ -2683,7 +2191,7 @@ export function FinanceBoard() {
         {
             accessorKey: "lastContact",
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="Last Contacted" className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary" />
+                <DataTableColumnHeader column={column} title="Last Contacted" className="bg-transparent text-foreground mx-1 flex h-[45px] w-[175px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary" />
             ),
             cell: ({ row }) => {
                 const data = row.original
@@ -2699,7 +2207,7 @@ export function FinanceBoard() {
                 };
                 if (date) {
                     return (
-                        <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
+                        <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[150px] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">
                             {date === 'TBD' ? <p>TBD</p> : date.toLocaleDateString('en-US', options)}
                         </div>
                     );
@@ -2777,7 +2285,7 @@ export function FinanceBoard() {
                 <p className="text-center">email</p>
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("email"))}</div>
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("email"))}</div>
             },
 
         },
@@ -2786,7 +2294,7 @@ export function FinanceBoard() {
             header: ({ column }) => (
                 <p className="text-center">phone</p>
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("phone"))}</div>
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("phone"))}</div>
             },
 
         },
@@ -2795,7 +2303,7 @@ export function FinanceBoard() {
             header: ({ column }) => (
                 <p className="text-center">address</p>
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("address"))}</div>
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  px-5 text-center text-[15px] uppercase leading-none outline-none  transition-all  duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary  hover:text-primary  focus:text-primary  focus:outline-none active:bg-primary">{(row.getValue("address"))}</div>
             },
 
         },
@@ -2804,7 +2312,7 @@ export function FinanceBoard() {
             header: ({ column }) => (
                 <p className="text-center">postal</p>
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
@@ -2818,7 +2326,7 @@ export function FinanceBoard() {
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="city" />
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
@@ -2832,7 +2340,7 @@ export function FinanceBoard() {
             header: ({ column }) => (
                 <DataTableColumnHeader column={column} title="province" />
             ), cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
@@ -2856,7 +2364,7 @@ export function FinanceBoard() {
                 <DataTableColumnHeader column={column} title="userEmail" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[95%] flex-1 cursor-pointer items-center justify-center  rounded px-5 text-center text-[15px] font-medium uppercase  leading-none  shadow outline-none transition-all duration-150  ease-linear first:rounded-tl-md last:rounded-tr-md target:text-primary hover:text-primary
                   hover:shadow-md
 
 
@@ -2871,7 +2379,7 @@ export function FinanceBoard() {
                 <DataTableColumnHeader column={column} title="Pick Up Time" />
             ),
             cell: ({ row }) => {
-                return <div className="bg-transparent text-gray-300 mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary  hover:text-primary  focus:text-primary focus:outline-none active:bg-primary ">
+                return <div className="bg-transparent text-foreground mx-1 flex h-[45px] w-[125px] w-[95%] flex-1 cursor-pointer items-center  justify-center px-5 text-center text-[15px] uppercase leading-none  outline-none  transition-all  duration-150 ease-linear first:rounded-tl-md last:rounded-tr-md  target:text-primary  hover:text-primary  focus:text-primary focus:outline-none active:bg-primary ">
                     {(row.getValue("pickUpTime"))}
                 </div>
             },
@@ -3265,96 +2773,1475 @@ export function FinanceBoard() {
 
     ]
 
+    const [key, setKey] = useState(0);
+    const [lockData, setLockData] = useState();
+    const [financeData, setFinanceData] = useState();
     const submit = useSubmit();
-    const navigate = useNavigate();
+    const [openResponse, setOpenResponse] = useState(false);
 
-    const fetcher = async url => await axios.get(url).then(res => res.data)
+    useEffect(() => {
+        const handleData = (msg, data) => {
+            //  console.log('Received data:', data);
+            setOpen(true)
+            setLockData(data)
+        };
+        emitter.on('LOCKED_STATUS_RESPONSE', handleData);
+        return () => {
+            emitter.off('LOCKED_STATUS_RESPONSE', handleData);
+        };
+    }, []);
 
-    const { data: locked, error } = useSWR('/dealer/api/checkLocked', fetcher, {
+    const responseFetcher = async () => {
+        const getLocked = await prisma.lockFinanceTerminals.findFirst({ where: { salesEmail: user.email, locked: false, response: false } })
+        // console.log(getLocked, 'getlocked')
+        if (getLocked !== null) {
+            setLockData(getLocked)
+            setOpenResponse(true)
+        }
+    }
+
+    const { data: locked, error } = useSWR(responseFetcher, {
         refreshInterval: 60000,
         revalidateOnMount: true,
         revalidateOnReconnect: true
     });
-    const [lockData, setLockData] = useState();
-    const [financeData, setFinanceData] = useState();
-    const [openResponse, setOpenResponse] = useState(false);
-
 
     useEffect(() => {
         if (locked) {
             setLockData(locked.locked)
             setFinanceData(locked.locked)
-            //  setOpen(true);
-            console.log(lockData, financeData, 'data')
-            console.log(lockData, financeData, 'data')
             setOpenResponse(true);
+            // console.log(lockData, financeData, 'data')
         }
     }, [locked]);
+
     if (error) {
         console.log('SWR error:', error);
     }
 
     const HandleButtonClick = async () => {
         const formData = new FormData();
-        formData.append("locked", false);
-        formData.append("financeEmail", user.email);
-        formData.append("financeId", financeData.financeId);
-        formData.append("claimId", financeData.lockedId);
-        formData.append("intent", 'claimClientTurnover');
+        formData.append("claimId", lockData.lockedId);
+        formData.append("intent", 'responseClientTurnover');
         const update = submit(formData, { method: "post" });
         setOpenResponse(false)
         return json({ update })
     };
+    /// -=--=-=-=-=-=-=-=-==-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-DATA TABLE-=--=-=-=-=-=-=-=-==-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-
+    /**|| {
+            dl: false,
+            id: false,
+            pdi: false,
+            city: false,
+            msrp: false,
+            note: false,
+            on60: false,
+            qc60: false,
+            sold: false,
+            vinE: false,
+            admin: false,
+            color: false,
+            email: false,
+            iRate: false,
+            nat60: false,
+            onTax: false,
+            oth60: false,
+            phone: false,
+            qcTax: false,
+            total: false,
+            demoed: false,
+            labour: false,
+            model1: false,
+            months: false,
+            postal: false,
+            refund: false,
+            result: false,
+            signed: false,
+            visits: false,
+            weekly: false,
+            address: false,
+            deposit: false,
+            freight: false,
+            trailer: false,
+            userGap: false,
+            visited: false,
+            approved: false,
+            biweekly: false,
+            discount: false,
+            lastNote: false,
+            metParts: false,
+            otherTax: false,
+            painPrem: false,
+            progress: false,
+            province: false,
+            referral: false,
+            stockNum: false,
+            tradeVin: false,
+            turnOver: false,
+            turnover: false,
+            weeklyqc: false,
+            aptShowed: false,
+            biweekOth: false,
+            bookedApt: false,
+            commodity: false,
+            delivered: false,
+            financeId: false,
+            licensing: false,
+            modelCode: false,
+            paintPrem: false,
+            pickUpSet: false,
+            seenTrade: false,
+            testDrive: false,
+            timeOfDay: false,
+            tradeMake: false,
+            tradeTrim: false,
+            tradeYear: false,
+            userEmail: false,
+            userOther: false,
+            weeklyOth: false,
+            biweeklNat: false,
+            biweeklyqc: false,
+            docsSigned: false,
+            financeApp: false,
+            metFinance: false,
+            metManager: false,
+            metService: false,
+            pickUpTime: false,
+            tradeColor: false,
+            tradeValue: false,
+            unitPicker: false,
+            weeklylNat: false,
+            accessories: false,
+            aptNoShowed: false,
+            depositMade: false,
+            discountPer: false,
+            followUpDay: false,
+            userExtWarr: false,
+            clientfileId: false,
+            rustProofing: false,
+            tradeRepairs: false,
+            userLoanProt: false,
+            contactMethod: false,
+            deliveredDate: false,
+            nat60WOptions: false,
+            oth60WOptions: false,
+            singleFinNote: false,
+            timeToContact: false,
+            typeOfContact: false,
+            deliveryCharge: false,
+            documentUpload: false,
+            lifeDisability: false,
+            metSalesperson: false,
+            timesContacted: false,
+            userTireandRim: false,
+            desiredPayments: false,
+            userServicespkg: false,
+            totalWithOptions: false,
+            biweekOthWOptions: false,
+            weeklyOthWOptions: false,
+            biweeklNatWOptions: false,
+            financeApplication: false,
+            weeklylNatWOptions: false,
+            otherTaxWithOptions: false
+        } */
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(columnState.state);
 
-    const HandleButtonClickAndNavigate = async () => {
-        const formData = new FormData();
-        formData.append("locked", false);
-        formData.append("financeEmail", user.email);
-        formData.append("financeId", financeData.financeId);
-        formData.append("claimId", financeData.lockedId);
-        formData.append("intent", 'claimClientTurnover');
-        submit(formData, { method: "post" });
-        setOpenResponse(false)
-        return navigate(`/customer/${financeData.clientfileId}/${financeData.id}`)
+    useEffect(() => {
+        const jsonString = user.columnStateSales.state
+
+        // console.log(jsonString, 'string objectg')
+        //console.log(columnVisibility, 'columnVisibility')
+        //  console.log(columnState, 'columnState')
+
+        // setColumnVisibility(jsonString)
+    }, []);
+
+    useEffect(() => {
+        fetcher.submit(
+            { state: JSON.stringify(columnVisibility), intent: 'columnState' },
+            { method: "post" }
+        );
+    }, [columnVisibility]);
+
+    const [sorting, setSorting] = useState<SortingState>([]);
+    const [rowSelection, setRowSelection] = useState({});
+
+    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+    const [globalFilter, setGlobalFilter] = useState("");
+
+    const table = useReactTable({
+        data,
+        columns,
+        filterFns: { fuzzy: fuzzyFilter },
+
+        state: {
+            sorting,
+            columnFilters,
+            columnVisibility,
+            rowSelection,
+            globalFilter,
+        },
+        getCoreRowModel: getCoreRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        onSortingChange: setSorting,
+        getSortedRowModel: getSortedRowModel(),
+        onColumnVisibilityChange: setColumnVisibility,
+
+        onColumnFiltersChange: setColumnFilters,
+        getFilteredRowModel: getFilteredRowModel(),
+        enableRowSelection: true,
+        onRowSelectionChange: setRowSelection,
+        onGlobalFilterChange: setGlobalFilter,
+        enableGlobalFilter: true,
+        globalFilterFn: "fuzzy",
+    });
+
+    const [filterBy, setFilterBy] = useState("");
+    const handleInputChange = (name) => {
+        setFilterBy(columnId);
+    };
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-indexed in JavaScript
+        const day = String(date.getDate()).padStart(2, "0");
+        const hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+    };
+    const formatMonth = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-indexed in JavaScript
+        const day = String(date.getDate()).padStart(2, "0");
+        const hours = date.getHours();
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+
+        return `${year}-${month}`;
+    };
+    const now = new Date();
+    const formattedDate = formatDate(now);
+    function getToday() {
+        const today = new Date();
+        today.setDate(today.getDate());
+        //   console.log(formatDate(today), "today");
+        return formatDate(today);
+    }
+    function getTomorrow() {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        return formatDate(tomorrow);
+    }
+    function getYesterday() {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        return formatDate(yesterday);
+    }
+    function getLastDayOfPreviousMonth() {
+        const date = new Date();
+        date.setDate(1); // sets the day to the last day of the previous month
+        return formatMonth(date);
+    }
+    function getFirstDayOfCurrentMonth() {
+        const date = new Date();
+        date.setDate(1); // sets the day to the first day of the current month
+        return formatDate(date);
+    }
+    function getFirstDayOfTwoMonthsAgo() {
+        const date = new Date();
+        date.setMonth(date.getMonth() - 2);
+        date.setDate(1); // sets the day to the first day of the month two months ago
+        return formatMonth(date);
+    }
+    function getYear() {
+        const today = new Date();
+        return today.getFullYear().toString();
+    }
+    const getThisYear = getYear();
+    const [todayfilterBy, setTodayfilterBy] = useState(null);
+    const DeliveriesList = [
+        {
+            key: "todaysDeliveries",
+            name: "Deliveries - Today",
+        },
+        {
+            key: "tomorowsDeliveries",
+            name: "Deliveries - Tomorrow",
+        },
+        {
+            key: "yestDeliveries",
+            name: "Deliveries - Yesterday",
+        },
+        {
+            key: "deliveredThisMonth",
+            name: "Delivered - Current Month",
+        },
+        {
+            key: "deliveredLastMonth",
+            name: "Delivered - Last Month",
+        },
+        {
+            key: "deliveredThisYear",
+            name: "Delivered - Year",
+        },
+    ];
+    const DepositsTakenList = [
+        {
+            key: "depositsToday",
+            name: "Deposit Taken - Need to Finalize Deal",
+        },
+    ];
+
+    const CallsList = [
+        {
+            key: "pendingCalls",
+            name: "Pending Calls",
+        },
+        {
+            key: "todaysCalls",
+            name: "Today's Calls",
+        },
+        {
+            key: "tomorowsCalls",
+            name: "Tomorrow's Calls",
+        },
+        {
+            key: "yestCalls",
+            name: "Yesterday's if missed",
+        },
+        {
+            key: "missedCalls",
+            name: "Missed Calls - Current Month",
+        },
+        {
+            key: "missedCallsLastMonth",
+            name: "Missed Calls - Last Month",
+        },
+        {
+            key: "missedCallsTwoMonths",
+            name: "Missed Calls - 2 Months Ago",
+        },
+        {
+            key: "missedCallsYear",
+            name: "Missed Calls - Year",
+        },
+    ];
+
+
+    const handleFilterChange = (selectedFilter) => {
+        setAllFilters();
+        const customerStateColumn = table.getColumn("customerState");
+        const nextAppointmentColumn = table.getColumn("nextAppointment");
+        const deliveredDate = table.getColumn("deliveredDate");
+        const pickUpDate = table.getColumn("pickUpDate");
+        const status = table.getColumn("status");
+        const depositMade = table.getColumn("depositMade");
+        const sold = table.getColumn("sold");
+        const delivered = table.getColumn("delivered");
+        const signed = table.getColumn("signed");
+        const financeApp = table.getColumn("financeApp");
+
+        if (selectedFilter === "deliveredThisMonth") {
+            customerStateColumn?.setFilterValue("delivered");
+            deliveredDate?.setFilterValue(getFirstDayOfCurrentMonth);
+            status?.setFilterValue("active");
+        }
+
+        if (selectedFilter === "deliveredLastMonth") {
+            customerStateColumn?.setFilterValue("delivered");
+            deliveredDate?.setFilterValue(getLastDayOfPreviousMonth);
+            status?.setFilterValue("active");
+        }
+
+        if (selectedFilter === "deliveredThisYear") {
+            customerStateColumn?.setFilterValue("delivered");
+            deliveredDate?.setFilterValue(getThisYear);
+            status?.setFilterValue("active");
+        }
+
+        if (selectedFilter === "pendingCalls") {
+            customerStateColumn?.setFilterValue("Pending");
+            status?.setFilterValue("active");
+        }
+
+        if (selectedFilter === "todaysCalls") {
+            nextAppointmentColumn?.setFilterValue(getToday);
+            console.log(nextAppointmentColumn, "nextAppointmentColumn");
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("off");
+            sold?.setFilterValue("off");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "tomorowsCalls") {
+            nextAppointmentColumn?.setFilterValue(getTomorrow);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("off");
+            sold?.setFilterValue("off");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "yestCalls") {
+            nextAppointmentColumn?.setFilterValue(getYesterday);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("off");
+            sold?.setFilterValue("off");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "missedCalls") {
+            nextAppointmentColumn?.setFilterValue(getFirstDayOfCurrentMonth);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("off");
+            sold?.setFilterValue("off");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "missedCallsLastMonth") {
+            nextAppointmentColumn?.setFilterValue(getLastDayOfPreviousMonth);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("off");
+            sold?.setFilterValue("off");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "missedCallsTwoMonths") {
+            nextAppointmentColumn?.setFilterValue(getFirstDayOfTwoMonthsAgo);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("off");
+            sold?.setFilterValue("off");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "missedCallsYear") {
+            nextAppointmentColumn?.setFilterValue(getThisYear);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("off");
+            sold?.setFilterValue("off");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "todaysDeliveries") {
+            pickUpDate?.setFilterValue(getToday);
+            status?.setFilterValue("active");
+            sold?.setFilterValue("on");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "tomorowsDeliveries") {
+            pickUpDate?.setFilterValue(getTomorrow);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("on");
+            sold?.setFilterValue("on");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "yestDeliveries") {
+            pickUpDate?.setFilterValue(getYesterday);
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("on");
+            sold?.setFilterValue("on");
+            delivered?.setFilterValue("off");
+        }
+
+        if (selectedFilter === "depositsToday") {
+            status?.setFilterValue("active");
+            depositMade?.setFilterValue("on");
+            sold?.setFilterValue("on");
+            delivered?.setFilterValue("off");
+            signed?.setFilterValue("off");
+            financeApp?.setFilterValue("off");
+        }
     };
 
+    // clears filters
+    const setAllFilters = () => {
+        setColumnFilters([]);
+        setSorting([]);
+        setFilterBy("");
+        setGlobalFilter([]);
+    };
+
+    // toggle column filters
+    const [showFilter, setShowFilter] = useState(false);
+
+    const toggleFilter = () => {
+        setShowFilter(!showFilter);
+    };
+    const toggleEmail = () => {
+        setMassEmail(!showFilter);
+    };
+
+    async function rotateSalesQueue() {
+        // console.log(salesPeople, "rotateSalesQueue");
+        const formData = new FormData();
+        formData.append("intent", "rotateSalesQueue");
+        const update = submit(formData, { method: "post" });
+        return update;
+    }
+    async function rotateFinanceQueue() {
+        // console.log(salesPeople, "rotateFinanceQueue");
+        const formData = new FormData();
+        formData.append("intent", "rotateFinanceQueue");
+        const update = submit(formData, { method: "post" });
+        return update;
+    }
+    async function resetQueueFinance() {
+        // console.log(salesPeople, "resetQueueFinance");
+        const formData = new FormData();
+        formData.append("intent", "rotateFinanceQueue");
+        const update = submit(formData, { method: "post" });
+        return update;
+    }
+    async function resetQueue() {
+        // console.log(salesPeople, "resetQueue");
+        const formData = new FormData();
+        formData.append("intent", "resetQueue");
+        const update = submit(formData, { method: "post" });
+        return update;
+    }
+
+    const [salesPeople, setSalesPeople] = useState([]);
+    const [financeManager, setFinanceManager] = useState([]);
+    const [massSms, setMassSms] = useState(false);
+    const [massEmail, setMassEmail] = useState(false);
+    const [addCustomer, setAddCustomer] = useState(false);
+
+    const swrFetcher = (url) => fetch(url).then((r) => r.json());
+
+    const { data: userFetch, userError } = useSWR(
+        "/dealer/api/findManyUsers",
+        swrFetcher,
+        {
+            refreshInterval: 60000,
+            revalidateOnMount: true,
+            revalidateOnReconnect: true,
+        }
+    );
+    const { data: financeFetch, financeError } = useSWR(
+        "/dealer/api/findManyFinance",
+        swrFetcher,
+        {
+            refreshInterval: 60000,
+            revalidateOnMount: true,
+            revalidateOnReconnect: true,
+        }
+    );
+
+    useEffect(() => {
+        if (userFetch) {
+            console.log(userFetch.users, "userFetch");
+            setSalesPeople(userFetch.users);
+        }
+        if (financeFetch) {
+            console.log(financeFetch.users, "userFetch");
+            setFinanceManager(financeFetch.users);
+        }
+    }, [userFetch, financeFetch]);
+
+    const [customerMessages, setCustomerMessages] = useState([]);
+    const [conversationSid, setConversationSid] = useState("");
+
+    useEffect(() => {
+        const accountSid = "AC9b5b398f427c9c925f18f3f1e204a8e2";
+        const authToken = "d38e2fd884be4196d0f6feb0b970f63f";
+        setCustomer(smsDetails);
+
+        if (smsDetails) {
+            const newConversationSid = smsDetails.conversationId;
+            setConversationSid(newConversationSid);
+
+            if (newConversationSid) {
+                const url = `https://conversations.twilio.com/v1/Conversations/${newConversationSid}/Messages`;
+                const credentials = `${accountSid}:${authToken}`;
+                const base64Credentials = btoa(credentials);
+
+                async function fetchMessages() {
+                    try {
+                        const response = await fetch(url, {
+                            method: "GET",
+                            headers: { Authorization: `Basic ${base64Credentials}` },
+                        });
+                        console.log(response, "response");
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const data = await response.json();
+                        if (data.length !== 0) {
+                            setCustomerMessages(data.messages);
+                        } else {
+                            setCustomerMessages([]);
+                        }
+                        console.log(data, "fetched messages");
+                        return data;
+                    } catch (error) {
+                        console.error("Failed to fetch messages:", error);
+                    }
+                }
+
+                fetchMessages();
+            }
+        }
+        /* else {
+
+          async function GetNumber() {
+            const areaCode = user.phone.slice(0, 3);
+            const locals = await client.availablePhoneNumbers("CA").local.list({
+              areaCode: areaCode,
+              limit: 1,
+            });
+            const incomingPhoneNumber = await client.incomingPhoneNumbers.create({
+              phoneNumber: locals.available_phone_numbers[0].phone_number,
+            });
+            // create new conversation sid
+
+            // save invo in twilioSMSDetails
+            const saved = await prisma.twilioSMSDetails.create({
+              data: {
+                conversationSid: '',
+                participantSid: '',
+                userSid: '',
+                username: 'skylerzanth',
+                password: 'skylerzanth1234',
+                userEmail: user.email,
+                passClient: '',
+                myPhone: locals.available_phone_numbers[0].phone_number,
+                proxyPhone: '',
+              }
+            })
+               const newConversationSid = saved.conversationId;
+          setConversationSid(newConversationSid);
+             if (newConversationSid) {
+            const url = `https://conversations.twilio.com/v1/Conversations/${newConversationSid}/Messages`;
+            const credentials = `${accountSid}:${authToken}`;
+            const base64Credentials = btoa(credentials);
+
+            async function fetchMessages() {
+              try {
+                const response = await fetch(url, {
+                  method: 'GET',
+                  headers: { 'Authorization': `Basic ${base64Credentials}` },
+                });
+                console.log(response, 'response')
+                if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                if (data.length !== 0) {
+                  setCustomerMessages(data.messages);
+
+                }
+                else {
+                  setCustomerMessages([])
+                }
+                console.log(data, 'fetched messages');
+                return data;
+              } catch (error) {
+                console.error('Failed to fetch messages:', error);
+              }
+            }
+
+            fetchMessages();
+          }
+          }
+
+        GetNumber()
+        }*/
+    }, [smsDetails]);
+
+    const userEmail = user?.email;
+
+    const initial = {
+        firstName: "",
+        lastName: "",
+    };
+    const [formData, setFormData] = useState(initial);
+    const firstName = formData.firstName;
+    const lastName = formData.lastName;
+    const handleChange = (e) => {
+        const { name, value, checked, type } = e.target;
+        setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+    };
+    const [brandId, setBrandId] = useState("");
+    const [modelList, setModelList] = useState();
+
+    const handleBrand = (e) => {
+        setBrandId(e.target.value);
+        //console.log(brandId, modelList);
+    };
+
+    useEffect(() => {
+        async function getData() {
+            const res = await fetch(`/api/modelList/${brandId}`);
+            if (!res.ok) {
+                throw new Error("Failed to fetch data");
+            }
+            return res.json();
+        }
+
+        if (brandId.length > 3) {
+            const fetchData = async () => {
+                const result = await getData();
+                setModelList(result);
+                // console.log(brandId, result); // Log the updated result
+            };
+            fetchData();
+        }
+    }, [brandId]);
+    //const [open, setOpen] = useState(false);-------------------------------------------------------------------
+
+    const [rowData, setRowData] = useState();
+
+    useEffect(() => {
+        if (rowData) {
+            const serializedUser = JSON.stringify(user);
+            const cust = rowData.rowData.map((user) => user.email);
+            //   console.log(cust, "cust");
+            const serializedCust = JSON.stringify(cust);
+            window.localStorage.setItem("user", serializedUser);
+            window.localStorage.setItem("customer", serializedCust);
+        }
+    }, []);
 
 
+    const MyIFrameComponent = () => {
+        const [isLoading, setIsLoading] = useState(true);
+        useEffect(() => {
+            const handleHeightMessage = (event: MessageEvent) => {
+                if (
+                    event.data &&
+                    event.data.type === "iframeHeight" &&
+                    event.data.height
+                ) {
+                    setIsLoading(false);
+                    if (iFrameRef.current) {
+                        iFrameRef.current.style.height = `${event.data.height}px`;
+                    }
+                }
+            };
+            const currentHost =
+                typeof window !== "undefined" ? window.location.host : null;
+            if (iFrameRef.current) {
+                if (currentHost === "localhost:3000") {
+                    iFrameRef.current.src =
+                        "http://localhost:3000/dealer/email/massEmail";
+                }
+                if (currentHost === "dealersalesassistant.ca") {
+                    iFrameRef.current.src =
+                        "https://www.dealersalesassistant.ca/dealer/email/massEmail";
+                }
+                window.addEventListener("message", handleHeightMessage);
+                const cust = rowData;
+
+                const sendData = { cust, user };
+
+                // Add load event listener to ensure iframe is loaded
+                const onLoad = () => {
+                    iFrameRef.current.contentWindow?.postMessage(sendData, "*");
+                };
+                iFrameRef.current.addEventListener("load", onLoad);
+
+                return () => {
+                    window.removeEventListener("message", handleHeightMessage);
+                    iFrameRef.current?.removeEventListener("load", onLoad);
+                };
+            }
+        }, []);
+
+        return (
+            <>
+                <div className="size-full ">
+                    <iframe
+                        ref={iFrameRef}
+                        title="my-iframe"
+                        width="100%"
+                        className=" border-none"
+                        style={{
+                            minHeight: "40vh",
+                        }}
+                    />
+                </div>
+            </>
+        );
+    };
+
+    useEffect(() => {
+        if (rowData) {
+            const serializedUser = JSON.stringify(user);
+            const serializedCust = JSON.stringify(rowData);
+            window.localStorage.setItem("user", serializedUser);
+            window.localStorage.setItem("customer", serializedCust);
+        }
+    }, [rowData]);
+
+    const [selectedColumn, setSelectedColumn] = useState("");
+    const [selectedGlobal, setSelectedGlobal] = useState(false);
+
+    const setColumnFilterDropdown = (event) => {
+        const columnId = event.target.getAttribute("data-value");
+        setSelectedColumn(columnId);
+        //  console.log("Selected column:", columnId);
+        // Add your logic here to handle the column selection
+    };
+
+    const handleGlobalChange = (value) => {
+        // console.log("value", value);
+        table.getColumn(selectedColumn)?.setFilterValue(value);
+    };
+    //apply the fuzzy sort if the fullName column is being filtered
+    useEffect(() => {
+        if (table.getState().columnFilters[0]?.id === "fullName") {
+            if (table.getState().sorting[0]?.id !== "fullName") {
+                table.setSorting([{ id: "fullName", desc: false }]);
+            }
+        }
+    }, [table.getState().columnFilters[0]?.id]);
+
+
+    const [getTheState, setGetTheState] = useState([])
+    const [getTheState2, setGetTheState2] = useState([])
+    useEffect(() => {
+        const formData = new FormData();
+        formData.append("userEmail", user.email);
+        formData.append("columnState", getTheState2);
+        formData.append("intent", "salesColumns");
+        fetcher.submit(formData, { method: "post" });
+    }, [getTheState2, getTheState]);
+
+    /// -=--=-=-=-=-=-=-=-==-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-DATA TABLE-=--=-=-=-=-=-=-=-==-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-
     return (
         <div>
             <div className="block md:hidden">
                 <SmDataTable columns={smColumns} data={data} />
             </div>
             <div className="hidden md:block">
-                <DataTable columns={columns} data={data} user={user} />
+                <div className="mb-[20px]  justify-center  rounded    even:bg-background">
+                    <div className="ml-auto flex items-center">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline">Menu</Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56 border border-border bg-background text-foreground">
+                                <DropdownMenuLabel>Dashboard Actions</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem
+                                        className="cursor-pointer"
+                                        onSelect={() => setSelectedGlobal(true)}
+                                    >
+                                        Global Filter
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSub>
+                                        <DropdownMenuSubTrigger className="cursor-pointer">
+                                            Default Filters
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuPortal>
+                                            <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                                                <DropdownMenuLabel>
+                                                    {todayfilterBy || "Default Filters"}
+                                                </DropdownMenuLabel>
+                                                <DropdownMenuSeparator />
+                                                {CallsList.map((item) => (
+                                                    <DropdownMenuItem
+                                                        onSelect={(event) => {
+                                                            const value =
+                                                                event.currentTarget.getAttribute("data-value");
+                                                            const item =
+                                                                CallsList.find((i) => i.key === value) ||
+                                                                DeliveriesList.find((i) => i.key === value) ||
+                                                                DepositsTakenList.find((i) => i.key === value);
+                                                            if (item) {
+                                                                handleFilterChange(item.key);
+                                                                setTodayfilterBy(item.name);
+                                                            }
+                                                        }}
+                                                        data-value={item.key}
+                                                        textValue={item.key}
+                                                    >
+                                                        {item.name}
+                                                    </DropdownMenuItem>
+                                                ))}
+                                                {CallsList.map((item) => (
+                                                    <DropdownMenuItem
+                                                        onSelect={(event) => {
+                                                            const value =
+                                                                event.currentTarget.getAttribute("data-value");
+                                                            const item =
+                                                                CallsList.find((i) => i.key === value) ||
+                                                                DeliveriesList.find((i) => i.key === value) ||
+                                                                DepositsTakenList.find((i) => i.key === value);
+                                                            if (item) {
+                                                                handleFilterChange(item.key);
+                                                                setTodayfilterBy(item.name);
+                                                            }
+                                                        }}
+                                                        data-value={item.key}
+                                                        textValue={item.key}
+                                                    >
+                                                        {item.name}
+                                                    </DropdownMenuItem>
+                                                ))}
+                                                {CallsList.map((item) => (
+                                                    <DropdownMenuItem
+                                                        onSelect={(event) => {
+                                                            const value =
+                                                                event.currentTarget.getAttribute("data-value");
+                                                            const item =
+                                                                CallsList.find((i) => i.key === value) ||
+                                                                DeliveriesList.find((i) => i.key === value) ||
+                                                                DepositsTakenList.find((i) => i.key === value);
+                                                            if (item) {
+                                                                handleFilterChange(item.key);
+                                                                setTodayfilterBy(item.name);
+                                                            }
+                                                        }}
+                                                        data-value={item.key}
+                                                        textValue={item.key}
+                                                    >
+                                                        {item.name}
+                                                    </DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuSubContent>
+                                        </DropdownMenuPortal>
+                                    </DropdownMenuSub>
+                                    <DropdownMenuSub>
+                                        <DropdownMenuSubTrigger className="cursor-pointer">
+                                            Global Filters
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuPortal>
+                                            <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                                                {table
+                                                    .getAllColumns()
+                                                    .filter((column) => column.getCanHide())
+                                                    .map((column) => (
+                                                        <DropdownMenuItem
+                                                            onSelect={(event) => {
+                                                                setColumnFilterDropdown(event);
+                                                            }}
+                                                            data-value={column.id}
+                                                            key={column.id}
+                                                            className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline"
+                                                        >
+                                                            {column.id}
+                                                        </DropdownMenuItem>
+                                                    ))}
+                                            </DropdownMenuSubContent>
+                                        </DropdownMenuPortal>
+                                    </DropdownMenuSub>
+                                    <DropdownMenuItem
+                                        className="cursor-pointer"
+                                        onSelect={() => {
+                                            setAllFilters([]);
+                                            setSelectedGlobal(false);
+                                        }}
+                                    >
+                                        Clear
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+
+                                <DropdownMenuSeparator />
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem
+                                        className="cursor-pointer"
+                                        onSelect={toggleFilter}
+                                    >
+                                        Toggle All Columns
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSub>
+                                        <DropdownMenuSubTrigger className="cursor-pointer">
+                                            Column Toggle
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuPortal>
+                                            <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                                                {table
+                                                    .getAllColumns()
+                                                    .filter((column) => column.getCanHide())
+                                                    .map((column) => {
+                                                        return (
+                                                            <DropdownMenuCheckboxItem
+                                                                key={column.id}
+                                                                className="cursor-pointer bg-background  capitalize text-foreground"
+                                                                checked={column.getIsVisible()}
+                                                                onCheckedChange={(value) => {
+                                                                    column.toggleVisibility(!!value);
+                                                                    const columnState = JSON.stringify(table.getState().columnVisibility);
+                                                                    const getVisibleFlatColumns = JSON.stringify(table.getVisibleFlatColumns());
+                                                                    const formattedColumnState = columnState.replace(/"/g, "'").replace(/\s+/g, '');
+                                                                    const formattedgetVisibleFlatColumns = columnState.replace(/"/g, "'").replace(/\s+/g, '');
+                                                                    setGetTheState(formattedColumnState)
+                                                                    setGetTheState2(formattedgetVisibleFlatColumns)
+                                                                }}
+                                                            >
+                                                                {column.id}
+                                                            </DropdownMenuCheckboxItem>
+                                                        );
+                                                    })}
+                                            </DropdownMenuSubContent>
+                                        </DropdownMenuPortal>
+                                    </DropdownMenuSub>
+
+                                    <div className="w-[650px]">
+                                        <Dialog>
+                                            <DialogTrigger className="w-full cursor-pointer">
+                                                <DropdownMenuItem
+                                                    onSelect={(e) => e.preventDefault()}
+                                                    className="w-full cursor-pointer"
+                                                >
+                                                    Mass SMS
+                                                    <DropdownMenuShortcut>
+                                                        {" "}
+                                                        <MessageSquare color="foreground" />
+                                                    </DropdownMenuShortcut>
+                                                </DropdownMenuItem>
+                                            </DialogTrigger>
+                                            <DialogContent className="w-[600px] max-w-[600px]">
+                                                <DialogHeader className="w-[600px] max-w-[600px]">
+                                                    <DialogTitle>Mass SMS</DialogTitle>
+                                                    <DialogDescription>
+                                                        <TextFunction
+                                                            customerMessages={customerMessages}
+                                                            customer={customer}
+                                                            data={data}
+                                                            user={user}
+                                                            smsDetails={smsDetails}
+                                                        />
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </div>
+
+                                    <div className="w-[650px]">
+                                        <Dialog>
+                                            <DialogTrigger className="w-full cursor-pointer">
+                                                <DropdownMenuItem
+                                                    onSelect={(e) => e.preventDefault()}
+                                                    className="w-full cursor-pointer"
+                                                >
+                                                    Mass Email
+                                                    <DropdownMenuShortcut>
+                                                        {" "}
+                                                        <Mail color="foreground" />
+                                                    </DropdownMenuShortcut>
+                                                </DropdownMenuItem>
+                                            </DialogTrigger>
+                                            <DialogContent className="w-[600px] max-w-[600px]">
+                                                <DialogHeader className="w-[600px] max-w-[600px]">
+                                                    <DialogTitle>Mass Email</DialogTitle>
+                                                    <DialogDescription>
+                                                        <MyIFrameComponent />
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </div>
+
+                                    <DropdownMenuSub>
+                                        <DropdownMenuSubTrigger className="cursor-pointer">
+                                            Rotation
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuPortal>
+                                            <DropdownMenuSubContent className="overflow-y-auto border border-border bg-background text-foreground">
+                                                <DropdownMenuGroup>
+                                                    <DropdownMenuLabel>Sales Rotation</DropdownMenuLabel>
+                                                    <DropdownMenuSeparator />
+                                                    {salesPeople.map((person) => (
+                                                        <DropdownMenuItem
+                                                            className="mt-2 text-muted-foreground"
+                                                            key={person.id}
+                                                        >
+                                                            {person.name}
+                                                        </DropdownMenuItem>
+                                                    ))}
+                                                </DropdownMenuGroup>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuGroup>
+                                                    <DropdownMenuLabel>Finance Rotation</DropdownMenuLabel>
+                                                    <DropdownMenuSeparator />
+                                                    {financeManager.map((person) => (
+                                                        <DropdownMenuItem
+                                                            className="mt-2 text-muted-foreground"
+                                                            key={person.id}
+                                                        >
+                                                            {person.name}
+                                                        </DropdownMenuItem>
+                                                    ))}
+                                                </DropdownMenuGroup>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuSub>
+                                                    <DropdownMenuSubTrigger>Actions</DropdownMenuSubTrigger>
+                                                    <DropdownMenuPortal>
+                                                        <DropdownMenuSubContent className=" overflow-y-auto border border-border bg-background text-foreground">
+                                                            <DropdownMenuItem
+                                                                onClick={() => {
+                                                                    rotateSalesQueue();
+                                                                    toast.success(`Rotating sales...`);
+                                                                }}
+                                                            >
+                                                                Rotate Sales
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                onClick={() => {
+                                                                    rotateFinanceQueue();
+                                                                    toast.success(`Rotating sales...`);
+                                                                }}
+                                                            >
+                                                                {" "}
+                                                                Rotate Finance
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                onClick={() => {
+                                                                    resetQueue();
+                                                                    toast.success(`Rotating sales...`);
+                                                                }}
+                                                            >
+                                                                Reset Sales
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem
+                                                                onClick={() => {
+                                                                    resetQueueFinance();
+                                                                    toast.success(`Rotating sales...`);
+                                                                }}
+                                                            >
+                                                                Reset Finance
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuSubContent>
+                                                    </DropdownMenuPortal>
+                                                </DropdownMenuSub>
+                                            </DropdownMenuSubContent>
+                                        </DropdownMenuPortal>
+                                    </DropdownMenuSub>
+                                </DropdownMenuGroup>
+
+                                <DropdownMenuGroup>
+                                    <div className="w-[650px]">
+                                        <Dialog>
+                                            <DialogTrigger className="w-full cursor-pointer">
+                                                <DropdownMenuItem
+                                                    onSelect={(e) => e.preventDefault()}
+                                                    className="w-full cursor-pointer"
+                                                >
+                                                    Add Customer
+                                                    <DropdownMenuShortcut>
+                                                        {" "}
+                                                        <UserPlus color="foreground" />
+                                                    </DropdownMenuShortcut>
+                                                </DropdownMenuItem>
+                                            </DialogTrigger>
+                                            <DialogContent className="w-[600px] max-w-[600px]">
+                                                <DialogHeader className="w-[600px] max-w-[600px]">
+                                                    <DialogTitle> Add Customer</DialogTitle>
+                                                    <DialogDescription>
+                                                        <>
+                                                            <fetcher.Form method="post" className="  w-[95%] ">
+                                                                <div className="flex flex-col   ">
+                                                                    <div className="relative mt-3">
+                                                                        <Input
+                                                                            type="text"
+                                                                            name="firstName"
+                                                                            onChange={handleChange}
+                                                                            className="border-border bg-background"
+                                                                        />
+                                                                        <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                                                            First Name
+                                                                        </label>
+                                                                    </div>
+                                                                    <div className="relative mt-3">
+                                                                        <Input
+                                                                            type="text"
+                                                                            name="lastName"
+                                                                            onChange={handleChange}
+                                                                            className="border-border bg-background "
+                                                                        />
+                                                                        <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                                                            Last Name
+                                                                        </label>
+                                                                    </div>
+                                                                    <div className="relative mt-3">
+                                                                        <Input
+                                                                            className="border-border bg-background   "
+                                                                            type="number"
+                                                                            name="phone"
+                                                                        />
+                                                                        <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                                                            Phone
+                                                                        </label>
+                                                                    </div>
+                                                                    <div className="relative mt-3">
+                                                                        <Input
+                                                                            className="border-border bg-background  "
+                                                                            type="email"
+                                                                            name="email"
+                                                                        />
+                                                                        <label className=" absolute -top-3 left-3  rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                                                            Email
+                                                                        </label>
+                                                                    </div>
+                                                                    <div className="relative mt-3">
+                                                                        <Input
+                                                                            className="border-border bg-background   "
+                                                                            type="text"
+                                                                            name="address"
+                                                                        />
+                                                                        <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                                                            Address
+                                                                        </label>
+                                                                    </div>
+                                                                    <div className="relative mt-3">
+                                                                        <Input
+                                                                            className="border-border bg-background   "
+                                                                            type="text"
+                                                                            list="ListOptions2"
+                                                                            name="brand"
+                                                                            onChange={handleBrand}
+                                                                        />
+                                                                        <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                                                            Brand
+                                                                        </label>
+                                                                    </div>
+                                                                    <datalist id="ListOptions">
+                                                                        <option value="BMW-Motorrad" />
+                                                                        <option value="Can-Am" />
+                                                                        <option value="Can-Am-SXS" />
+                                                                        <option value="Harley-Davidson" />
+                                                                        <option value="Indian" />
+                                                                        <option value="Kawasaki" />
+                                                                        <option value="KTM" />
+                                                                        <option value="Manitou" />
+                                                                        <option value="Sea-Doo" />
+                                                                        <option value="Switch" />
+                                                                        <option value="Ski-Doo" />
+                                                                        <option value="Suzuki" />
+                                                                        <option value="Triumph" />
+                                                                        <option value="Spyder" />
+                                                                        <option value="Yamaha" />
+                                                                        <option value="Used" />
+                                                                    </datalist>
+                                                                    {modelList && (
+                                                                        <>
+                                                                            <div className="relative mt-3">
+                                                                                <Input
+                                                                                    className="  "
+                                                                                    type="text"
+                                                                                    list="ListOptions2"
+                                                                                    name="model"
+                                                                                />
+                                                                                <label className=" absolute -top-3 left-3 rounded-full bg-background px-2 text-sm transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                                                                                    Model
+                                                                                </label>
+                                                                            </div>
+                                                                            <datalist id="ListOptions2">
+                                                                                {modelList.models.map((item, index) => (
+                                                                                    <option key={index} value={item.model} />
+                                                                                ))}
+                                                                            </datalist>
+                                                                        </>
+                                                                    )}
+                                                                </div>
+                                                                <Input
+                                                                    type="hidden"
+                                                                    name="iRate"
+                                                                    defaultValue={10.99}
+                                                                />
+                                                                <Input
+                                                                    type="hidden"
+                                                                    name="tradeValue"
+                                                                    defaultValue={0}
+                                                                />
+                                                                <Input
+                                                                    type="hidden"
+                                                                    name="discount"
+                                                                    defaultValue={0}
+                                                                />
+                                                                <Input
+                                                                    type="hidden"
+                                                                    name="deposit"
+                                                                    defaultValue={0}
+                                                                />
+                                                                <Input
+                                                                    type="hidden"
+                                                                    name="months"
+                                                                    defaultValue={60}
+                                                                />
+                                                                <Input
+                                                                    type="hidden"
+                                                                    name="userEmail"
+                                                                    defaultValue={userEmail}
+                                                                />
+                                                                <Input
+                                                                    type="hidden"
+                                                                    name="name"
+                                                                    defaultValue={
+                                                                        `${firstName}` + " " + `${lastName}`
+                                                                    }
+                                                                />
+                                                                <div className="mt-[25px] flex justify-end">
+                                                                    <Button
+                                                                        name="intent"
+                                                                        value="AddCustomer"
+                                                                        type="submit"
+                                                                        size="sm"
+                                                                        className="bg-primary"
+                                                                    >
+                                                                        Add
+                                                                    </Button>
+                                                                </div>
+                                                            </fetcher.Form>
+                                                        </>
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                            </DialogContent>
+                                        </Dialog>
+                                    </div>
+
+                                    <DropdownMenuItem>
+                                        <Link
+                                            to="/dealer/sales/calendar"
+                                            className="flex w-full items-center justify-between"
+                                        >
+                                            <p>Calendar</p>
+                                            <DropdownMenuShortcut>
+                                                <CalendarCheck
+                                                    color="#cbd0d4"
+                                                    size={20}
+                                                    strokeWidth={1.5}
+                                                />
+                                            </DropdownMenuShortcut>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        {selectedColumn && (
+                            <div className="relative ">
+
+                                <Input
+                                    placeholder={`Filter ${selectedColumn}...`}
+                                    onChange={(e) => handleGlobalChange(e.target.value)}
+                                    className="ml-2 max-w-sm w-auto "
+                                />
+                                <Button
+                                    onClick={() => {
+                                        setAllFilters([]);
+                                        setSelectedGlobal(false);
+                                    }}
+                                    size="icon"
+                                    variant="ghost"
+                                    className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+
+                                    <X />
+                                </Button>
+                            </div>
+                        )}
+                        {selectedGlobal === true && (
+                            <div className="relative ">
+                                <DebouncedInput
+                                    value={globalFilter ?? ""}
+                                    onChange={(value) => setGlobalFilter(String(value))}
+                                    className="ml-3 border border-border p-2 shadow max-w-sm w-auto"
+                                    placeholder="Search all columns..."
+                                    autoFocus
+                                />
+
+                                <Button
+                                    onClick={() => {
+                                        setGlobalFilter([]);
+                                        setSelectedGlobal(false);
+                                    }}
+                                    size="icon"
+                                    variant="ghost"
+                                    className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+
+                                    <X />
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+
+                    <div style={{ direction: table.options.columnResizeDirection }}>
+                        <div className="mt-[20px] rounded-md  border border-border text-foreground">
+                            <Table className="overflow-x-auto rounded-md border-border"             >
+                                <TableHeader>
+                                    {table.getHeaderGroups().map((headerGroup) => (
+                                        <TableRow key={headerGroup.id} className=" border-border">
+                                            {headerGroup.headers.map((header) => {
+                                                return (
+                                                    <TableHead key={header.id}                                              >
+                                                        <>
+                                                            {header.isPlaceholder
+                                                                ? null
+                                                                : flexRender(
+                                                                    header.column.columnDef.header,
+                                                                    header.getContext()
+                                                                )}
+
+                                                            {header.column.getCanFilter() && showFilter && (
+                                                                <div className="mx-auto cursor-pointer items-center justify-center text-center ">
+                                                                    <Filter column={header.column} table={table} />
+                                                                </div>
+                                                            )}
+
+                                                        </>
+                                                    </TableHead>
+                                                );
+                                            })}
+                                        </TableRow>
+                                    ))}
+                                </TableHeader>
+                                <TableBody className="overflow-x-auto border-border">
+                                    {table.getRowModel().rows?.length ? (
+                                        table.getRowModel().rows.map((row, index) => (
+                                            <TableRow
+                                                key={row.id}
+                                                data-state={row.getIsSelected() && "selected"}
+                                                className={`cursor-pointer border-border bg-background p-4 capitalize text-foreground  ${index % 2 === 0 ? "bg-background" : "bg-background"
+                                                    }`}
+                                            >
+                                                {row.getVisibleCells().map((cell) => (
+                                                    <TableCell key={cell.id}                                              >
+                                                        {flexRender(
+                                                            cell.column.columnDef.cell,
+                                                            cell.getContext()
+                                                        )}
+                                                    </TableCell>
+                                                ))}
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell
+                                                colSpan={columns.length}
+                                                className="h-24 cursor-pointer bg-background text-center capitalize text-foreground hover:text-primary"
+                                            >
+                                                No results.
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
+
+                        <DataTablePagination table={table} />
+
+                    </div>
+                </div>
             </div>
             {lockData && (
                 <AlertDialog open={openResponse} onOpenChange={setOpenResponse}>
                     <AlertDialogContent className='border border-border bg-background text-foreground'>
                         <AlertDialogHeader>
-                            <AlertDialogTitle>Client Turnover</AlertDialogTitle>
+                            <AlertDialogTitle>Client Turnover - Response</AlertDialogTitle>
                             <AlertDialogDescription className='grid grid-cols-1'>
-                                <p>{lockData.customerName}</p>
-                                <p>{lockData.unit}</p>
-                                <p>{lockData.note}</p>
-                                <p>Sales: {lockData.salesEmail}</p>
+                                Finance Manager will take over client shortly.
+                                Finance Manager: {lockData.financeEmail}
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                             <div className="flex justify-end gap-[25px]">
-                                <ButtonLoading
-                                    size="sm"
-                                    className="w-auto cursor-pointer mr-auto mt-5 hover:text-primary  "
-                                    type="submit"
-                                    isSubmitting={isSubmitting}
-                                    onClick={() => {
-                                        HandleButtonClickAndNavigate()
-                                        toast.success(`Navigating to customer's file...`)
-                                    }}
-                                    loadingText="Updating client info..."
-                                >
-                                    Customer File
-                                </ButtonLoading>
+
                                 <ButtonLoading
                                     size="sm"
                                     className="w-auto cursor-pointer ml-auto mt-5 hover:text-primary"
@@ -3374,8 +4261,115 @@ export function FinanceBoard() {
                     </AlertDialogContent>
                 </AlertDialog>
             )}
-
-
         </div>
     )
 }
+export type Payment = {
+    id: string
+    fiannceId: string//
+    userEmail: string//
+    isSubmitting: any
+    firstName: string
+    lastName: string
+    phone: number
+    email: string
+    address: string
+    postal: string
+    city: string
+    province: string
+    contactMethod: string
+    brand: string
+    model: string
+    year: number
+    color: string
+    note: string
+    lastContact: string
+    status: 'Active' | 'Duplicate' | 'Invalid' | 'Lost'
+    customerState: string
+    result: string
+    timesContacted: number
+    nextAppointment: string//
+    completeCall: string
+    followUpDay: number
+    state: string
+    typeOfContact: string | null;
+    timeToContact: 'Morning' | 'Afternoon' | 'Evening' | 'Anytime' | 'Do Not Call'
+    notes: string
+    visits: number
+    progress: number
+    visited: string
+    metManager: string
+    metSalesperson: string
+    metFinance: string
+    metService: string
+    metParts: string
+    financeApplication: string
+    approved: string
+    docsSigned: string
+    delivered: string
+    pickUpSet: string
+    demoed: string
+    seenTrade: string
+    tradeRepairs: string
+    dashData: string
+    twoDaysFromNow: string
+    referral: string
+    dl: string
+    timeOfDay: string
+    discount: string
+    total: string
+    onTax: string
+    deliveryCharge: string
+    userLoanProt: string
+    userTireandRim: string
+    userGap: string
+    userExtWarr: string
+    userServicespkg: string
+    vinE: string
+    lifeDisability: string
+    rustProofing: string
+    userOther: string
+    deposit: string
+    paintPrem: string
+    discountPer: string
+    weeklyOthWOptions: string
+    qcTax: string
+    otherTax: string
+    totalWithOptions: string
+    otherTaxWithOptions: string
+    stockNum: string
+    model1: string
+    modelCode: string
+    tradeValue: string
+    undefined: string
+    pickUpDate: string
+    pickUpTime: string
+    lastNote: string
+    singleFinNote: string
+    documentUpload: string
+    depositMade: string
+    financeApp: string
+    signed: string
+    deliveredDate: string
+    contactTimesByType: string
+    InPerson: string
+    Phone: string
+    SMS: string
+    Email: string
+
+}
+
+export const meta = () => {
+    return [
+        { title: 'Finance Dashboard || SALES || Dealer Sales Assistant' },
+        {
+            property: "og:title",
+            content: "Your very own assistant!",
+        },
+        {
+            name: "description",
+            content: "To help sales people achieve more. Every automotive dealer needs help, especialy the sales staff. Dealer Sales Assistant will help you close more deals more efficiently.",
+            keywords: 'Automotive Sales, dealership sales, automotive CRM',
+        },
+    ];
+};

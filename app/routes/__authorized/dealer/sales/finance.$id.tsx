@@ -2020,7 +2020,7 @@ export default function FinanceDialog() {
       ...(template.desiredPayments && { desiredPayments: template.desiredPayments }),
     }))
   );
-  console.log(updatedEmailArray, 'updatedsdaf')
+  // console.log(updatedEmailArray, 'updatedsdaf')
   const [openEmail, setOpenEmail] = useState(false);
   const [emailLabel, setEmailLabel] = useState('');
   const [emailDesiredPayments, setEmailDesiredPayments] = useState('');

@@ -110,6 +110,8 @@ import { TextFunction } from "~/components/dashboard/calls/logText";
 import CustomerGen from "~/routes/__authorized/dealer/document/customerGen.client";
 import { EditableText, EditableTextManual } from "~/components/dev/board/components";
 
+
+
 export function FinanceDialog({ data, user, deFees, products, emailTemplatesDropdown }) {
   const finance = data
   const { clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, clientUnit, financeNotes, userList, modelData, manOptions, bmwMoto, bmwMoto2, notifications } = useLoaderData();
@@ -233,7 +235,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
   const [hour, setHour] = useState(currentHour)
   const [min, setMin] = useState(currentMinute)
   const currentTime = `${hour}:${min}:${currentSecond}`
-  console.log(`Current time is `, currentTime);
+  // console.log(`Current time is `, currentTime);
   const time = `${hour}:${min}:00`
 
   useEffect(() => {
@@ -439,7 +441,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
   let bmwTotal = 0;
   let totalSum = 0;
 
-  console.log(deFees, finance, 'deFees')
+  /// console.log(deFees, finance, 'deFees')
   const initial = {
     userLabour: parseInt(deFees.userLabour) || 0,
     accessories: finance.accessories ? parseFloat(finance.accessories) : 0,
@@ -1746,7 +1748,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
     items: Item[];
   }
   // ----------------------- customer card -------------//
-  console.log(finance, data, 'finance data')
+  /// console.log(finance, data, 'finance data')
   const [financeAppData, setFinanceAppData] = useState([])
   useEffect(() => {
     async function getFinanceData() {
@@ -1886,7 +1888,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
       ...(template.desiredPayments && { desiredPayments: template.desiredPayments }),
     }))
   );
-  console.log(updatedEmailArray, 'updatedsdaf')
+  //  console.log(updatedEmailArray, 'updatedsdaf')
   const [openEmail, setOpenEmail] = useState(false);
   const [emailLabel, setEmailLabel] = useState('');
   const [emailDesiredPayments, setEmailDesiredPayments] = useState('');
@@ -1898,7 +1900,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
 
   function SubmitTheForm(newValue, template, financeId) {
     if (template === "justPayments" || template === "fullBreakdown" || template === "FullBreakdownWOptions") {
-      console.log(newValue, template, 'reg emails')
+      //    console.log(newValue, template, 'reg emails')
       const formData = new FormData();
       formData.append("value", newValue);
       formData.append("modelData", modelData);
@@ -1930,7 +1932,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
   function SubmitTheSecondForm() {
     const formData = new FormData();
     formData.append("value", emailValue);
-    // formData.append("modelData", modelData);
+    //formData.append("modelData", modelData);
     formData.append("template", emailTemplate);
     formData.append("financeId", finance.id);
     formData.append("body", newBody);
@@ -1945,7 +1947,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
       <DialogTrigger asChild>
         <Button variant="outline"><Landmark color="#fcfcfc" /></Button>
       </DialogTrigger>
-      <DialogContent className="w-[95vw] max-w-[95vw] grid grid-cols-1 lg:grid-cols-3 max-h-[800px] h-[800px]">
+      <DialogContent className="w-full max-w-[95vw] grid grid-cols-1 lg:grid-cols-3 max-h-[800px] h-full">
 
         {/*customer card*/}
         <Tabs defaultValue="Sales">
@@ -2060,22 +2062,9 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
                             </div>
                           ))}
                         </ul>
-                        <input type='hidden' name='phone' defaultValue={finance.phone} />
-                        <input type='hidden' name='email' defaultValue={finance.email} />
-                        <input type='hidden' name='lastName' defaultValue={finance.lastName} />
-                        <input type='hidden' name='firstName' defaultValue={finance.firstName} />
-                        <input type='hidden' name='brand' defaultValue={finance.brand} />
-                        <input type='hidden' name='unit' defaultValue={finance.model} />
-                        <input type='hidden' name='brand' defaultValue={finance.brand} />
                         <input type='hidden' name='financeId' defaultValue={finance.id} />
                         <input type='hidden' name='userId' defaultValue={user.id} />
-                        <input type='hidden' name='apptType' defaultValue='sales' />
-                        <input type='hidden' name='min' defaultValue={minForm} />
-                        <input type='hidden' name='hour' defaultValue={hourForm} />
-                        <input type='hidden' name="dashboardId" defaultValue={finance.dashboardId} />
-                        <input type='hidden' name="financeId" defaultValue={finance.id} />
                         <input type='hidden' name="clientfileId" defaultValue={data.clientfileId} />
-
                         <div className='flex justify-center' >
                           <ButtonLoading
                             size="sm"
@@ -2144,7 +2133,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
         </Tabs>
 
         {/*deal card*/}
-        <Card className=" w-[95%] rounded-lg text-foreground mx-auto  max-h-[750px] h-[750px] ">
+        <Card className=" w-[95%] rounded-lg text-foreground mx-auto  max-h-[750px] h-full ">
           <CardHeader className=" bg-muted/50  flex flex-row items-start t-rounded-lg">
             <div className="grid gap-0.5">
               <CardTitle className="group flex items-center gap-2 text-sm my-2">
@@ -3455,7 +3444,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
               <Select
                 onValueChange={(value) => {
                   setOpen(false);
-                  console.log("click");
+                  // console.log("click");
                   const selectedFramework = updatedEmailArray.find((framework) => framework.value === value);
 
                   const newValue = value
@@ -3468,11 +3457,11 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
                   setEmailLabel(selectedFramework.label);
 
                   if (selectedFramework.template === "justPayments" || selectedFramework.template === "fullBreakdown" || selectedFramework.template === "justPaymentsCustom") {
-                    console.log(selectedFramework, 'selectedFramework')
+                    //     console.log(selectedFramework, 'selectedFramework')
                     SubmitTheForm(newValue, template, financeId);
                   } else
                     if (selectedFramework.template === "justPaymentsCustom" || selectedFramework.template === "fullBreakdownCustom" || selectedFramework.template === "FullBreakdownWOptionsCustom") {
-                      console.log(selectedFramework, 'customEmail')
+                      //       console.log(selectedFramework, 'customEmail')
                       setOpenEmail(true);
                     } else {
                       SubmitTheForm(newValue, template, financeId);
@@ -3630,28 +3619,39 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
               </TabsContent>
               <TabsContent value="FinanceProducts">
 
-                {products.map((product, index) => (
-                  <div key={index} className="grid gap-3 mx-3 mb-3">
+                {products.map((product, productIndex) => (
+                  <div key={productIndex} className="grid gap-3 mx-3 mb-3">
                     <div className="font-semibold">{product.name}</div>
                     <hr className="mb-3 text-muted-foreground w-[98%] mx-auto" />
-                    {product.financeProvidor.map((providor, index) => (
-                      <div key={index} className="relative mt-3 flex">
+
+                    {product.columns.map((columns, columnIndex) => (
+                      <div key={columnIndex} className="relative mt-3 flex">
                         <Select>
                           <SelectTrigger className="w-full bg-background border-border mx-3 ">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className='bg-background text-foreground border-border'>
+
+                          <SelectContent className="bg-background text-foreground border-border">
                             <SelectGroup>
                               <SelectLabel>Packages</SelectLabel>
-                              {product.financePrice.map((price, index) => (
-                                <SelectItem className="cursor-pointer   rounded-md  hover:bg-muted/50" key={index} value={price.packagePrice}>
-                                  {price.packageName} / ${price.packagePrice}
+
+                              {columns.items.map((item, itemIndex) => (
+                                <SelectItem
+                                  className="cursor-pointer rounded-md hover:bg-muted/50"
+                                  key={itemIndex}
+                                  value={item.content}
+                                >
+                                  {item.title} / ${item.content}
                                 </SelectItem>
                               ))}
                             </SelectGroup>
                           </SelectContent>
                         </Select>
-                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{providor.name}</label>
+
+                        {/* Label for the Column */}
+                        <label className="text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">
+                          {columns.name}
+                        </label>
                       </div>
                     ))}
                   </div>
@@ -3700,19 +3700,10 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
                             </div>
                           ))}
                         </ul>
-                        <input type='hidden' name='phone' defaultValue={finance.phone} />
-                        <input type='hidden' name='email' defaultValue={finance.email} />
-                        <input type='hidden' name='lastName' defaultValue={finance.lastName} />
-                        <input type='hidden' name='firstName' defaultValue={finance.firstName} />
-                        <input type='hidden' name='brand' defaultValue={finance.brand} />
-                        <input type='hidden' name='unit' defaultValue={finance.model} />
-                        <input type='hidden' name='brand' defaultValue={finance.brand} />
+
                         <input type='hidden' name='financeId' defaultValue={finance.id} />
                         <input type='hidden' name='userId' defaultValue={user.id} />
-                        <input type='hidden' name='apptType' defaultValue='sales' />
-                        <input type='hidden' name='min' defaultValue={minForm} />
-                        <input type='hidden' name='hour' defaultValue={hourForm} />
-                        <input type='hidden' name="dashboardId" defaultValue={finance.dashboardId} />
+
                         <input type='hidden' name="clientId" defaultValue={finance.id} />
                         <input type='hidden' name="clientfileId" defaultValue={data.clientfileId} />
 
@@ -3771,18 +3762,14 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
                         </div>
                       </fetcher.Form>
                     </TabsContent>
-
                   </Tabs>
-
-
                 </DialogContent>
               </Dialog>
-
             </CardFooter>
           </Card>
         </Tabs>
-        <Button onClick={() => setFirstOpen(false)} variant='outline'  >close</Button>
 
+        <Button onClick={() => setFirstOpen(false)} variant='outline'  >close</Button>
       </DialogContent>
     </Dialog >
   )

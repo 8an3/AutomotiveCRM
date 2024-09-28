@@ -1,7 +1,5 @@
 
-import bcrypt from "bcryptjs";
 import { customAlphabet } from "nanoid";
-import { json } from "@remix-run/node";
 import invariant from "tiny-invariant";
 import voca from "voca";
 import chalk from 'chalk';
@@ -26,6 +24,7 @@ async function seed() {
   await Board()
   await DeptSalesAchieved()
   await Inventory()
+  await updateUser()
 }
 
 export async function Inventory() {
@@ -4621,6 +4620,7 @@ export async function seedUsers() {
       phone: "6138980771",
       dept: 'Technician',
       dealer: "Freedom H-D",
+
       role: { connect: { id: technicianRole?.id } },
 
       customerSync: {
@@ -4666,6 +4666,8 @@ export async function seedUsers() {
       phone: "6138980799",
       dept: 'Service',
       dealer: "Freedom H-D",
+
+
       role: { connect: { id: technicianRole?.id } },
 
       customerSync: {
@@ -4710,7 +4712,9 @@ export async function seedUsers() {
       username: "Delivery Driver",
       phone: "6138989999",
       dept: 'Service',
+
       dealer: "Freedom H-D",
+
       role: { connect: { id: deliveryDriverRole?.id } },
 
       customerSync: {
@@ -4755,6 +4759,7 @@ export async function seedUsers() {
       username: "Service Writer",
       phone: "6138980711",
       dept: 'Service',
+
       dealer: "Freedom H-D",
       role: { connect: { id: serviceRole?.id } },
       customerSync: {
@@ -4798,6 +4803,7 @@ export async function seedUsers() {
       name: "Service Manager",
       username: "Service Manager",
       phone: "6138980722",
+
       dept: 'Service',
       dealer: "Freedom H-D",
       role: { connect: { id: managerRole?.id } },
@@ -4842,6 +4848,7 @@ export async function seedUsers() {
       name: "PAC Manager",
       username: "PAC Manager",
       phone: "6138980733",
+
       dept: 'PAC',
       dealer: "Freedom H-D",
       role: { connect: { id: managerRole?.id } },
@@ -4886,6 +4893,7 @@ export async function seedUsers() {
       name: "accessories",
       username: "accessories",
       phone: "6138980744",
+
       dept: 'Accessories',
       dealer: "Freedom H-D",
       role: { connect: { id: accessoriesRole?.id } },
@@ -4930,6 +4938,7 @@ export async function seedUsers() {
       name: "parts",
       username: "parts",
       phone: "6138980755",
+
       dept: 'Accessories',
       dealer: "Freedom H-D",
       role: { connect: { id: partsRole?.id } },
@@ -4974,6 +4983,7 @@ export async function seedUsers() {
       name: "Recieving",
       username: "Recieving",
       phone: "6138980766",
+
       dept: 'PAC',
       dealer: "Freedom H-D",
       role: { connect: { id: recievingRole?.id } },
@@ -5018,6 +5028,7 @@ export async function seedUsers() {
       name: "Admin Assistant",
       username: "Admin Assistant",
       phone: "6138980777",
+
       dept: 'Admin',
       dealer: "Freedom H-D",
       role: { connect: { id: adminUserRole?.id } },
@@ -5076,7 +5087,7 @@ export async function seedUsers() {
       customerSync: { create: { orderId: null } },
       ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
 
-      columnStateSales: {
+      /**columnStateSales: {
         create: {
           state: {
             "id": false, "SMS": false, "pdi": false, "tag": false, "vin": false, "bank": false, "lien": false, "lost": false, "msrp": false, "on60": false, "qc60": false, "sold": false, "trim": false, "ucda": false, "vinE": false, "year": false, "Other": false, "Phone": false, "admin": false, "brand": false, "color": false, "iRate": false, "invId": false, "motor": false, "nat60": false, "notes": false, "onTax": false, "oth60": false, "qcTax": false, "total": false, "dLCopy": false, "demoed": false, "funded": false, "labour": false, "model1": false, "months": false, "othTax": false, "quoted": false, "refund": false, "result": false, "signed": false, "visits": false, "weekly": false, "deposit": false, "freight": false, "insCopy": false, "mileage": false, "options": false, "userGap": false, "visited": false, "voidChq": false, "InPerson": false, "approved": false, "biweekly": false, "discount": false, "lastNote": false, "leadNote": false, "metParts": false, "otherTax": false, "progress": false, "referral": false, "refunded": false, "signBill": false, "stockNum": false, "tradeVin": false, "turnOver": false, "userName": false, "weeklyqc": false, "activixId": false, "aptShowed": false, "biweekOth": false, "bookedApt": false, "cancelled": false, "commodity": false, "createdAt": false, "delivered": false, "licensing": false, "loanOther": false, "modelCode": false, "otherDocs": false, "paintPrem": false, "pickUpSet": false, "seenTrade": false, "testDrive": false, "tradeDesc": false, "tradeInsp": false, "tradeMake": false, "tradeTrim": false, "tradeYear": false, "updatedAt": false, "userEmail": false, "userOther": false, "weeklyOth": false, "bikeStatus": false, "biweeklNat": false, "biweeklyqc": false, "customerWS": false, "dealNumber": false, "docsSigned": false, "financeApp": false, "idVerified": false, "leadSource": false, "lienPayout": false, "loanNumber": false, "metFinance": false, "metManager": false, "metService": false, "pickUpDate": false, "pickUpTime": false, "testDrForm": false, "tradeColor": false, "tradeValue": false, "weeklylNat": false, "accessories": false, "aptNoShowed": false, "depositMade": false, "discountPer": false, "userExtWarr": false, "clientfileId": false, "firstPayment": false, "liceningDone": false, "loanMaturity": false, "optionsTotal": false, "rustProofing": false, "theRealActId": false, "tradeMileage": false, "tradeRepairs": false, "userLoanProt": false, "deliveredDate": false, "licensingSent": false, "nat60WOptions": false, "oth60WOptions": false, "tradeLocation": false, "deliveryCharge": false, "financeManager": false, "lifeDisability": false, "metSalesperson": false, "timesContacted": false, "userTireandRim": false, "applicationDone": false, "desiredPayments": false, "salesCommission": false, "userServicespkg": false, "dealerCommission": false, "depositTakenDate": false, "sendToFinanceNow": false, "totalWithOptions": false, "biweekOthWOptions": false, "financeCommission": false, "urgentFinanceNote": false, "weeklyOthWOptions": false, "biweeklNatWOptions": false, "financeApplication": false, "financeManagerName": false, "weeklylNatWOptions": false, "otherTaxWithOptions": false, "address": false, "financeDeptProductsTotal": false, "email": false, "phone": false,
@@ -5095,7 +5106,7 @@ export async function seedUsers() {
 
           }
         }
-      },
+      },*/
       profile: { create: { headline: "I am Admin", bio: "The administrator of this app." } },
     },
   });
@@ -6573,6 +6584,8 @@ export async function DealerFees() {
       dealerId: data.id
     }
   })
+
+
   return data
 }
 export async function seedNotes() {
@@ -17943,6 +17956,41 @@ export async function seed24Harley() {
   }
   console.log(chalk.green("H-D my24 models seeded!"));
 
+}
+
+export async function updateUser() {
+  const { REMIX_ADMIN_EMAIL } = process.env;
+  invariant(REMIX_ADMIN_EMAIL, "REMIX_ADMIN_EMAIL must be set");
+
+  const adminuser = await prisma.user.update({
+    where: { email: REMIX_ADMIN_EMAIL },
+    data: {
+      dealerId: 1,
+      columnStateSales: {
+        create: {
+          state: {
+            "id": false, "SMS": false, "pdi": false, "tag": false, "vin": false, "bank": false, "lien": false, "lost": false, "msrp": false, "on60": false, "qc60": false, "sold": false, "trim": false, "ucda": false, "vinE": false, "year": false, "Other": false, "Phone": false, "admin": false, "brand": false, "color": false, "iRate": false, "invId": false, "motor": false, "nat60": false, "notes": false, "onTax": false, "oth60": false, "qcTax": false, "total": false, "dLCopy": false, "demoed": false, "funded": false, "labour": false, "model1": false, "months": false, "othTax": false, "quoted": false, "refund": false, "result": false, "signed": false, "visits": false, "weekly": false, "deposit": false, "freight": false, "insCopy": false, "mileage": false, "options": false, "userGap": false, "visited": false, "voidChq": false, "InPerson": false, "approved": false, "biweekly": false, "discount": false, "lastNote": false, "leadNote": false, "metParts": false, "otherTax": false, "progress": false, "referral": false, "refunded": false, "signBill": false, "stockNum": false, "tradeVin": false, "turnOver": false, "userName": false, "weeklyqc": false, "activixId": false, "aptShowed": false, "biweekOth": false, "bookedApt": false, "cancelled": false, "commodity": false, "createdAt": false, "delivered": false, "licensing": false, "loanOther": false, "modelCode": false, "otherDocs": false, "paintPrem": false, "pickUpSet": false, "seenTrade": false, "testDrive": false, "tradeDesc": false, "tradeInsp": false, "tradeMake": false, "tradeTrim": false, "tradeYear": false, "updatedAt": false, "userEmail": false, "userOther": false, "weeklyOth": false, "bikeStatus": false, "biweeklNat": false, "biweeklyqc": false, "customerWS": false, "dealNumber": false, "docsSigned": false, "financeApp": false, "idVerified": false, "leadSource": false, "lienPayout": false, "loanNumber": false, "metFinance": false, "metManager": false, "metService": false, "pickUpDate": false, "pickUpTime": false, "testDrForm": false, "tradeColor": false, "tradeValue": false, "weeklylNat": false, "accessories": false, "aptNoShowed": false, "depositMade": false, "discountPer": false, "userExtWarr": false, "clientfileId": false, "firstPayment": false, "liceningDone": false, "loanMaturity": false, "optionsTotal": false, "rustProofing": false, "theRealActId": false, "tradeMileage": false, "tradeRepairs": false, "userLoanProt": false, "deliveredDate": false, "licensingSent": false, "nat60WOptions": false, "oth60WOptions": false, "tradeLocation": false, "deliveryCharge": false, "financeManager": false, "lifeDisability": false, "metSalesperson": false, "timesContacted": false, "userTireandRim": false, "applicationDone": false, "desiredPayments": false, "salesCommission": false, "userServicespkg": false, "dealerCommission": false, "depositTakenDate": false, "sendToFinanceNow": false, "totalWithOptions": false, "biweekOthWOptions": false, "financeCommission": false, "urgentFinanceNote": false, "weeklyOthWOptions": false, "biweeklNatWOptions": false, "financeApplication": false, "financeManagerName": false, "weeklylNatWOptions": false, "otherTaxWithOptions": false, "address": false, "financeDeptProductsTotal": false, "email": false, "phone": false,
+            "city": false,
+            "postal": false,
+            "province": false,
+            "financeId": false,
+            "note": false,
+            "timeOfDay": false,
+            "painPrem": false,
+            "trailer": false,
+            "contactMethod": false,
+            "typeOfContact": false,
+            "unitPicker": false,
+            "timeToContact": false,
+
+          }
+        }
+      },
+    },
+  });
+  console.log(chalk.green(`Updating user... ${JSON.stringify(adminuser)}`));
+
+  return (adminuser)
 }
 seed()
   .catch((e) => {

@@ -57,6 +57,7 @@
     "@conform-to/zod": "^0.6.1",
     "@copilotkit/react-core": "^1.0.8",
     "@copilotkit/react-textarea": "^1.0.8",
+    "@eightanthreepdfme/ui": "github:8an3/eightandthreepdfme-ui",
     "@emotion/css": "^11.11.2",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",

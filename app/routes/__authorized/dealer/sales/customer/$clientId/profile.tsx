@@ -1847,26 +1847,27 @@ export default function SettingsLayout() {
     ...(clientfile.Finance?.WorkOrder || [])
   ];
   const [list, setList] = useState([]);
-  const [accList, setAcclist] = useState([]);
-  const [orders, setOrders] = useState([]);
+  const [workOrders, setWorkOrders] = useState([]);
+  const [accOrders, setAccOrders] = useState([]);
   const [discDollar, setDiscDollar] = useState(0.00)
   const [discPer, setDiscPer] = useState(0.00)
-  console.log(orders, 'orders')
 
   useEffect(() => {
     if (mergedOrder) {
-      setOrders(mergedOrder)
+      setWorkOrders(mergedOrder)
     }
     if (mergeAcc) {
-      setAcclist(mergeAcc)
+      setAccOrders(mergeAcc)
     }
     if (clientfile.dob) {
       setDate(clientfile.dob);
     }
 
   }, []);
+  console.log(workOrders, accOrders, 'orders')
 
-  const lastOrder = orders[0];
+  const lastWorkOrder = workOrders[0];
+  const lastAccOrder = accOrders[0];
   const taxMultiplier = Number(tax.userTax);
   const taxRate = 1 + taxMultiplier / 100;
 
@@ -1965,9 +1966,13 @@ export default function SettingsLayout() {
   const [showPrev, setShowPrev] = useState(false)
   let totalAccessoriesCost;
   let totalAmountPaid;
-  if (lastOrder) {
-    totalAmountPaid = calculateTotalAmountPaid(lastOrder)
-    totalAccessoriesCost = calculateTotalAccessoriesCost(lastOrder);
+  if (lastWorkOrder) {
+    totalAmountPaid = calculateTotalAmountPaid(lastWorkOrder)
+    totalAccessoriesCost = calculateTotalAccessoriesCost(lastWorkOrder);
+  }
+  if (lastAccOrder) {
+    totalAmountPaid = calculateTotalAmountPaid(lastAccOrder)
+    totalAccessoriesCost = calculateTotalAccessoriesCost(lastAccOrder);
   }
 
   useEffect(() => {
@@ -2063,12 +2068,15 @@ export default function SettingsLayout() {
   }
 
   const showPrevOrderById = (id) => {
-    const filteredOrder = orders.find(order => order.id === id);
+    const filteredOrder = accOrders.find(order => order.id === id);
     setShowPrev(true)
     setShowPrevOrder(filteredOrder);
   }
-
-
+  const showPrevWorkOrderById = (id) => {
+    const filteredOrder = workOrders.find(order => order.workOrderId === id);
+    setShowPrev(true)
+    setShowPrevOrder(filteredOrder);
+  }
   // workorder
 
   let searchWorkOrder = useFetcher();
@@ -2076,15 +2084,17 @@ export default function SettingsLayout() {
 
   useEffect(() => {
     if (searchWorkOrder && searchWorkOrder.length > 0) {
-      setOrders(searchWorkOrder.value)
+      setWorkOrders(searchWorkOrder.value)
+      console.log('66', searchWorkOrder.value)
     }
   }, [searchWorkOrder]);
 
   const order = showPrevOrder
+  console.log('77', workOrders, accOrders)
 
   return (
     <>
-      <div className="hidden space-y-6 p-10 pb-16 md:block">
+      <div className=" space-y-6 p-10 pb-16 ">
         <div className="space-y-0.5">
           <h2 className="text-2xl font-bold tracking-tight">{clientfile.firstName} {clientfile.lastName}</h2>
           <p className="text-sm text-muted-foreground">
@@ -2203,7 +2213,7 @@ export default function SettingsLayout() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className='max-h-[455px] h-auto overflow-y-auto'>
-                    <PACTable tableData={accList} setValue={setValue} showPrevOrderById={showPrevOrderById} options2={options2} navigate={navigate} dept={'All'} />
+                    <PACTable tableData={accOrders} setValue={setValue} showPrevOrderById={showPrevOrderById} options2={options2} navigate={navigate} dept={'All'} />
                   </CardContent>
                   <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50 px-6 py-3">
                     <div className='mx-auto mt-4'>
@@ -2257,7 +2267,7 @@ export default function SettingsLayout() {
 
                 <MySidebar
                   showPrev={showPrev}
-                  lastOrder={lastOrder}
+                  lastOrder={lastAccOrder}
                   searchResults={searchResults}
                   totalAccessoriesCost={totalAccessoriesCost}
                   tax={tax}
@@ -2403,7 +2413,7 @@ export default function SettingsLayout() {
                           <Button
                             onClick={() => {
                               // navigate(0)
-                              setOrders(mergedOrder)
+                              setWorkOrders(mergedOrder)
                             }}
                             size="icon"
                             className='bg-background mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
@@ -2447,7 +2457,7 @@ export default function SettingsLayout() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {orders && orders.map((result, index) => (
+                        {workOrders && workOrders.map((result, index) => (
                           <TableRow key={index} className="hover:bg-accent border-border">
                             <TableCell>
                               <div className="font-medium">
@@ -2489,7 +2499,7 @@ export default function SettingsLayout() {
                                     onClick={() => {
                                       setValue(result.workOrderId
                                       );
-                                      showPrevOrderById(result.workOrderId
+                                      showPrevWorkOrderById(result.workOrderId
                                       )
                                     }}
                                   >

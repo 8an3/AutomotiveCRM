@@ -134,31 +134,31 @@ export default function MainDashbaord() {
   function capitalizeFirstLetter(string) {
     return string[0].toUpperCase() + string.slice(1);
   }
-
+  /**    {
+        id: 'select',
+        header: ({ table }) => (
+          <div className='flex mx-auto my-auto'>
+            <IndeterminateCheckbox
+              checked={table.getIsAllRowsSelected()}
+              indeterminate={table.getIsSomeRowsSelected()}
+              onChange={table.getToggleAllRowsSelectedHandler()}
+              className='border-primary'
+            />
+          </div>
+        ),
+        cell: ({ row }) => (
+          <div className="px-1">
+            <IndeterminateCheckbox
+              checked={row.getIsSelected()}
+              indeterminate={row.getIsSomeSelected()}
+              onChange={row.getToggleSelectedHandler()}
+              className='border-primary'
+            />
+          </div>
+        ),
+      }, */
   const columns: ColumnDef<Payment>[] = [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <div className='flex mx-auto my-auto'>
-          <IndeterminateCheckbox
-            checked={table.getIsAllRowsSelected()}
-            indeterminate={table.getIsSomeRowsSelected()}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-            className='border-primary'
-          />
-        </div>
-      ),
-      cell: ({ row }) => (
-        <div className="px-1">
-          <IndeterminateCheckbox
-            checked={row.getIsSelected()}
-            indeterminate={row.getIsSomeSelected()}
-            onChange={row.getToggleSelectedHandler()}
-            className='border-primary'
-          />
-        </div>
-      ),
-    },
+
     {
       id: 'clientDialog',
       accessorKey: "clientDialog",
@@ -488,9 +488,6 @@ export default function MainDashbaord() {
 
 
 export function DataTable({ columns, data, user }) {
-
-
-
   const savedVisibility = user.ColumnStateInventory.state
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(savedVisibility);
@@ -961,7 +958,6 @@ export function DataTable({ columns, data, user }) {
           </DropdownMenu>
           {selectedColumn && (
             <div className="relative flex-1 md:grow-0 ">
-
               <Input
                 placeholder={`Filter ${selectedColumn}...`}
                 onChange={(e) => handleGlobalChange(e.target.value)}
@@ -1008,6 +1004,9 @@ export function DataTable({ columns, data, user }) {
           <Button size='sm' variant="outline" className='mr-3' onClick={() => {
 
           }} >PAC Orders</Button>
+          <Button size='sm' variant="outline" className='mr-3' onClick={() => {
+
+          }} >Sales Deals</Button>
 
         </div>
         <div className="rounded-md border border-border    h-auto max-h-[600px] overflow-y-auto  ">

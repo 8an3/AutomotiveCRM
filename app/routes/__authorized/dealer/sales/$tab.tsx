@@ -198,7 +198,7 @@ export function MainDashbaord({ user }) {
     //const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
     const proxyPhone = '+12176347250'
 
-    const { finance, searchData, getTemplates, callToken, conversationsData, convoList, newToken, email, columnState } = useLoaderData();
+    const { finance, searchData, getTemplates, callToken, conversationsData, convoList, newToken, email, columnState, userList } = useLoaderData();
     const [data, setPaymentData,] = useState<dashBoardType[]>(finance);
     const [messagesConvo, setMessagesConvo] = useState([]);
     const [selectedChannelSid, setSelectedChannelSid] = useState([]);
@@ -414,11 +414,6 @@ export function MainDashbaord({ user }) {
     function capitalizeFirstLetter(string) {
         return string[0].toUpperCase() + string.slice(1);
     }
-    /**    <ComposeClient
-                            data={data}
-                            open={open}
-                            setOpen={setOpen}
-                        />*/
 
     const columns = [
         {
@@ -600,6 +595,8 @@ export function MainDashbaord({ user }) {
                             customerfinanceId={customerfinanceId}
                             customerName={customerName}
                             customerEmail={customerEmail}
+                            userList={userList}
+                            user={user}
                         />
 
                         <Button
@@ -613,14 +610,18 @@ export function MainDashbaord({ user }) {
                         </Button>
                         <Logtext
                             data={data}
-                            searchData={searchData}
+                            // searchData={searchData}
                             openSMS={openSMS}
                             setOpenSMS={setOpenSMS}
                             smsDetails={smsDetails}
-                            text={text}
-                            setText={setText}
-                            conversationsData={conversationsData}
-                            messagesConvo={messagesConvo}
+                            open={open}
+                            setOpen={setOpen}
+                            //  text={text}
+                            ///  setText={setText}
+                            ///  conversationsData={conversationsData}
+                            //  messagesConvo={messagesConvo}
+                            userList={userList}
+                            user={user}
                         />
                     </div>
                 </>
@@ -2425,7 +2426,6 @@ export function MainDashbaord({ user }) {
 
     useEffect(() => {
         const jsonString = user.columnStateSales.state
-        columnState
         console.log(jsonString, 'string objectg')
         console.log(columnVisibility, 'columnVisibility')
         console.log(columnState, 'columnState')

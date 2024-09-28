@@ -14,7 +14,7 @@ import { model } from "~/models";
 // https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/lib/msal-node
 // app/services/session.server.ts
 import { createCookieSessionStorage } from "@remix-run/node";
-import { graphConfig } from "~/utils/microsoft/config.server";
+import { graphConfig } from "~/components/zRoutes/oldUtils/microsoft/config.server";
 
 
 

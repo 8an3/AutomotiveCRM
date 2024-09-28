@@ -20,26 +20,7 @@ import { Resend } from 'resend';
 import CustomBody from "~/emails/customBody";
 
 const resend = new Resend('re_YFCDynPp_5cod9FSRkrbS6kfmRsoqSsBS')//new Resend(process.env.resend_API_KEY);
-
-
-export async function dashboardLoader({ request, params }: LoaderFunction) {
-  const session2 = await getSession(request.headers.get("Cookie"));
-  const email = session2.get("email")
-  const user = await GetUser(email)
-  if (!user) { redirect('/login') }
-  const proxyPhone = '+12176347250'
-  const deFees = await getDealerFeesbyEmail(user.email);
-  const session = await sixSession(request.headers.get("Cookie"));
-  const sliderWidth = session.get("sliderWidth");
-  const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: user.email, }, });
-  const finance = await prisma.finance.findMany({ where: { userEmail: user?.email }, });
-  const urlSegmentsDashboard = new URL(request.url).pathname.split("/");
-  const dashBoardCustURL = urlSegmentsDashboard.slice(0, 3).join("/");
-  const financeNotes = await prisma.financeNote.findMany({ orderBy: { createdAt: "desc" }, });
-  const conversations = await prisma.comm.findMany({ orderBy: { createdAt: "desc" }, });
-  const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
-
-  const fetchLatestNotes = async (webLeadData) => {
+/**  const fetchLatestNotes = async (webLeadData) => {
     const promises = webLeadData.map(async (webLeadData) => {
       try {
         const latestNote = await prisma.financeNote.findFirst({
@@ -56,6 +37,265 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
     return Promise.all(promises);
   };
   const latestNotes = await fetchLatestNotes(finance);
+ */
+
+export async function dashboardLoader({ request, params }: LoaderFunction) {
+  const session2 = await getSession(request.headers.get("Cookie"));
+  const email = session2.get("email")
+  const user = await GetUser(email)
+  if (!user) { redirect('/login') }
+  const proxyPhone = '+12176347250'
+  const deFees = user?.Dealer
+
+  const getTemplates = await prisma.emailTemplates.findMany({ where: { userEmail: user.email, }, });
+
+  const finance = await prisma.finance.findMany({
+    where: { userEmail: user?.email },
+    select: {
+      financeManager: true,
+      userEmail: true,
+      userName: true,
+      financeManagerName: true,
+      email: true,
+      firstName: true,
+      lastName: true,
+      phone: true,
+      name: true,
+      address: true,
+      city: true,
+      postal: true,
+      province: true,
+      dl: true,
+      typeOfContact: true,
+      timeToContact: true,
+      dob: true,
+      othTax: true,
+      optionsTotal: true,
+      lienPayout: true,
+      leadNote: true,
+      sendToFinanceNow: true,
+      dealNumber: true,
+      iRate: true,
+      months: true,
+      discount: true,
+      total: true,
+      onTax: true,
+      on60: true,
+      biweekly: true,
+      weekly: true,
+      weeklyOth: true,
+      biweekOth: true,
+      oth60: true,
+      weeklyqc: true,
+      biweeklyqc: true,
+      qc60: true,
+      deposit: true,
+      biweeklNatWOptions: true,
+      weeklylNatWOptions: true,
+      nat60WOptions: true,
+      weeklyOthWOptions: true,
+      biweekOthWOptions: true,
+      oth60WOptions: true,
+      biweeklNat: true,
+      weeklylNat: true,
+      nat60: true,
+      qcTax: true,
+      otherTax: true,
+      totalWithOptions: true,
+      otherTaxWithOptions: true,
+      desiredPayments: true,
+      admin: true,
+      commodity: true,
+      pdi: true,
+      discountPer: true,
+      userLoanProt: true,
+      userTireandRim: true,
+      userGap: true,
+      userExtWarr: true,
+      userServicespkg: true,
+      deliveryCharge: true,
+      vinE: true,
+      lifeDisability: true,
+      rustProofing: true,
+      userOther: true,
+      referral: true,
+      visited: true,
+      bookedApt: true,
+      aptShowed: true,
+      aptNoShowed: true,
+      testDrive: true,
+      metService: true,
+      metManager: true,
+      metParts: true,
+      sold: true,
+      depositMade: true,
+      refund: true,
+      turnOver: true,
+      financeApp: true,
+      approved: true,
+      signed: true,
+      pickUpSet: true,
+      demoed: true,
+      lastContact: true,
+      status: true,
+      customerState: true,
+      result: true,
+      timesContacted: true,
+      nextAppointment: true,
+      followUpDay: true,
+      deliveryDate: true,
+      delivered: true,
+      deliveredDate: true,
+      notes: true,
+      visits: true,
+      progress: true,
+      metSalesperson: true,
+      metFinance: true,
+      financeApplication: true,
+      pickUpDate: true,
+      pickUpTime: true,
+      depositTakenDate: true,
+      docsSigned: true,
+      tradeRepairs: true,
+      seenTrade: true,
+      lastNote: true,
+      applicationDone: true,
+      licensingSent: true,
+      liceningDone: true,
+      refunded: true,
+      cancelled: true,
+      lost: true,
+      dLCopy: true,
+      insCopy: true,
+      testDrForm: true,
+      voidChq: true,
+      loanOther: true,
+      signBill: true,
+      ucda: true,
+      tradeInsp: true,
+      customerWS: true,
+      otherDocs: true,
+      urgentFinanceNote: true,
+      funded: true,
+      leadSource: true,
+      financeDeptProductsTotal: true,
+      bank: true,
+      loanNumber: true,
+      idVerified: true,
+      dealerCommission: true,
+      financeCommission: true,
+      salesCommission: true,
+      firstPayment: true,
+      loanMaturity: true,
+      quoted: true,
+      InPerson: true,
+      Phone: true,
+      SMS: true,
+      Email: true,
+      Other: true,
+      paintPrem: true,
+      licensing: true,
+      stockNum: true,
+      options: true,
+      accessories: true,
+      freight: true,
+      labour: true,
+      year: true,
+      brand: true,
+      mileage: true,
+      model: true,
+      model1: true,
+      color: true,
+      modelCode: true,
+      msrp: true,
+      trim: true,
+      vin: true,
+      bikeStatus: true,
+      invId: true,
+      motor: true,
+      tag: true,
+      tradeValue: true,
+      tradeDesc: true,
+      tradeColor: true,
+      tradeYear: true,
+      tradeMake: true,
+      tradeVin: true,
+      tradeTrim: true,
+      tradeMileage: true,
+      tradeLocation: true,
+      lien: true,
+      id: true,
+      activixId: true,
+      theRealActId: true,
+      createdAt: true,
+      updatedAt: true,
+      clientfileId: true,
+      inventoryMotorcycleId: true,
+      //InventoryMotorcycle
+      ////
+      //financeStorage
+      //clientApts
+      Comm: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          userEmail: true,
+          type: true,
+          body: true,
+          subject: true,
+          userName: true,
+          direction: true,
+          result: true,
+          ClientfileId: true,
+          // Clientfile: true,
+          financeId: true,
+          // Finance
+        }
+      },
+      //FinanceDeptProducts
+      //FinanceUnit
+      //FinanceTradeUnit
+      //AccOrders
+      //WorkOrders
+      //Payments
+      FinanceNote: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          body: true,
+          userEmail: true,
+          userName: true,
+          clientfileId: true,
+          financeId: true,
+          //finance
+          selectedUsers: {
+            select: {
+              id: true,
+              createdAt: true,
+              selectedName: true,
+              selectedEmail: true,
+              FinanceNoteId: true,
+            }
+          }
+        }
+      },
+      ////
+      //Clientfile
+      ////
+      //finManOptions
+      //bmwMotoOptions
+      //uCDAForm
+      //FinCanOptions
+    }
+  });
+  const urlSegmentsDashboard = new URL(request.url).pathname.split("/");
+  const dashBoardCustURL = urlSegmentsDashboard.slice(0, 3).join("/");
+  const financeNotes = await prisma.financeNote.findMany({ orderBy: { createdAt: "desc" }, });
+  const conversations = await prisma.comm.findMany({ orderBy: { createdAt: "desc" }, });
+  const getWishList = await prisma.wishList.findMany({ orderBy: { createdAt: 'desc', }, where: { userId: user?.id } });
+
 
   const wishList = await prisma.wishList.findMany({ where: { userId: user?.id }, })
   const inventory = await prisma.inventoryMotorcycle.findMany({
@@ -122,9 +362,9 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
 
   const getDemoDay = await prisma.demoDay.findMany({ orderBy: { createdAt: 'desc', }, where: { userEmail: 'skylerzanth@outlook.com' } });
 
-  const webLeadData = await prisma.finance.findMany({
-    where: { OR: [{ userEmail: null }, { userEmail: '' }], },
-  });
+  const webLeadData = finance.filter(finance =>
+    finance.userEmail === null || finance.userEmail === ''
+  );
 
   let callToken;
   let username = 'skylerzanth'//localStorage.getItem("username") ?? "";
@@ -253,19 +493,16 @@ export async function dashboardLoader({ request, params }: LoaderFunction) {
   const userAgent = request.headers.get('User-Agent');
   const isMobileDevice = checkForMobileDevice(userAgent);
   const rotationList = await prisma.user.findMany()
-  const userEmail = user.email
-  const columnState = await prisma.columnStateSales.findUnique({
-    where: { userEmail }
-  });
+  const userList = rotationList
+  const columnState = user.columnStateSales
+  console.log(columnState, 'columnState')
   return json({
-
+    userList,
     getDemoDay,
     finance,
     deFees,
-    sliderWidth,
     user,
     financeNotes,
-    latestNotes,
     dashBoardCustURL,
     getWishList,
     conversations,

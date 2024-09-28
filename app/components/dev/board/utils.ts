@@ -14,5 +14,9 @@ export function parseItemMutation(formData: FormData): ItemMutation {
   let title = ItemMutationFields.title.type(formData.get("title"));
   invariant(title, "Missing title");
 
-  return { id, columnId, order, title };
+  let content = ItemMutationFields.content.type(formData.get("content"));
+  invariant(content, "Missing content");
+
+
+  return { id, columnId, order, title, content };
 }
