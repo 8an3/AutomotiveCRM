@@ -91,3 +91,19 @@ Your life, overnight will become unfathomably easier.
 The trick though? Because there is a trick to it. Admit when you don't know, because it's ok, someone out there... has the answer for you, just go get it. That asshole customer can't get mad at you for not knowing, no one knows everything.
 
 If he does, rip his contract and tell him to shop else where. Give his deposit back and wish him a great day. Because yours just got a lot better, you will never have to deal with that prick again.
+
+**Other pages to check out...**
+
+<p>
+<a href="https://github.com/8an3/AutomotiveCRM">README</a>
+&nbsp;--&nbsp;
+<a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/TLBUTWORTHTHEREAD.md">tl but worth reading</a>
+&nbsp;--&nbsp;
+<a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/CLOSING.md">Closing thoughts</a>
+&nbsp;--&nbsp;
+<a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/DEVELOPMENT.md">Development</a>
+&nbsp;--&nbsp;
+<a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/IMPLEMENATION.md">Implement</a>
+&nbsp;--&nbsp;
+<a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/CONSULT.md">Consult</a>
+</p>

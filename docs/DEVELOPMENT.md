@@ -22,22 +22,18 @@ Due to modifications we use @eightanthreepdfme/ui instead of @pdfme/ui. As long 
 
 Then, we will need to populate the .env file with the needed values.
 
-```cmd
-[in pdfme/packages/common dir] $ npm run dev
-[in pdfme/packages/schemas dir] $ npm run dev
-[in pdfme/packages/ui dir] $ npm run dev
-[in pdfme/packages/generator dir] $ npm run dev
-```
+**Other pages to check out...**
 
-If you want to check the changes in the browser, go to `playground`.
-
-```cmd
-[in pdfme/playground dir] $ npm install
-[in pdfme/playground dir] $ npm run dev
-```
-
-If `npm run dev` is running in each package, changes made will be reflected in the playground. (For the UI package, it may take about 5-10 seconds for the changes to be reflected.)
-
-Please feel free to send a PR if you can fix bugs or add new features. Also, don't forget to add the necessary tests before sending a PR and make sure that the tests pass.
-
-Happy hacking!
+<p>
+<a href="https://github.com/8an3/AutomotiveCRM">README</a>
+&nbsp;--&nbsp;
+<a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/TLBUTWORTHTHEREAD.md">tl but worth reading</a>
+&nbsp;--&nbsp;
+<a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/CLOSING.md">Closing thoughts</a>
+&nbsp;--&nbsp;
+<a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/DEVELOPMENT.md">Development</a>
+&nbsp;--&nbsp;
+<a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/IMPLEMENATION.md">Implement</a>
+&nbsp;--&nbsp;
+<a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/CONSULT.md">Consult</a>
+</p>
