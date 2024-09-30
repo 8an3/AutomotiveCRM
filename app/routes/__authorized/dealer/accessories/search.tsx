@@ -196,7 +196,7 @@ export default function SearchCustomers() {
                     </Tooltip>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Link to={`/dealer/customer/${result.id}`} className="hover:bg-primary w-5 h-5 "                        >
+                        <Link to={`/dealer/sales/customer/${result.id}/profile`} className="hover:bg-primary w-5 h-5 "                        >
                           <Button size='icon' variant='ghost' className="hover:bg-primary">
                             <User className="h-5 w-5" />
                           </Button>

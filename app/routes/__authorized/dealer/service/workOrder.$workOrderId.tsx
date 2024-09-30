@@ -1636,6 +1636,23 @@ export default function Dashboard() {
                     </div>
                   </AccordionContent>
                 </AccordionItem>
+                <AccordionItem value="item-5" className='border-border'>
+                  <AccordionTrigger>Appointments</AccordionTrigger>
+                  <AccordionContent>
+                    <ul className="grid gap-3 text-sm mt-2">
+                      {order.WorkOrderApts && order.WorkOrderApts.map((item, index) => (
+                        <li key={index} className=" group flex items-center justify-between">
+                          <div className='flex'>
+                            <span className="text-muted-foreground">
+                              {item.tech}
+                            </span>
+                          </div>
+                          <span> {new Date(item.start).toLocaleDateString("en-US", options2)} </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
               </Accordion>
 
               <div className="grid gap-3 mt-3">

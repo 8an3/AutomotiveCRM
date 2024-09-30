@@ -104,7 +104,7 @@ import { PrintSpec } from "~/overviewUtils/printSpec";
 import { CiEdit } from "react-icons/ci";
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';
 import { FaSave } from "react-icons/fa";
-import UnitPicker from "~/components/dashboard/unitPicker/unitPicker";
+import UnitPicker from "~/components/dashboard/unitPicker/unitPickerbk";
 import { cors } from "remix-utils";
 import { TextFunction } from "~/components/dashboard/calls/logText";
 import CustomerGen from "~/routes/__authorized/dealer/document/customerGen.client";
@@ -1945,14 +1945,14 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
   return (
     <Dialog open={firstOpen} onOpenChange={setFirstOpen} >
       <DialogTrigger asChild>
-        <Button variant="outline"><Landmark color="#fcfcfc" /></Button>
+        <Button size='sm' variant="outline" className='mx-auto' >Finance Info</Button>
       </DialogTrigger>
       <DialogContent className="w-full max-w-[95vw] grid grid-cols-1 lg:grid-cols-3 max-h-[800px] h-full">
 
         {/*customer card*/}
         <Tabs defaultValue="Sales">
 
-          <Card className="w-[95%]  bg-background text-foreground rounded-lg  max-h-[750px] h-[750px] " x-chunk="dashboard-05-chunk-0"  >
+          <Card className="w-[95%]  bg-background text-foreground rounded-lg  max-h-[750px] h-auto " x-chunk="dashboard-05-chunk-0"  >
             <CardHeader className="flex flex-row items-start bg-muted/50 rounded-md">
               <CardTitle className="group flex items-center text-sm">
                 <TabsList >
@@ -2023,7 +2023,9 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
             </CardContent>
             <CardFooter className="mt-[7px] grid grid-cols-2 justify-between items-center border-t border-border bg-muted/50 px-6 py-3">
               <div>
-                <Badge className="h-8 gap-1">{finance.customerState}</Badge>
+                <Button size='sm' variant="outline" className='mx-auto' onClick={() => {
+                  navigate(`/dealer/sales/finance/${finance.id}`)
+                }} >Finance File</Button>
               </div>
               <Dialog >
                 <DialogTrigger asChild>
@@ -2133,7 +2135,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
         </Tabs>
 
         {/*deal card*/}
-        <Card className=" w-[95%] rounded-lg text-foreground mx-auto  max-h-[750px] h-full ">
+        <Card className=" w-[95%] rounded-lg text-foreground mx-auto  max-h-[750px] h-auto ">
           <CardHeader className=" bg-muted/50  flex flex-row items-start t-rounded-lg">
             <div className="grid gap-0.5">
               <CardTitle className="group flex items-center gap-2 text-sm my-2">
@@ -2143,7 +2145,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
           </CardHeader>
           {secPage && (
             <>
-              <CardContent className="p-6 text-sm bg-background  max-h-[600px] h-[600px] overflow-y-auto">
+              <CardContent className="flex-grow !grow  p-6 text-sm bg-background  max-h-[600px] h-[600px] overflow-y-auto">
                 <div className="grid gap-3">
                   <div className="font-semibold">Payment Details</div>
                   <li className="flex items-center justify-between">
@@ -2857,7 +2859,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
           )}
           {firstPage && (
             <>
-              <CardContent className="p-6 text-sm  bg-background  max-h-[600px] h-[600px] overflow-y-auto">
+              <CardContent className="flex-grow !grow  p-6 text-sm  bg-background  max-h-[600px] h-[600px] overflow-y-auto">
                 <div className="grid gap-3">
                   <div className="font-semibold">Payment Details</div>
                   <ul className="grid gap-3">
@@ -3577,7 +3579,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
 
         {/*finance card*/}
         <Tabs defaultValue="Sales">
-          <Card className="w-[95%]  bg-background text-foreground rounded-lg   max-h-[750px] h-[750px] " x-chunk="dashboard-05-chunk-0"  >
+          <Card className="w-[95%]  bg-background text-foreground rounded-lg   max-h-[750px] h-auto" x-chunk="dashboard-05-chunk-0"  >
             <CardHeader className="flex flex-row items-start bg-muted/50 rounded-md">
               <CardTitle className="group flex items-center text-sm">
                 <TabsList >
@@ -3672,7 +3674,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
                     </span>
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="gap-0 p-0 outline-none border-border text-foreground   max-h-[750px] h-[750px]  overflow-y-scroll">
+                <DialogContent className="gap-0 p-0 outline-none border-border text-foreground   max-h-[750px] h-[750px]  overflow-y-auto">
                   <Tabs defaultValue="Sales" className='m-3 p-3'>
                     <TabsList >
                       <TabsTrigger value="Sales">Bank Info</TabsTrigger>
@@ -3681,7 +3683,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
                     <TabsContent value="Sales" className="  text-foreground rounded-lg">
                       <fetcher.Form method='post'>
                         <DialogHeader className="px-4 pb-4 pt-5">
-                          <DialogTitle>Edit Customer Info</DialogTitle>
+                          <DialogTitle>Edit Bank Info</DialogTitle>
                           <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
                         </DialogHeader>
                         <ul className="grid gap-3 text-sm mt-2">
@@ -3769,7 +3771,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
           </Card>
         </Tabs>
 
-        <Button onClick={() => setFirstOpen(false)} variant='outline'  >close</Button>
+
       </DialogContent>
     </Dialog >
   )

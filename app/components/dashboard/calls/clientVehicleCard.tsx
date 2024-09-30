@@ -30,16 +30,17 @@ import {
 } from "~/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { ButtonLoading } from "~/components/ui/button-loading";
-import UnitPicker from '../unitPicker/unitPicker'
-import { dashboardAction, dashboardLoader } from "activix/dashboardCallsActivix";
 import { Toaster, toast } from 'sonner'
 
 import React, { useEffect, useRef, useState } from "react";
 import { prisma } from "~/libs";
 import { json } from "@remix-run/node";
+import UnitPicker from "~/routes/__authorized/dealer/sales/stockUnit";
+import { Copy } from "lucide-react";
+import { FaCheck } from "react-icons/fa";
 
 
-export default function ClientVehicleCard({ data, }) {
+export default function ClientVehicleCard({ data, user, tableData }) {
   const [open, setOpen] = React.useState(false);
   const timerRef = React.useRef(0);
 
@@ -50,38 +51,38 @@ export default function ClientVehicleCard({ data, }) {
 
 
 
-  let finance;
+  let finance = data
   const Dealerfees = [
-    { name: "userAdmin", value: data.userAdmin, placeholder: "Admin" },
-    { name: "userFreight", value: data.userFreight, placeholder: "Freight" },
-    { name: "userCommodity", value: data.userCommodity, placeholder: "Commodity" },
-    { name: "userPDI", value: data.userPDI, placeholder: "PDI" },
-    { name: "userAirTax", value: data.userAirTax, placeholder: "Air Tax" },
-    { name: "userTireTax", value: data.userTireTax, placeholder: "Tire Tax" },
-    { name: "userGovern", value: data.userGovern, placeholder: "Government Fees" },
-    { name: "userFinance", value: data.userFinance, placeholder: "Finance Fees" },
-    { name: "destinationCharge", value: data.destinationCharge, placeholder: "Destination Charge" },
-    { name: "userGasOnDel", value: data.userGasOnDel, placeholder: "Gas On Delivery" },
-    { name: "userMarketAdj", value: data.userMarketAdj, placeholder: "Market Adjustment" },
-    { name: "userDemo", value: data.userDemo, placeholder: "Demonstratration Fee" },
-    { name: "userOMVIC", value: data.userOMVIC, placeholder: "OMVIC or Other" },
+    { name: "userAdmin", value: data.userAdmin ? data.userAdmin : '0', placeholder: "Admin" },
+    { name: "userFreight", value: data.userFreight ? data.userFreight : '0', placeholder: "Freight" },
+    { name: "userCommodity", value: data.userCommodity ? data.userCommodity : '0', placeholder: "Commodity" },
+    { name: "userPDI", value: data.userPDI ? data.userPDI : '0', placeholder: "PDI" },
+    { name: "userAirTax", value: data.userAirTax ? data.userAirTax : '0', placeholder: "Air Tax" },
+    { name: "userTireTax", value: data.userTireTax ? data.userTireTax : '0', placeholder: "Tire Tax" },
+    { name: "userGovern", value: data.userGovern ? data.userGovern : '0', placeholder: "Government Fees" },
+    { name: "userFinance", value: data.userFinance ? data.userFinance : '0', placeholder: "Finance Fees" },
+    { name: "destinationCharge", value: data.destinationCharge ? data.destinationCharge : '0', placeholder: "Destination Charge" },
+    { name: "userGasOnDel", value: data.userGasOnDel ? data.userGasOnDel : '0', placeholder: "Gas On Delivery" },
+    { name: "userMarketAdj", value: data.userMarketAdj ? data.userMarketAdj : '0', placeholder: "Market Adjustment" },
+    { name: "userDemo", value: data.userDemo ? data.userDemo : '0', placeholder: "Demonstratration Fee" },
+    { name: "userOMVIC", value: data.userOMVIC ? data.userOMVIC : '0', placeholder: "OMVIC or Other" },
   ];
 
 
   const FinanceOptions = [
-    { name: "userExtWarr", value: data.userExtWarr, placeholder: 'Extended Warranty' },
-    { name: "userLoanProt", value: data.userLoanProt, placeholder: 'Loan Protection' },
-    { name: "userGap", value: data.userGap, placeholder: 'Gap Protection' },
-    { name: "userTireandRim", data: data.userTireandRim, placeholder: 'Tire and Rim' },
-    { name: "vinE", value: data.vinE, placeholder: 'Vin Etching' },
-    { name: "rustProofing", value: data.rustProofing, placeholder: 'Under Coating' },
-    { name: "userServicespkg", value: data.userServicespkg, placeholder: 'Service Package' },
-    { name: "lifeDisability", value: data.lifeDisability, placeholder: 'Life and Disability' },
-    { name: "userOther", value: data.userOther, placeholder: 'Other data Package' },
+    { name: "userTireandRim", data: data.userTireandRim ? data.userTireandRim : '0', placeholder: 'Tire and Rim' },
+    { name: "userExtWarr", value: data.userExtWarr ? data.userExtWarr : '0', placeholder: 'Extended Warranty' },
+    { name: "userLoanProt", value: data.userLoanProt ? data.userLoanProt : '0', placeholder: 'Loan Protection' },
+    { name: "userGap", value: data.userGap ? data.userGap : '0', placeholder: 'Gap Protection' },
+    { name: "vinE", value: data.vinE ? data.vinE : '0', placeholder: 'Vin Etching' },
+    { name: "rustProofing", value: data.rustProofing ? data.rustProofing : '0', placeholder: 'Under Coating' },
+    { name: "userServicespkg", value: data.userServicespkg ? data.userServicespkg : '0', placeholder: 'Service Package' },
+    { name: "lifeDisability", value: data.lifeDisability ? data.lifeDisability : '0', placeholder: 'Life and Disability' },
+    { name: "userOther", value: data.userOther ? data.userOther : '0', placeholder: 'Other data Package' },
   ];
 
   /**  const [clientUnit, setClientUnit] = useState([]);
-  
+
     useEffect(() => {
       async function fetchUnit() {
         try {
@@ -97,7 +98,7 @@ export default function ClientVehicleCard({ data, }) {
           console.error('Error fetching unit:', error);
         }
       }
-  
+
       fetchUnit();
     }, [data.stockNum]);
    */
@@ -119,9 +120,49 @@ export default function ClientVehicleCard({ data, }) {
     "Spyder",
     "Yamaha"
   ];
+  const options2 = {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  };
 
   const formRef = useRef(null);
   const submit = useSubmit();
+  let vehCard = [
+    { name: 'year', value: finance.year, label: 'Year', },
+    { name: 'brand', value: finance.brand, label: 'Brand', },
+    { name: 'model', value: finance.model, label: 'Model', },
+    { name: 'color', value: finance.color, label: 'Color', },
+    { name: 'trim', value: finance.trim ? data.trim : '', label: 'Trim', },
+    { name: 'statusBike', value: finance.statusBike ? data.statusBike : '', label: 'Status Bike', },
+    { name: 'location', value: finance.location ? data.location : '', label: 'Location', },
+    { name: 'vin', value: finance.vin, label: 'Vin', },
+    { name: 'mileage', value: finance.mileage, label: 'Mileage', },
+    { name: 'stockNum', value: finance.stockNum ? data.stockNum : '', label: 'Stock #', },
+    { name: 'modelCode', value: finance.modelCode, label: 'Model Code', },
+    { name: 'tag', value: finance.tag, label: 'tag', },
+    { name: 'deliveryDate', value: finance.deliveryDate, label: 'Delivery Date', },
+    { name: 'deliveredDate', value: new Date(finance.deliveredDate).toLocaleDateString('en-US', options2), label: 'Delivered Date', },
+  ];
+
+  const copyText = (text) => {
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        setCopiedText(text);
+        setTimeout(() => setCopiedText(''), 3000); // Reset after 3 seconds
+      })
+      .catch((error) => {
+        // console.error('Failed to copy text: ', error);
+      });
+  };
+  const [copiedText, setCopiedText] = useState();
+  useEffect(() => {
+    return () => clearTimeout(timerRef.current);
+  }, [])
 
 
 
@@ -160,83 +201,89 @@ export default function ClientVehicleCard({ data, }) {
       <SheetHeader>
         <SheetTitle>
           <SheetContent side='left' className='bg-background text-foreground w-full h-screen md:w-[50%] overflow-y-auto   ' >
-            <h3 className="text-2xl font-thin text-foreground">CLIENT VEHICLE CARD</h3>
+            <h3 className="text-2xl font-thin text-foreground mb-3 text-center">VEHICLE CARD</h3>
             <Form method='post'>
               <div className="grid grid-cols-1 text-foreground">
                 <div className="mx-3w-[99%]">
-                  <Tabs defaultValue="model" className="mx-3 w-auto">
-                    <TabsList>
+                  <Tabs defaultValue="model" className="w-fulll">
+                    <TabsList className="mx-auto">
                       <TabsTrigger value="model">Model</TabsTrigger>
                       <TabsTrigger value="price">Price</TabsTrigger>
                       <TabsTrigger value="Finance">Finance</TabsTrigger>
-                      <TabsTrigger value="Options">Options</TabsTrigger>
                       <TabsTrigger value="trade">Trade</TabsTrigger>
                     </TabsList>
                     <TabsContent value="model">
-                      <h3 className="text-2xl font-thin">PURCHASING</h3>
+                      <h3 className="text-2xl font-thin mb-3">PURCHASING</h3>
 
-                      <div className='grid grid-cols-2 items-center'>
-                        <p>Stock Number</p>
-                        {data.stockNum ? (
-                          <p className='text-right'>{data.stockNum}</p>
-                        ) : (
-                          <p className='text-right'>N/A</p>
-                        )}
-                        <p>Year</p>
-                        <p className='text-right'>{data.year}</p>
-                        <p>Brand</p>
-                        <p className='text-right'>{data.brand}</p>
-                        <p>Model</p>
-                        <p className='text-right'>{data.model}</p>
-                        <p>Trim</p>
-                        <p className='text-right'>{data.trim}</p>
-                        <p>Color</p>
-                        <p className='text-right'>{data.color}</p>
-
-                        <p>VIN</p>
-                        {data.vin ? (
-                          <p className='text-right'>{data.vin}</p>
-                        ) : (
-                          <p className='text-right'>N/A</p>
-                        )}
-
-                        <p>Status</p>
-                        {data.statusBike && data.statusBike ? (
-                          <p className='text-right'>{data.statusBike}</p>
-                        ) : (
-                          <p className='text-right'>N/A</p>
-                        )}
-                        <p>Location</p>
-                        {data.location ? (
-                          <p className='text-right'>{data.location}</p>
-                        ) : (
-                          <p className='text-right'>N/A</p>
-                        )}
-                        <p>Mileage</p>
-                        {data.mileage ? (
-                          <p className='text-right'>{data.mileage}</p>
-                        ) : (
-                          <p className='text-right'>N/A</p>
-                        )}
-                      </div>
+                      <ul className="grid gap-y-3 text-sm mt-2">
+                        {vehCard.map((item, index) => (
+                          <li key={index} className=" group flex items-center justify-between">
+                            <div className='flex'>
+                              <span className="text-muted-foreground">
+                                {item.label}
+                              </span>
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                onClick={() => copyText(item.value)}
+                                className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                              >
+                                <Copy className="h-3 w-3" />
+                                <span className="sr-only">Copy</span>
+                              </Button>
+                              {copiedText === item.value && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+                            </div>
+                            <span>{item.value}  </span>
+                          </li>
+                        ))}
+                      </ul>
                     </TabsContent>
                     <TabsContent value="price">
-                      {Dealerfees.map((fee, index) => (
-                        fee.value > 0 && (
-                          <div key={index} className="flex justify-between">
-                            <p>{fee.placeholder}</p>
-                            <p>{fee.value}</p>
-                          </div>
-                        )
-                      ))}
-                      {FinanceOptions.map((fee, index) => (
-                        fee.value > 0 && (
-                          <div key={index} className="flex justify-between">
-                            <p>{fee.placeholder}</p>
-                            <p>{fee.value}</p>
-                          </div>
-                        )
-                      ))}
+                      <ul className="grid gap-y-3 text-sm mt-2">
+                        {Dealerfees.map((item, index) => (
+                          <li key={index} className=" group flex items-center justify-between">
+                            <div className='flex'>
+                              <span className="text-muted-foreground">
+                                {item.placeholder}
+                              </span>
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                onClick={() => copyText(item.value)}
+                                className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                              >
+                                <Copy className="h-3 w-3" />
+                                <span className="sr-only">Copy</span>
+                              </Button>
+                              {copiedText === item.value && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+                            </div>
+                            <span>{item.value}  </span>
+                          </li>
+                        ))}
+
+                        {FinanceOptions.map((item, index) => (
+                          <li key={index} className=" group flex items-center justify-between">
+                            <div className='flex'>
+                              <span className="text-muted-foreground">
+                                {item.placeholder}
+                              </span>
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                onClick={() => copyText(item.value)}
+                                className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                              >
+                                <Copy className="h-3 w-3" />
+                                <span className="sr-only">Copy</span>
+                              </Button>
+                              {copiedText === item.value && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+                            </div>
+                            <span>{item.value}  </span>
+                          </li>
+                        ))}
+                      </ul>
+
+
                       {data.desiredPayments === "Standard Payment" && (
                         <>
                           <div className="mt-2 flex flex-wrap justify-between ">
@@ -543,45 +590,7 @@ export default function ClientVehicleCard({ data, }) {
                           </>
                         )}
                     </TabsContent>
-                    <TabsContent value="Options">
-                      {/* loading all and every option may be too consuming of internet resources, if they want to see the options and accessories they can go to the quote itself */}
-                      <p className="mt-2  basis-2/4   text-sm font-thin">
-                        Finance Products
-                      </p>
-                      <Separator />
 
-                      {FinanceOptions.map((fee, index) => {
-                        if (
-                          fee.value > 0 &&
-                          fee.value !== "on" &&
-                          fee.value !== "0"
-                        ) {
-                          return (
-                            <div
-                              key={index}
-                              className="mt-2 flex flex-wrap justify-between "
-                            >
-                              <p className="mt-2  basis-2/4   text-sm font-thin">
-                                {fee.name}
-                              </p>
-                              <p className="flex basis-2/4   items-end  justify-end text-sm font-thin ">
-                                ${fee.value}
-                              </p>
-                            </div>
-                          );
-                        }
-                        return null;
-                      })}
-                      <p className="mt-2  basis-2/4   text-sm font-thin">
-                        Vehicle Options
-                      </p>
-                      <Separator />
-
-                      <p className="mt-2  basis-2/4   text-sm font-thin">
-                        Parts & Acc
-                      </p>
-                      <Separator />
-                    </TabsContent>
                     <TabsContent value="trade">
                       {/* right column with inputs */}
                       <div className="mx-3 my-3 w-[90%]">
@@ -692,7 +701,8 @@ export default function ClientVehicleCard({ data, }) {
               </div>
             </Form>
             <div className="ml-4">
-              <UnitPicker data={data} />
+              <UnitPicker finance={data} tableData={tableData} user={user} />
+
             </div>
           </SheetContent>
         </SheetTitle>

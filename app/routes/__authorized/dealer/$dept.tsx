@@ -22,7 +22,7 @@ export default function NavMenuAdminAndMan() {
   const inventorySide = [
     {
       title: "Unit Inventory",
-      to: `/dealer/${params.dept}/inventory/units`,
+      to: `/dealer/sales/inventory`,
     },
     {
       title: "PAC Inventory",
@@ -30,10 +30,6 @@ export default function NavMenuAdminAndMan() {
     },
   ]
   const ordersSide = [
-    {
-      title: "Service Work Orders",
-      to: `/dealer/${params.dept}/orders/service`,
-    },
     {
       title: "Service Work Orders",
       to: `/dealer/${params.dept}/orders/service`,
@@ -89,6 +85,14 @@ export default function NavMenuAdminAndMan() {
       to: `/dealer/${params.dept}/customers/all`,
     },
   ]
+  const admin = [
+
+    {
+      title: "Settings",
+      to: `/dealer/admin/settings/general`,
+    },
+  ]
+
   /**  {
       title: "Sales",
       to: `/dealer/${params.dept}/depts/sales`,
@@ -125,7 +129,9 @@ export default function NavMenuAdminAndMan() {
         <Separator className="my-6 bg-border border-border text-border" />
         <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
           <aside className="-mx-4 lg:w-[250px]">
-            <p className='text-foreground'>Menu</p>
+            <p className='text-foreground ml-5'>Menu</p>
+            <SidebarNav items={admin} />
+            <Separator className='my-1 bg-border border-border text-border' />
             <SidebarNav items={dashboards} />
             <Separator className='my-1 bg-border border-border text-border' />
             <SidebarNav items={inventorySide} />
@@ -135,6 +141,7 @@ export default function NavMenuAdminAndMan() {
             <SidebarNav items={importExportSide} />
             <Separator className='my-1 bg-border border-border text-border' />
             <SidebarNav items={bullshit} />
+
           </aside>
           <div className="flex-1 lg:max-w-90[%]">
             <Outlet />
@@ -249,11 +256,18 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
                 Service
               </NavLink>
               <NavLink
-                to={`/dealer/${params.dept}/settings/general`}
+                to={`/dealer/${params.dept}/depts/admin`}
                 className={`flex items-center gap-2  md:text-base  ml-[30px]
-              ${pathname === `/dealer/${params.dept}/depts/user-roles` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%]'}`}
+              ${pathname === `/dealer/${params.dept}/depts/admin` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%]'}`}
               >
                 Admin
+              </NavLink>
+              <NavLink
+                to={`/dealer/${params.dept}/depts/finance`}
+                className={`flex items-center gap-2  md:text-base  ml-[30px]
+              ${pathname === `/dealer/${params.dept}/depts/finance` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%]'}`}
+              >
+                Finance
               </NavLink>
             </nav>
           )}
@@ -287,21 +301,16 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
               >
                 PAC
               </NavLink>
-            </nav>
-          )}
-
-          {pathname.includes(`/dealer/admin/settings/general`) && (
-            <nav className="grid gap-4 text-sm text-muted-foreground ml-6">
               <NavLink
-                to={`/dealer/admin/settings/general`}
-                className={`flex items-center gap-2  md:text-base  ml-[30px]
-              ${pathname === `/dealer/admin/settings/general` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%] '}`}
+                to={`/dealer/${params.dept}/importexport/documentation/Glossary`}
+                className={`flex items-center gap-2  md:text-base ml-[30px]
+              ${pathname === `/dealer/${params.dept}/importexport/documentation/Glossary` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%] '}`}
               >
-                Settings
+                Database Documentation
               </NavLink>
-
             </nav>
           )}
+
         </Fragment>
       ))
 

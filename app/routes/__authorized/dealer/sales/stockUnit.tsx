@@ -523,11 +523,11 @@ export const action: ActionFunction = async ({ request, params }) => {
   })
   const intent = formData.intent
   if (intent === 'columnState') {
-    const update = await prisma.columnStateInventory.update({
-      where: { id: user.ColumnStateInventory.id },
-      data: { state: JSON.parse(formPayload.state) }
-    })
-    return json({ update })
+    /** const update = await prisma.columnStateInventory.update({
+       where: { id: user.ColumnStateInventory.id },
+       data: { state: JSON.parse(formPayload.state) }
+     }) */
+    return null //json({ update })
   }
   if (intent === 'addUnit') {
     const update = await prisma.inventoryMotorcycle.create({

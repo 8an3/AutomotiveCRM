@@ -246,7 +246,7 @@ export default function SearchFunction() {
                       </TableCell>
                       <TableCell className="text-center text-lg text-muted-foreground">
                         <Link
-                          to={`/dealer/customer/${result.id}/check`}
+                          to={`/dealer/sales/customer/${result.id}/profile`}
                           className=" "
                           key={index}
                         >
@@ -284,7 +284,7 @@ export default function SearchFunction() {
                                 className="mx-auto w-full rounded-[8px] hover:rounded-[6px] border-border"
                               >
                                 <Link
-                                  to={`/dealer/customer/${result.id}/${finance.id}`}
+                                  to={`/dealer/sales/customer/${result.id}/${finance.id}`}
                                   className="w-full "
                                 >
                                   {finance.year && (

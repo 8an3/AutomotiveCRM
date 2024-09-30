@@ -38,10 +38,10 @@ export function Consignment({ data }) {
                 console.log(formData, 'formData');
                 fetcher.submit(formData, { method: "post" });
             }}
-            defaultValue={data.consignment || false}
+            value={data.consignment ? String(data.consignment) : String(false)}
             name='consignment'>
             <SelectTrigger className="w-auto focus:border-primary">
-                <SelectValue defaultValue={data.consignment || false} />
+                <SelectValue />
             </SelectTrigger>
             <SelectContent className='bg-background text-foreground border-border'>
                 <SelectItem value="true">true</SelectItem>
@@ -113,8 +113,8 @@ export function Status({ data }) {
                 console.log(formData, 'formData');
                 fetcher.submit(formData, { method: "post" });
             }}
-            defaultValue={data.status}
-            name='status'>
+            value={String(data.status)}
+            name='orderStatus'>
             <SelectTrigger className="w-auto focus:border-primary">
                 <SelectValue />
             </SelectTrigger>
@@ -138,16 +138,16 @@ export function OrderStatus({ data }) {
                 console.log(formData, 'formData');
                 fetcher.submit(formData, { method: "post" });
             }}
-            defaultValue={data.orderStatus}
+            defaultValue={data.orderStatus ? data.orderStatus : 'STOCK'}
             name='status'>
             <SelectTrigger className="w-auto focus:border-primary">
                 <SelectValue />
             </SelectTrigger>
             <SelectContent className='bg-background text-foreground border-border'>
-                <SelectItem value="On Order">On Order</SelectItem>
-                <SelectItem value="Stock">Stock</SelectItem>
-                <SelectItem value="Reserved">Reserved</SelectItem>
-                <SelectItem value="Wish">Wish</SelectItem>
+                <SelectItem value="ONORDER">On Order</SelectItem>
+                <SelectItem value="STOCK">Stock</SelectItem>
+                <SelectItem value="RESERVED">Reserved</SelectItem>
+                <SelectItem value="WISH">Wish</SelectItem>
             </SelectContent>
         </Select>
     )
@@ -165,7 +165,7 @@ export function IsNew({ data }) {
                 console.log(formData, 'formData');
                 fetcher.submit(formData, { method: "post" });
             }}
-            defaultValue={data.isNew}
+            value={String(data.isNew)}
             name='isNew'>
             <SelectTrigger className="w-auto focus:border-primary">
                 <SelectValue />
@@ -190,7 +190,7 @@ export function Stocked({ data }) {
                 console.log(formData, 'formData');
                 fetcher.submit(formData, { method: "post" });
             }}
-            defaultValue={data.stocked}
+            value={String(data.stocked)}
             name='Stocked'>
             <SelectTrigger className="w-auto focus:border-primary">
                 <SelectValue />
@@ -202,10 +202,43 @@ export function Stocked({ data }) {
         </Select>
     )
 }
+export function WorkorderFilter({ data }) {
+    const fetcher = useFetcher();
 
+    return (
+        <Select
+            onValueChange={(value) => {
+                const formData = new FormData();
+                formData.append("id", data.id);
+                formData.append("stocked", value);
+                formData.append("intent", 'stocked');
+                console.log(formData, 'formData');
+                fetcher.submit(formData, { method: "post" });
+            }}
+
+            name='filter'>
+            <SelectTrigger className="w-auto focus:border-primary">
+                <SelectValue placeholder='Filter' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+                <SelectItem value="Quote">Quote</SelectItem>
+                <SelectItem value="Sales">Sales</SelectItem>
+                <SelectItem value="Open">Open</SelectItem>
+                <SelectItem value="Waiting On Parts">Waiting On Parts</SelectItem>
+                <SelectItem value="Waiter">Waiter</SelectItem>
+                <SelectItem value="In Works">In Works"</SelectItem>
+                <SelectItem value="Work Completed">Work Completed</SelectItem>
+                <SelectItem value="Scheduled for Delivery">Scheduled for Delivery</SelectItem>
+                <SelectItem value="Long Term Storage">Long Term Storage</SelectItem>
+                <SelectItem value="Winter Storage">Winter Storage</SelectItem>
+                <SelectItem value="Closed">Closed</SelectItem>
+            </SelectContent>
+        </Select>
+    )
+}
 export const loader = async ({ request }) => {
     const session = await getSession(request.headers.get("Cookie"));
-    const email = session.get("email")
+    const email = 'sales2@gmail.com'//session.get("email")
     const user = await GetUser(email)
     if (!user) { redirect('/login') }
     const inventoryMotorcycle = await prisma.inventoryMotorcycle.findMany({
@@ -652,11 +685,11 @@ export const action: ActionFunction = async ({ request, params }) => {
 
     const intent = formData.intent
     if (intent === 'columnState') {
-        const update = await prisma.columnStateInventory.update({
-            where: { id: user.ColumnStateInventory.id },
-            data: { state: JSON.parse(formPayload.state) }
-        })
-        return json({ update })
+        /** const update = await prisma.columnStateInventory.update({
+        where: { id: user.ColumnStateInventory.id },
+        data: { state: JSON.parse(formPayload.state) }
+      }) */
+        return //json({ update })
     }
     if (intent === 'addUnit') {
         const update = await prisma.inventoryMotorcycle.create({
@@ -859,7 +892,6 @@ export default function UnitInv() {
         (pos) => pos.position === 'Manager' || pos.position === 'Administrator'
     );
 
-
     let defaultColumn
     if (userIsManager) {
         defaultColumn = {
@@ -896,13 +928,12 @@ export default function UnitInv() {
         }
     }
 
-
-
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
     );
     const savedVisibility = user.ColumnStateInventory.state
+    //
     const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(savedVisibility || {
         id: false,
         packageNumber: false,
@@ -941,12 +972,12 @@ export default function UnitInv() {
         // consignment: false,
     });
 
-    useEffect(() => {
+    /**useEffect(() => {
         fetcher.submit(
             { state: JSON.stringify(columnVisibility), intent: 'columnState' },
             { method: "post" }
         );
-    }, [columnVisibility]);
+    }, [columnVisibility]); */
 
     const [rowSelection, setRowSelection] = React.useState({});
     const [globalFilter, setGlobalFilter] = useState('')
@@ -960,7 +991,6 @@ export default function UnitInv() {
     const [models, setModels] = useState([]);
     const [modelName, setModelName] = useState([]);
     const [subModel, setSubModel] = useState([]);
-
 
     useEffect(() => {
         async function fetchModels() {
@@ -987,7 +1017,6 @@ export default function UnitInv() {
         setGlobalFilter(value);
     };
 
-
     const [date, setDate] = useState<Date>()
 
     const newDate = new Date()
@@ -1006,7 +1035,6 @@ export default function UnitInv() {
     };
 
     const columns = [
-
         {
             id: 'Unit File',
             accessorKey: "Unit File",

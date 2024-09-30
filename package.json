@@ -9,6 +9,7 @@
   "sideEffects": false,
   "scripts": {
     "build": "remix build",
+    "migrate": "powershell -ExecutionPolicy Bypass -File ./scripts/migrate.ps1",
     "dev": "remix dev",
     "typecheck": "tsc",
     "start": "cross-env NODE_ENV=production node ./server-express.js",

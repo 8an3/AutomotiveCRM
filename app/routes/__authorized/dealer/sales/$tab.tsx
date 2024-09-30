@@ -198,7 +198,7 @@ export function MainDashbaord({ user }) {
     //const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
     const proxyPhone = '+12176347250'
 
-    const { finance, searchData, getTemplates, callToken, conversationsData, convoList, newToken, email, columnState, userList } = useLoaderData();
+    const { finance, searchData, getTemplates, callToken, tableData, convoList, newToken, email, userList } = useLoaderData();
     const [data, setPaymentData,] = useState<dashBoardType[]>(finance);
     const [messagesConvo, setMessagesConvo] = useState([]);
     const [selectedChannelSid, setSelectedChannelSid] = useState([]);
@@ -638,7 +638,7 @@ export function MainDashbaord({ user }) {
             cell: ({ row }) => {
                 const data = row.original
                 return <div className="w-[275px] cursor-pointer  text-center text-[14px]  text-foreground hover:text-primary">
-                    <ClientVehicleCard data={data} />
+                    <ClientVehicleCard data={data} tableData={tableData} user={user} />
                 </div>
             },
         },
@@ -2422,15 +2422,13 @@ export function MainDashbaord({ user }) {
             weeklylNatWOptions: false,
             otherTaxWithOptions: false
         } */
-    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(columnState.state);
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>([]);
 
     useEffect(() => {
         const jsonString = user.columnStateSales.state
-        console.log(jsonString, 'string objectg')
-        console.log(columnVisibility, 'columnVisibility')
-        console.log(columnState, 'columnState')
+        console.log(user.columnStateSales.state, 'columnState')
 
-        // setColumnVisibility(jsonString)
+        setColumnVisibility(jsonString)
     }, []);
 
     useEffect(() => {
@@ -3613,29 +3611,27 @@ export function MainDashbaord({ user }) {
                                 </Button>
                             </div>
                         )}
-                        {selectedGlobal === true && (
-                            <div className="relative ">
-                                <DebouncedInput
-                                    value={globalFilter ?? ""}
-                                    onChange={(value) => setGlobalFilter(String(value))}
-                                    className="ml-3 border border-border p-2 shadow max-w-sm w-auto"
-                                    placeholder="Search all columns..."
-                                    autoFocus
-                                />
+                        <div className="relative ">
+                            <DebouncedInput
+                                value={globalFilter ?? ""}
+                                onChange={(value) => setGlobalFilter(String(value))}
+                                className="ml-3 border border-border p-2 shadow w-[300px]"
+                                placeholder="Search all columns..."
+                                autoFocus
+                            />
 
-                                <Button
-                                    onClick={() => {
-                                        setGlobalFilter([]);
-                                        setSelectedGlobal(false);
-                                    }}
-                                    size="icon"
-                                    variant="ghost"
-                                    className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                            <Button
+                                onClick={() => {
+                                    setGlobalFilter([]);
+                                    setSelectedGlobal(false);
+                                }}
+                                size="icon"
+                                variant="ghost"
+                                className='bg-transparent mr-2 absolute right-2 top-2.5 h-4 w-4 text-foreground '>
 
-                                    <X />
-                                </Button>
-                            </div>
-                        )}
+                                <X />
+                            </Button>
+                        </div>
                     </div>
 
                     <div style={{ direction: table.options.columnResizeDirection }}>

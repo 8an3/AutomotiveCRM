@@ -122,7 +122,7 @@ import { PullActivix, GetMergedWithActivix, SimplerStaticVersion, getToken } fro
 import { Resend } from 'resend';
 import PaymentCalculatorEmail from '~/emails/PaymentCalculatorEmail';
 import CustomBody from '~/emails/customBody';
-import UnitInv from "../../../$dept/inventory/units";
+import UnitInv from "../../../../../../components/zRoutes/oldRoutes/units";
 
 const resend = new Resend('re_YFCDynPp_5cod9FSRkrbS6kfmRsoqSsBS')//new Resend(process.env.resend_API_KEY);
 
@@ -11205,13 +11205,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
   // ----------------------service -----------------------------
   const orders = finance.WorkOrders
   console.log(orders, 'work ordfers')
-  const tax = await prisma.dealer.findUnique({
-    where: { id: 1 },
-    select: {
-      userTax: true,
-      userLabour: true,
-    },
-  });
+  const tax = user.Dealer
   const dealerImage = await prisma.dealerLogo.findUnique({ where: { id: 1 } })
   const services = await prisma.services.findMany({})
   let assignedUnit

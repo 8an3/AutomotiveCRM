@@ -31,7 +31,6 @@ export default function Welcome() {
   const email = activeAccount?.username || '';
   const name = activeAccount?.name || '';
   const idToken = activeAccount?.idToken || '';
-  console.log(email, 'email', name, 'name', idToken, 'idToken', activeAccount)
   const [currentURL, setCurrentURL] = useState()
 
 
@@ -66,6 +65,7 @@ export default function Welcome() {
     const currentHost =
       typeof window !== "undefined" ? window.location.host : null;
     if (iFrameRef.current) {
+      console.log(currentHost, 'currentHost')
       if (currentHost !== "localhost:3000") {
         setHost(`https://www.dealersalesassistant.ca`)
       }
@@ -157,6 +157,7 @@ export default function Welcome() {
     //  const signOut = app.signOut!
     // return signOut
   }
+  console.log(host, 'host')
   if (host === "https://www.dealersalesassistant.ca") {
     return (
       <>

@@ -25,16 +25,9 @@ import {
   Scan,
   X,
   Users2Icon,
+  Eye,
 } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "~/components/ui/breadcrumb";
 import { Button } from "~/components/ui/button";
 import {
   Card,
@@ -44,19 +37,8 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
 import { Input } from "~/components/ui/input";
-import { Progress } from "~/components/ui/progress";
 import { Separator } from "~/components/ui/separator";
-import { Sheet, SheetContent, SheetTrigger } from "~/components/ui/sheet";
 import {
   Table,
   TableBody,
@@ -78,13 +60,8 @@ import { getSession } from "~/sessions/auth-session.server";
 import { prisma } from "~/libs";
 import { Printer } from "lucide-react";
 import { DollarSign } from "lucide-react";
-import { toast } from "sonner";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
-import { cn } from "~/utils";
-import { BanknoteIcon } from "lucide-react";
 import { ArrowDownUp } from "lucide-react";
-import { ClientOnly } from "remix-utils";
-import PrintLabels from "../document/printLabels.client";
 import useSWR from 'swr'
 import ScanSound from '~/images/scan.mp4'
 import { BrowserMultiFormatReader, BarcodeFormat, DecodeHintType, NotFoundException, ChecksumException, FormatException } from '@zxing/library';
@@ -112,9 +89,13 @@ import axios from "axios";
 import { FileCheck } from "lucide-react";
 import PrintReceipt from "../document/printReceiptAcc.client";
 import { Users } from "lucide-react";
-import { Activity } from "lucide-react";
 import { ArrowUpRight } from "lucide-react";
 import { Avatar } from "~/components";
+
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu"
+import { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, sortingFns, } from "@tanstack/react-table"
+import { fuzzyFilter, fuzzySort, TableMeta, getTableMeta, DebouncedInput } from "~/components/shared/shared";
+import { DataTablePagination } from "~/components/dashboard/calls/pagination";
 
 export async function loader({ request, params }: LoaderFunction) {
   const session2 = await getSession(request.headers.get("Cookie"));
@@ -243,7 +224,6 @@ export async function loader({ request, params }: LoaderFunction) {
   return json({ orders, user, sevTotal, tax, filteredOrders30, thiryTotal, dealerImage });
 }
 
-
 export function playScanSound() {
   const audio = new Audio(ScanSound);
   audio.play();
@@ -290,6 +270,11 @@ export default function Purchase() {
   const submit = useSubmit();
   const navigate = useNavigate()
   const [ordersList, setOrdersList] = useState([]);
+  const userIsManager = user.positions.some(
+    (pos) => pos.position === 'Manager' || pos.position === 'Administrator'
+  );
+  const [referrer, setReferrer] = useState()
+
   useEffect(() => {
     setOrdersList(ordersList);
   }, []);
@@ -355,7 +340,6 @@ export default function Purchase() {
     }
   }, [showPrevOrder]);
 
-
   const [paymentType, setPaymentType] = useState('');
   const [discount, setDiscount] = useState(false)
   const [custInfo, setCustInfo] = useState(false)
@@ -369,24 +353,7 @@ export default function Purchase() {
 
   const [discDollar, setDiscDollar] = useState(0.00)
   const [discPer, setDiscPer] = useState(0.00)
-  /**  useEffect(() => {
-      console.log('useEffect triggered');
-      console.log('order.discount:', lastOrder.discount);
-      if (lastOrder.discount > 0.00) {
-        console.log('Setting discount:', lastOrder.discount);
-        setDiscDollar(lastOrder.discount);
-      } else {
-        console.log('Discount is 0 or less');
-      }
-    }, [lastOrder.discount]);
-      useEffect(() => {
 
-    if (lastOrder.discPer > 0.00) {
-      setDiscPer(lastOrder.discPer)
-    }
-  }, []);
-   */
-  // scanner
   const [value, setValue] = useState('');
   const [back, setBack] = useState('#FFFFFF');
   const [fore, setFore] = useState('#000000');
@@ -516,7 +483,6 @@ export default function Purchase() {
     setSelectedProducts(prev => [...prev, ...newProducts]);
   };
 
-
   const [pageIndex, setPageIndex] = useState(1);
   const [perPage, setPerPage] = useState(10);
   // ---- pagination parts
@@ -527,9 +493,9 @@ export default function Purchase() {
   // ---- pagination parts
   // ---- pagination acc
   const [accTable, setAccTable] = useState([]);
-  const { data } = useSWR(`/dealer/api/orders/accessories/${pageIndex}/${perPage}`, swrFetcher, { refreshInterval: 20000 });
+  const { data: dataAcc } = useSWR(`/dealer/api/orders/accessories/${pageIndex}/${perPage}`, swrFetcher, { refreshInterval: 20000 });
 
-  useEffect(() => { if (data) { setAccTable(data.allOrders) } }, [data]);
+  useEffect(() => { if (dataAcc) { setAccTable(dataAcc.allOrders) } }, [dataAcc]);
 
   // ---- pagination acc
   // ---- pagination all orders
@@ -616,6 +582,553 @@ export default function Purchase() {
 
   const totalValue = paidOrder.reduce((sum, order) => sum + order.total, 0);
   const numberOfSales = paidOrder.length;
+
+
+  //  table
+  const [data, setData] = useState(orders);
+
+  const defaultColumn = {
+    cell: ({ row, column: { id } }) => {
+      const data = row.original
+      return (
+        <p
+          className="text-center py-1 px-2 text-foreground mx-auto flex justify-center"
+        >
+          {row.getValue(id)}
+        </p>
+      )
+    },
+  }
+
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const savedVisibility = user.ColumnStateInventory.state
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = React.useState({});
+  const [globalFilter, setGlobalFilter] = useState('')
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [selectedModel, setSelectedModel] = useState({})
+  const [filterBy, setFilterBy] = useState('');
+  const [showFilter, setShowFilter] = useState(false);
+  const [selectedColumn, setSelectedColumn] = useState("");
+  const [selectedGlobal, setSelectedGlobal] = useState(false);
+  const [todayfilterBy, setTodayfilterBy] = useState(null);
+  const [models, setModels] = useState([]);
+  const [modelName, setModelName] = useState([]);
+  const [subModel, setSubModel] = useState([]);
+
+  const handleDropdownChange = (value) => {
+    setGlobalFilter(value);
+  };
+
+  const [date, setDate] = useState<Date>()
+
+  const newDate = new Date()
+  const [datefloorPlanDueDate, setDatefloorPlanDueDate] = useState<Date>()
+
+
+  const columns = [
+
+    {
+      id: 'Customer',
+      accessorKey: "Customer",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <div className='grid grid-cols-1'>
+            <p>{data.Clientfile.firstName} {data.Clientfile.lastName}</p>
+            <p className='text-muted-foreground'>{data.Clientfile.email} </p>
+          </div>
+        )
+      },
+    },
+    {
+      id: 'Salesperson',
+      accessorKey: "Salesperson",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <p>{data.userName} </p>
+        )
+      },
+    },
+    {
+      id: 'status',
+      accessorKey: "status",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+      header: ({ column }) => {
+        return (
+          <Select
+            onValueChange={(value) => {
+              const status = table.getColumn("status");
+              status.setFilterValue(value);
+            }}
+
+            name='filter'>
+            <SelectTrigger className="w-auto focus:border-primary mx-auto">
+              <SelectValue placeholder='Filter' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+              <SelectItem value="Quote">Quote</SelectItem>
+              <SelectItem value="Sales">Sales</SelectItem>
+              <SelectItem value="Open">Open</SelectItem>
+              <SelectItem value="Scheduled">Scheduled</SelectItem>
+              <SelectItem value="Waiting On Parts">Waiting On Parts</SelectItem>
+              <SelectItem value="Waiter">Waiter</SelectItem>
+              <SelectItem value="In Works">In Works</SelectItem>
+              <SelectItem value="Work Completed">Work Completed</SelectItem>
+              <SelectItem value="Scheduled for Delivery">Scheduled for Delivery</SelectItem>
+              <SelectItem value="Long Term Storage">Long Term Storage</SelectItem>
+              <SelectItem value="Winter Storage">Winter Storage</SelectItem>
+              <SelectItem value="Closed">Closed</SelectItem>
+            </SelectContent>
+          </Select>
+        )
+      },
+    },
+    {
+      id: 'status',
+      accessorKey: "status",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+      header: ({ column }) => {
+        return (
+          <Select
+            onValueChange={(value) => {
+              let status = table.getColumn("status");
+              status.setFilterValue(value);
+            }}
+            name='filter'>
+            <SelectTrigger className="w-auto focus:border-primary mx-auto">
+              <SelectValue placeholder='Status' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+              <SelectItem value="Quote">Quote</SelectItem>
+              <SelectItem value="Paid">Paid</SelectItem>
+              <SelectItem value="On Order">On Order</SelectItem>
+              <SelectItem value="Completed">Completed</SelectItem>
+            </SelectContent>
+          </Select>
+        )
+      },
+    },
+    {
+      id: 'Dept',
+      accessorKey: "Dept",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+      header: ({ column }) => {
+        return (
+          <p className='text-center'>Dept</p>
+        )
+      },
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <p className='text-center'>{data.dept} </p>
+        )
+      },
+    },
+    {
+      id: 'Date',
+      accessorKey: "Date",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+      header: ({ column }) => {
+        return (
+          <p className='text-center'>Sale Date</p>
+        )
+      },
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <p className='text-center'>{new Date(data.createdAt).toLocaleDateString("en-US", options2)}</p>
+        )
+      },
+    },
+    {
+      id: 'total',
+      header: ({ column }) => {
+        return (
+          <p className='text-center'>Amount</p>
+        )
+      },
+      accessorKey: "total",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <p className='text-center'>{data.total}</p>
+        )
+      },
+    },
+    {
+      id: 'paid',
+      header: ({ column }) => {
+        return (
+          <p className='text-center'>Paid</p>
+        )
+      },
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <p className='text-center'>  {result.paid ? (<Check className='mx-auto' />) : (<X className='mx-auto' />)}</p>
+        )
+      },
+      accessorKey: "paid",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+    },
+    {
+      id: 'sellingDept',
+      accessorKey: "sellingDept",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+      header: ({ column }) => {
+        return (
+          <p className='text-center'>Sent From</p>
+        )
+      },
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <p className='text-center'>{data.sellingDept}</p>
+        )
+      },
+    },
+    {
+      id: 'Actions',
+      header: ({ column }) => {
+        return (
+          <p className='text-center'>Actions</p>
+        )
+      },
+      accessorKey: "Actions",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <div className='flex items-center'>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="mr-3 hover:bg-primary"
+                  onClick={() => {
+                    setValue(data.workOrderId);
+                    showPrevOrderById(data.workOrderId)
+                  }}
+                >
+                  <Eye className="h-5 w-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                Show Order
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link to={`/dealer/acceessories/order/${data.workOrderId}`} >
+
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="mr-3 hover:bg-primary"
+
+                  >
+                    <Navigation className="h-5 w-5" />
+                  </Button>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                Go To Order
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        )
+      },
+    },
+  ]
+  const table = useReactTable({
+    data,
+    columns,
+    defaultColumn,
+    filterFns: { fuzzy: fuzzyFilter, },
+    globalFilterFn: 'fuzzy',
+    initialState: { columnVisibility },
+
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+      globalFilter,
+    },
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+
+    onColumnVisibilityChange: setColumnVisibility,
+
+
+    onRowSelectionChange: setRowSelection,
+    enableColumnResizing: true,
+    columnResizeMode: 'onChange',
+    onGlobalFilterChange: setGlobalFilter,
+    enableRowSelection: true,
+  });
+
+  // clears filters
+  const setAllFilters = () => {
+    setColumnFilters([]);
+    setSorting([]);
+    setFilterBy("");
+    setGlobalFilter([]);
+  };
+  const toggleFilter = () => {
+    setAllFilters()
+    setShowFilter(!showFilter);
+  };
+  const setColumnFilterDropdown = (event) => {
+    const columnId = event.target.getAttribute("data-value");
+    setSelectedColumn(columnId);
+    console.log("Selected column:", columnId);
+    // Add your logic here to handle the column selection
+  };
+  const handleGlobalChange = (value) => {
+    console.log("value", value);
+    table.getColumn(selectedColumn)?.setFilterValue(value);
+  };
+
+  const CallsList = [
+    {
+      key: "inStock",
+      name: "In Stock",
+    },
+    {
+      key: "available",
+      name: "Available",
+    },
+    {
+      key: "inStockArrived",
+      name: "In Stock and Available",
+    },
+    {
+      key: "newStock",
+      name: "New Stock",
+    },
+    {
+      key: "usedStock",
+      name: "Used Stock",
+    },
+    {
+      key: "sold",
+      name: "Sold",
+    },
+    {
+      key: "otd",
+      name: "Out The Door",
+    },
+    {
+      key: "deposits",
+      name: "Sold Units - Waiting To Be Picked Up",
+    },
+  ];
+  const DeliveriesList = [
+    {
+      key: "todaysDeliveries",
+      name: "Deliveries - Today",
+    },
+    {
+      key: "tomorowsDeliveries",
+      name: "Deliveries - Tomorrow",
+    },
+    {
+      key: "yestDeliveries",
+      name: "Deliveries - Yesterday",
+    },
+    {
+      key: "deliveredThisMonth",
+      name: "Delivered - Current Month",
+    },
+    {
+      key: "deliveredLastMonth",
+      name: "Delivered - Last Month",
+    },
+    {
+      key: "deliveredThisYear",
+      name: "Delivered - Year",
+    },
+  ];
+  const DepositsTakenList = [
+    {
+      key: "depositsToday",
+      name: "Deposit Taken - Need to Finalize Deal",
+    },
+  ];
+  const handleFilterChange = (selectedFilter) => {
+    setAllFilters()
+    const customerStateColumn = table.getColumn('customerState');
+    const nextAppointmentColumn = table.getColumn('nextAppointment');
+    const deliveredDate = table.getColumn('deliveredDate');
+    const pickUpDate = table.getColumn('pickUpDate');
+    const status = table.getColumn('status');
+    const depositMade = table.getColumn('depositMade');
+    const sold = table.getColumn('sold')
+    const delivered = table.getColumn('delivered')
+    const signed = table.getColumn('signed')
+    const financeApp = table.getColumn('financeApp')
+
+    switch (selectedFilter) {
+      case 'inStock':
+        table.getColumn('status')?.setFilterValue('available');
+        table.getColumn('onOrder')?.setFilterValue('false');
+        break;
+      case 'available':
+        table.getColumn('status')?.setFilterValue('available');
+        break;
+      case 'inStockArrived':
+        table.getColumn('status')?.setFilterValue('available');
+        table.getColumn('orderStatus')?.setFilterValue('STOCK');
+        break;
+      case 'newStock':
+        table.getColumn('new')?.setFilterValue(true);
+        break;
+      case 'usedStock':
+        table.getColumn('new')?.setFilterValue(false);
+        break;
+      case 'sold':
+        table.getColumn('status')?.setFilterValue('reserved');
+        break;
+      case 'otd':
+        table.getColumn('status')?.setFilterValue('sold');
+        break;
+      case 'deposits':
+        table.getColumn('status')?.setFilterValue('reserved');
+        break;
+      case 'customerOrders':
+        table.getColumn('orderStatus')?.setFilterValue('WISH');
+        break;
+      case 'deliveredThisMonth':
+        customerStateColumn?.setFilterValue('delivered');
+        deliveredDate?.setFilterValue(getFirstDayOfCurrentMonth);
+        status?.setFilterValue('active');
+        break;
+      case 'todaysDeliveries':
+        pickUpDate?.setFilterValue(getToday);
+        status?.setFilterValue('active');
+        sold?.setFilterValue(sold && sold.length > 3);
+        delivered?.setFilterValue(null)
+        break;
+      case 'tomorowsDeliveries':
+        pickUpDate?.setFilterValue(getTomorrow);
+        status?.setFilterValue('active');
+        depositMade?.setFilterValue(depositMade && depositMade.length > 3);
+        sold?.setFilterValue(sold && sold.length > 3);
+        delivered?.setFilterValue(null)
+        break;
+      case 'yestDeliveries':
+        pickUpDate?.setFilterValue(getYesterday);
+        status?.setFilterValue('active');
+        depositMade?.setFilterValue(depositMade && depositMade.length > 3);
+        sold?.setFilterValue(sold && sold.length > 3);
+        delivered?.setFilterValue(null)
+        break;
+
+      case 'deliveredThisYear':
+        customerStateColumn?.setFilterValue('delivered');
+        deliveredDate?.setFilterValue(getThisYear);
+        status?.setFilterValue('active');
+        break;
+      case 'depositsToday':
+        status?.setFilterValue('active');
+        depositMade?.setFilterValue('on');
+        sold?.setFilterValue('on');
+        delivered?.setFilterValue('off')
+        signed?.setFilterValue('off')
+        financeApp?.setFilterValue('off')
+        break;
+      default:
+        null;
+    }
+  }
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  };
+  const formatMonth = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}`;
+  };
+
+  const now = new Date(); // Current date and time
+  const formattedDate = formatDate(now);
+  function getToday() {
+    const today = new Date();
+    today.setDate(today.getDate());
+    console.log(formatDate(today), 'today')
+    return formatDate(today);
+  }
+  function getTomorrow() {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return formatDate(tomorrow);
+  }
+  function getYesterday() {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    return formatDate(yesterday);
+  }
+  function getLastDayOfPreviousMonth() {
+    const date = new Date();
+    date.setDate(1); // sets the day to the last day of the previous month
+    return formatMonth(date);
+  }
+  function getFirstDayOfCurrentMonth() {
+    const date = new Date();
+    date.setDate(1); // sets the day to the first day of the current month
+    return formatDate(date);
+  }
+  function getFirstDayOfTwoMonthsAgo() {
+    const date = new Date();
+    date.setMonth(date.getMonth() - 2);
+    date.setDate(1); // sets the day to the first day of the month two months ago
+    return formatMonth(date);
+  }
+  function getYear() {
+    const today = new Date();
+    return today.getFullYear().toString();
+  }
+  const getThisYear = getYear();
+
 
 
   return (
@@ -737,54 +1250,247 @@ export default function Purchase() {
             </Card>
           </div>
           {/**lists all customers orders  */}
-          <Tabs defaultValue="Parts Orders">
-            <div className="flex items-center">
-              <TabsList>
-                <TabsTrigger value="Parts Orders">Parts</TabsTrigger>
-                <TabsTrigger value="Acc Orders">Accessories</TabsTrigger>
-                <TabsTrigger value="week">Last 7 Days</TabsTrigger>
-                <TabsTrigger value="month">All orders</TabsTrigger>
-                <TabsTrigger value="Search Orders">Search Orders</TabsTrigger>
-                <TabsTrigger value="End Of Day">End Of Day</TabsTrigger>
-              </TabsList>
-            </div>
-            <TabsContent value="Parts Orders">
-              <Card x-chunk="dashboard-05-chunk-3">
-                <CardHeader className="px-7">
-                  <CardTitle>Accessories Orders</CardTitle>
-                  <CardDescription>
-                    Review orders from staff that have been requested from their customers.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className='max-h-[455px] h-auto overflow-y-auto'>
-                  <OtherTable tableData={partsTable} setValue={setValue} showPrevOrderById={showPrevOrderById} options2={options2} navigate={navigate} dept={'Parts'} />
-                </CardContent>
-                <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50 px-6 py-3">
-                  <div className='mx-auto mt-4'>
-                    <Pagination>
-                      <PaginationContent>
-                        <PaginationItem>
-                          <PaginationPrevious
-                            className='cursor-pointer'
-                            isActive={pageIndex > 1}
-                            onClick={() => setPageIndex(pageIndex - 1)}
-                          />
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink isActive>
-                            {pageIndex}
-                          </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationNext
-                            className='cursor-pointer'
-                            onClick={() => setPageIndex(pageIndex + 1)} />
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
+          <Tabs defaultValue="Orders">
+            <TabsList>
+              <TabsTrigger value="Orders">Orders</TabsTrigger>
+              <TabsTrigger value="End Of Day">End Of Day</TabsTrigger>
+            </TabsList>
+            <TabsContent value="Orders">
+              <div className="w-[95%] mt-[5px]">
+
+                <div className="container mx-auto py-3">
+                  <div className="flex items-center py-3">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button size='sm' variant="outline" className='mr-3' >Menu</Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56 border border-border bg-background text-foreground">
+                        <DropdownMenuLabel>Dashboard Actions</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem
+                            className="cursor-pointer"
+                            onSelect={() => setSelectedGlobal(true)}
+                          >
+                            Global Filter
+                          </DropdownMenuItem>
+                          <DropdownMenuSub>
+                            <DropdownMenuSubTrigger className="cursor-pointer">
+                              Default Filters
+                            </DropdownMenuSubTrigger>
+                            <DropdownMenuPortal>
+                              <DropdownMenuSubContent className="h-auto max-h-[175px] overflow-y-auto border border-border bg-background text-foreground">
+                                <DropdownMenuLabel>
+                                  {todayfilterBy || "Default Filters"}
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                {CallsList.map((item) => (
+                                  <DropdownMenuItem
+                                    onSelect={(event) => {
+                                      const value =
+                                        event.currentTarget.getAttribute("data-value");
+                                      const item =
+                                        CallsList.find((i) => i.key === value) ||
+                                        DeliveriesList.find((i) => i.key === value) ||
+                                        DepositsTakenList.find((i) => i.key === value);
+                                      if (item) {
+                                        handleFilterChange(item.key);
+                                        setTodayfilterBy(item.name);
+                                      }
+                                    }}
+                                    data-value={item.key}
+                                    textValue={item.key}
+                                  >
+                                    {item.name}
+                                  </DropdownMenuItem>
+                                ))}
+
+                              </DropdownMenuSubContent>
+                            </DropdownMenuPortal>
+                          </DropdownMenuSub>
+                          <DropdownMenuSub>
+                            <DropdownMenuSubTrigger className="cursor-pointer">
+                              Global Filters
+                            </DropdownMenuSubTrigger>
+                            <DropdownMenuPortal>
+                              <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                                {table
+                                  .getAllColumns()
+                                  .filter((column) => column.getCanHide())
+                                  .map((column) => (
+                                    <DropdownMenuItem
+                                      onSelect={(event) => {
+                                        setColumnFilterDropdown(event);
+                                      }}
+                                      data-value={column.id}
+                                      key={column.id}
+                                      className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline"
+                                    >
+                                      {column.id}
+                                    </DropdownMenuItem>
+                                  ))}
+                              </DropdownMenuSubContent>
+                            </DropdownMenuPortal>
+                          </DropdownMenuSub>
+                          <DropdownMenuItem
+                            className="cursor-pointer"
+                            onSelect={() => {
+                              setAllFilters([]);
+                              setSelectedGlobal(false);
+                            }}
+                          >
+                            Clear
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem
+                            className="cursor-pointer"
+                            onSelect={toggleFilter}
+                          >
+                            Toggle All Columns
+                          </DropdownMenuItem>
+                          <DropdownMenuSub>
+                            <DropdownMenuSubTrigger className="cursor-pointer">
+                              Column Toggle
+                            </DropdownMenuSubTrigger>
+                            <DropdownMenuPortal>
+                              <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                                {table
+                                  .getAllColumns()
+                                  .filter((column) => column.getCanHide())
+                                  .map((column) => {
+                                    return (
+                                      <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        className="cursor-pointer bg-background  capitalize text-foreground"
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) =>
+                                          column.toggleVisibility(!!value)
+                                        }
+                                      >
+                                        {column.id}
+                                      </DropdownMenuCheckboxItem>
+                                    );
+                                  })}
+                              </DropdownMenuSubContent>
+                            </DropdownMenuPortal>
+                          </DropdownMenuSub>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    {selectedColumn && (
+                      <div className="relative flex-1 md:grow-0 ">
+
+                        <Input
+                          placeholder={`Filter ${selectedColumn}...`}
+                          onChange={(e) => handleGlobalChange(e.target.value)}
+                          className="ml-2 max-w-sm w-auto "
+                          autoFocus
+                        />
+                        <Button
+                          onClick={() => {
+                            setAllFilters([]);
+                            setSelectedGlobal(false);
+                          }}
+                          size="icon"
+                          variant="ghost"
+                          className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+
+                          <X />
+                        </Button>
+                      </div>
+                    )}
+                    <div className="relative flex-1 md:grow-0 ">
+                      <DebouncedInput
+                        value={globalFilter ?? ""}
+                        onChange={(value) => setGlobalFilter(String(value))}
+                        className="mx-1 ml-3 rounded-md border border-border bg-background p-2 text-foreground shadow w-[300px] "
+                        placeholder="Search..." autoFocus
+                      />
+
+                      <Button
+                        onClick={() => {
+                          setGlobalFilter([]);
+                          setSelectedGlobal(false);
+                        }}
+                        size="icon"
+                        variant="ghost"
+                        className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                        <X size={16} />
+                      </Button>
+                    </div>
+
+
+                    {referrer === '/dealer/manager/inventory' && (
+                      <Button size='sm' variant="outline" className='mr-3' onClick={() => {
+                        navigate(-1)
+                      }} >Back to Manager Dash</Button>
+                    )}
+                    <div className="ml-auto">
+                      <Button size='sm' variant="outline" className='ml-3' >All</Button>
+                      <Button size='sm' variant="outline" className='ml-3' >Parts</Button>
+                      <Button size='sm' variant="outline" className='ml-3' >Accessories</Button>
+                    </div>
                   </div>
-                </CardFooter>
-              </Card>
+                  <div className="rounded-md border border-border    h-auto max-h-[600px] overflow-y-auto  ">
+                    <Table className='border border-border text-foreground bg-background'>
+                      <TableHeader className='border border-border text-muted-foreground bg-background text-center'>
+                        {table.getHeaderGroups().map((headerGroup) => (
+                          <TableRow key={headerGroup.id} className='border-border'>
+                            {headerGroup.headers.map((header) => {
+                              return (
+                                <TableHead key={header.id}>
+                                  {header.isPlaceholder
+                                    ? null
+                                    : flexRender(
+                                      header.column.columnDef.header,
+                                      header.getContext()
+                                    )}
+                                  {header.column.getCanFilter() && showFilter && (
+                                    <div className="sticky  z-5 mx-auto items-center justify-center cursor-pointer text-center ">
+                                      <Filter column={header.column} table={table} />
+                                    </div>
+                                  )}
+                                </TableHead>
+                              )
+                            })}
+                          </TableRow>
+                        ))}
+                      </TableHeader>
+
+                      <TableBody className='border border-border text-foreground bg-background '>
+                        {table.getRowModel().rows?.length ? (
+                          table.getRowModel().rows.map((row) => (
+                            <TableRow
+                              key={row.id}
+                              data-state={row.getIsSelected() && "selected"}
+                              className='border border-border text-foreground bg-background'
+                            >
+                              {row.getVisibleCells().map((cell) => (
+                                <TableCell key={cell.id}>
+                                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={columns.length} className="h-24 text-center border border-border text-foreground bg-background">
+                              No results.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+
+                    </Table>
+                  </div>
+                  <DataTablePagination table={table} />
+
+                </div>
+              </div>
             </TabsContent>
             <TabsContent value="Acc Orders">
               <Card x-chunk="dashboard-05-chunk-3">

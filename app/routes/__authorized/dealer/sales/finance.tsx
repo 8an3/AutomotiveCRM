@@ -616,16 +616,443 @@ export async function loader({ request, params }: LoaderFunction) {
     products = products.filter((board) =>
         board.name === 'Finance Product Board'
     );
-    console.log(products, 'produicts')
+    const tableData = await prisma.inventoryMotorcycle.findMany({
+        select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            packageNumber: true,
+            packagePrice: true,
+            stockNumber: true,
+            type: true,
+            class: true,
+            year: true,
+            make: true,
+            model: true,
+            modelName: true,
+            submodel: true,
+            subSubmodel: true,
+            price: true,
+            exteriorColor: true,
+            mileage: true,
+            consignment: true,
+            onOrder: true,
+            expectedOn: true,
+            status: true,
+            orderStatus: true,
+            hdcFONumber: true,
+            hdmcFONumber: true,
+            vin: true,
+            age: true,
+            floorPlanDueDate: true,
+            location: true,
+            stocked: true,
+            stockedDate: true,
+            isNew: true,
+            actualCost: true,
+            mfgSerialNumber: true,
+            engineNumber: true,
+            plates: true,
+            keyNumber: true,
+            length: true,
+            width: true,
+            engine: true,
+            fuelType: true,
+            power: true,
+            chassisNumber: true,
+            chassisYear: true,
+            chassisMake: true,
+            chassisModel: true,
+            chassisType: true,
+            registrationState: true,
+            registrationExpiry: true,
+            grossWeight: true,
+            netWeight: true,
+            insuranceCompany: true,
+            policyNumber: true,
+            insuranceAgent: true,
+            insuranceStartDate: true,
+            insuranceEndDate: true,
+            sold: true,
+            freight: true,
+            financeId: true,
+
+            Finance: {
+                select: {
+                    financeManager: true,
+                    userEmail: true,
+                    userName: true,
+                    financeManagerName: true,
+                    //: true,
+                    email: true,
+                    firstName: true,
+                    lastName: true,
+                    phone: true,
+                    name: true,
+                    address: true,
+                    city: true,
+                    postal: true,
+                    province: true,
+                    dl: true,
+                    typeOfContact: true,
+                    timeToContact: true,
+                    dob: true,
+                    //: true,
+                    othTax: true,
+                    optionsTotal: true,
+                    lienPayout: true,
+                    leadNote: true,
+                    sendToFinanceNow: true,
+                    dealNumber: true,
+                    iRate: true,
+                    months: true,
+                    discount: true,
+                    total: true,
+                    onTax: true,
+                    on60: true,
+                    biweekly: true,
+                    weekly: true,
+                    weeklyOth: true,
+                    biweekOth: true,
+                    oth60: true,
+                    weeklyqc: true,
+                    biweeklyqc: true,
+                    qc60: true,
+                    deposit: true,
+                    biweeklNatWOptions: true,
+                    weeklylNatWOptions: true,
+                    nat60WOptions: true,
+                    weeklyOthWOptions: true,
+                    biweekOthWOptions: true,
+                    oth60WOptions: true,
+                    biweeklNat: true,
+                    weeklylNat: true,
+                    nat60: true,
+                    qcTax: true,
+                    otherTax: true,
+                    totalWithOptions: true,
+                    otherTaxWithOptions: true,
+                    desiredPayments: true,
+                    admin: true,
+                    commodity: true,
+                    pdi: true,
+                    discountPer: true,
+                    userLoanProt: true,
+                    userTireandRim: true,
+                    userGap: true,
+                    userExtWarr: true,
+                    userServicespkg: true,
+                    deliveryCharge: true,
+                    vinE: true,
+                    lifeDisability: true,
+                    rustProofing: true,
+                    userOther: true,
+                    //: true,
+                    referral: true,
+                    visited: true,
+                    bookedApt: true,
+                    aptShowed: true,
+                    aptNoShowed: true,
+                    testDrive: true,
+                    metService: true,
+                    metManager: true,
+                    metParts: true,
+                    sold: true,
+                    depositMade: true,
+                    refund: true,
+                    turnOver: true,
+                    financeApp: true,
+                    approved: true,
+                    signed: true,
+                    pickUpSet: true,
+                    demoed: true,
+                    lastContact: true,
+                    status: true,
+                    customerState: true,
+                    result: true,
+                    timesContacted: true,
+                    nextAppointment: true,
+                    followUpDay: true,
+                    deliveryDate: true,
+                    delivered: true,
+                    deliveredDate: true,
+                    notes: true,
+                    visits: true,
+                    progress: true,
+                    metSalesperson: true,
+                    metFinance: true,
+                    financeApplication: true,
+                    pickUpDate: true,
+                    pickUpTime: true,
+                    depositTakenDate: true,
+                    docsSigned: true,
+                    tradeRepairs: true,
+                    seenTrade: true,
+                    lastNote: true,
+                    applicationDone: true,
+                    licensingSent: true,
+                    liceningDone: true,
+                    refunded: true,
+                    cancelled: true,
+                    lost: true,
+                    dLCopy: true,
+                    insCopy: true,
+                    testDrForm: true,
+                    voidChq: true,
+                    loanOther: true,
+                    signBill: true,
+                    ucda: true,
+                    tradeInsp: true,
+                    customerWS: true,
+                    otherDocs: true,
+                    urgentFinanceNote: true,
+                    funded: true,
+                    leadSource: true,
+                    financeDeptProductsTotal: true,
+                    bank: true,
+                    loanNumber: true,
+                    idVerified: true,
+                    dealerCommission: true,
+                    financeCommission: true,
+                    salesCommission: true,
+                    firstPayment: true,
+                    loanMaturity: true,
+                    quoted: true,
+                    //: true,
+                    InPerson: true,
+                    Phone: true,
+                    SMS: true,
+                    Email: true,
+                    Other: true,
+                    //------: true,
+                    //: true,
+                    paintPrem: true,
+                    licensing: true,
+                    stockNum: true,
+                    options: true,
+                    accessories: true,
+                    freight: true,
+                    labour: true,
+                    year: true,
+                    brand: true,
+                    mileage: true,
+                    model: true,
+                    model1: true,
+                    color: true,
+                    modelCode: true,
+                    msrp: true,
+                    trim: true,
+                    vin: true,
+                    bikeStatus: true,
+                    invId: true,
+                    motor: true,
+                    tag: true,
+                    //: true,
+                    tradeValue: true,
+                    tradeDesc: true,
+                    tradeColor: true,
+                    tradeYear: true,
+                    tradeMake: true,
+                    tradeVin: true,
+                    tradeTrim: true,
+                    tradeMileage: true,
+                    tradeLocation: true,
+                    lien: true,
+                    //: true,
+                    id: true,
+                    activixId: true,
+                    theRealActId: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    clientfileId: true,
+                    inventoryMotorcycleId: true,
+
+                    ///InventoryMotorcycle
+                    Clientfile: {
+                        select: {
+                            id: true,
+                            createdAt: true,
+                            updatedAt: true,
+                            financeId: true,
+                            userId: true,
+                            firstName: true,
+                            lastName: true,
+                            name: true,
+                            email: true,
+                            phone: true,
+                            address: true,
+                            city: true,
+                            postal: true,
+                            province: true,
+                            dl: true,
+                            typeOfContact: true,
+                            timeToContact: true,
+                            conversationId: true,
+                            billingAddress: true,
+                            dob: true,
+
+                            // AccOrder
+                            //Finance
+                            //WorkOrder
+                            //ServiceUnit
+                            //Comm
+                        }
+                    }
+                }
+            },
+            workOrders: {
+                select: {
+                    workOrderId: true,
+                    unit: true,
+                    mileage: true,
+                    vin: true,
+                    tag: true,
+                    motor: true,
+                    color: true,
+                    budget: true,
+                    waiter: true,
+                    totalLabour: true,
+                    totalParts: true,
+                    subTotal: true,
+                    total: true,
+                    writer: true,
+                    userEmail: true,
+                    tech: true,
+                    discDollar: true,
+                    discPer: true,
+                    techEmail: true,
+                    notes: true,
+                    customerSig: true,
+                    status: true,
+                    location: true,
+                    quoted: true,
+                    paid: true,
+                    remaining: true,
+                    FinanceUnitId: true,
+                    ServiceUnitId: true,
+                    financeId: true,
+                    clientfileId: true,
+                    note: true,
+                    closedAt: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    ServicesOnWorkOrders: {
+                        select: {
+                            id: true,
+                            createdAt: true,
+                            updatedAt: true,
+                            quantity: true,
+                            hr: true,
+                            status: true,
+                            workOrderId: true,
+                            serviceId: true,
+                            service: {
+                                select: {
+                                    id: true,
+                                    createdAt: true,
+                                    updatedAt: true,
+                                    description: true,
+                                    estHr: true,
+                                    service: true,
+                                    price: true,
+                                }
+                            }
+                        }
+                    },
+                    AccOrders: {
+                        select: {
+                            id: true,
+                            createdAt: true,
+                            updatedAt: true,
+                            userEmail: true,
+                            userName: true,
+                            dept: true,
+                            sellingDept: true,
+                            total: true,
+                            discount: true,
+                            discPer: true,
+                            paid: true,
+                            paidDate: true,
+                            status: true,
+                            workOrderId: true,
+                            note: true,
+                            financeId: true,
+                            clientfileId: true,
+
+                            AccessoriesOnOrders: {
+                                select: {
+                                    id: true,
+                                    quantity: true,
+                                    accOrderId: true,
+                                    status: true,
+                                    orderNumber: true,
+                                    OrderInvId: true,
+                                    accessoryId: true,
+                                    service: true,
+                                    hour: true,
+
+                                    // orderInventory
+                                    accessory: {
+                                        select: {
+                                            id: true,
+                                            createdAt: true,
+                                            updatedAt: true,
+                                            partNumber: true,
+                                            brand: true,
+                                            name: true,
+                                            price: true,
+                                            cost: true,
+                                            quantity: true,
+                                            minQuantity: true,
+                                            description: true,
+                                            category: true,
+                                            subCategory: true,
+                                            onOrder: true,
+                                            distributer: true,
+                                            location: true,
+                                            note: true,
+                                            workOrderSuggestion: true,
+                                        }
+                                    },
+                                    //accOrder
+                                }
+                            },
+                            //   Payments
+                            //  WorkOrder
+                            //  Finance
+                            AccHandoff: {
+                                select: {
+                                    id: true,
+                                    createdAt: true,
+                                    updatedAt: true,
+                                    sendTo: true,
+                                    handOffTime: true,
+                                    status: true,
+                                    sendToCompleted: true,
+                                    completedTime: true,
+                                    notes: true,
+                                    handOffDept: true,
+                                    AccOrderId: true,
+                                }
+                            }
+                            //  Clientfile
+                        }
+                    },
+                }
+            }
+        }
+    })
+
     const userAgent = request.headers.get('User-Agent');
     const isMobileDevice = checkForMobileDevice(userAgent);
     const rotationList = await prisma.user.findMany()
     const userList = rotationList
-    const columnState = user.columnStateSales
+
     return json({
         products,
+        tableData,
         userList,
-        columnState,
+
         getDemoDay,
         finance,
         deFees,
@@ -689,7 +1116,7 @@ export function MainDashbaord({ user }) {
     //const password = 'skylerzanth1234'//localStorage.getItem("password") ?? "";
     const proxyPhone = '+12176347250'
 
-    const { finance, searchData, getTemplates, callToken, deFees, convoList, newToken, columnState, userList, products } = useLoaderData();
+    const { finance, searchData, getTemplates, callToken, deFees, convoList, newToken, userList, tableData, products } = useLoaderData();
     const [data, setPaymentData,] = useState<dashBoardType[]>(finance);
     const [messagesConvo, setMessagesConvo] = useState([]);
     const [selectedChannelSid, setSelectedChannelSid] = useState([]);
@@ -929,22 +1356,6 @@ export function MainDashbaord({ user }) {
             ),
         }, */
     const columns = [
-
-        {
-            id: 'financeFile',
-            accessorKey: "financeFile",
-            filterFn: 'fuzzy',
-            sortingFn: fuzzySort,
-            header: ({ column }) => (
-                <p className="text-center">Finance </p>
-            ),
-            cell: ({ row }) => {
-                const data = row.original
-                return <Button size='sm' variant="outline" className='mx-auto' onClick={() => {
-
-                }} >Finance </Button>
-            },
-        },
         {
             id: 'financeFile',
             accessorKey: "financeFile",
@@ -1160,7 +1571,7 @@ export function MainDashbaord({ user }) {
             cell: ({ row }) => {
                 const data = row.original
                 return <div className="w-[275px] cursor-pointer  text-center text-[14px]  text-foreground hover:text-primary">
-                    <ClientVehicleCard data={data} />
+                    <ClientVehicleCard data={data} tableData={tableData} user={user} />
                 </div>
             },
         },
@@ -2944,16 +3355,16 @@ export function MainDashbaord({ user }) {
             weeklylNatWOptions: false,
             otherTaxWithOptions: false
         } */
-    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(columnState.state);
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>([]);
 
     useEffect(() => {
         const jsonString = user.columnStateSales.state
 
-        // console.log(jsonString, 'string objectg')
+        console.log(jsonString, 'string objectg')
         //console.log(columnVisibility, 'columnVisibility')
         //  console.log(columnState, 'columnState')
 
-        // setColumnVisibility(jsonString)
+        setColumnVisibility(jsonString)
     }, []);
 
     useEffect(() => {
@@ -4136,29 +4547,27 @@ export function MainDashbaord({ user }) {
                                 </Button>
                             </div>
                         )}
-                        {selectedGlobal === true && (
-                            <div className="relative ">
-                                <DebouncedInput
-                                    value={globalFilter ?? ""}
-                                    onChange={(value) => setGlobalFilter(String(value))}
-                                    className="ml-3 border border-border p-2 shadow max-w-sm w-auto"
-                                    placeholder="Search all columns..."
-                                    autoFocus
-                                />
+                        <div className="relative ">
+                            <DebouncedInput
+                                value={globalFilter ?? ""}
+                                onChange={(value) => setGlobalFilter(String(value))}
+                                className="ml-3 border border-border p-2 shadow w-[300px]"
+                                placeholder="Search all columns..."
+                                autoFocus
+                            />
 
-                                <Button
-                                    onClick={() => {
-                                        setGlobalFilter([]);
-                                        setSelectedGlobal(false);
-                                    }}
-                                    size="icon"
-                                    variant="ghost"
-                                    className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                            <Button
+                                onClick={() => {
+                                    setGlobalFilter([]);
+                                    setSelectedGlobal(false);
+                                }}
+                                size="icon"
+                                variant="ghost"
+                                className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
 
-                                    <X />
-                                </Button>
-                            </div>
-                        )}
+                                <X />
+                            </Button>
+                        </div>
                     </div>
 
                     <div style={{ direction: table.options.columnResizeDirection }}>

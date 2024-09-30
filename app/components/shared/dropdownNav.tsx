@@ -1965,7 +1965,7 @@ export const accNavSidebarNav = [
 ]
 export const serviceNavSidebarNav = [
   {
-    title: "Service Dashboard",
+    title: "Dashboard",
     to: "/dealer/service/dashboard",
   },
   {
@@ -2035,7 +2035,7 @@ export const salesNavSidebarNav = [
     to: "/dealer/sales/calculator",
   },
   {
-    title: "Motorcycle Inventory",
+    title: "Unit Inventory",
     to: "/dealer/sales/inventory",
   },
 ]
@@ -2063,13 +2063,14 @@ export const activixNavSidebarNav = [
 ]
 export const financeNavSidebarNav = [
   {
+    title: "Dashboard",
+    to: "/dealer/sales/finance",
+  },
+  {
     title: "Email Client",
     to: "/dealer/features/email/emailClient",
   },
-  {
-    title: "Finance Dashboard",
-    to: "/dealer/sales/finance",
-  },
+
   {
     title: "Calendar",
     to: "/dealer/sales/calendar",
@@ -2079,7 +2080,7 @@ export const financeNavSidebarNav = [
     to: "/dealer/sales/calculator",
   },
   {
-    title: "Motorcycle Inventory",
+    title: "Unit Inventory",
     to: "/dealer/sales/inventory",
 
   },
@@ -2106,8 +2107,8 @@ export const adminSidebarNav = [
     to: "/dealer/admin/reports/endOfDay",
   },
   {
-    title: "Inventory",
-    to: "/dealer/admin/inventory/units",
+    title: "Unit Inventory",
+    to: "/dealer/sales/inventory",
   },
   {
     title: "Import / Export",
@@ -2116,7 +2117,7 @@ export const adminSidebarNav = [
 ]
 export const devSidebarNav = [
   {
-    title: "Control Panel",
+    title: "Dashboard",
     to: "/devmode/controlPanel",
   },
   {
@@ -2154,14 +2155,13 @@ export const managerSidebarNav = [
     to: "/dealer/manager/reports/endOfDay",
   },
   {
-    title: "Inventory",
-    to: "/dealer/manager/inventory/units",
+    title: "Unit Inventory",
+    to: "/dealer/sales/inventory",
   },
   {
     title: "Scheduling",
     to: "/dealer/manager/scheduling/hours",
   },
-
   {
     title: "CSI",
     to: "/dealer/manager/csi",

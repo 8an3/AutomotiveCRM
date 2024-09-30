@@ -4634,6 +4634,7 @@ export async function seedUsers() {
           bio: "The tech at this dealer.",
         },
       },
+      ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
     },
   });
   await prisma.position.create({
@@ -4728,6 +4729,7 @@ export async function seedUsers() {
           bio: "The Delivery Driver at this dealer.",
         },
       },
+      ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
     },
   });
   await prisma.position.create({
@@ -4773,6 +4775,7 @@ export async function seedUsers() {
           bio: "The service writer at this dealer.",
         },
       },
+      ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
     },
   });
   await prisma.position.create({
@@ -4818,6 +4821,7 @@ export async function seedUsers() {
           bio: "The service manager at this dealer.",
         },
       },
+      ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
     },
   });
   await prisma.position.create({
@@ -4863,6 +4867,7 @@ export async function seedUsers() {
           bio: "The PAC manager at this dealer.",
         },
       },
+      ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
     },
   });
   await prisma.position.create({
@@ -4953,6 +4958,7 @@ export async function seedUsers() {
           bio: "The parts advisor at this dealer.",
         },
       },
+      ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
     },
   });
   await prisma.position.create({
@@ -4998,6 +5004,7 @@ export async function seedUsers() {
           bio: "The recieving at this dealer.",
         },
       },
+      ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
     },
   });
   await prisma.position.create({
@@ -5043,6 +5050,7 @@ export async function seedUsers() {
           bio: "The Admin Assistant at this dealer.",
         },
       },
+      ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
     },
   });
   await prisma.position.create({
@@ -17961,6 +17969,34 @@ export async function seed24Harley() {
 export async function updateUser() {
   const { REMIX_ADMIN_EMAIL } = process.env;
   invariant(REMIX_ADMIN_EMAIL, "REMIX_ADMIN_EMAIL must be set");
+
+  await prisma.user.update({
+    where: { email: 'sales2@gmail.com' },
+    data: {
+      dealerId: 1,
+      columnStateSales: {
+        create: {
+          state: {
+            "id": false, "SMS": false, "pdi": false, "tag": false, "vin": false, "bank": false, "lien": false, "lost": false, "msrp": false, "on60": false, "qc60": false, "sold": false, "trim": false, "ucda": false, "vinE": false, "year": false, "Other": false, "Phone": false, "admin": false, "brand": false, "color": false, "iRate": false, "invId": false, "motor": false, "nat60": false, "notes": false, "onTax": false, "oth60": false, "qcTax": false, "total": false, "dLCopy": false, "demoed": false, "funded": false, "labour": false, "model1": false, "months": false, "othTax": false, "quoted": false, "refund": false, "result": false, "signed": false, "visits": false, "weekly": false, "deposit": false, "freight": false, "insCopy": false, "mileage": false, "options": false, "userGap": false, "visited": false, "voidChq": false, "InPerson": false, "approved": false, "biweekly": false, "discount": false, "lastNote": false, "leadNote": false, "metParts": false, "otherTax": false, "progress": false, "referral": false, "refunded": false, "signBill": false, "stockNum": false, "tradeVin": false, "turnOver": false, "userName": false, "weeklyqc": false, "activixId": false, "aptShowed": false, "biweekOth": false, "bookedApt": false, "cancelled": false, "commodity": false, "createdAt": false, "delivered": false, "licensing": false, "loanOther": false, "modelCode": false, "otherDocs": false, "paintPrem": false, "pickUpSet": false, "seenTrade": false, "testDrive": false, "tradeDesc": false, "tradeInsp": false, "tradeMake": false, "tradeTrim": false, "tradeYear": false, "updatedAt": false, "userEmail": false, "userOther": false, "weeklyOth": false, "bikeStatus": false, "biweeklNat": false, "biweeklyqc": false, "customerWS": false, "dealNumber": false, "docsSigned": false, "financeApp": false, "idVerified": false, "leadSource": false, "lienPayout": false, "loanNumber": false, "metFinance": false, "metManager": false, "metService": false, "pickUpDate": false, "pickUpTime": false, "testDrForm": false, "tradeColor": false, "tradeValue": false, "weeklylNat": false, "accessories": false, "aptNoShowed": false, "depositMade": false, "discountPer": false, "userExtWarr": false, "clientfileId": false, "firstPayment": false, "liceningDone": false, "loanMaturity": false, "optionsTotal": false, "rustProofing": false, "theRealActId": false, "tradeMileage": false, "tradeRepairs": false, "userLoanProt": false, "deliveredDate": false, "licensingSent": false, "nat60WOptions": false, "oth60WOptions": false, "tradeLocation": false, "deliveryCharge": false, "financeManager": false, "lifeDisability": false, "metSalesperson": false, "timesContacted": false, "userTireandRim": false, "applicationDone": false, "desiredPayments": false, "salesCommission": false, "userServicespkg": false, "dealerCommission": false, "depositTakenDate": false, "sendToFinanceNow": false, "totalWithOptions": false, "biweekOthWOptions": false, "financeCommission": false, "urgentFinanceNote": false, "weeklyOthWOptions": false, "biweeklNatWOptions": false, "financeApplication": false, "financeManagerName": false, "weeklylNatWOptions": false, "otherTaxWithOptions": false, "address": false, "financeDeptProductsTotal": false, "email": false, "phone": false,
+            "city": false,
+            "postal": false,
+            "province": false,
+            "financeId": false,
+            "note": false,
+            "timeOfDay": false,
+            "painPrem": false,
+            "trailer": false,
+            "contactMethod": false,
+            "typeOfContact": false,
+            "unitPicker": false,
+            "timeToContact": false,
+
+          }
+        }
+      },
+      ColumnStateInventory: { create: { state: { "id": false, "make": true, "type": false, "year": true, "class": false, "power": false, "width": false, "engine": false, "length": false, "plates": false, "stocked": true, "fuelType": false, "unitInfo": false, "keyNumber": false, "netWeight": false, "chassisMake": false, "chassisType": false, "chassisYear": false, "grossWeight": false, "hdcFONumber": false, "stockNumber": true, "chassisModel": false, "engineNumber": false, "hdmcFONumber": false, "packagePrice": false, "policyNumber": false, "chassisNumber": false, "packageNumber": false, "insuranceAgent": false, "mfgSerialNumber": false, "insuranceCompany": false, "insuranceEndDate": false, "registrationState": false, "insuranceStartDate": false, "registrationExpiry": false } } },
+    },
+  });
 
   const adminuser = await prisma.user.update({
     where: { email: REMIX_ADMIN_EMAIL },

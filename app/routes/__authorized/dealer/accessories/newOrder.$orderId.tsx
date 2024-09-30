@@ -785,7 +785,7 @@ export default function Purchase() {
                   <Link to="/dealer/accessories/search">
                     <Button size='sm'>Create New Order</Button>
                   </Link>
-                  <Link to={`/dealer/customer/${order.clientfileId}/${order.financeId}`} >
+                  <Link to={`/dealer/sales/customer/${order.clientfileId}/${order.financeId}`} >
                     <Button
                       className='ml-4'
                       disabled={!order.financeId}
