@@ -24,14 +24,12 @@ By not at least trying it, your doing your professional career in sales a disser
 
 So if your looking for that one change to make in your sales career to boost sales this year, with a 100% guarantee of increasing them because it does not rely on motivation, salesmanship or the secret (If your still looking for it.)... You found the change that needs to be done, no matter the level your currently at in sales. Brand new? Great, you won't have the same headaches as more senior sales people had to endure. Selling for 10 years? I don't need to tell you twice that the crm you use sucks in more ways than we can count. Swearing at your screen randomly throughout the day.
 
-<center>
-  <p>Other pages to check out...</p>
+**Other pages to check out...**
 
   <p>
-    <a href="https://github.com/8an3/AutomotiveCRM/blob/main/TLBUTWORTHTHEREAD.md">tl but worth reading</a>
+    <a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/TLBUTWORTHTHEREAD.md">tl but worth reading</a>
     &nbsp;--&nbsp;
-    <a href="https://github.com/8an3/AutomotiveCRM/blob/main/DEVELOPMENT.md">Development</a>
+    <a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/DEVELOPMENT.md">Development</a>
     &nbsp;--&nbsp;
-    <a href="https://github.com/8an3/AutomotiveCRM/blob/main/IMPLEMENATION.md">Implement</a>
+    <a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/IMPLEMENATION.md">Implement</a>
   </p>
-</center>
