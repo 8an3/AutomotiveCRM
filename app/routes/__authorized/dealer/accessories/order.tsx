@@ -782,7 +782,7 @@ export default function Purchase() {
       cell: ({ row, column: { id } }) => {
         const data = row.original
         return (
-          <p className='text-center'>  {result.paid ? (<Check className='mx-auto' />) : (<X className='mx-auto' />)}</p>
+          <p className='text-center'>  {data.paid ? (<Check className='mx-auto' />) : (<X className='mx-auto' />)}</p>
         )
       },
       accessorKey: "paid",
