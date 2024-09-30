@@ -58,6 +58,15 @@ What if that crm company has 500 clients?
 
 Whether your in tech or not, you cannot deny it now, that is a lot of money.
 
-<div style="text-align: center;">
-[Closing thoughts](https://github.com/8an3/AutomotiveCRM/blob/main/CLOSING.md) -- [Consult](https://github.com/8an3/AutomotiveCRM/blob/main/CONSULT.md) -- [Implement](https://github.com/8an3/AutomotiveCRM/blob/main/IMPLEMENATION.md)-- [Home](https://github.com/8an3/AutomotiveCRM/blob/main/IMPLEMENATION.md)
-</div>
+**Other pages to check out...**
+
+  <p>
+      <a href="https://github.com/8an3/AutomotiveCRM/README.md">README</a>
+    <a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/TLBUTWORTHTHEREAD.md">tl but worth reading</a>
+        <a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/CLOSING.md">Closing thoughts</a>
+    &nbsp;--&nbsp;
+    <a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/DEVELOPMENT.md">Development</a>
+    &nbsp;--&nbsp;
+    <a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/IMPLEMENATION.md">Implement</a>
+        <a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/CONSULT.md">Consult</a>
+  </p>
