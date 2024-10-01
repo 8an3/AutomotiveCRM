@@ -15,7 +15,7 @@ import { GetUser } from "~/utils/loader.server";
 import { getSession as getOrder, commitSession as commitOrder, } from '~/sessions/user.client.server'
 import { QuoteServerActivix } from '~/utils/quote/quote.server';
 import emitter from '~/routes/__authorized/dealer/features/addOn/emitter';
-import { checkForMobileDevice, getToken, CompleteLastAppt, TwoDays, FollowUpApt, ComsCount, QuoteServer } from '../shared/shared'
+import { checkForMobileDevice, getToken, CompleteLastAppt, TwoDays, FollowUpApt, ComsCount, QuoteServer, options2 } from '../shared/shared'
 import { Resend } from 'resend';
 import CustomBody from "~/emails/customBody";
 
@@ -1625,15 +1625,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
     const minutes = Number(formData.minutes);
     dateModal.setHours(hours, minutes, 0);
     const date66 = new Date(dateModal);
-    const options2 = {
-      weekday: 'short',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-    };
+
     const apptDate66 = new Date(date66).toLocaleDateString("en-US", options2)
     //  console.log(dateModal, 'dateModal', date66, 'date66', apptDate66, 'apptDate66',)
     const todaysDate66 = new Date()
@@ -1833,15 +1825,7 @@ export const dashboardAction: ActionFunction = async ({ request, }) => {
       const minutes = Number(formData.minutes);
       dateModal.setHours(hours, minutes, 0);
       const date66 = new Date(dateModal);
-      const options2 = {
-        weekday: 'short',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-      };
+
       const apptDate66 = new Date(date66).toLocaleDateString("en-US", options2)
       console.log(dateModal, 'dateModal', date66, 'date66', apptDate66, 'apptDate66',)
       const todaysDate66 = new Date()

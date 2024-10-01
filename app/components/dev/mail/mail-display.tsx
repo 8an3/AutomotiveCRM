@@ -42,6 +42,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip"
+import { options2 } from "~/components/shared/shared"
 //import { Mail } from "@/app/(app)/examples/mail/data"
 
 interface MailDisplayProps {
@@ -53,15 +54,7 @@ export function MailDisplay({ mail }: MailDisplayProps) {
   const getFirstLetter = (name) => {
     return name ? name.charAt(0).toUpperCase() : '';
   };
-  const options2 = {
-    weekday: 'short',
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  };
+
 
   return (
     <div className="flex h-full flex-col">

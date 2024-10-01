@@ -38,7 +38,7 @@ export function Consignment({ data }) {
                 console.log(formData, 'formData');
                 fetcher.submit(formData, { method: "post" });
             }}
-            value={data.consignment ? String(data.consignment) : String(false)}
+            value={data.consignment ? String(data.consignment) : String(String(false))}
             name='consignment'>
             <SelectTrigger className="w-auto focus:border-primary">
                 <SelectValue />

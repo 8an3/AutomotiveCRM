@@ -1179,6 +1179,24 @@ model AccOrder {
   @@index([financeId])
 }
 
+model AccHandoff {
+  id              String   @id @default(cuid())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now())
+  sendTo          String?
+  handOffTime     String?
+  status          String?
+  sendToCompleted String?  @default("false")
+  completedTime   String?
+  notes           String?
+  handOffDept     String?
+
+  AccOrderId String
+  AccOrder   AccOrder @relation(fields: [AccOrderId], references: [id], onDelete: Cascade)
+
+  @@index([AccOrderId])
+}
+
 model AccessoriesOnOrders {
   id          String  @id @default(cuid())
   quantity    Int     @default(1)
@@ -1219,24 +1237,6 @@ model Accessories {
   workOrderSuggestion String?
 
   AccessoriesOnOrders AccessoriesOnOrders[]
-}
-
-model AccHandoff {
-  id              String   @id @default(cuid())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @default(now())
-  sendTo          String?
-  handOffTime     String?
-  status          String?
-  sendToCompleted String?  @default("false")
-  completedTime   String?
-  notes           String?
-  handOffDept     String?
-
-  AccOrderId String
-  AccOrder   AccOrder @relation(fields: [AccOrderId], references: [id], onDelete: Cascade)
-
-  @@index([AccOrderId])
 }
 
 model Payment {

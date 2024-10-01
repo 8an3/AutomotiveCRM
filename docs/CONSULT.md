@@ -9,7 +9,7 @@ Beleive it or not, there are brands that make it harder for their dealer network
 **Other pages to check out...**
 
 <p>
-<a href="https://github.com/8an3/AutomotiveCRM">README</a>
+<a href="https://github.com/8an3/AutomotiveCRM?tab=readme-ov-file#tldr">README</a>
 &nbsp;--&nbsp;
 <a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/TLBUTWORTHTHEREAD.md">tl but worth reading</a>
 &nbsp;--&nbsp;

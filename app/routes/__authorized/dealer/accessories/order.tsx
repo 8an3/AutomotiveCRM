@@ -224,7 +224,6 @@ export async function loader({ request, params }: LoaderFunction) {
 
   return json({ orders, user, sevTotal, tax, filteredOrders30, thiryTotal, dealerImage });
 }
-
 export function playScanSound() {
   const audio = new Audio(ScanSound);
   audio.play();
@@ -265,20 +264,27 @@ export async function action({ request, params }: ActionFunction) {
 
 export default function Purchase() {
   const { user, orders, sevTotal, tax, filteredOrders30, thiryTotal, dealerImage } = useLoaderData();
+  const [ordersList, setOrdersList] = useState(orders);
+
+  const [data, setData] = useState(ordersList);
+  const [type, setType] = useState('');
+  const [openFinance, setOpenFinance] = useState(0);
+  const [openSales, setOpenSales] = useState(0);
+  const [openService, setOpenService] = useState(0);
+  useEffect(() => {
+    console.log(data, 'data')
+  }, [data]);
   let ref = useRef();
   let payment = useFetcher();
   let search = useFetcher();
   const submit = useSubmit();
   const navigate = useNavigate()
-  const [ordersList, setOrdersList] = useState([]);
   const userIsManager = user.positions.some(
     (pos) => pos.position === 'Manager' || pos.position === 'Administrator'
   );
   const [referrer, setReferrer] = useState()
 
-  useEffect(() => {
-    setOrdersList(ordersList);
-  }, []);
+
   const lastOrder = orders[0];
   const taxMultiplier = Number(tax.userTax);
   const taxRate = 1 + taxMultiplier / 100;
@@ -320,8 +326,58 @@ export default function Purchase() {
 
   const showPrevOrderById = (id) => {
     const filteredOrder = orders.find(order => order.id === id);
+    console.log(filteredOrder, 'filteredOrder')
     setShowPrev(true)
     setShowPrevOrder(filteredOrder);
+  }
+
+  /**  const swrFetcher = url => axios.get(url).then(res => res.data)
+    const { data: dataAll } = useSWR(`/dealer/api/orders/all`, swrFetcher, { refreshInterval: 60000 });
+
+    useEffect(() => {
+      if (dataAll) {
+        if (type === 'Accessories') {
+          const allOrders = dataAll.filter((order) =>
+            order.AccHandoff?.some(handOff => handOff.sendTo === 'Accessories')
+          );
+          setData(allOrders)
+        }
+        else if (type === 'Parts') {
+          const allOrders = dataAll.filter((order) =>
+            order.AccHandoff?.some(handOff => handOff.sendTo === 'Parts')
+          );
+          setData(allOrders)
+        }
+        else {
+          setData(dataAll)
+        }
+      }
+    }, [dataAll]); */
+
+  async function GetParts() {
+    const allOrders = ordersList.filter((order) =>
+      order.AccHandoff?.some(handOff => handOff.sendTo === 'Parts')
+    );
+    setType('Parts')
+    console.log(allOrders, 'parts in api')
+    setData(allOrders)
+  }
+  async function GetAcc() {
+    const allOrders = ordersList.filter((order) =>
+      order.AccHandoff?.some(handOff => handOff.sendTo === 'Accessories')
+    );
+    setType('Accessories')
+    console.log(allOrders, 'acc in api')
+    setData(allOrders)
+  }
+  function FilterList(type) {
+    if (type === 'Parts') { GetParts() }
+    if (type === 'Accessories') { GetAcc() }
+  };
+
+  const filterNoAll = () => {
+    setOrdersList(ordersList)
+    console.log('filteredOrder', orders)
   }
 
   let totalAccessoriesCost;
@@ -330,9 +386,7 @@ export default function Purchase() {
     totalAmountPaid = calculateTotalAmountPaid(lastOrder)
     totalAccessoriesCost = calculateTotalAccessoriesCost(lastOrder);
   }
-  useEffect(() => {
 
-  }, []);
 
   useEffect(() => {
     if (showPrevOrder) {
@@ -467,37 +521,6 @@ export default function Purchase() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [quantities, setQuantities] = useState({});
 
-  const handleQuantityChange = (id, quantity) => {
-    setQuantities(prev => ({ ...prev, [id]: quantity }));
-  };
-
-  const handleAddToOrder = (product) => {
-    const quantity = quantities[product.id] || 1;
-    const newProducts = Array.from({ length: quantity }, (_, index) => {
-      const baseIndex = selectedProducts.length + index + 1;
-      return {
-        [`{${baseIndex}}free1`]: `${product.name} ${product.price}`,
-        [`{${baseIndex}}free2`]: product.location,
-        [`{${baseIndex}}code128`]: product.id,
-      };
-    });
-    setSelectedProducts(prev => [...prev, ...newProducts]);
-  };
-
-  const [pageIndex, setPageIndex] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  // ---- pagination parts
-  const [partsTable, setPartsTable] = useState([]);
-  const swrFetcher = url => axios.get(url).then(res => res.data)
-  const { data: partsData } = useSWR(`/dealer/api/orders/parts/${pageIndex}/${perPage}`, swrFetcher, { refreshInterval: 20000 });
-  useEffect(() => { if (partsData) { setPartsTable(partsData.allOrders) } }, [partsData]);
-  // ---- pagination parts
-  // ---- pagination acc
-  const [accTable, setAccTable] = useState([]);
-  const { data: dataAcc } = useSWR(`/dealer/api/orders/accessories/${pageIndex}/${perPage}`, swrFetcher, { refreshInterval: 20000 });
-
-  useEffect(() => { if (dataAcc) { setAccTable(dataAcc.allOrders) } }, [dataAcc]);
-
   // ---- pagination acc
   // ---- pagination all orders
   const [pageIndexAll, setPageIndexAll] = useState(1);
@@ -505,9 +528,7 @@ export default function Purchase() {
   const [accTableAll, setAccTableAll] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
 
-  const { data: dataAll } = useSWR(`/dealer/api/orders/all/${pageIndexAll}/${perPageAll}`, swrFetcher, { refreshInterval: 20000 });
 
-  useEffect(() => { if (dataAll) { setAccTableAll(dataAll) } }, [dataAll]);
 
   const totalOrders = accTableAll.total;
   const totalPages = Math.ceil(totalOrders / perPageAll);
@@ -527,9 +548,6 @@ export default function Purchase() {
     pageNumbers.push(i);
   }
 
-  const handlePageChange = (page) => {
-    setPageIndexAll(page);
-  };
 
   // ---- pagination all orders
   let toReceipt
@@ -586,7 +604,6 @@ export default function Purchase() {
 
 
   //  table
-  const [data, setData] = useState(orders);
 
   const defaultColumn = {
     cell: ({ row, column: { id } }) => {
@@ -670,45 +687,10 @@ export default function Purchase() {
         return (
           <Select
             onValueChange={(value) => {
-              const status = table.getColumn("status");
-              status.setFilterValue(value);
-            }}
-
-            name='filter'>
-            <SelectTrigger className="w-auto focus:border-primary mx-auto">
-              <SelectValue placeholder='Filter' />
-            </SelectTrigger>
-            <SelectContent className='bg-background text-foreground border-border'>
-              <SelectItem value="Quote">Quote</SelectItem>
-              <SelectItem value="Sales">Sales</SelectItem>
-              <SelectItem value="Open">Open</SelectItem>
-              <SelectItem value="Scheduled">Scheduled</SelectItem>
-              <SelectItem value="Waiting On Parts">Waiting On Parts</SelectItem>
-              <SelectItem value="Waiter">Waiter</SelectItem>
-              <SelectItem value="In Works">In Works</SelectItem>
-              <SelectItem value="Work Completed">Work Completed</SelectItem>
-              <SelectItem value="Scheduled for Delivery">Scheduled for Delivery</SelectItem>
-              <SelectItem value="Long Term Storage">Long Term Storage</SelectItem>
-              <SelectItem value="Winter Storage">Winter Storage</SelectItem>
-              <SelectItem value="Closed">Closed</SelectItem>
-            </SelectContent>
-          </Select>
-        )
-      },
-    },
-    {
-      id: 'status',
-      accessorKey: "status",
-      filterFn: 'fuzzy',
-      sortingFn: fuzzySort,
-      header: ({ column }) => {
-        return (
-          <Select
-            onValueChange={(value) => {
               let status = table.getColumn("status");
               status.setFilterValue(value);
             }}
-            name='filter'>
+            name='Status'>
             <SelectTrigger className="w-auto focus:border-primary mx-auto">
               <SelectValue placeholder='Status' />
             </SelectTrigger>
@@ -716,6 +698,7 @@ export default function Purchase() {
               <SelectItem value="Quote">Quote</SelectItem>
               <SelectItem value="Paid">Paid</SelectItem>
               <SelectItem value="On Order">On Order</SelectItem>
+              <SelectItem value="Backorder">Backorder</SelectItem>
               <SelectItem value="Completed">Completed</SelectItem>
             </SelectContent>
           </Select>
@@ -790,23 +773,7 @@ export default function Purchase() {
       filterFn: 'fuzzy',
       sortingFn: fuzzySort,
     },
-    {
-      id: 'sellingDept',
-      accessorKey: "sellingDept",
-      filterFn: 'fuzzy',
-      sortingFn: fuzzySort,
-      header: ({ column }) => {
-        return (
-          <p className='text-center'>Sent From</p>
-        )
-      },
-      cell: ({ row, column: { id } }) => {
-        const data = row.original
-        return (
-          <p className='text-center'>{data.sellingDept}</p>
-        )
-      },
-    },
+
     {
       id: 'Actions',
       header: ({ column }) => {
@@ -829,8 +796,8 @@ export default function Purchase() {
                   variant="ghost"
                   className="mr-3 hover:bg-primary"
                   onClick={() => {
-                    setValue(data.workOrderId);
-                    showPrevOrderById(data.workOrderId)
+                    setValue(data.id);
+                    showPrevOrderById(data.id)
                   }}
                 >
                   <Eye className="h-5 w-5" />
@@ -842,7 +809,7 @@ export default function Purchase() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link to={`/dealer/acceessories/order/${data.workOrderId}`} >
+                <Link to={`/dealer/acceessories/order/${data.id}`} >
 
                   <Button
                     size="icon"
@@ -862,6 +829,7 @@ export default function Purchase() {
         )
       },
     },
+
   ]
   const table = useReactTable({
     data,
@@ -916,73 +884,6 @@ export default function Purchase() {
     console.log("value", value);
     table.getColumn(selectedColumn)?.setFilterValue(value);
   };
-
-  const CallsList = [
-    {
-      key: "inStock",
-      name: "In Stock",
-    },
-    {
-      key: "available",
-      name: "Available",
-    },
-    {
-      key: "inStockArrived",
-      name: "In Stock and Available",
-    },
-    {
-      key: "newStock",
-      name: "New Stock",
-    },
-    {
-      key: "usedStock",
-      name: "Used Stock",
-    },
-    {
-      key: "sold",
-      name: "Sold",
-    },
-    {
-      key: "otd",
-      name: "Out The Door",
-    },
-    {
-      key: "deposits",
-      name: "Sold Units - Waiting To Be Picked Up",
-    },
-  ];
-  const DeliveriesList = [
-    {
-      key: "todaysDeliveries",
-      name: "Deliveries - Today",
-    },
-    {
-      key: "tomorowsDeliveries",
-      name: "Deliveries - Tomorrow",
-    },
-    {
-      key: "yestDeliveries",
-      name: "Deliveries - Yesterday",
-    },
-    {
-      key: "deliveredThisMonth",
-      name: "Delivered - Current Month",
-    },
-    {
-      key: "deliveredLastMonth",
-      name: "Delivered - Last Month",
-    },
-    {
-      key: "deliveredThisYear",
-      name: "Delivered - Year",
-    },
-  ];
-  const DepositsTakenList = [
-    {
-      key: "depositsToday",
-      name: "Deposit Taken - Need to Finalize Deal",
-    },
-  ];
   const handleFilterChange = (selectedFilter) => {
     setAllFilters()
     const customerStateColumn = table.getColumn('customerState');
@@ -1143,6 +1044,12 @@ export default function Purchase() {
                 <CardDescription className="max-w-lg text-balance leading-relaxed">
 
                 </CardDescription>
+                <CardContent className='flex flex-row'>
+                  <p>Open Ordes</p>
+                  <p>Sales: {openSales}</p> {' '}
+                  <p>Service: {openService}</p> {' '}
+                  <p>Finance: {openFinance}</p> {' '}
+                </CardContent>
               </CardHeader>
               <CardFooter>
                 <Link to="/dealer/accessories/search">
@@ -1431,9 +1338,24 @@ export default function Purchase() {
                       }} >Back to Manager Dash</Button>
                     )}
                     <div className="ml-auto">
-                      <Button size='sm' variant="outline" className='ml-3' >All</Button>
-                      <Button size='sm' variant="outline" className='ml-3' >Parts</Button>
-                      <Button size='sm' variant="outline" className='ml-3' >Accessories</Button>
+                      <Button size='sm' variant="outline" className='ml-3'
+                        onClick={() => {
+                          filterNoAll()
+                          setType('')
+                        }} >
+                        All</Button>
+                      <Button size='sm' variant="outline" className='ml-3'
+                        onClick={() => {
+                          FilterList('Parts')
+                          setType('Parts')
+                        }}>
+                        Parts</Button>
+                      <Button size='sm' variant="outline" className='ml-3'
+                        onClick={() => {
+                          FilterList('Accessories')
+                          setType('Accessories')
+                        }}>
+                        Accessories</Button>
                     </div>
                   </div>
                   <div className="rounded-md border border-border    h-auto max-h-[600px] overflow-y-auto  ">
@@ -1493,240 +1415,8 @@ export default function Purchase() {
                 </div>
               </div>
             </TabsContent>
-            <TabsContent value="Acc Orders">
-              <Card x-chunk="dashboard-05-chunk-3">
-                <CardHeader className="px-7">
-                  <CardTitle>Accessories Orders</CardTitle>
-                  <CardDescription>
-                    Review orders from staff that have been requested from their customers.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className='max-h-[455px] h-auto overflow-y-auto'>
-                  <OtherTable tableData={accTable} setValue={setValue} showPrevOrderById={showPrevOrderById} options2={options2} navigate={navigate} dept={'Accessories'} />
-                </CardContent>
-                <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50 px-6 py-3">
-                  <div className='mx-auto mt-4'>
-                    <Pagination>
-                      <PaginationContent>
-                        <PaginationItem>
-                          <PaginationPrevious
-                            className='cursor-pointer'
-                            isActive={pageIndex > 1}
-                            onClick={() => setPageIndex(pageIndex - 1)}
-                          />
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationLink isActive>
-                            {pageIndex}
-                          </PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                          <PaginationNext
-                            className='cursor-pointer'
-                            onClick={() => setPageIndex(pageIndex + 1)} />
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
-                  </div>
-                </CardFooter>
-              </Card>
-            </TabsContent>
-            <TabsContent value="week">
-              <Card x-chunk="dashboard-05-chunk-3">
-                <CardHeader className="px-7">
-                  <CardTitle>Orders</CardTitle>
-                  <CardDescription>
-                    Recent orders from your store.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className='max-h-[455px] h-auto overflow-y-auto'>
 
-                  <PACTable tableData={filteredOrders7} setValue={setValue} showPrevOrderById={showPrevOrderById} options2={options2} navigate={navigate} dept={'Accessories'} />
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="month">
-              <Card x-chunk="dashboard-05-chunk-3">
-                <CardHeader className="px-7">
-                  <CardTitle>All Orders</CardTitle>
-                  <CardDescription>
-                    Recent orders from your store.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className='max-h-[455px] h-auto overflow-y-auto'>
-                  <PACTable tableData={accTableAll.allOrders} setValue={setValue} showPrevOrderById={showPrevOrderById} options2={options2} navigate={navigate} dept={'All'} />
-                </CardContent>
-                <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50 px-6 py-3">
-                  <div className='mx-auto mt-4'>
-                    <Pagination>
-                      <PaginationContent>
-                        <PaginationItem>
-                          <PaginationPrevious
-                            className='cursor-pointer'
-                            isActive={pageIndexAll > 1}
-                            onClick={() => handlePageChange(pageIndexAll - 1)}
-                          />
-                        </PaginationItem>
-                        {pageNumbers.map((page) => (
-                          <PaginationItem key={page}>
-                            <PaginationLink
-                              isActive={page === pageIndexAll}
-                              onClick={() => handlePageChange(page)}
-                            >
-                              {page}
-                            </PaginationLink>
-                          </PaginationItem>
-                        ))}
-                        {endPage < totalPages && (
-                          <>
-                            <PaginationItem>
-                              <PaginationItem>
-                                <PaginationEllipsis />
-                              </PaginationItem>
-                              <PaginationLink
-                                onClick={() => handlePageChange(totalPages)}
-                              >
-                                {totalPages}
-                              </PaginationLink>
-                            </PaginationItem>
-                          </>
-                        )}
 
-                        <PaginationItem>
-                          <PaginationNext
-                            isActive={pageIndexAll < totalPages}
-                            onClick={() => handlePageChange(pageIndexAll + 1)} />
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
-                  </div>
-                </CardFooter>
-
-              </Card>
-            </TabsContent>
-            <TabsContent value="Search Orders">
-              <Card x-chunk="dashboard-05-chunk-3 " className=" ">
-                <CardHeader className="px-7">
-                  <CardTitle>
-                    <div className="flex items-center justify-between">
-                      <p>Search Orders By Customer</p>
-                    </div>
-                  </CardTitle>
-                  <CardDescription>
-                    <search.Form
-                      method="get"
-                      action="/dealer/accessories/order/search"
-                    >
-                      <div className="relative ml-auto flex-1 md:grow-0 ">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          ref={ref}
-                          type="search"
-                          name="q"
-                          onChange={(e) => {
-                            //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
-                            search.submit(e.currentTarget.form);
-                          }}
-                          placeholder="Search..."
-                          className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-                        />
-                      </div>
-                    </search.Form>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className='max-h-[455px] h-auto overflow-y-auto'>
-                  <>
-                    <Table>
-                      <TableHeader>
-                        <TableRow className='border-border'>
-                          <TableHead>Customer</TableHead>
-                          <TableHead className="hidden sm:table-cell">
-                            Phone
-                          </TableHead>
-                          <TableHead className="hidden sm:table-cell">
-                            Address
-                          </TableHead>
-                          <TableHead className=" text-center hidden md:table-cell">
-                            Actions
-                          </TableHead>
-                          <TableHead className="text-right"></TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody className="">
-                        {search.data &&
-                          search.data.map((result, index) => (
-                            <>
-                              <TableRow key={index} className="hover:bg-accent border-border cursor-pointer"
-                                onClick={() => {
-                                  setShowPrev(false)
-                                  setShowPrevOrder(null)
-                                  setSearchResults(result)
-                                }}>
-                                <TableCell>
-                                  <div className="font-medium">
-                                    {capitalizeFirstLetter(result.firstName)}{" "}
-                                    {capitalizeFirstLetter(result.lastName)}
-                                  </div>
-                                  <div className="text-sm text-muted-foreground ">
-                                    {result.email}
-                                  </div>
-                                </TableCell>
-                                <TableCell className="hidden sm:table-cell">
-                                  {result.phone}
-                                </TableCell>
-                                <TableCell className="hidden md:table-cell">
-                                  {result.address}
-                                </TableCell>
-                                <TableCell className="text-center text-lg text-muted-foreground">
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        size="icon"
-                                        variant="ghost"
-                                        className="mr-3 hover:bg-primary"
-                                        onClick={() => {
-                                          const formData = new FormData();
-                                          formData.append("clientfileId", result.id);
-                                          formData.append("intent", 'createNewOrder');
-                                          submit(formData, { method: "post", });
-                                        }}
-                                      >
-                                        <Plus className="h-5 w-5" />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="right">
-                                      Create New Order
-                                    </TooltipContent>
-                                  </Tooltip>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Link
-                                        to={`/dealer/customer/${result.id}`}
-                                        className="h-5 w-5 hover:bg-primary "
-                                      >
-                                        <Button
-                                          size="icon"
-                                          variant="ghost"
-                                          className="hover:bg-primary"
-                                        >
-                                          <User className="h-5 w-5" />
-                                        </Button>
-                                      </Link>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="right">
-                                      Customer Profile
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TableCell>
-                              </TableRow>
-                            </>
-                          ))}
-                      </TableBody>
-                    </Table>
-                  </>
-                </CardContent>
-              </Card>
-            </TabsContent>
             <TabsContent value="End Of Day">
               <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
                 <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
@@ -1891,7 +1581,6 @@ export default function Purchase() {
 }
 
 export const meta = () => {
-
   return [
     { title: `PAC Dashboard | Dealer Sales Assistant` },
     {
@@ -2979,7 +2668,7 @@ function OtherTable({ tableData, setValue, showPrevOrderById, options2, navigate
     </Table>
   )
 }
-async function getTotalFromLast7Days() {
+export async function getTotalFromLast7Days() {
   const today = new Date();
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(today.getDate() - 7);
@@ -3017,7 +2706,7 @@ async function getTotalFromLast7Days() {
   );
   return formattedSumTotal;
 }
-async function getTotalFromLast30Days() {
+export async function getTotalFromLast30Days() {
   const today = new Date();
   const sevenDaysAgo = new Date();
   sevenDaysAgo.setDate(today.getDate() - 30);
@@ -3055,6 +2744,304 @@ async function getTotalFromLast30Days() {
   );
   return formattedSumTotal;
 }
+export const CallsList = [
+  {
+    key: "inStock",
+    name: "In Stock",
+  },
+  {
+    key: "available",
+    name: "Available",
+  },
+  {
+    key: "inStockArrived",
+    name: "In Stock and Available",
+  },
+  {
+    key: "newStock",
+    name: "New Stock",
+  },
+  {
+    key: "usedStock",
+    name: "Used Stock",
+  },
+  {
+    key: "sold",
+    name: "Sold",
+  },
+  {
+    key: "otd",
+    name: "Out The Door",
+  },
+  {
+    key: "deposits",
+    name: "Sold Units - Waiting To Be Picked Up",
+  },
+];
+export const DeliveriesList = [
+  {
+    key: "todaysDeliveries",
+    name: "Deliveries - Today",
+  },
+  {
+    key: "tomorowsDeliveries",
+    name: "Deliveries - Tomorrow",
+  },
+  {
+    key: "yestDeliveries",
+    name: "Deliveries - Yesterday",
+  },
+  {
+    key: "deliveredThisMonth",
+    name: "Delivered - Current Month",
+  },
+  {
+    key: "deliveredLastMonth",
+    name: "Delivered - Last Month",
+  },
+  {
+    key: "deliveredThisYear",
+    name: "Delivered - Year",
+  },
+];
+export const DepositsTakenList = [
+  {
+    key: "depositsToday",
+    name: "Deposit Taken - Need to Finalize Deal",
+  },
+];
+/**  <TabsContent value="week">
+              <Card x-chunk="dashboard-05-chunk-3">
+                <CardHeader className="px-7">
+                  <CardTitle>Orders</CardTitle>
+                  <CardDescription>
+                    Recent orders from your store.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className='max-h-[455px] h-auto overflow-y-auto'>
 
+                  <PACTable tableData={filteredOrders7} setValue={setValue} showPrevOrderById={showPrevOrderById} options2={options2} navigate={navigate} dept={'Accessories'} />
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="month">
+              <Card x-chunk="dashboard-05-chunk-3">
+                <CardHeader className="px-7">
+                  <CardTitle>All Orders</CardTitle>
+                  <CardDescription>
+                    Recent orders from your store.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className='max-h-[455px] h-auto overflow-y-auto'>
+                  <PACTable tableData={accTableAll.allOrders} setValue={setValue} showPrevOrderById={showPrevOrderById} options2={options2} navigate={navigate} dept={'All'} />
+                </CardContent>
+                <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50 px-6 py-3">
+                  <div className='mx-auto mt-4'>
+                    <Pagination>
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious
+                            className='cursor-pointer'
+                            isActive={pageIndexAll > 1}
+                            onClick={() => handlePageChange(pageIndexAll - 1)}
+                          />
+                        </PaginationItem>
+                        {pageNumbers.map((page) => (
+                          <PaginationItem key={page}>
+                            <PaginationLink
+                              isActive={page === pageIndexAll}
+                              onClick={() => handlePageChange(page)}
+                            >
+                              {page}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+                        {endPage < totalPages && (
+                          <>
+                            <PaginationItem>
+                              <PaginationItem>
+                                <PaginationEllipsis />
+                              </PaginationItem>
+                              <PaginationLink
+                                onClick={() => handlePageChange(totalPages)}
+                              >
+                                {totalPages}
+                              </PaginationLink>
+                            </PaginationItem>
+                          </>
+                        )}
 
+                        <PaginationItem>
+                          <PaginationNext
+                            isActive={pageIndexAll < totalPages}
+                            onClick={() => handlePageChange(pageIndexAll + 1)} />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  </div>
+                </CardFooter>
+
+              </Card>
+            </TabsContent>
+            <TabsContent value="Search Orders">
+              <Card x-chunk="dashboard-05-chunk-3 " className=" ">
+                <CardHeader className="px-7">
+                  <CardTitle>
+                    <div className="flex items-center justify-between">
+                      <p>Search Orders By Customer</p>
+                    </div>
+                  </CardTitle>
+                  <CardDescription>
+                    <search.Form
+                      method="get"
+                      action="/dealer/accessories/order/search"
+                    >
+                      <div className="relative ml-auto flex-1 md:grow-0 ">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          ref={ref}
+                          type="search"
+                          name="q"
+                          onChange={(e) => {
+                            //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
+                            search.submit(e.currentTarget.form);
+                          }}
+                          placeholder="Search..."
+                          className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+                        />
+                      </div>
+                    </search.Form>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className='max-h-[455px] h-auto overflow-y-auto'>
+                  <>
+                    <Table>
+                      <TableHeader>
+                        <TableRow className='border-border'>
+                          <TableHead>Customer</TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Phone
+                          </TableHead>
+                          <TableHead className="hidden sm:table-cell">
+                            Address
+                          </TableHead>
+                          <TableHead className=" text-center hidden md:table-cell">
+                            Actions
+                          </TableHead>
+                          <TableHead className="text-right"></TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody className="">
+                        {search.data &&
+                          search.data.map((result, index) => (
+                            <>
+                              <TableRow key={index} className="hover:bg-accent border-border cursor-pointer"
+                                onClick={() => {
+                                  setShowPrev(false)
+                                  setShowPrevOrder(null)
+                                  setSearchResults(result)
+                                }}>
+                                <TableCell>
+                                  <div className="font-medium">
+                                    {capitalizeFirstLetter(result.firstName)}{" "}
+                                    {capitalizeFirstLetter(result.lastName)}
+                                  </div>
+                                  <div className="text-sm text-muted-foreground ">
+                                    {result.email}
+                                  </div>
+                                </TableCell>
+                                <TableCell className="hidden sm:table-cell">
+                                  {result.phone}
+                                </TableCell>
+                                <TableCell className="hidden md:table-cell">
+                                  {result.address}
+                                </TableCell>
+                                <TableCell className="text-center text-lg text-muted-foreground">
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        className="mr-3 hover:bg-primary"
+                                        onClick={() => {
+                                          const formData = new FormData();
+                                          formData.append("clientfileId", result.id);
+                                          formData.append("intent", 'createNewOrder');
+                                          submit(formData, { method: "post", });
+                                        }}
+                                      >
+                                        <Plus className="h-5 w-5" />
+                                      </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">
+                                      Create New Order
+                                    </TooltipContent>
+                                  </Tooltip>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Link
+                                        to={`/dealer/customer/${result.id}`}
+                                        className="h-5 w-5 hover:bg-primary "
+                                      >
+                                        <Button
+                                          size="icon"
+                                          variant="ghost"
+                                          className="hover:bg-primary"
+                                        >
+                                          <User className="h-5 w-5" />
+                                        </Button>
+                                      </Link>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">
+                                      Customer Profile
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TableCell>
+                              </TableRow>
+                            </>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            <TabsContent value="Acc Orders">
+              <Card x-chunk="dashboard-05-chunk-3">
+                <CardHeader className="px-7">
+                  <CardTitle>Accessories Orders</CardTitle>
+                  <CardDescription>
+                    Review orders from staff that have been requested from their customers.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className='max-h-[455px] h-auto overflow-y-auto'>
+                  <OtherTable tableData={accTable} setValue={setValue} showPrevOrderById={showPrevOrderById} options2={options2} navigate={navigate} dept={'Accessories'} />
+                </CardContent>
+                <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50 px-6 py-3">
+                  <div className='mx-auto mt-4'>
+                    <Pagination>
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious
+                            className='cursor-pointer'
+                            isActive={pageIndex > 1}
+                            onClick={() => setPageIndex(pageIndex - 1)}
+                          />
+                        </PaginationItem>
+                        <PaginationItem>
+                          <PaginationLink isActive>
+                            {pageIndex}
+                          </PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                          <PaginationNext
+                            className='cursor-pointer'
+                            onClick={() => setPageIndex(pageIndex + 1)} />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  </div>
+                </CardFooter>
+              </Card>
+            </TabsContent> */
 

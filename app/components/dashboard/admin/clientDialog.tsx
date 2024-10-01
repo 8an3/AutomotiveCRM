@@ -143,7 +143,7 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table"
-import { EditableText } from "~/components/shared/shared";
+import { EditableText, options2 } from "~/components/shared/shared";
 import { Plus } from "lucide-react";
 import {
   Pagination,
@@ -229,17 +229,6 @@ export default function ClientDialog({ data, user, deFees, salesPerson }) {
   ];
 
 
-  const options2 = {
-    weekday: "short",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-    timeZoneName: "short"
-  };
 
 
   const copyText = (text) => {
@@ -1262,17 +1251,7 @@ function SalesAccOrder({ finance, deFees, salesPerson }) {
   const inputLength = input.trim().length
   const payment = useFetcher();
 
-  const options2 = {
-    weekday: "short",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-    timeZoneName: "short"
-  };
+
 
 
   const taxMultiplier = Number(deFees.userTax);
@@ -2672,19 +2651,6 @@ function WorkOrders({ finance, deFees }) {
     }
   }
 
-  const options2 = {
-    weekday: "short",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-    timeZoneName: "short"
-  };
-
-
 
 
   useEffect(() => {
@@ -3579,17 +3545,6 @@ function AccOrders({ finance, deFees, salesPerson }) {
   const inputLength = input.trim().length
   const payment = useFetcher();
 
-  const options2 = {
-    weekday: "short",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-    timeZoneName: "short"
-  };
 
 
   const taxMultiplier = Number(deFees.userTax);

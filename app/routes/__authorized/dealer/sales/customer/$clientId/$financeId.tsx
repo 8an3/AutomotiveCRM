@@ -311,39 +311,13 @@ export default function Dashboard() {
     navigator.clipboard.writeText(text)
       .then(() => {
         setCopiedText(text);
-        setTimeout(() => setCopiedText(''), 3000); // Reset after 3 seconds
+        setTimeout(() => setCopiedText(''), 3000);
       })
-      .catch((error) => {
-        // console.error('Failed to copy text: ', error);
-      });
   };
   const [copiedText, setCopiedText] = useState();
   useEffect(() => {
     return () => clearTimeout(timerRef.current);
   }, [])
-
-  const users = [
-    {
-      name: "Olivia Martin",
-      email: "m@example.com",
-    },
-    {
-      name: "Isabella Nguyen",
-      email: "isabella.nguyen@email.com",
-    },
-    {
-      name: "Emma Wilson",
-      email: "emma@example.com",
-    },
-    {
-      name: "Jackson Lee",
-      email: "lee@example.com",
-    },
-    {
-      name: "William Kim",
-      email: "will@email.com",
-    },
-  ] as const
 
   type User = (typeof users)[number]
 
@@ -2117,44 +2091,7 @@ export default function Dashboard() {
       </>
     );
   };
-  let customerCard = [
-    { name: 'firstName', value: finance.firstName, label: 'First Name', },
-    { name: 'lastName', value: finance.lastName, label: 'Last Name', },
-    { name: 'phone', value: finance.phone, label: 'Phone', },
-    { name: 'email', value: finance.email, label: 'Email', },
-    { name: 'address', value: finance.address, label: 'Address', },
-    { name: 'city', value: finance.city, label: 'City', },
-    { name: 'postal', value: finance.postal, label: 'Postal', },
-    { name: 'dl', value: finance.dl, label: 'Drivers Lic.', },
-  ];
-  let customerCardNonInput = [
-    { name: 'dob', value: finance.dob, label: 'DOB', },
-    { name: 'timeToContact', value: finance.timeToContact, label: 'Preferred Time', },
-    { name: 'typeOfContact', value: finance.typeOfContact, label: 'Preferred Contact', },
-  ];
-  let customerCardNoEdit = [
-    { name: 'lastContact', value: finance.lastContact, label: 'Last Contact', },
-    { name: 'taxRate', value: finance.dob, label: 'Tax Rate', },
-    { name: 'nextAppointment', value: finance.nextAppointment, label: 'Next Appointment', },
-    { name: 'deposit', value: finance.deposit, label: 'Deposit', },
-    { name: 'depositMade', value: finance.depositMade, label: 'Deposit Made', },
-    { name: 'userEmail', value: finance.userEmail, label: 'Sales person', },
-    { name: 'financeManager', value: finance.financeManager, label: 'Finance manager', },
-  ];
-  let vehCard = [
-    { name: 'year', value: finance.year, label: 'Year', },
-    { name: 'brand', value: finance.brand, label: 'Brand', },
-    { name: 'model', value: finance.model, label: 'Model', },
-    { name: 'color', value: finance.color, label: 'Color', },
-    { name: 'vin', value: finance.vin, label: 'Vin', },
-    { name: 'mileage', value: finance.mileage, label: 'Mileage', },
-    { name: 'stockNum', value: finance.stockNum, label: 'Stock Number', },
-    { name: 'modelCode', value: finance.modelCode, label: 'Model Code', },
-    { name: 'tag', value: finance.tag, label: 'tag', },
-    { name: 'deliveryDate', value: finance.deliveryDate, label: 'Delivery Date', },
 
-    { name: 'deliveredDate', value: finance.deliveredDate, label: 'Delivered Date', },
-  ];
 
   // -----------------------------finance dropdowns ---------------------------------//
   const email = [
@@ -2446,31 +2383,6 @@ export default function Dashboard() {
   ]
 
   const sortedEvents = events.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  /*
-  async function getData() {
-    const res = await fetch('/dealer/api/dashboard/inventory/moto')
-    if (!res.ok) {
-      throw new Error("Failed to fetch data");
-    }
-    return res.json();
-  }
-  useEffect(() => {
-    const data = async () => {
-      const result = await getData();
-      console.log(result, 'result')
-      setTableData(result);
-    };
-    data()
-  }, []);
-
-  const dataFetcher = (url) => fetch(url).then((res) => res.json());
-  const { data: swrTable } = useSWR("http://localhost:3000/dealer/api/dashboard/inventory/moto", dataFetcher);
-  const result = swrTable
-   console.log(result, 'result')
-  const [tableData, setTableData] = useState(result);
-*/
-  //  console.log(tableData, 'table data')
   let sync = useFetcher();
 
   useEffect(() => {
@@ -2576,7 +2488,6 @@ export default function Dashboard() {
   if (finance.Clientfile.AccOrder && finance.Clientfile.AccOrder.length > 1) {
     notAttachedToFinance = finance.Clientfile.AccOrder
   }
-  // console.log(notAttachedToFinance, 'notAttachedToFinance')
   const total2 = ((totalAccessoriesCost - parseFloat(discDollar)) * taxRate).toFixed(2)
   const total1 = (((totalAccessoriesCost * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2)
   const pacTotal = discPer === 0 ? total2 : total1
@@ -2614,15 +2525,12 @@ export default function Dashboard() {
       toReceiptAcc[`price${i}`] = '';
     }
   }
-  // service
 
-  //  console.log(orders, tax, services, ' inside workordersales')
-
+  // -------------------------------------------- service
   let workOrder = useFetcher();
   let ref = useRef();
   let search = useFetcher();
   let product = useFetcher();
-
 
   let unitCard = [
     { name: 'year', label: 'Year', },
@@ -2640,7 +2548,6 @@ export default function Dashboard() {
   const [firstPageService, setFirstPageService] = useState(true);
   const [secPageService, setSecPageService] = useState(false);
   const [serviceOrder, setServiceOrder] = useState();
-  // console.log(serviceOrder, 'serviceOrder')
   function handleNextPage() {
     if (firstPageService === true) {
       setFirstPageService(false)
@@ -2703,353 +2610,72 @@ export default function Dashboard() {
 
     }
   }, [serviceOrder]);
-  //console.log(finance, 'finance')
 
+
+  const customerCard = [
+    { name: 'firstName', value: finance.firstName, label: 'First Name', },
+    { name: 'lastName', value: finance.lastName, label: 'Last Name', },
+    { name: 'phone', value: finance.phone, label: 'Phone', },
+    { name: 'email', value: finance.email, label: 'Email', },
+    { name: 'address', value: finance.address, label: 'Address', },
+    { name: 'city', value: finance.city, label: 'City', },
+    { name: 'postal', value: finance.postal, label: 'Postal', },
+    { name: 'dl', value: finance.dl, label: 'Drivers Lic.', },
+  ];
+  const customerCardNonInput = [
+    { name: 'dob', value: finance.dob, label: 'DOB', },
+    { name: 'timeToContact', value: finance.timeToContact, label: 'Preferred Time', },
+    { name: 'typeOfContact', value: finance.typeOfContact, label: 'Preferred Contact', },
+  ];
+  const customerCardNoEdit = [
+    { name: 'lastContact', value: finance.lastContact, label: 'Last Contact', },
+    { name: 'taxRate', value: finance.dob, label: 'Tax Rate', },
+    { name: 'nextAppointment', value: finance.nextAppointment, label: 'Next Appointment', },
+    { name: 'deposit', value: finance.deposit, label: 'Deposit', },
+    { name: 'depositMade', value: finance.depositMade, label: 'Deposit Made', },
+    { name: 'userEmail', value: finance.userEmail, label: 'Sales person', },
+    { name: 'financeManager', value: finance.financeManager, label: 'Finance manager', },
+  ];
+  const vehCard = [
+    { name: 'year', value: finance.year, label: 'Year', },
+    { name: 'brand', value: finance.brand, label: 'Brand', },
+    { name: 'model', value: finance.model, label: 'Model', },
+    { name: 'color', value: finance.color, label: 'Color', },
+    { name: 'vin', value: finance.vin, label: 'Vin', },
+    { name: 'mileage', value: finance.mileage, label: 'Mileage', },
+    { name: 'stockNum', value: finance.stockNum, label: 'Stock Number', },
+    { name: 'modelCode', value: finance.modelCode, label: 'Model Code', },
+    { name: 'tag', value: finance.tag, label: 'tag', },
+    { name: 'deliveryDate', value: finance.deliveryDate, label: 'Delivery Date', },
+
+    { name: 'deliveredDate', value: finance.deliveredDate, label: 'Delivered Date', },
+  ];
 
   return (
     <div >
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3 mt-4">
         <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
           <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-6">
-            <Card className="sm:col-span-2 text-foreground rounded-lg  flex flex-col h-full" x-chunk="dashboard-05-chunk-0"  >
-              <CardHeader className="flex flex-row items-start bg-muted/50 rounded-md">
-                <div className="grid">
-                  <CardTitle className="group flex items-center text-sm">
-                    Customer Info
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className='overflow-y-auto max-h-[300px] h-auto'>
-                <ul className="grid gap-3 text-sm mt-2">
-
-                  {customerCard.map((item, index) => (
-                    <li key={index} className=" group flex items-center justify-between">
-                      <div className='flex'>
-                        <span className="text-muted-foreground">
-                          {item.label}
-                        </span>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          onClick={() => copyText(item.value)}
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
-                        >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">Copy</span>
-                        </Button>
-                        {copiedText === item.value && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
-                      </div>
-                      <span>{item.value}  </span>
-                    </li>
-                  ))}
-                  {customerCardNonInput.map((item, index) => (
-                    <li key={index} className=" group flex items-center justify-between">
-                      <div className='flex'>
-                        <span className="text-muted-foreground">
-                          {item.label}
-                        </span>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          onClick={() => copyText(item.value)}
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
-                        >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">Copy</span>
-                        </Button>
-                        {copiedText === item.value && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
-                      </div>
-                      <span>{item.value}  </span>
-                    </li>
-                  ))}
-                  {customerCardNoEdit.map((item, index) => (
-                    <li key={index} className=" group flex items-center justify-between">
-                      <div className='flex'>
-                        <span className="text-muted-foreground">
-                          {item.label}
-                        </span>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          onClick={() => copyText(item.value)}
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
-                        >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">Copy</span>
-                        </Button>
-                        {copiedText === item.value && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
-                      </div>
-                      <span>{item.value}  </span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-              <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted/50 px-6 py-3">
-                <div>
-                  <Badge >{finance.customerState}</Badge>
-                </div>
-                <Dialog  >
-                  <DialogTrigger asChild>
-                    <Button size="sm" variant="outline" className="h-8 gap-1 ml-auto">
-                      <CiEdit className="h-3.5 w-3.5" />
-                      <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                        Edit Customer Info
-                      </span>
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
-                    <Form method='post' className='mx-4 my-4'>
-                      <DialogHeader className="px-4 pb-4 pt-5">
-                        <DialogTitle>Edit Customer Profile Info</DialogTitle>
-                      </DialogHeader>
-                      {customerCard.map((user, index) => (
-                        <div key={index} className="relative mt-5">
-                          <Input
-                            name={user.name}
-                            defaultValue={user.value}
-                            className={` bg-background text-foreground border border-border`}
-                          />
-                          <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-muted-foreground">{user.label}</label>
-                        </div>
-                      ))}
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-[100%] pl-3 text-left font-normal mt-4 ",
-                              !date && "text-muted-foreground"
-                            )}
-                          >
-                            {date ? (
-                              format(date, "PPP")
-                            ) : (
-                              <span>DOB</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 border-border" align="start">
-                          <Calendar
-                            className='w-auto'
-                            mode="single"
-                            fromYear={1900}
-                            selected={date}
-                            onSelect={setDate}
-                            disabled={(date) =>
-                              date > new Date() || date < new Date("1900-01-01")
-                            }
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <input type='hidden' value={String(date)} name='dob' />
-                      <div className="relative mt-4">
-                        <Select name='timeToContact' defaultValue={data.timeToContact}  >
-                          <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
-                            <SelectValue defaultValue={data.timeToContact} />
-                          </SelectTrigger>
-                          <SelectContent className=' bg-background text-foreground border border-border' >
-                            <SelectGroup>
-                              <SelectLabel>Best Time To Contact</SelectLabel>
-                              <SelectItem value="Morning">Morning</SelectItem>
-                              <SelectItem value="Afternoon">Afternoon</SelectItem>
-                              <SelectItem value="Evening">Evening</SelectItem>
-                              <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Time To Be Contacted</label>
-                      </div>
-                      <div className="relative mt-4">
-                        <Select name='typeOfContact' defaultValue={data.typeOfContact} >
-                          <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
-                            <SelectValue defaultValue={data.typeOfContact} />
-                          </SelectTrigger>
-                          <SelectContent className=' bg-background text-foreground border border-border' >
-                            <SelectGroup>
-                              <SelectLabel>Contact Method</SelectLabel>
-                              <SelectItem value="Phone">Phone</SelectItem>
-                              <SelectItem value="InPerson">In-Person</SelectItem>
-                              <SelectItem value="SMS">SMS</SelectItem>
-                              <SelectItem value="Email">Email</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Type To Be Contacted</label>
-                      </div>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-[100%] pl-3 text-left font-normal mt-4 ",
-                              !date && "text-muted-foreground"
-                            )}
-                          >
-                            {date ? (
-                              format(date, "PPP")
-                            ) : (
-                              <span>Delivery Date</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 border-border" align="start">
-                          <Calendar
-                            className='w-auto'
-                            mode="single"
-                            fromYear={1900}
-                            selected={date}
-                            onSelect={setDate}
-                            disabled={(date) =>
-                              date > new Date() || date < new Date("1900-01-01")
-                            }
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <input type='hidden' name="financeId" defaultValue={finance.id} />
-                      <input type='hidden' name="clientfileId" defaultValue={clientFile.id} />
-
-                      <ButtonLoading
-                        size="sm"
-                        value="updateClientInfoFinance"
-                        className="w-auto cursor-pointer mt-5 ml-auto mr-3 bg-primary justify-end"
-                        name="intent"
-                        type="submit"
-                        isSubmitting={isSubmitting}
-                        onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
-                        loadingText={`${data.firstName}'s customer file is updated...`}
-                      >
-                        Continue
-                        <PaperPlaneIcon className="h-4 w-4 ml-2" />
-
-                      </ButtonLoading>
-
-                    </Form>
-
-                  </DialogContent>
-                </Dialog>
-              </CardFooter>
-            </Card>
-            <Card x-chunk="dashboard-05-chunk-2" className="text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
-              <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                <div className="grid">
-                  <CardTitle className="group flex items-center text-sm">
-                    Current Vehicle
-                  </CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip mt-3">
-                <div className="max-h-[20vh] h-auto">
-                  <ul className="grid gap-3 mt-3">
-
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Year
-                      </span>
-                      <span>{finance.year}</span>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Brand
-                      </span>
-                      <span>{finance.brand}</span>
-                    </li>
-                    <li className=" group flex items-center justify-between">
-                      <div className='flex'>
-                        <span className="text-muted-foreground">
-                          Model
-                        </span>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          onClick={() => copyText(finance.model)}
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
-                        >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">Copy</span>
-                        </Button>
-                        {copiedText === finance.model && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
-                      </div>
-                      <span>{finance.model}  </span>
-                    </li>
-
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Color
-                      </span>
-                      <span>{finance.color}</span>
-                    </li>
-                    <li className=" group flex items-center justify-between">
-                      <div className='flex'>
-                        <span className="text-muted-foreground">
-                          VIN
-                        </span>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          onClick={() => copyText(finance.vin)}
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
-                        >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">Copy</span>
-                        </Button>
-                        {copiedText === finance.vin && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
-                      </div>
-                      <span>{finance.vin}  </span>
-                    </li>
-
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">
-                        Location
-                      </span>
-                      <span>{finance.location}</span>
-                    </li>
-                    {finance.stockNum && (
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">
-                          Stock Number
-                        </span>
-                        <span>{finance.stockNum}</span>
-                      </li>
-                    )}
-                    {finance.mileage && (
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">
-                          Mileage
-                        </span>
-                        <span>{finance.mileage}</span>
-                      </li>
-                    )}
-                    {finance.modelCode && (
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">
-                          Model Code
-                        </span>
-                        <span>{finance.modelCode !== 0 ? finance.modelCode : null}</span>
-                      </li>
-                    )}
-                    {finance.tag && (
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">
-                          Tag
-                        </span>
-                        <span>{finance.tag}</span>
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              </CardContent>
-              <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
-                {finance.stockNum && assignedUnit && (
-                  <>
-                    <UnitDialog data={assignedUnit} user={user} />
-                  </>
-                )}
-              </CardFooter>
-            </Card>
+            <CustomerInfo
+              customerCard={customerCard}
+              customerCardNonInput={customerCardNonInput}
+              customerCardNoEdit={customerCardNoEdit}
+              finance={finance}
+              date={date}
+              setDate={setDate}
+              data={data}
+              isSubmitting={isSubmitting}
+              clientFile={clientFile}
+              copiedText={copiedText}
+              copyText={copyText}
+            />
+            <CurrentVehicle
+              finance={finance}
+              copyText={copyText}
+              copiedText={copiedText}
+              assignedUnit={assignedUnit}
+              user={user}
+            />
             <Card x-chunk="dashboard-05-chunk-2" className="text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
               <CardHeader className="flex flex-row items-start  bg-muted/50 ">
                 <div className="grid">
@@ -6320,10 +5946,12 @@ export default function Dashboard() {
                             <TableHead className="hidden md:table-cell">
                               Total
                             </TableHead>
-                            <TableHead className="">
+                            <TableHead className="text-center">
                               Actions
                             </TableHead>
-
+                            <TableHead className="">
+                              Sent To
+                            </TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -6458,6 +6086,11 @@ export default function Dashboard() {
                                         Print Receipt
                                       </TooltipContent>
                                     </Tooltip>
+                                  </TableCell>
+                                  <TableCell className="hidden md:table-cell">
+                                    <Badge>
+                                      {result.AccHandOff && result.AccHandOff.sendTo}
+                                    </Badge>
                                   </TableCell>
                                 </TableRow>
                               )
@@ -8265,7 +7898,6 @@ export default function Dashboard() {
               <TabsTrigger value="SMS">SMS</TabsTrigger>
               <TabsTrigger value="Email">Email</TabsTrigger>
               <TabsTrigger value="Deposits">Deposits</TabsTrigger>
-
             </TabsList>
           </Tabs>
         </div>
@@ -8303,36 +7935,358 @@ export default function Dashboard() {
       )
       }
     </div >
-
   )
 }
 
 
-const DialogItem = React.forwardRef((props, forwardedRef) => {
-  const { triggerChildren, children, onSelect, onOpenChange, ...itemProps } = props;
+
+export function CustomerInfo({ customerCard, customerCardNonInput, customerCardNoEdit, finance, date, setDate, data, isSubmitting, clientFile, copiedText, copyText }) {
   return (
-    <Dialog onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <DropdownMenuItem
-          {...itemProps}
-          ref={forwardedRef}
-          className="DropdownMenuItem"
-          onSelect={(event) => {
-            event.preventDefault();
-            onSelect && onSelect();
-          }}
-        >
-          {triggerChildren}
-        </DropdownMenuItem>
-      </DialogTrigger>
-      <DialogContent className="DialogContent border-border">
-        {children}
-      </DialogContent>
-    </Dialog>
-  );
-});
+    <Card className="sm:col-span-2 text-foreground rounded-lg  flex flex-col h-full" x-chunk="dashboard-05-chunk-0"  >
+      <CardHeader className="flex flex-row items-start bg-muted/50 rounded-md">
+        <div className="grid">
+          <CardTitle className="group flex items-center text-sm">
+            Customer Info
+          </CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent className='overflow-y-auto max-h-[300px] h-auto'>
+        <ul className="grid gap-3 text-sm mt-2">
 
+          {customerCard.map((item, index) => (
+            <li key={index} className=" group flex items-center justify-between">
+              <div className='flex'>
+                <span className="text-muted-foreground">
+                  {item.label}
+                </span>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => copyText(item.value)}
+                  className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                >
+                  <Copy className="h-3 w-3" />
+                  <span className="sr-only">Copy</span>
+                </Button>
+                {copiedText === item.value && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+              </div>
+              <span>{item.value}  </span>
+            </li>
+          ))}
+          {customerCardNonInput.map((item, index) => (
+            <li key={index} className=" group flex items-center justify-between">
+              <div className='flex'>
+                <span className="text-muted-foreground">
+                  {item.label}
+                </span>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => copyText(item.value)}
+                  className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                >
+                  <Copy className="h-3 w-3" />
+                  <span className="sr-only">Copy</span>
+                </Button>
+                {copiedText === item.value && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+              </div>
+              <span>{item.value}  </span>
+            </li>
+          ))}
+          {customerCardNoEdit.map((item, index) => (
+            <li key={index} className=" group flex items-center justify-between">
+              <div className='flex'>
+                <span className="text-muted-foreground">
+                  {item.label}
+                </span>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => copyText(item.value)}
+                  className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                >
+                  <Copy className="h-3 w-3" />
+                  <span className="sr-only">Copy</span>
+                </Button>
+                {copiedText === item.value && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+              </div>
+              <span>{item.value}  </span>
+            </li>
+          ))}
+        </ul>
+      </CardContent>
+      <CardFooter className="grid grid-cols-2 justify-between items-center border-t border-border bg-muted/50 px-6 py-3">
+        <div>
+          <Badge >{finance.customerState}</Badge>
+        </div>
+        <Dialog  >
+          <DialogTrigger asChild>
+            <Button size="sm" variant="outline" className="h-8 gap-1 ml-auto">
+              <CiEdit className="h-3.5 w-3.5" />
+              <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                Edit Customer Info
+              </span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
+            <Form method='post' className='mx-4 my-4'>
+              <DialogHeader className="px-4 pb-4 pt-5">
+                <DialogTitle>Edit Customer Profile Info</DialogTitle>
+              </DialogHeader>
+              {customerCard.map((user, index) => (
+                <div key={index} className="relative mt-5">
+                  <Input
+                    name={user.name}
+                    defaultValue={user.value}
+                    className={` bg-background text-foreground border border-border`}
+                  />
+                  <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-muted-foreground">{user.label}</label>
+                </div>
+              ))}
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-[100%] pl-3 text-left font-normal mt-4 ",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    {date ? (
+                      format(date, "PPP")
+                    ) : (
+                      <span>DOB</span>
+                    )}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 border-border" align="start">
+                  <Calendar
+                    className='w-auto'
+                    mode="single"
+                    fromYear={1900}
+                    selected={date}
+                    onSelect={setDate}
+                    disabled={(date) =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <input type='hidden' value={String(date)} name='dob' />
+              <div className="relative mt-4">
+                <Select name='timeToContact' defaultValue={data.timeToContact}  >
+                  <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
+                    <SelectValue defaultValue={data.timeToContact} />
+                  </SelectTrigger>
+                  <SelectContent className=' bg-background text-foreground border border-border' >
+                    <SelectGroup>
+                      <SelectLabel>Best Time To Contact</SelectLabel>
+                      <SelectItem value="Morning">Morning</SelectItem>
+                      <SelectItem value="Afternoon">Afternoon</SelectItem>
+                      <SelectItem value="Evening">Evening</SelectItem>
+                      <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Time To Be Contacted</label>
+              </div>
+              <div className="relative mt-4">
+                <Select name='typeOfContact' defaultValue={data.typeOfContact} >
+                  <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
+                    <SelectValue defaultValue={data.typeOfContact} />
+                  </SelectTrigger>
+                  <SelectContent className=' bg-background text-foreground border border-border' >
+                    <SelectGroup>
+                      <SelectLabel>Contact Method</SelectLabel>
+                      <SelectItem value="Phone">Phone</SelectItem>
+                      <SelectItem value="InPerson">In-Person</SelectItem>
+                      <SelectItem value="SMS">SMS</SelectItem>
+                      <SelectItem value="Email">Email</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Preferred Type To Be Contacted</label>
+              </div>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant={"outline"}
+                    className={cn(
+                      "w-[100%] pl-3 text-left font-normal mt-4 ",
+                      !date && "text-muted-foreground"
+                    )}
+                  >
+                    {date ? (
+                      format(date, "PPP")
+                    ) : (
+                      <span>Delivery Date</span>
+                    )}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0 border-border" align="start">
+                  <Calendar
+                    className='w-auto'
+                    mode="single"
+                    fromYear={1900}
+                    selected={date}
+                    onSelect={setDate}
+                    disabled={(date) =>
+                      date > new Date() || date < new Date("1900-01-01")
+                    }
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+              <input type='hidden' name="financeId" defaultValue={finance.id} />
+              <input type='hidden' name="clientfileId" defaultValue={clientFile.id} />
 
+              <ButtonLoading
+                size="sm"
+                value="updateClientInfoFinance"
+                className="w-auto cursor-pointer mt-5 ml-auto mr-3 bg-primary justify-end"
+                name="intent"
+                type="submit"
+                isSubmitting={isSubmitting}
+                onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
+                loadingText={`${data.firstName}'s customer file is updated...`}
+              >
+                Continue
+                <PaperPlaneIcon className="h-4 w-4 ml-2" />
+
+              </ButtonLoading>
+
+            </Form>
+
+          </DialogContent>
+        </Dialog>
+      </CardFooter>
+    </Card>
+  )
+}
+export function CurrentVehicle({ finance, copyText, copiedText, assignedUnit, user }) {
+  return (
+    <Card x-chunk="dashboard-05-chunk-2" className="text-foreground sm:col-span-2 rounded-lg flex flex-col h-full">
+      <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+        <div className="grid">
+          <CardTitle className="group flex items-center text-sm">
+            Current Vehicle
+          </CardTitle>
+        </div>
+      </CardHeader>
+      <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip mt-3">
+        <div className="max-h-[20vh] h-auto">
+          <ul className="grid gap-3 mt-3">
+
+            <li className="flex items-center justify-between">
+              <span className="text-muted-foreground">
+                Year
+              </span>
+              <span>{finance.year}</span>
+            </li>
+            <li className="flex items-center justify-between">
+              <span className="text-muted-foreground">
+                Brand
+              </span>
+              <span>{finance.brand}</span>
+            </li>
+            <li className=" group flex items-center justify-between">
+              <div className='flex'>
+                <span className="text-muted-foreground">
+                  Model
+                </span>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => copyText(finance.model)}
+                  className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                >
+                  <Copy className="h-3 w-3" />
+                  <span className="sr-only">Copy</span>
+                </Button>
+                {copiedText === finance.model && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+              </div>
+              <span>{finance.model}  </span>
+            </li>
+
+            <li className="flex items-center justify-between">
+              <span className="text-muted-foreground">
+                Color
+              </span>
+              <span>{finance.color}</span>
+            </li>
+            <li className=" group flex items-center justify-between">
+              <div className='flex'>
+                <span className="text-muted-foreground">
+                  VIN
+                </span>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  onClick={() => copyText(finance.vin)}
+                  className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                >
+                  <Copy className="h-3 w-3" />
+                  <span className="sr-only">Copy</span>
+                </Button>
+                {copiedText === finance.vin && <FaCheck strokeWidth={1.5} className=" ml-2 text-lg hover:text-primary" />}
+              </div>
+              <span>{finance.vin}  </span>
+            </li>
+
+            <li className="flex items-center justify-between">
+              <span className="text-muted-foreground">
+                Location
+              </span>
+              <span>{finance.location}</span>
+            </li>
+            {finance.stockNum && (
+              <li className="flex items-center justify-between">
+                <span className="text-muted-foreground">
+                  Stock Number
+                </span>
+                <span>{finance.stockNum}</span>
+              </li>
+            )}
+            {finance.mileage && (
+              <li className="flex items-center justify-between">
+                <span className="text-muted-foreground">
+                  Mileage
+                </span>
+                <span>{finance.mileage}</span>
+              </li>
+            )}
+            {finance.modelCode && (
+              <li className="flex items-center justify-between">
+                <span className="text-muted-foreground">
+                  Model Code
+                </span>
+                <span>{finance.modelCode !== 0 ? finance.modelCode : null}</span>
+              </li>
+            )}
+            {finance.tag && (
+              <li className="flex items-center justify-between">
+                <span className="text-muted-foreground">
+                  Tag
+                </span>
+                <span>{finance.tag}</span>
+              </li>
+            )}
+          </ul>
+        </div>
+      </CardContent>
+      <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
+        {finance.stockNum && assignedUnit && (
+          <>
+            <UnitDialog data={assignedUnit} user={user} />
+          </>
+        )}
+      </CardFooter>
+    </Card>
+  )
+}
 
 export const action: ActionFunction = async ({ req, request, params }) => {
   const formPayload = Object.fromEntries(await request.formData());
@@ -10020,7 +9974,6 @@ export const action: ActionFunction = async ({ req, request, params }) => {
 
   else return null
 }
-
 export async function loader({ params, request }: DataFunctionArgs) {
   const session2 = await getSession(request.headers.get("Cookie"));
   const email = session2.get("email")
@@ -11682,18 +11635,14 @@ export async function loader({ params, request }: DataFunctionArgs) {
 
   return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2, dealerImage, services, tax, orders, tableData }));
 }
-
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: second },
   { rel: "stylesheet", href: timeline },
   { rel: "icon", type: "image/svg", href: '/user.svg' },
 ];
 type ValuePiece = Date | null;
-
 type Value = ValuePiece | [ValuePiece, ValuePiece];
-
 const FinanceIdContext = React.createContext();
-
 export const meta = () => {
 
   return [
@@ -11709,7 +11658,29 @@ export const meta = () => {
     },
   ];
 };
-
+const DialogItem = React.forwardRef((props, forwardedRef) => {
+  const { triggerChildren, children, onSelect, onOpenChange, ...itemProps } = props;
+  return (
+    <Dialog onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>
+        <DropdownMenuItem
+          {...itemProps}
+          ref={forwardedRef}
+          className="DropdownMenuItem"
+          onSelect={(event) => {
+            event.preventDefault();
+            onSelect && onSelect();
+          }}
+        >
+          {triggerChildren}
+        </DropdownMenuItem>
+      </DialogTrigger>
+      <DialogContent className="DialogContent border-border">
+        {children}
+      </DialogContent>
+    </Dialog>
+  );
+});
 
 
 /**

@@ -5,7 +5,7 @@ The code is here, I'm still coding it so I do not have the time right now to giv
 **Other pages to check out...**
 
 <p>
-<a href="https://github.com/8an3/AutomotiveCRM">README</a>
+<a href="https://github.com/8an3/AutomotiveCRM?tab=readme-ov-file#tldr">README</a>
 &nbsp;--&nbsp;
 <a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/TLBUTWORTHTHEREAD.md">tl but worth reading</a>
 &nbsp;--&nbsp;

@@ -1266,3 +1266,15 @@ export async function PullActivix(financeData) {
   }
   return null
 }
+
+export const options2 = {
+  weekday: "short",
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  second: "2-digit",
+  //hour12: false,
+  timeZoneName: "short"
+};

@@ -5,6 +5,7 @@ import { cn } from "~/components/ui/utils"
 import { Badge } from "~/components/ui/badge"
 import { ScrollArea } from "~/components/ui/scroll-area"
 import { Separator } from "~/components/ui/separator"
+import { options2 } from "~/components/shared/shared"
 //import { useMail } from "@/app/(app)/examples/mail/use-mail"
 //import { Mail } from "@/app/(app)/examples/mail/data"
 
@@ -17,15 +18,7 @@ export function MailList({ items = [], setMail, mail }) {
 
 
   // --------- the sacred timeline -------//
-  const options2 = {
-    weekday: 'short',
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  };
+
 
   return (
     <ScrollArea className="h-screen">

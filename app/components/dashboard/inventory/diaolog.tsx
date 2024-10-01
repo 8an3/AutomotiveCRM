@@ -142,6 +142,8 @@ import {
   PaginationPrevious,
 } from "~/components/ui/pagination"
 import { FaCheck } from "react-icons/fa";
+import { options2 } from "~/components/shared/shared";
+import { Check } from "lucide-react";
 
 
 export default function UnitDialog({ data, user }) {
@@ -210,17 +212,7 @@ export default function UnitDialog({ data, user }) {
     { name: "insuranceEndDate", value: data.insuranceEndDate, label: "Insurance End Date", },
   ];
 
-  const options2 = {
-    weekday: "short",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-    timeZoneName: "short"
-  };
+
 
   const [date, setDate] = useState<Date>()
   const newDate = new Date()

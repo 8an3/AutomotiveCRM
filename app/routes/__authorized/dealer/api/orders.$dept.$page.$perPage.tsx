@@ -42,7 +42,7 @@ async function PartsDept(page, perPage, skip, take) {
         completedTime: true,
         notes: true,
         AccOrderId: true,
-        AccOrder: {
+        accOrder: {
           select: {
             id: true,
             createdAt: true,

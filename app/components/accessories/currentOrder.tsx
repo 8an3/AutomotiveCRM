@@ -90,7 +90,7 @@ import { toast } from "sonner";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { BrowserMultiFormatReader, BarcodeFormat, DecodeHintType, NotFoundException, ChecksumException, FormatException } from '@zxing/library';
 import ScanSound from '~/images/scan.mp4'
-import { EditableText } from "~/components/shared/shared";
+import { EditableText, options2 } from "~/components/shared/shared";
 import { Percent } from "lucide-react";
 import { ArrowDownUp } from 'lucide-react';
 import { cn } from '~/utils';
@@ -138,17 +138,7 @@ export default function Purchase({ user, order, tax, }) {
     return total + payment.amountPaid;
   }, 0);
 
-  const options2 = {
-    weekday: "short",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: false,
-    timeZoneName: "short"
-  };
+
 
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);

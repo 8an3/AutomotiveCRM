@@ -61,7 +61,7 @@ Whether your in tech or not, you cannot deny it now, that is a lot of money.
 **Other pages to check out...**
 
 <p>
-<a href="https://github.com/8an3/AutomotiveCRM">README</a>
+<a href="https://github.com/8an3/AutomotiveCRM?tab=readme-ov-file#tldr">README</a>
 &nbsp;--&nbsp;
 <a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/TLBUTWORTHTHEREAD.md">tl but worth reading</a>
 &nbsp;--&nbsp;

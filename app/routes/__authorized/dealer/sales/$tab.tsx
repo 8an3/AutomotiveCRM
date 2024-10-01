@@ -3097,7 +3097,7 @@ export function MainDashbaord({ user }) {
                     <div className="ml-auto flex items-center">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="outline">Menu</Button>
+                                <Button size='sm' variant="outline">Menu</Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56 border border-border bg-background text-foreground">
                                 <DropdownMenuLabel>Dashboard Actions</DropdownMenuLabel>
@@ -3616,7 +3616,7 @@ export function MainDashbaord({ user }) {
                                 value={globalFilter ?? ""}
                                 onChange={(value) => setGlobalFilter(String(value))}
                                 className="ml-3 border border-border p-2 shadow w-[300px]"
-                                placeholder="Search all columns..."
+                                placeholder="Search..."
                                 autoFocus
                             />
 

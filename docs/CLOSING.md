@@ -92,10 +92,14 @@ The trick though? Because there is a trick to it. Admit when you don't know, bec
 
 If he does, rip his contract and tell him to shop else where. Give his deposit back and wish him a great day. Because yours just got a lot better, you will never have to deal with that prick again.
 
+## the secret
+
+I had a couple of people mentioned that I was, throwing shade or talked about the secret in a bad way. The secret is but one ingredient, on the road to success. Imagine having to bake a cake, the secret is the eggs in that recipe. Now you have to figure out the rest of the recipe out on your own? So what good is it to have the eggs, when you have nothing else? Yes obsessing over what you want may help you try to figure everything else out, or not. What I don't like about the secret, it leaves this out, and doesn't tell you what else you would need for your journey, or that if anything else is needed. Its a great book, WHEN you have the rest of the ingredients, or the majority of them. To top it all off, you don't need the secret. You don't need the eggs to bake a cake, just like you do not need the secret. You can become successful with or without it. Personally I would never recommend it as a book to read, unless you were years into sales, or if I thought you were ready. I've seen people obsess over it, some even getting demotivated when it doesn't work for them. That's because, they weren't prepared enough up to that point to be ready to receive that idea. A lot of books are like this, or in some cases, some books need to be re-read at different points in your journey. 2 years later, your not only in a different place but you could look at things in an entirely new way. That book that pushed you or gave you what you needed for your next step? What if you needed to be at that 2 year point to understand everything else, now that you have gained more experience and knowledge in order to obsorb everything that you missed the first time. Authors write their knowledge passing it along, 10-20 years of it, jumping from year to year because it sounds better on paper. But unfortuantly they don't point out where you need to be to understand it enough to implement it and use it to its 100% potential. You could read one sentence, understand it, make note of it and be happy that you gained this wisdom. The next sentence you may not entirely make sense of, and keep reading. Because you needed to be at that 2 year point to read it.
+
 **Other pages to check out...**
 
 <p>
-<a href="https://github.com/8an3/AutomotiveCRM">README</a>
+<a href="https://github.com/8an3/AutomotiveCRM?tab=readme-ov-file#tldr">README</a>
 &nbsp;--&nbsp;
 <a href="https://github.com/8an3/AutomotiveCRM/blob/main/docs/TLBUTWORTHTHEREAD.md">tl but worth reading</a>
 &nbsp;--&nbsp;

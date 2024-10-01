@@ -38,6 +38,7 @@ import { json } from "@remix-run/node";
 import UnitPicker from "~/routes/__authorized/dealer/sales/stockUnit";
 import { Copy } from "lucide-react";
 import { FaCheck } from "react-icons/fa";
+import { options2 } from "~/components/shared/shared";
 
 
 export default function ClientVehicleCard({ data, user, tableData }) {
@@ -120,15 +121,7 @@ export default function ClientVehicleCard({ data, user, tableData }) {
     "Spyder",
     "Yamaha"
   ];
-  const options2 = {
-    weekday: 'short',
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  };
+
 
   const formRef = useRef(null);
   const submit = useSubmit();

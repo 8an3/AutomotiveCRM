@@ -22,7 +22,7 @@ Great, didn't cost you a dime to find that out.
 
 By not at least trying it, your doing your professional career in sales a disservice.
 
-So if your looking for that one change to make in your sales career to boost sales this year, with a 100% guarantee of increasing them because it does not rely on motivation, salesmanship or the secret (If your still looking for it.)... You found the change that needs to be done, no matter the level your currently at in sales. Brand new? Great, you won't have the same headaches as more senior sales people had to endure. Selling for 10 years? I don't need to tell you twice that the crm you use sucks in more ways than we can count. Swearing at your screen randomly throughout the day.
+So if your looking for that one change to make in your sales career to boost sales this year. With a 100% guarantee of increasing them because it does not rely on motivation, salesmanship or the secret (If your still looking for it.)... You found the change that needs to be done, no matter the level your currently at in sales. Brand new? Great, you won't have the same headaches as more senior sales people had to endure. Selling for 10 years? I don't need to tell you twice that the crm you use sucks in more ways than we can count. Swearing at your screen randomly throughout the day.
 
 **Other pages to check out...**
 

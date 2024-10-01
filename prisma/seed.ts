@@ -17990,6 +17990,8 @@ export async function updateUser() {
             "typeOfContact": false,
             "unitPicker": false,
             "timeToContact": false,
+            "desiredPayments": false,
+            "metParts": false,
 
           }
         }
