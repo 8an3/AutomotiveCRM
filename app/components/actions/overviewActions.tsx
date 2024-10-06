@@ -8,7 +8,7 @@ import { commitSession as commitPref, getSession as getPref } from "~/utils/pref
 import { getSession } from '~/sessions/auth-session.server';
 import { getSession as sixSession, commitSession as sixCommit, } from '~/utils/misc.user.server'
 import { GetUser } from "~/utils/loader.server";
-import { SendPayments, } from '~/routes/__authorized/dealer/features/email/notifications.client';
+import { SendPayments, } from '~/components/zRoutes/oldRoutes/notifications.client';
 import GetUserFromRequest from "~/utils/auth/getUser";
 import { getSession as custSession, commitSession as custCommit } from '~/sessions/customer-session.server';
 import PaymentCalculatorEmail from '~/emails/PaymentCalculatorEmail';

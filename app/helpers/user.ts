@@ -11,22 +11,33 @@ import type { Prisma, UserRole } from "@prisma/client";
 
 // User Sesson is a limited user data stored in the auth cookie
 export type UserSession = {
-  id: string;
-  email: string;
-  username: string;
-  name: string;
-  subscriptionId: string;
-  customerId: string;
-  returning: string;
-  phone: string;
-  dealer: string;
-  position: string;
-  roleId: string;
-  profileId: string;
-  omvicNumber: string;
-  lastSubscriptionCheck: string;
-  refreshToken: string;
-  idToken: string;
+  id: string
+  name: string
+  username: string
+  email: string
+  profileId: string
+  phone: string
+  roleId: string
+  subscriptionId: string
+  returning: string
+  lastSubscriptionCheck: string
+  customerId: string
+  plan: string
+  omvicNumber: string
+  dealer: string
+  dept: string
+  order: number
+  activixActivated: string
+  activixEmail: string
+  activisUserId: string
+  activixId: string
+  dealerAccountId: string
+  microId: string
+  givenName: string
+  familyName: string
+  identityProvider: string
+  userRoleId: string
+  dealerId: number
 };
 
 // User Data is a more complete user data that can be retrieved,

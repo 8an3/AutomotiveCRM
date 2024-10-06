@@ -25,7 +25,7 @@ import { getMergedFinance, getMergedFinanceOnFinance, getClientListMerged } from
 import { getComsOverview } from "~/utils/communications/communications.server";
 import { prisma } from "~/libs";
 import { commitSession as commitIds, getSession as getIds, SetClient66 } from '~/utils/misc.user.server';
-import { getSession } from "~/sessions/auth-session.server";
+import { getSession, commitSession } from "~/sessions/auth-session.server";
 import { UpdateLeadBasic, UpdateLeadApiOnly, UpdateClientFromActivix, UpdateLeadEchangeVeh, UpdateLeadPhone, UpdateLeadWantedVeh, UpdateLeademail, CreateNote, CompleteTask, UpdateTask, ListAllTasks, UpdateNote } from "~/routes/__authorized/dealer/api/activix";
 import axios from "axios";
 import { GetUser } from "~/utils/loader.server";
@@ -135,9 +135,7 @@ export const headers = ({ loaderHeaders, parentHeaders }) => {
 };
 
 export default function Dashboard() {
-  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown, salesPeople, financeManagers, services, dealerImage, tax, orders, assignedUnit, tableData } = useLoaderData();
-
-
+  const { finance, user, clientFile, sliderWidth, aptFinance3, Coms, getTemplates, merged, financeNotes, userList, deFees, modelData, manOptions, bmwMoto, bmwMoto2, notifications, emailTemplatesDropdown, salesPeople, financeManagers, services, dealerImage, tax, orders, assignedUnit, tableData, APP_URL } = useLoaderData();
 
   const [financeIdState, setFinanceIdState] = useState();
   const fetcher = useFetcher();
@@ -147,7 +145,6 @@ export default function Dashboard() {
   const [value, onChange] = useState();
   const timerRef = React.useRef(0);
   let addProduct = useFetcher();
-
 
   const [PickUpCalendar, setPickUpCalendar] = useState('off');
 
@@ -179,18 +176,8 @@ export default function Dashboard() {
           }
         }
       };
-      const currentHost =
-        typeof window !== "undefined" ? window.location.host : null;
-      if (iFrameRef.current) {
-        if (currentHost === "localhost:3000") {
-          iFrameRef.current.src = "http://localhost:3000/IFrameComp/email/file";
-        }
-        if (currentHost === "dealersalesassistant.ca") {
-          iFrameRef.current.src =
-            "https://www.dealersalesassistant.ca/IFrameComp/email/file";
-        }
-        window.addEventListener("message", handleHeightMessage);
-      }
+      iFrameRef.current.src = APP_URL + "/IFrameComp/email/file";
+      window.addEventListener("message", handleHeightMessage);
       return () => {
         if (iFrameRef.current) {
           window.removeEventListener("message", handleHeightMessage);
@@ -208,6 +195,54 @@ export default function Dashboard() {
             className=" border-none"
             style={{
               minHeight: '30vh'
+            }}
+          />
+        </div>
+      </>
+    );
+  };
+  const MyEmailIFrameComponent = () => {
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+      const handleHeightMessage = (event: MessageEvent) => {
+        if (
+          event.data &&
+          event.data.type === "iframeHeight" &&
+          event.data.height
+        ) {
+          setIsLoading(false);
+          if (iFrameRef.current) {
+            iFrameRef.current.style.height = `${event.data.height}px`;
+          }
+        }
+      };
+      iFrameRef.current.src = APP_URL + "/auth/emailClientFinanceFile";
+
+      window.addEventListener("message", handleHeightMessage);
+      /**     const cust = clientfile
+           const sendData = { cust, user };
+           console.log(sendData, 'senddata')
+           const onLoad = () => {
+             iFrameRef.current.contentWindow?.postMessage(sendData, "*");
+           }; */
+      //  iFrameRef.current.addEventListener("load", onLoad);
+
+      return () => {
+        window.removeEventListener("message", handleHeightMessage);
+        // iFrameRef.current?.removeEventListener("load", onLoad);
+      };
+    }, []);
+
+    return (
+      <>
+        <div className="size-full ">
+          <iframe
+            ref={iFrameRef}
+            title="my-iframe"
+            width="100%"
+            className=" border-none"
+            style={{
+              minHeight: "825px",
             }}
           />
         </div>
@@ -259,9 +294,6 @@ export default function Dashboard() {
   const currentTime = `${hour}:${min}:${currentSecond}`
   const time = `${hour}:${min}:00`
 
-
-
-
   const generateHiddenInputs = () => {
     return ClientResultFunction({ formData }).map((item) => (
       <input
@@ -295,9 +327,6 @@ export default function Dashboard() {
       );
     });
   };
-
-
-
 
   const [editItemId, setEditItemId] = useState(null);
 
@@ -1753,8 +1782,8 @@ export default function Dashboard() {
     items: Item[];
   }
 
-  // -----------------------------sms ---------------------------------//
-  const { searchData, convoList, } = useLoaderData();
+  // -----------------------------sms ---------------------------------
+  /** const { searchData, convoList, } = useLoaderData();
   const [messagesConvo, setMessagesConvo] = useState([]);
   const [chatReady, setChatReady] = useState(false);
 
@@ -1890,11 +1919,7 @@ export default function Dashboard() {
     initConversations()
     setChatReady(true);
   }, []);
-  const [financeNotesList, setFinanceNoteList] = useState([])
-  const [conversationsList, setConversationsList] = useState([])
-  const [customer, setCustomer] = useState()
-  const [customerMessages, setCustomerMessages] = useState([])
-  const [conversationSid, setConversationSid] = useState('')
+
 
   useEffect(() => {
     function getNotesByFinanceId(notes, financeId) {
@@ -1957,6 +1982,12 @@ export default function Dashboard() {
     }
   }, [smsDetails]);
 
+  */
+  const [financeNotesList, setFinanceNoteList] = useState([])
+  const [conversationsList, setConversationsList] = useState([])
+  const [customer, setCustomer] = useState()
+  const [customerMessages, setCustomerMessages] = useState([])
+  const [conversationSid, setConversationSid] = useState('')
   // -----------------------------sms ---------------------------------//
   // -----------------------------email ---------------------------------//
   const { conversations, } = useLoaderData();
@@ -2026,72 +2057,6 @@ export default function Dashboard() {
     SaveFunction()
 
   }
-
-  const MyIFrameComponentEmail = () => {
-    const [isLoading, setIsLoading] = useState(true);
-    useEffect(() => {
-      const handleHeightMessage = (event: MessageEvent) => {
-        if (
-          event.data &&
-          event.data.type === "iframeHeight" &&
-          event.data.height
-        ) {
-          setIsLoading(false);
-          if (iFrameRef.current) {
-            iFrameRef.current.style.height = `${event.data.height}px`;
-          }
-        }
-      };
-      const currentHost =
-        typeof window !== "undefined" ? window.location.host : null;
-      if (iFrameRef.current) {
-        if (currentHost === "localhost:3000") {
-          iFrameRef.current.src = "http://localhost:3000/dealer/email/dashboardClient";
-        }
-        if (currentHost === "dealersalesassistant.ca") {
-          iFrameRef.current.src =
-            "https://www.dealersalesassistant.ca/dealer/email/dashboardClient";
-        }
-        window.addEventListener("message", handleHeightMessage);
-
-        const cust = {
-          email: data.email,
-          name: data.name,
-          financeId: data.financeId,
-        };
-        const sendData = { cust, user };
-
-        // Add load event listener to ensure iframe is loaded
-        const onLoad = () => {
-          iFrameRef.current.contentWindow.postMessage(sendData, '*');
-        };
-        iFrameRef.current.addEventListener('load', onLoad);
-
-        return () => {
-          window.removeEventListener("message", handleHeightMessage);
-          iFrameRef.current?.removeEventListener('load', onLoad);
-        };
-      }
-    }, []);
-
-    return (
-      <>
-        <div className="size-full ">
-          <iframe
-            ref={iFrameRef}
-            title="my-iframe"
-            width="100%"
-            className=" border-none"
-            style={{
-              minHeight: "40vh"
-
-            }}
-          />
-        </div>
-      </>
-    );
-  };
-
 
   // -----------------------------finance dropdowns ---------------------------------//
   const email = [
@@ -2763,6 +2728,8 @@ export default function Dashboard() {
                 <TabsTrigger value="Finance">Finance</TabsTrigger>
                 <TabsTrigger value="Service">Service</TabsTrigger>
                 <TabsTrigger value="Accessories">Accessories/Parts</TabsTrigger>
+                <TabsTrigger value="Email">Email</TabsTrigger>
+
               </TabsList>
             </div>
             <TabsContent value="Sales" className="  text-foreground rounded-lg">
@@ -6480,6 +6447,11 @@ export default function Dashboard() {
                 )}
               </div>
             </TabsContent>
+            <TabsContent value="Email">
+              <div>
+                <MyEmailIFrameComponent />
+              </div>
+            </TabsContent>
           </Tabs>
         </div>
         <div>
@@ -7101,28 +7073,9 @@ export default function Dashboard() {
                 <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
                   <Form method="post" >
                     <div className='grid grid-cols-1 mx-auto w-[90%] '>
-                      <div className="relative mt-3">
-
-                        <Select name='resultOfcall' defaultValue="Left Message" >
-                          <SelectTrigger className="w-full  bg-background text-foreground border border-border">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className='bg-background text-foreground '>
-                            <SelectGroup>
-                              <SelectLabel>Result of call</SelectLabel>
-                              <SelectItem value="Reached">Reached</SelectItem>
-                              <SelectItem value="Attempted">N/A</SelectItem>
-                              <SelectItem value="Left Message">Left Message</SelectItem>
-                              <SelectItem value="Completed">Completed</SelectItem>
-                              <SelectItem value="Rescheduled">Rescheduled</SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Updating Completed Appointment</label>
-                      </div>
                       <p className=' text-foreground mt-5'>Creating New Appointment</p>
-                      <hr className="solid  text-muted-foreground " />
-                      <div className="relative mt-3">
+                      <hr className="solid  text-border bg-border border-border " />
+                      <div className="relative mt-5">
                         <Input
                           type="text"
                           name="title"
@@ -7131,12 +7084,12 @@ export default function Dashboard() {
                         />
                         <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Title</label>
                       </div>
-                      <div className="relative mt-3">
+                      <div className="relative mt-5">
                         <Select name='note' defaultValue="No Answer / Left Message">
                           <SelectTrigger className="w-full bg-background text-foreground border border-border">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className='bg-background text-foreground '>
+                          <SelectContent className='bg-background text-foreground border-border '>
                             <SelectGroup>
                               <SelectLabel>Message examples</SelectLabel>
 
@@ -7164,19 +7117,19 @@ export default function Dashboard() {
                         </Select>
                         <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Pre-Made Notes</label>
                       </div>
-                      <div className="relative mt-3">
+                      <div className="relative mt-5">
                         <Input
                           name="note"
                           className="w-full bg-background border-border "
                         />
                         <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Custom Notes</label>
                       </div>
-                      <div className="relative mt-3">
+                      <div className="relative mt-5">
                         <Select name='contactMethod' defaultValue="SMS">
                           <SelectTrigger className="w-full  bg-background text-foreground border border-border  ">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className='bg-background text-foreground '>
+                          <SelectContent className='bg-background text-foreground border-border'>
                             <SelectGroup>
                               <SelectLabel>Contact Method</SelectLabel>
                               <SelectItem value="Phone">Phone</SelectItem>
@@ -7188,7 +7141,7 @@ export default function Dashboard() {
                         </Select>
                         <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
                       </div>
-                      <div className="relative mt-3">
+                      <div className="relative mt-5">
                         <Select name='resourceId' defaultValue="1">
                           <SelectTrigger className="w-full  bg-background text-foreground border border-border ">
                             <SelectValue />
@@ -7306,7 +7259,7 @@ export default function Dashboard() {
                     <input type='hidden' name='minutes' value={min} />
                     <input type='hidden' name='hours' value={hour} />
 
-                    <div className="mt-[25px] flex justify-end">
+                    <div className="my-5 flex justify-end">
                       <DialogClose >
                         <ButtonLoading
                           name='intent'
@@ -7841,14 +7794,14 @@ export default function Dashboard() {
                 </CardHeader>
                 <CardContent className="mt-5 ">
                   <div className=" ">
-                    <TextFunction
+                    {/**<TextFunction
                       customerMessages={customerMessages}
                       customer={customer}
                       data={data}
                       user={user}
                       smsDetails={smsDetails}
                       latestNote={latestNote}
-                    />
+                    /> */}
                   </div>
                 </CardContent>
                 <CardFooter className=" ">
@@ -7856,47 +7809,10 @@ export default function Dashboard() {
               </Card>
 
             </TabsContent>
-            <TabsContent value="Email">
-              <Card className="overflow-x-clip text-foreground rounded-lg  w-[95%] max-w-[600px]" x-chunk="dashboard-05-chunk-4"                >
-                <CardHeader className="flex flex-row items-start  bg-muted/50 ">
-                  <div className="grid gap-0.5">
-                    <CardTitle className="group flex items-center gap-2 text-lg">
-                      Email
-                    </CardTitle>
-                  </div>
-                  <div className="ml-auto flex items-center gap-1">
-                    <TooltipProvider delayDuration={0}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            size="icon"
-                            variant="outline"
-                            className="ml-auto rounded-full"
-                            onClick={() => setOpen(true)}
-                          >
-                            <PlusIcon className="h-4 w-4" />
-                            <span className="sr-only">CC Employee</span>
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent sideOffset={10} className='bg-primary'>CC Employee</TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                </CardHeader>
-                <CardContent className=" p-6 text-sm bg-background ">
-                  <div className="grid gap-3 ">
-                    <MyIFrameComponentEmail />
-                  </div>
-                </CardContent>
-                <CardFooter className="flex flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
-                </CardFooter>
-              </Card>
 
-            </TabsContent>
             <TabsList className='mt-2'>
               <TabsTrigger value="Phone">Phone</TabsTrigger>
               <TabsTrigger value="SMS">SMS</TabsTrigger>
-              <TabsTrigger value="Email">Email</TabsTrigger>
               <TabsTrigger value="Deposits">Deposits</TabsTrigger>
             </TabsList>
           </Tabs>
@@ -11097,7 +11013,10 @@ export async function loader({ params, request }: DataFunctionArgs) {
   }
 
   let aptFinance3 = finance.clientApts //await getAppointmentsForFinance(financeId)
-  const clientFile = finance.Clientfile //await getClientFileById(params.clientId)
+  const clientFile = finance.Clientfile
+  session2.set("clientEmail", clientFile.email)
+  session2.set("financeId", finance.id)
+
   const financeNotes = finance.FinanceNote //await getAllFinanceNotes(financeId)
   const Coms = finance.Comm//await getComsOverview(email)
 
@@ -11632,8 +11551,8 @@ export async function loader({ params, request }: DataFunctionArgs) {
     default:
     // code block
   }
-
-  return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2, dealerImage, services, tax, orders, tableData }));
+  const APP_URL = process.env.APP_URL
+  return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2, dealerImage, services, tax, orders, tableData, APP_URL }, { headers: { "Set-Cookie": await commitSession(session2), }, }));
 }
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: second },

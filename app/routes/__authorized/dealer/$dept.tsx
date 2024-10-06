@@ -26,17 +26,17 @@ export default function NavMenuAdminAndMan() {
     },
     {
       title: "PAC Inventory",
-      to: `/dealer/${params.dept}/inventory/pac`,
+      to: `/dealer/accessories/products`,
     },
   ]
   const ordersSide = [
     {
       title: "Service Work Orders",
-      to: `/dealer/${params.dept}/orders/service`,
+      to: `/dealer/service/dashboard`,
     },
     {
       title: "PAC Orders",
-      to: `/dealer/${params.dept}/orders/pac`,
+      to: `/dealer/accessories/order`,
     },
   ]
   const importExportSide = [
@@ -122,14 +122,14 @@ export default function NavMenuAdminAndMan() {
 
   return (
     <>
-      <div className="hidden space-y-6 p-10 pb-16 md:block">
+      <div className="hidden p-10 space-y-6 pb-16 md:block w-[100%] h-[100%] overflow-clip ">
         <div className="space-y-0.5">
           <h2 className="text-2xl font-bold tracking-tight">{capitalizeFirstLetter(params.dept)} Section</h2>
         </div>
         <Separator className="my-6 bg-border border-border text-border" />
-        <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-          <aside className="-mx-4 lg:w-[250px]">
-            <p className='text-foreground ml-5'>Menu</p>
+        <div className="flex flex-col space-y-5 lg:flex-row lg:space-y-0">
+          <aside className="-mx-4 lg:w-[215px]">
+            <p className='text-foreground ml-[12px]'>Menu</p>
             <SidebarNav items={admin} />
             <Separator className='my-1 bg-border border-border text-border' />
             <SidebarNav items={dashboards} />
@@ -143,7 +143,7 @@ export default function NavMenuAdminAndMan() {
             <SidebarNav items={bullshit} />
 
           </aside>
-          <div className="flex-1 lg:max-w-90[%]">
+          <div className=" ">
             <Outlet />
           </div>
         </div>
@@ -185,7 +185,7 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
   return (
     <nav
       className={cn(
-        "flex space-x-2 flex-row max-w-[95%] lg:flex-col lg:space-x-0 lg:space-y-1 mt-3",
+        "flex space-x-2 flex-row max-w-[100%] lg:flex-col lg:space-x-0 lg:space-y-1 mt-3",
         className
       )}
       {...props}

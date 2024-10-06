@@ -809,7 +809,7 @@ export default function Purchase() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link to={`/dealer/acceessories/order/${data.id}`} >
+                <Link to={`/dealer/accessories/newOrder/${data.id}`} >
 
                   <Button
                     size="icon"

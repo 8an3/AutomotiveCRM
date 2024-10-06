@@ -2,7 +2,7 @@ import { Form, Link, useActionData, useFetcher, useLoaderData, useSubmit, useNav
 import React, { createContext, useEffect, useRef, useState } from "react";
 import { type DataFunctionArgs, type ActionFunction, json, type LinksFunction, redirect } from '@remix-run/node'
 import { prisma } from "~/libs";
-import { getSession } from "~/sessions/auth-session.server";
+import { getSession, commitSession } from "~/sessions/auth-session.server";
 import { GetUser } from "~/utils/loader.server";
 import { Calendar } from '~/components/ui/calendar';
 import { format } from "date-fns"
@@ -66,7 +66,7 @@ import {
 } from "~/components/ui/pagination"
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import useSWR from 'swr'
-import { ArrowDownUp, Copy, CreditCard, DollarSign, Eye, FileCheck, ListFilter, MoreVertical, Navigation, Percent, Search, ShoppingCart, X } from "lucide-react";
+import { ArrowDownUp, ChevronLeft, ChevronRight, Copy, CreditCard, DollarSign, Eye, FileCheck, ListFilter, MoreVertical, Navigation, Percent, PlusIcon, Search, ShoppingCart, X } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
@@ -81,19 +81,43 @@ import {
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, sortingFns, } from "@tanstack/react-table"
-import { fuzzyFilter, fuzzySort, TableMeta, getTableMeta, DebouncedInput, options2 } from "~/components/shared/shared";
+import { fuzzyFilter, fuzzySort, TableMeta, getTableMeta, DebouncedInput, options2, EditableText } from "~/components/shared/shared";
 import { DataTablePagination } from "~/components/dashboard/calls/pagination";
 import { Check } from "lucide-react";
+import PrintReceipt from "../../../document/printReceiptAcc.client";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "~/components/ui/accordion"
+import {
+  ContextMenu,
+  ContextMenuCheckboxItem,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuShortcut,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuTrigger,
+} from "~/components/ui/context-menu"
 
 export default function SettingsLayout() {
-  const { clientfile, user } = useLoaderData();
+  const { clientfile, user, comms } = useLoaderData();
+  console.log(user, 'user')
   const AccOrders = clientfile.AccOrder
-  //orders, tax, filteredOrders30,dealerImage
+  const WorkOrder = clientfile.WorkOrder
+  //orders, tax, filteredOrders30,
   const tax = user.Dealer.userTax
-  const dealerImage = user.Dealer.DealerLogo.dealerLogo
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const [date, setDate] = useState<Date>()
@@ -115,7 +139,7 @@ export default function SettingsLayout() {
   ];
   const [list, setList] = useState([]);
   const [workOrders, setWorkOrders] = useState([]);
-  const [accOrders, setAccOrders] = useState([]);
+  const [accOrders, setAccOrders] = useState(clientfile.AccOrder);
   const [discDollar, setDiscDollar] = useState(0.00)
   const [discPer, setDiscPer] = useState(0.00)
 
@@ -134,7 +158,7 @@ export default function SettingsLayout() {
   console.log(workOrders, accOrders, 'orders')
 
   const lastWorkOrder = workOrders[0];
-  const lastAccOrder = accOrders[0];
+  const lastAccOrder = AccOrders[0];
   const taxMultiplier = Number(tax.userTax);
   const taxRate = 1 + taxMultiplier / 100;
 
@@ -216,7 +240,6 @@ export default function SettingsLayout() {
 
   const [showOrder, setShowOrder] = useState(false);
 
-
   const toggleOrderDetails = (orderId) => {
     if (showOrder === orderId) {
       setShowOrder(null);
@@ -224,7 +247,6 @@ export default function SettingsLayout() {
       setShowOrder(orderId);
     }
   };
-
 
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -253,7 +275,6 @@ export default function SettingsLayout() {
   const total2 = ((parseFloat(totalAccessoriesCost) - parseFloat(discDollar)) * taxRate).toFixed(2)
   const total1 = (((parseFloat(totalAccessoriesCost) * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2)
   const total = discDollar && discDollar > 0.00 ? total1 : total2
-
 
   // ---- pagination all orders
   const [pageIndexAll, setPageIndexAll] = useState(1);
@@ -291,7 +312,6 @@ export default function SettingsLayout() {
 
   // ---- pagination all orders
 
-
   let toReceipt
   if (showPrevOrder) {
     const client = showPrevOrder.Clientfile
@@ -311,7 +331,7 @@ export default function SettingsLayout() {
       date: new Date().toLocaleDateString("en-US", options2),
       cardNum: '',
       paymentType: '',
-      image: dealerImage.dealerLogo
+      image: user.Dealer.DealerLogo.dealerLogo
     };
 
     showPrevOrder.AccessoriesOnOrders.forEach((result, index) => {
@@ -339,7 +359,7 @@ export default function SettingsLayout() {
     setShowPrev(true)
     setShowPrevOrder(filteredOrder);
   }
-  // workorder
+  // -------------- workorder
 
   let searchWorkOrder = useFetcher();
   let submitWorkOrder = useFetcher();
@@ -376,26 +396,24 @@ export default function SettingsLayout() {
       if (iFrameRef.current) {
         if (currentHost === "localhost:3000") {
           iFrameRef.current.src =
-            "http://localhost:3000/dealer/features/email/emailClientOnlySingleClient";
+            "http://localhost:3000/auth/emailClientOnlySingleClient";
         }
         if (currentHost === "dealersalesassistant.ca") {
           iFrameRef.current.src =
-            "https://www.dealersalesassistant.ca/dealer/features/email/emailClientOnlySingleClient";
+            "https://www.dealersalesassistant.ca/auth/emailClientOnlySingleClient";
         }
         window.addEventListener("message", handleHeightMessage);
-        const cust = rowData;
-
-        const sendData = { cust, user };
-
-        // Add load event listener to ensure iframe is loaded
-        const onLoad = () => {
-          iFrameRef.current.contentWindow?.postMessage(sendData, "*");
-        };
-        iFrameRef.current.addEventListener("load", onLoad);
+        /**     const cust = clientfile
+             const sendData = { cust, user };
+             console.log(sendData, 'senddata')
+             const onLoad = () => {
+               iFrameRef.current.contentWindow?.postMessage(sendData, "*");
+             }; */
+        //  iFrameRef.current.addEventListener("load", onLoad);
 
         return () => {
           window.removeEventListener("message", handleHeightMessage);
-          iFrameRef.current?.removeEventListener("load", onLoad);
+          // iFrameRef.current?.removeEventListener("load", onLoad);
         };
       }
     }, []);
@@ -409,7 +427,7 @@ export default function SettingsLayout() {
             width="100%"
             className=" border-none"
             style={{
-              minHeight: "40vh",
+              minHeight: "70vh",
             }}
           />
         </div>
@@ -417,7 +435,9 @@ export default function SettingsLayout() {
     );
   };
 
+  const [showPrevOrderWO, setShowPrevOrderWO] = useState(null)
 
+  const [openComms, setOpenComms] = useState(false)
 
   return (
     <>
@@ -429,116 +449,345 @@ export default function SettingsLayout() {
           </p>
         </div>
         <Separator className="my-6 border-border bg-border text-border" />
-        <div className="grid lg:grid-cols-2 w-[100%]">
-          <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-            <aside className="-mx-4 lg:w-[250px]">
+        <div className="grid w-[100%]">
+          <div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0 lg:mx-3">
+            <aside className="-mx-4 lg:w-[200px]">
               <SidebarNav items={sidebarNavItems} />
             </aside>
             {tabState === 'Profile' && (
-              <div className='flex-1 lg:lax-w-sm'>
-                <Form method='post' className='grid w-full max-w-[300px] space-y-8 items-center  gap-1.5'>
-                  {customerCard.map((item, index) => (
-                    <div key={index} className="relative mt-5">
-                      <Input
-                        name={item.name}
-                        defaultValue={item.value}
-                        className={` bg-background text-foreground border border-border`}
-                      />
-                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-muted-foreground">{item.label}</label>
+              <div className="grid lg:grid-cols-3 w-[100%]">
+
+                <div className='flex-1 lg:lax-w-sm'>
+                  <Form method='post' className='grid w-full max-w-[300px] space-y-8 items-center  gap-1.5 mx-auto'>
+                    {customerCard.map((item, index) => (
+                      <div key={index} className="relative mt-5">
+                        <Input
+                          name={item.name}
+                          defaultValue={item.value}
+                          className={` bg-background text-foreground border border-border`}
+                        />
+                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-muted-foreground">{item.label}</label>
+                      </div>
+                    ))}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            " pl-3 text-left font-normal mt-4 ",
+                            !date && "text-muted-foreground"
+                          )}
+                        >
+                          {date ? (
+                            format(date, "PPP")
+                          ) : (
+                            <span>DOB</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0 border-border" align="start">
+                        <Calendar
+                          hideNavigation
+                          captionLayout="dropdown"
+                          className='w-auto'
+                          mode="single"
+                          fromYear={1900}
+                          selected={date}
+                          onSelect={setDate}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date("1900-01-01")
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <div className="relative mt-5 ">
+                      <Select name='timeToContact' defaultValue={clientfile.timeToContact}  >
+                        <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
+                          <SelectValue defaultValue={clientfile.timeToContact} />
+                        </SelectTrigger>
+                        <SelectContent className=' bg-background text-foreground border border-border' >
+                          <SelectGroup>
+                            <SelectLabel>Best Time To Contact</SelectLabel>
+                            <SelectItem value="Morning">Morning</SelectItem>
+                            <SelectItem value="Afternoon">Afternoon</SelectItem>
+                            <SelectItem value="Evening">Evening</SelectItem>
+                            <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-muted-foreground">Best Time To Contact</label>
                     </div>
-                  ))}
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          " pl-3 text-left font-normal mt-4 ",
-                          !date && "text-muted-foreground"
-                        )}
-                      >
-                        {date ? (
-                          format(date, "PPP")
-                        ) : (
-                          <span>DOB</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0 border-border" align="start">
-                      <Calendar
-                        hideNavigation
-                        captionLayout="dropdown"
-                        className='w-auto'
-                        mode="single"
-                        fromYear={1900}
-                        selected={date}
-                        onSelect={setDate}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <div className="relative mt-5 ">
-                    <Select name='timeToContact' defaultValue={clientfile.timeToContact}  >
-                      <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
-                        <SelectValue defaultValue={clientfile.timeToContact} />
-                      </SelectTrigger>
-                      <SelectContent className=' bg-background text-foreground border border-border' >
-                        <SelectGroup>
-                          <SelectLabel>Best Time To Contact</SelectLabel>
-                          <SelectItem value="Morning">Morning</SelectItem>
-                          <SelectItem value="Afternoon">Afternoon</SelectItem>
-                          <SelectItem value="Evening">Evening</SelectItem>
-                          <SelectItem value="Do Not Contact">Do Not Contact</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-muted-foreground">Best Time To Contact</label>
-                  </div>
-                  <div className="relative mt-5 ">
-                    <Select name='typeOfContact' defaultValue={clientfile.typeOfContact} >
-                      <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
-                        <SelectValue defaultValue={clientfile.typeOfContact} />
-                      </SelectTrigger>
-                      <SelectContent className=' bg-background text-foreground border border-border' >
-                        <SelectGroup>
-                          <SelectLabel>Contact Method</SelectLabel>
-                          <SelectItem value="Phone">Phone</SelectItem>
-                          <SelectItem value="InPerson">In-Person</SelectItem>
-                          <SelectItem value="SMS">SMS</SelectItem>
-                          <SelectItem value="Email">Email</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-muted-foreground">Best Type To Contact</label>
-                  </div>
-                  <ButtonLoading
-                    size="sm"
-                    value="updateClient"
-                    className="w-auto cursor-pointer ml-auto mt-5 mb-5 "
-                    name="intent"
-                    type="submit"
-                    isSubmitting={isSubmitting}
-                    onClick={() => toast.success(`${clientfile.firstName}'s customer file is updated...`)}
-                    loadingText={`${clientfile.firstName}'s customer file is updated...`}
-                  >
-                    Save
-                    <FaSave className="h-4 w-4 ml-2" />
-                  </ButtonLoading>
-                </Form>
+                    <div className="relative mt-5 ">
+                      <Select name='typeOfContact' defaultValue={clientfile.typeOfContact} >
+                        <SelectTrigger className="w-full  bg-background text-foreground border border-border" >
+                          <SelectValue defaultValue={clientfile.typeOfContact} />
+                        </SelectTrigger>
+                        <SelectContent className=' bg-background text-foreground border border-border' >
+                          <SelectGroup>
+                            <SelectLabel>Contact Method</SelectLabel>
+                            <SelectItem value="Phone">Phone</SelectItem>
+                            <SelectItem value="InPerson">In-Person</SelectItem>
+                            <SelectItem value="SMS">SMS</SelectItem>
+                            <SelectItem value="Email">Email</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-muted-foreground">Best Type To Contact</label>
+                    </div>
+                    <ButtonLoading
+                      size="sm"
+                      value="updateClient"
+                      className="w-auto cursor-pointer ml-auto mt-5 mb-5 "
+                      name="intent"
+                      type="submit"
+                      isSubmitting={isSubmitting}
+                      onClick={() => toast.success(`${clientfile.firstName}'s customer file is updated...`)}
+                      loadingText={`${clientfile.firstName}'s customer file is updated...`}
+                    >
+                      Save
+                      <FaSave className="h-4 w-4 ml-2" />
+                    </ButtonLoading>
+                  </Form>
+                </div>
+                <div className='col-span-2 lg:mx-3'>
+                  <Tabs defaultValue="Communications">
+                    <TabsList >
+                      <TabsTrigger value="Communications">Communications</TabsTrigger>
+                      <TabsTrigger value="Phone">Phone</TabsTrigger>
+                      <TabsTrigger value="SMS">SMS</TabsTrigger>
+                      <TabsTrigger value="Email">Email</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="Email">
+                      <MyIFrameComponent />
+                    </TabsContent>
+                    <TabsContent value="Communications">
+                      <Card className=" text-foreground  rounded-lg" x-chunk="dashboard-05-chunk-4"                >
+                        <CardHeader className="flex flex-row items-start  bg-muted/50 ">
+                          <div className="grid gap-0.5">
+                            <CardTitle className="group flex items-center gap-2 text-lg">
+                              Communications
+                              <Button
+                                size="icon"
+                                variant="outline"
+                                className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                              >
+                                <Copy className="h-3 w-3" />
+                              </Button>
+                            </CardTitle>
+                          </div>
+                          <div className="ml-auto flex items-center gap-1">
+                            <TooltipProvider delayDuration={0}>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    size="icon"
+                                    variant="outline"
+                                    className="ml-auto rounded-full"
+                                    onClick={() => setOpenComms(true)}
+                                  >
+                                    <PlusIcon className="h-4 w-4" />
+                                    <span className="sr-only">Add Communication</span>
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent sideOffset={10} className='bg-primary'>Add Communication</TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip p-6 text-sm bg-background">
+                          <div className="grid gap-3 max-h-[40vh] h-auto">
+                            <div className="space-y-4 mt-5">
+                              {comms ? (<>
+                                {comms && comms.map((message, index) => (
+                                  <div
+                                    key={index}
+                                    className={cn(
+                                      "flex  max-w-[75%]   w-[65%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                                      message.direction === 'Outgoing'
+                                        ? "ml-auto bg-primary text-foreground"
+                                        : "bg-[#262626]"
+                                    )}
+                                  >
+                                    <div className='grid grid-cols-1'>
+                                      <div className='flex justify-between'>
+                                        <p>{message.direction}</p>
+                                        <p className='text-right'>{message.type}</p>
+                                      </div>
+                                      <div className='flex justify-between'>
+                                        <p>{message.result}</p>
+                                        {message.userEmail === 'Outgoing' && (
+                                          <p className='text-[#8c8c8c] text-right'>
+                                            {message.userName}
+                                          </p>
+                                        )}
+                                      </div>
+                                      <p className='text-muted-foreground'>
+                                        {new Date(message.createdAt).toLocaleDateString("en-US", options2)}
+                                      </p>
+                                      <p>{message.subject}</p>
+                                      <p>{message.body}</p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </>) : (<>
+                                <p className='text-center mt-5'>No communications yet conducted.</p>
+                              </>)}
+                            </div>
+
+                          </div>
+                          <Dialog open={openComms} onOpenChange={setOpenComms}>
+                            <DialogContent className="gap-0 p-0 outline-none border-border text-foreground">
+                              <Form method='post'>
+                                <DialogHeader className="px-4 pb-4 pt-5">
+                                  <DialogTitle>Add Communication</DialogTitle>
+                                </DialogHeader>
+                                <div className="grid gap-3 mx-3 mb-3">
+                                  <div className="relative mt-3">
+                                    <Input
+                                      id="subject"
+                                      type="text"
+                                      className="w-full bg-background border-border "
+                                    />
+                                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">Subject</label>
+                                  </div>
+                                  <div className="relative mt-3">
+                                    <Select name='body' defaultValue="Gave pricing, need to follow up">
+                                      <SelectTrigger className="w-full  border-border  ">
+                                        <SelectValue placeholder="Message examples" />
+                                      </SelectTrigger>
+                                      <SelectContent className='bg-background text-foreground bg-background border-border'>
+                                        <SelectGroup>
+                                          <SelectLabel>Message examples</SelectLabel>
+                                          <SelectItem value="">-- Moving Forward --</SelectItem>
+                                          <SelectItem value="Wants to move forward, got deposit">Wants to move forward, got deposit</SelectItem>
+                                          <SelectItem value="Wants to move forward, did not have credit card on him">Wants to move forward, did not have credit card on him</SelectItem>
+                                          <SelectItem value="Wants to get finance approval before moving forward">Wants to get approval before moving forward</SelectItem>
+                                          <SelectItem value="Sent BOS to sign off on">Sent BOS to sign off on deal</SelectItem>
+                                          <SelectItem value="Wants to come back in to view and negotiate">Wants to come back in to view and negotiate</SelectItem>
+
+                                          <SelectItem value="">-- Stand Still --</SelectItem>
+                                          <SelectItem value="Talked to spouse, client was not home">Talked to wife, husband was not home</SelectItem>
+                                          <SelectItem value="Got ahold of the client, was busy, need to call back">Got ahold of the client, was busy need to call back</SelectItem>
+                                          <SelectItem value="Gave pricing, need to follow up">Gave pricing, need to follow up</SelectItem>
+                                          <SelectItem value="Needs to discuss with spouse">Needs to discuss with spouse</SelectItem>
+                                          <SelectItem value="No Answer / Left Message">No Answer / Left Message</SelectItem>
+
+                                          <SelectItem value="">-- Not Moving Forward --</SelectItem>
+                                          <SelectItem value="Does not want to move forward right now wants me to call in the future">Does not want to move forward right now wants me to call in the future</SelectItem>
+                                          <SelectItem value="Bought else where, set to lost">Bought else where</SelectItem>
+                                          <SelectItem value="Does not want to move forward, set to lost">Does not want to move forward, set to lost</SelectItem>
+                                          <SelectItem value=""></SelectItem>
+                                        </SelectGroup>
+                                      </SelectContent>
+                                    </Select>
+                                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Note Examples</label>
+                                  </div>
+                                  <div className="relative mt-3">
+                                    <Input
+                                      id="name"
+                                      type="text"
+                                      name='body2'
+                                      className="w-full bg-background border-border  "
+                                    />
+                                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Or write a custom body...</label>
+                                  </div>
+                                  <div className="relative mt-3">
+                                    <Select name='type' defaultValue="Phone">
+                                      <SelectTrigger className="w-full    bg-background border-border">
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent className='bg-background text-foreground bg-background  border-border'>
+                                        <SelectGroup>
+                                          <SelectLabel>Contact Method</SelectLabel>
+                                          <SelectItem value="Phone">Phone</SelectItem>
+                                          <SelectItem value="In Person">In-Person</SelectItem>
+                                          <SelectItem value="SMS">SMS</SelectItem>
+                                          <SelectItem value="Email">Email</SelectItem>
+                                        </SelectGroup>
+                                      </SelectContent>
+                                    </Select>
+                                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Contact Method</label>
+                                  </div>
+                                  <div className="relative mt-3">
+                                    <Select name='result' defaultValue="Reached">
+                                      <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent className='bg-background text-foreground  border-border'>
+                                        <SelectGroup>
+                                          <SelectLabel>Result of call</SelectLabel>
+                                          <SelectItem value="Reached">Reached</SelectItem>
+                                          <SelectItem value="N/A">N/A</SelectItem>
+                                          <SelectItem value="Attempted">Left Message</SelectItem>
+                                          <SelectItem value="Completed">Completed</SelectItem>
+                                          <SelectItem value="Rescheduled">Rescheduled</SelectItem>
+                                        </SelectGroup>
+                                      </SelectContent>
+                                    </Select>
+                                    <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Result of call</label>
+                                  </div>
+                                  <div className="relative mt-3">
+                                    <Select name='direction' defaultValue="Incoming">
+                                      <SelectTrigger className="w-full  focus:border-primary  bg-background border-border">
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent className='bg-background text-foreground  border-border'>
+                                        <SelectGroup>
+                                          <SelectLabel>Direction of call</SelectLabel>
+                                          <SelectItem value="Incoming">Incoming</SelectItem>
+                                          <SelectItem value="Outgoing">Outgoing</SelectItem>
+                                        </SelectGroup>
+                                      </SelectContent>
+                                    </Select>
+                                    <label className=" text-sm absolute left-3 -top-3 px-2 rounded-full bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Direction of call</label>
+                                  </div>
+
+                                </div>
+                                <DialogFooter className="flex items-center  p-4 sm:justify-between">
+                                  <input type='hidden' name='clientfileId' defaultValue={clientfile.id} />
+                                  <input type='hidden' name='userEmail' defaultValue={user.email} />
+                                  <input type='hidden' name='userName' defaultValue={user.name} />
+
+                                  <Button
+                                    value="addComms"
+                                    type="submit"
+                                    name="intent"
+                                    onClick={() => {
+                                      toast.success(`Communication Added!`)
+                                    }}
+                                    className='bg-primary ml-auto '>
+                                    Add Communication
+                                    <PaperPlaneIcon className=" ml-2 h-4 w-4" />
+                                  </Button>
+                                </DialogFooter>
+                              </Form>
+                            </DialogContent>
+                          </Dialog>
+                        </CardContent>
+                        <CardFooter className="flex flex-row items-center border-t border-border bg-muted/50  px-6 py-3">
+                          <div className="text-xs text-muted">
+
+                          </div>
+
+                        </CardFooter>
+                      </Card>
+                    </TabsContent>
+                  </Tabs>
+                </div>
               </div>
             )}
             {tabState === 'PAC' && (
               <div className='grid lg:grid-cols-3'>
-                <div className='lg:col-span-2 mx-2'>
+                <div className='lg:col-span-2 m-3'>
                   <AccTable
                     AccOrders={AccOrders}
+                    setValue={setValue}
+                    showPrevOrderById={showPrevOrderById}
                   />
                 </div>
-                <div className='lg:col-span-1 mx-2'>
-
+                <div className='lg:col-span-1 m-3'>
                   <MySidebar
                     showPrev={showPrev}
                     lastOrder={lastAccOrder}
@@ -557,734 +806,1399 @@ export default function SettingsLayout() {
                     setShowPrev={setShowPrev}
                     setShowPrevOrder={setShowPrevOrder}
                   />
-
                 </div>
               </div>
             )}
             {tabState === 'Work Orders' && (
               <div className='grid lg:grid-cols-3'>
                 <div className='lg:col-span-2'>
-
+                  <WorkorderTabled
+                    orders={WorkOrder}
+                    user={user}
+                    clientfile={clientfile}
+                    showPrevOrder={showPrevOrderWO}
+                    setShowPrevOrder={setShowPrevOrderWO}
+                  />
                 </div>
-                <div className='lg:col-span-1'>
-                  {showPrev && (
-                    <Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4"          >
-                      <CardHeader className="flex flex-row items-start bg-muted/50">
-                        <div className="grid gap-0.5">
-                          <CardTitle className="group flex items-center gap-2 text-lg">
-                            W / O #{order.workOrderId}
-                            <Button
-                              size="icon"
-                              variant="outline"
-                              className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
-                            >
-                              <Copy className="h-3 w-3" />
-                              <span className="sr-only">Copy Order ID</span>
-                            </Button>
-                          </CardTitle>
-                          {order.status && (
-                            <div>
-                              <div className="relative mt-4">
-                                <Select
-                                  name='status'
-                                  defaultValue={order.status}
-                                  onValueChange={(value) => {
-                                    const formData = new FormData();
-                                    formData.append("id", order.workOrderId);
-                                    formData.append("total", total);
-                                    formData.append("intent", 'updateStatus');
-                                    formData.append("status", value);
-                                    console.log(formData, 'formData');
-                                    status.submit(formData, { method: "post" });
-                                    toast.success(`Changed status to ${value}`)
-                                  }}>
-                                  <SelectTrigger className="w-[200px] " >
-                                    <SelectValue defaultValue={order.status} />
-                                  </SelectTrigger>
-                                  <SelectContent className='border-border'>
-                                    <SelectGroup>
-                                      <SelectLabel>Status</SelectLabel>
-                                      <SelectItem value="Quote">Quote</SelectItem>
-                                      <SelectItem value="Sales">Sales</SelectItem>
-                                      <SelectItem value="Open">Open / Scheduled</SelectItem>
-                                      <SelectItem value="Waiting On Parts">Waiting On Parts</SelectItem>
-                                      <SelectItem value="Waiter">Waiter</SelectItem>
-                                      <SelectItem value="In Works">In Works</SelectItem>
-                                      <SelectItem value="Work Completed">Work Completed</SelectItem>
-                                      <SelectItem value="Scheduled For Delivery">Scheduled For Delivery</SelectItem>
-                                      <SelectItem value="Long Term Storage">Long Term Storage</SelectItem>
-                                      <SelectItem value="Winter Storage">Winter Storage</SelectItem>
-                                      <SelectItem value="Closer" disabled>Closed</SelectItem>
-                                    </SelectGroup>
-                                  </SelectContent>
-                                </Select>
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-muted/50 transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Status</label>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        <div className="ml-auto flex items-center gap-1">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button size="icon" variant="outline" className="h-8 w-8">
-                                <MoreVertical className="h-3.5 w-3.5" />
-                                <span className="sr-only">More</span>
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                              align="end"
-                              className="border border-border"
-                            >
-                              <DropdownMenuItem
-                                onSelect={() => {
-                                  navigate(`/dealer/service/workOrder/${order.workOrderId}`)
-                                }}>
-                                Go To Order
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onSelect={() => {
-                                  console.log(toReceipt)
-                                  PrintReceipt(toReceipt)
-                                }}>
-                                Reprint Receipt
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>
-                                Show Discount
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                onSelect={() => {
-                                  const formData = new FormData();
-                                  formData.append("workOrderId", order.workOrderId);
-                                  formData.append("intent", 'deleteOrder');
-                                  submit(formData, { method: "post", });
-                                }}>
-                                Delete
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="p-6 text-sm h-auto max-h-[850px] overflow-y-auto">
-                        <Accordion type="single" collapsible className="w-full border-border mt-3">
-                          <AccordionItem value="item-1" className='border-border'>
-                            <AccordionTrigger>Customer Information</AccordionTrigger>
-                            <AccordionContent>
-                              <div className="grid gap-3">
-                                <dl className="grid gap-3">
-                                  <div className="flex items-center justify-between">
-                                    <dt className="text-muted-foreground">Customer</dt>
-                                    <dd>{order.Clientfile.name}</dd>
-                                  </div>
-                                  <div className="flex items-center justify-between">
-                                    <dt className="text-muted-foreground">Email</dt>
-                                    <dd>
-                                      <a href="mailto:">{order.Clientfile.email}</a>
-                                    </dd>
-                                  </div>
-                                  <div className="flex items-center justify-between">
-                                    <dt className="text-muted-foreground">Phone</dt>
-                                    <dd>
-                                      <a href="tel:">{order.Clientfile.phone}</a>
-                                    </dd>
-                                  </div>
-                                </dl>
-                              </div>
-                            </AccordionContent>
-                          </AccordionItem>
-                        </Accordion>
-                        <Accordion type="single" collapsible className="w-full border-border mt-3">
-                          <AccordionItem value="item-1" className='border-border'>
-                            <AccordionTrigger>Customer Unit</AccordionTrigger>
-                            <AccordionContent>
-                              <dl className="grid gap-3">
-                                <div className="flex items-center justify-between">
-                                  <dt className="text-muted-foreground">Unit</dt>
-                                  <dd>
-                                    <EditableText
-                                      value={order.unit}
-                                      fieldName="name"
-                                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
-                                      buttonClassName="text-center py-1 px-2 text-foreground"
-                                      buttonLabel={`Edit quantity`}
-                                      inputLabel={`Edit quantity`}
-                                    >
-                                      <input type="hidden" name="intent" value='updateWorkOrderUnit' />
-                                      <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                                      <input type="hidden" name="col" value='unit' />
-                                    </EditableText>
-                                  </dd>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                  <dt className="text-muted-foreground">Color</dt>
-                                  <dd>
-                                    <EditableText
-                                      value={order.color}
-                                      fieldName="name"
-                                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
-                                      buttonClassName="text-center py-1 px-2 text-foreground"
-                                      buttonLabel={`Edit quantity`}
-                                      inputLabel={`Edit quantity`}
-                                    >
-                                      <input type="hidden" name="intent" value='updateWorkOrderUnit' />
-                                      <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                                      <input type="hidden" name="col" value='color' />
-                                    </EditableText>
-                                  </dd>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                  <dt className="text-muted-foreground">Mileage</dt>
-                                  <dd>
-                                    <EditableText
-                                      value={order.mileage}
-                                      fieldName="name"
-                                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
-                                      buttonClassName="text-center py-1 px-2 text-foreground"
-                                      buttonLabel={`Edit quantity`}
-                                      inputLabel={`Edit quantity`}
-                                    >
-                                      <input type="hidden" name="intent" value='updateWorkOrderUnit' />
-                                      <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                                      <input type="hidden" name="col" value='mileage' />
-                                    </EditableText>
-                                  </dd>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                  <dt className="text-muted-foreground">vin</dt>
-                                  <dd>
-                                    <EditableText
-                                      value={order.vin}
-                                      fieldName="name"
-                                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
-                                      buttonClassName="text-center py-1 px-2 text-foreground"
-                                      buttonLabel={`Edit quantity`}
-                                      inputLabel={`Edit quantity`}
-                                    >
-                                      <input type="hidden" name="intent" value='updateWorkOrderUnit' />
-                                      <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                                      <input type="hidden" name="col" value='vin' />
-                                    </EditableText>
-                                  </dd>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                  <dt className="text-muted-foreground">Motor</dt>
-                                  <dd>
-                                    <EditableText
-                                      value={order.motor}
-                                      fieldName="name"
-                                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
-                                      buttonClassName="text-center py-1 px-2 text-foreground"
-                                      buttonLabel={`Edit quantity`}
-                                      inputLabel={`Edit quantity`}
-                                    >
-                                      <input type="hidden" name="intent" value='updateWorkOrderUnit' />
-                                      <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                                      <input type="hidden" name="col" value='motor' />
-                                    </EditableText>
-                                  </dd>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                  <dt className="text-muted-foreground">Tag</dt>
-                                  <dd>
-                                    <EditableText
-                                      value={order.tag}
-                                      fieldName="name"
-                                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
-                                      buttonClassName="text-center py-1 px-2 text-foreground"
-                                      buttonLabel={`Edit quantity`}
-                                      inputLabel={`Edit quantity`}
-                                    >
-                                      <input type="hidden" name="intent" value='updateWorkOrderUnit' />
-                                      <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                                      <input type="hidden" name="col" value='tag' />
-                                    </EditableText>
-                                  </dd>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                  <dt className="text-muted-foreground">location</dt>
-                                  <dd>
-                                    <EditableText
-                                      value={order.location}
-                                      fieldName="name"
-                                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
-                                      buttonClassName="text-center py-1 px-2 text-foreground"
-                                      buttonLabel={`Edit quantity`}
-                                      inputLabel={`Edit quantity`}
-                                    >
-                                      <input type="hidden" name="intent" value='updateWorkOrderUnit' />
-                                      <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                                      <input type="hidden" name="col" value='location' />
-                                    </EditableText>
-                                  </dd>
-                                </div>
-                              </dl>
-                            </AccordionContent>
-                          </AccordionItem>
-                        </Accordion>
-
-                        <div className="grid gap-3 mt-3">
-                          <div className="font-semibold">Work Order Services</div>
-                          <ul className="grid gap-3">
-                            {order.ServicesOnWorkOrders && order.ServicesOnWorkOrders.map((result, index) => {
-                              const hours = result.hr || result.service.estHr || 0.00;
-                              return (
-                                <li key={index} className="flex items-center justify-between">
-                                  <div>
-                                    <ContextMenu>
-                                      <ContextMenuTrigger>
-                                        <div className='grid grid-cols-1'>
-                                          <div className='flex items-center group '>
-                                            <div className="font-medium">
-                                              {result.service.service}
-                                            </div>
-                                            <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                                              <input type="hidden" name="id" value={result.id} />
-                                              <input type='hidden' name='total' value={total} />
-                                              <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                                              <Button
-                                                size="icon"
-                                                variant="outline"
-                                                name="intent" value='deleteServiceItem'
-                                                className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                                                type='submit'
-                                              >
-                                                <X className="h-4 w-4 text-foreground" />
-                                              </Button>
-                                            </addProduct.Form>
-                                          </div>
-                                          <div className="hidden text-sm text-muted-foreground md:inline">
-                                            <div className='flex items-center'>
-                                              <div className="font-medium">
-                                                <EditableText
-                                                  value={hours}
-                                                  fieldName="name"
-                                                  inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
-                                                  buttonClassName="text-center py-1 px-2 text-muted-foreground"
-                                                  buttonLabel={`Edit name`}
-                                                  inputLabel={`Edit name`}
-                                                >
-                                                  <input type="hidden" name="intent" value='updateHr' />
-                                                  <input type="hidden" name="id" value={result.id} />
-                                                  <input type="hidden" name="colName" value='hr' />
-                                                </EditableText>
-
-                                              </div>
-                                              <p>{" "}hrs{" "}{" "}@{" "}${tax.userLabour}</p>
-                                            </div>
-                                          </div>
-                                          {result.status && (
-                                            <div>
-                                              <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
-                                            </div>
-                                          )}
-                                        </div>
-                                      </ContextMenuTrigger>
-                                      <ContextMenuContent className='border-border'>
-                                        <ContextMenuSub>
-                                          <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
-                                          <ContextMenuSubContent className="w-48 border-border">
-                                            <ContextMenuItem>{result.service.service}</ContextMenuItem>
-                                            <ContextMenuItem>{result.service.description}</ContextMenuItem>
-                                            <ContextMenuSeparator />
-                                            <ContextMenuItem>
-                                              Est. Hours
-                                              <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
-                                            </ContextMenuItem>
-                                            <ContextMenuItem>
-                                              Price
-                                              <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
-                                            </ContextMenuItem>
-                                          </ContextMenuSubContent>
-                                        </ContextMenuSub>
-                                        <ContextMenuSeparator />
-                                        <ContextMenuCheckboxItem
-                                          checked={result.status === 'In Stock'}
-                                          onSelect={() => {
-                                            const formData = new FormData();
-                                            formData.append("id", result.id);
-                                            formData.append("status", 'In Stock');
-                                            formData.append("intent", 'updateServiceOnOrders');
-                                            submit(formData, { method: "post", });
-                                          }}
-                                        >In Stock</ContextMenuCheckboxItem>
-                                        <ContextMenuCheckboxItem
-                                          checked={result.status === 'On Order'}
-                                          onSelect={() => {
-                                            const formData = new FormData();
-                                            formData.append("id", result.id);
-                                            formData.append("status", 'On Order');
-                                            formData.append("intent", 'updateServiceOnOrders');
-                                            submit(formData, { method: "post", });
-                                          }}
-                                        >On Order</ContextMenuCheckboxItem>
-                                        <ContextMenuCheckboxItem
-                                          checked={result.status === 'Completed'}
-                                          onSelect={() => {
-                                            const formData = new FormData();
-                                            formData.append("id", result.id);
-                                            formData.append("status", 'Completed');
-                                            formData.append("intent", 'updateServiceOnOrders');
-                                            submit(formData, { method: "post", });
-                                          }}
-                                        >Completed</ContextMenuCheckboxItem>
-                                        <ContextMenuCheckboxItem
-                                          checked={result.status === 'Back Order'}
-                                          onSelect={() => {
-                                            const formData = new FormData();
-                                            formData.append("id", result.id);
-                                            formData.append("status", 'Back Order');
-                                            formData.append("intent", 'updateServiceOnOrders');
-                                            submit(formData, { method: "post", });
-                                          }}
-                                        >Back Order</ContextMenuCheckboxItem>
-                                      </ContextMenuContent>
-                                    </ContextMenu>
-                                  </div>
-                                  <span>
-                                    x{" "}{" "}{result.quantity}
-
-                                  </span>
-                                </li>
-                              )
-                            })}
-                          </ul>
-                          <Separator className="my-4" />
-                          <div className="font-semibold">Work Order Parts</div>
-                          <ul className="grid gap-3">
-                            {order?.AccOrders?.length > 0 ? (
-                              order.AccOrders.map((accOrder, accOrderIndex) => (
-                                <div key={accOrderIndex}>
-                                  {accOrder?.AccessoriesOnOrders?.length > 0 ? (
-                                    accOrder.AccessoriesOnOrders.map((accessoryOnOrder, accessoryIndex) => (
-                                      <li key={accessoryIndex} className="flex items-center justify-between">
-                                        <div>
-                                          <ContextMenu>
-                                            <ContextMenuTrigger>
-                                              <div className='grid grid-cols-1'>
-                                                <div className='flex items-center group '>
-                                                  <div className="font-medium">
-
-                                                    {accessoryOnOrder.accessory.name}
-                                                  </div>
-                                                  <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                                                    <input type="hidden" name="id" value={accessoryOnOrder.id} />
-                                                    <input type='hidden' name='total' value={accessoryOnOrder.accessory.price * accessoryOnOrder.quantity} />
-                                                    <input type='hidden' name='accOrderId' value={accOrder.id} />
-                                                    <Button
-                                                      size="icon"
-                                                      variant="outline"
-                                                      name="intent" value='deleteOrderItem'
-                                                      className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                                                      type='submit'
-                                                    >
-                                                      <X className="h-4 w-4 text-foreground" />
-                                                    </Button>
-                                                  </addProduct.Form>
-                                                </div>
-                                                <div className="hidden text-sm text-muted-foreground md:inline">
-                                                  {accessoryOnOrder.accessory.brand}
-                                                </div>
-                                                <div>
-                                                  <Badge className='text-sm  px-2 py-1 '>{accessoryOnOrder.status}</Badge>
-                                                </div>
-                                              </div>
-                                            </ContextMenuTrigger>
-                                            <ContextMenuContent className='border-border'>
-                                              <ContextMenuSub>
-                                                <ContextMenuSubTrigger inset>Part Details</ContextMenuSubTrigger>
-                                                <ContextMenuSubContent className="w-48 border-border">
-                                                  <ContextMenuItem>{accessoryOnOrder.accessory.partNumber}</ContextMenuItem>
-                                                  <ContextMenuItem>{accessoryOnOrder.accessory.brand} </ContextMenuItem>
-                                                  <ContextMenuItem>{accessoryOnOrder.accessory.name} </ContextMenuItem>
-                                                  <ContextMenuItem>{accessoryOnOrder.accessory.description} </ContextMenuItem>
-                                                  <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
-                                                  <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
-                                                  <ContextMenuSeparator />
-                                                  <ContextMenuItem>
-                                                    Cost
-                                                    <ContextMenuShortcut>${accessoryOnOrder.accessory.cost}</ContextMenuShortcut>
-                                                  </ContextMenuItem>
-                                                  <ContextMenuItem>
-                                                    Price
-                                                    <ContextMenuShortcut>${accessoryOnOrder.accessory.price}</ContextMenuShortcut>
-                                                  </ContextMenuItem>
-                                                  <ContextMenuItem>
-                                                    In Stock
-                                                    <ContextMenuShortcut>{accessoryOnOrder.accessory.quantity}</ContextMenuShortcut>
-                                                  </ContextMenuItem>
-                                                  <ContextMenuItem>
-                                                    On Order
-                                                    <ContextMenuShortcut>{accessoryOnOrder.accessory.onOrder}</ContextMenuShortcut>
-                                                  </ContextMenuItem>
-                                                  <ContextMenuItem>
-                                                    Location
-                                                    <ContextMenuShortcut>{accessoryOnOrder.accessory.location}</ContextMenuShortcut>
-                                                  </ContextMenuItem>
-                                                </ContextMenuSubContent>
-                                              </ContextMenuSub>
-                                              <ContextMenuCheckboxItem
-                                                checked={accessoryOnOrder.status === 'In Stock'}
-                                                onSelect={() => {
-                                                  const formData = new FormData();
-                                                  formData.append("id", accessoryOnOrder.id);
-                                                  formData.append("status", 'In Stock');
-                                                  formData.append("intent", 'updateAccOnOrders');
-                                                  submit(formData, { method: "post", });
-                                                }}
-                                              >In Stock</ContextMenuCheckboxItem>
-                                              <ContextMenuCheckboxItem
-                                                checked={accessoryOnOrder.status === 'On Order'}
-                                                onSelect={() => {
-                                                  const formData = new FormData();
-                                                  formData.append("id", accessoryOnOrder.id);
-                                                  formData.append("status", 'On Order');
-                                                  formData.append("intent", 'updateAccOnOrders');
-                                                  submit(formData, { method: "post", });
-                                                }}
-                                              >On Order</ContextMenuCheckboxItem>
-                                              <ContextMenuCheckboxItem
-                                                checked={accessoryOnOrder.status === 'Back Order'}
-                                                onSelect={() => {
-                                                  const formData = new FormData();
-                                                  formData.append("id", accessoryOnOrder.id);
-                                                  formData.append("status", 'Back Order');
-                                                  formData.append("intent", 'updateAccOnOrders');
-                                                  submit(formData, { method: "post", });
-                                                }}
-                                              >Back Order</ContextMenuCheckboxItem>
-                                            </ContextMenuContent>
-                                          </ContextMenu>
-                                        </div>
-                                        <span>${accessoryOnOrder.accessory.price} x {accessoryOnOrder.quantity}</span>
-                                      </li>
-                                    ))
-                                  ) : (
-                                    <p>No Accessories On Orders available.</p>
-                                  )}
-                                </div>
-                              ))
-                            ) : (
-                              <p>No Orders available.</p>
-                            )}
-                          </ul>
-                          <Separator className="my-2" />
-                          <ul className="grid gap-3">
-                            <li className="flex items-center justify-between">
-                              <span className="text-muted-foreground">Service Subtotal</span>
-                              <span>${serviceSubTotal}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-muted-foreground">Parts Subtotal</span>
-                              <span>${partsSubTotal}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-muted-foreground">Subtotal</span>
-                              <span>${totalPreTax}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-muted-foreground">Tax</span>
-                              <span>{tax.userTax}%</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-muted-foreground">Total</span>
-                              <span>${total}</span>
-                            </li>
-                          </ul>
-                        </div>
-                        <Separator className="my-4" />
-                        <div className="grid gap-3">
-                          <div className="font-semibold">Payment Information</div>
-                          <dl className="grid gap-3">
-                            <div className="flex flex-col" >
-                              <div className='flex items-center justify-center text-foreground'>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn('mr-2 bg-primary', paymentType === 'Visa' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('Visa')}
-                                >
-                                  <CreditCard className="h-4 w-4 text-foreground" />
-                                  <p className="">Visa</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn('mr-2 bg-primary', paymentType === 'Mastercard' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('Mastercard')}
-                                >
-                                  <CreditCard className="h-4 w-4 text-foreground" />
-                                  <p className="">Mastercard</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => setPaymentType('Debit')}
-                                  className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
-                                >
-                                  <CreditCard className="h-4 w-4 text-foreground" />
-                                  <p className="">Debit</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => setPaymentType('Cheque')}
-                                  className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
-                                >
-                                  <CreditCard className="h-4 w-4 text-foreground" />
-                                  <p className="">Cheque</p>
-                                </Button>
-                              </div>
-                              <div className='flex items-center justify-center text-foreground mt-2'>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn('mr-2 bg-primary', paymentType === 'Cash' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('Cash')}
-                                >
-                                  <BanknoteIcon className="h-4 w-4 text-foreground" />
-                                  <p className="">Cash</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn(' bg-primary mr-2', paymentType === 'Online Transaction' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('Online Transaction')}
-                                >
-                                  <PanelTop className="h-4 w-4 text-foreground" />
-                                  <p className="">Online Transaction</p>
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className={cn(' bg-primary', paymentType === 'E-Transfer' ? "bg-secondary" : "", "")}
-                                  onClick={() => setPaymentType('E-Transfer')}
-                                >
-                                  <PanelTop className="h-4 w-4 text-foreground" />
-                                  <p className="">E-Transfer</p>
-                                </Button>
-                              </div>
-                            </div>
-                          </dl>
-                        </div>
-                        <div className="grid gap-3">
-                          <ul className="grid gap-3">
-                            {order.Payments && order.Payments.map((result, index) => (
-                              <li className="flex items-center justify-between" key={index}                    >
-                                <span className="text-muted-foreground">{result.paymentType}</span>
-                                <span>${result.amountPaid}</span>
-                              </li>
-                            ))}
-                            <li className="flex items-center justify-between">
-                              <span className="text-muted-foreground">Balance</span>
-                              <span>${remaining}</span>
-
-                            </li>
-                            {remaining === 0 && (
-                              <li className="flex items-center justify-between">
-                                <span className="text-muted-foreground"></span>
-                                <Badge className='bg-[#30A46C]'>PAID</Badge>
-                              </li>
-                            )}
-                            {paymentType !== '' && (
-                              <>
-                                <li className="flex items-center justify-between">
-                                  <span className="text-muted-foreground">Amount to be charged on {paymentType}</span>
-                                  <payment.Form method="post" ref={formRef} >
-                                    <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                                    <input type='hidden' name='paymentType' value={paymentType} />
-                                    <input type='hidden' name='remaining' value={remaining} />
-                                    <input type='hidden' name='intent' value='createPayment' />
-                                    <input type='hidden' name='total' value={total} />
-                                    <div className="relative ml-auto flex-1 md:grow-0 ">
-                                      <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                      <Input
-                                        name='amountPaid'
-                                        className='text-right pr-9'
-                                        value={input}
-                                        onChange={(event) => setInput(event.target.value)}
-                                      />
-                                      <Button
-                                        type="submit"
-                                        size="icon"
-                                        onClick={() => {
-                                          toast.success(`Payment rendered!`)
-                                        }}
-                                        disabled={inputLength === 0}
-                                        className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
-                                        <PaperPlaneIcon className="h-4 w-4" />
-                                        <span className="sr-only">Cash</span>
-                                      </Button>
-                                    </div>
-                                  </payment.Form>
-                                </li>
-                              </>
-                            )}
-
-                          </ul>
-                        </div>
-                        <Separator className="my-4" />
-                        <div className='gap-3'>
-                          <div className="font-semibold">Staff</div>
-                          <ul className="grid gap-3">
-                            <li className="flex items-center justify-between">
-                              <span className="text-muted-foreground">
-                                Technician
-                              </span>
-                              <span>{order.tech}</span>
-                            </li>
-                            <li className="flex items-center justify-between">
-                              <span className="text-muted-foreground">
-                                Service Writer
-                              </span>
-                              <span>{order.writer}</span>
-                            </li>
-                          </ul>
-                        </div>
-                      </CardContent>
-                      <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3 border-border">
-                        <div className="text-xs text-muted-foreground">
-                          Updated <time dateTime="2023-11-23">November 23, 2023</time>
-                        </div>
-                        <Pagination className="ml-auto mr-0 w-auto">
-                          <PaginationContent>
-                            <PaginationItem>
-                              <Button size="icon" variant="outline" className="h-6 w-6">
-                                <ChevronLeft className="h-3.5 w-3.5" />
-                                <span className="sr-only">Previous Order</span>
-                              </Button>
-                            </PaginationItem>
-                            <PaginationItem>
-                              <Button size="icon" variant="outline" className="h-6 w-6">
-                                <ChevronRight className="h-3.5 w-3.5" />
-                                <span className="sr-only">Next Order</span>
-                              </Button>
-                            </PaginationItem>
-                          </PaginationContent>
-                        </Pagination>
-                      </CardFooter>
-                    </Card>
-                  )}
-                </div>
+                <WorkOrderBar
+                  order={order}
+                  showPrev={showPrev}
+                  user={user}
+                  clientfile={clientfile}
+                  showPrevOrder={showPrevOrderWO}
+                  setShowPrevOrder={setShowPrevOrderWO}
+                />
               </div>
             )}
-          </div>
-          <div>
-            <Tabs defaultValue="Timeline">
-              <TabsList >
-                <TabsTrigger value="Phone">Phone</TabsTrigger>
-                <TabsTrigger value="SMS">SMS</TabsTrigger>
-                <TabsTrigger value="Email">Email</TabsTrigger>
-              </TabsList>
-              <TabsContent value="Email">
-                <MyIFrameComponent />
-              </TabsContent>
-            </Tabs>
           </div>
         </div>
       </div>
     </>
+  )
+}
+
+export function WorkorderTabled({ orders, user, clientfile, showPrevOrder, setShowPrevOrder }) {
+
+  //  table
+  const [data, setData] = useState(orders);
+
+  const defaultColumn = {
+    cell: ({ row, column: { id } }) => {
+      const data = row.original
+      return (
+        <p
+          className="text-center py-1 px-2 text-foreground mx-auto flex justify-center"
+        >
+          {row.getValue(id)}
+        </p>
+      )
+    },
+  }
+  let addProduct = useFetcher();
+  const tax = clientfile.Dealer
+  let formRef = useRef();
+
+  // const remaining = parseFloat(total) - parseFloat(totalAmountPaid)
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const savedVisibility = user.ColumnStateInventory.state
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
+  const [rowSelection, setRowSelection] = React.useState({});
+  const [globalFilter, setGlobalFilter] = useState('')
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [selectedModel, setSelectedModel] = useState({})
+  const [filterBy, setFilterBy] = useState('');
+  const [showFilter, setShowFilter] = useState(false);
+  const [selectedColumn, setSelectedColumn] = useState("");
+  const [selectedGlobal, setSelectedGlobal] = useState(false);
+  const [todayfilterBy, setTodayfilterBy] = useState(null);
+  const [models, setModels] = useState([]);
+  const [modelName, setModelName] = useState([]);
+  const [subModel, setSubModel] = useState([]);
+  const order = showPrevOrder
+
+  const handleDropdownChange = (value) => {
+    setGlobalFilter(value);
+  };
+  useEffect(() => {
+    if (showPrevOrder) {
+      const partsSub = showPrevOrder?.AccOrders?.reduce((total, accOrder) => {
+        return total + accOrder?.AccessoriesOnOrders?.reduce((subTotal, accessoryOnOrder) => {
+          return subTotal + (accessoryOnOrder.accessory.price * accessoryOnOrder.quantity);
+        }, 0);
+      }, 0);
+      setPartsSubTotal(partsSub.toFixed(2))
+
+      const serviceSub = showPrevOrder?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
+        return total + (serviceOnOrder.service.price * serviceOnOrder.hr * serviceOnOrder.quantity);
+      }, 0);
+      setServiceSubTotal(serviceSub.toFixed(2))
+
+      const totalPreTax = partsSub + serviceSub;
+      setTotalPreTax(totalPreTax.toFixed(2));
+
+      const total2 = ((parseFloat(partsSub + serviceSub) - parseFloat(discDollar)) * taxRate).toFixed(2);
+      const total1 = (((parseFloat(partsSub + serviceSub) * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
+      const calculatedTotal = discDollar && discDollar > 0.00 ? total1 : total2;
+
+      setTotal(calculatedTotal);
+      const totalAmountPaid2 = showPrevOrder.Payments.reduce((total, payment) => {
+        return total + payment.amountPaid;
+      }, 0);
+      if (totalAmountPaid2) {
+        setTotalAmountPaid(totalAmountPaid2)
+      }
+
+    }
+  }, [showPrevOrder]);
+
+  const [date, setDate] = useState<Date>()
+
+  const newDate = new Date()
+  const [datefloorPlanDueDate, setDatefloorPlanDueDate] = useState<Date>()
+
+  const columns = [
+    {
+      id: 'CustomerName',
+      accessorKey: "Customer Name",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <div className='grid grid-cols-1'>
+            <p>{data.Clientfile.firstName} {data.Clientfile.lastName}</p>
+            <p className='text-muted-foreground'>{data.Clientfile.email} </p>
+          </div>
+        )
+      },
+    },
+
+    {
+      id: 'status',
+      accessorKey: "status",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+      header: ({ column }) => {
+        return (
+          <Select
+            onValueChange={(value) => {
+              const status = table.getColumn("status");
+              status.setFilterValue(value);
+            }}
+
+            name='filter'>
+            <SelectTrigger className="w-auto focus:border-primary mx-auto">
+              <SelectValue placeholder='Filter' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+              <SelectItem value="Quote">Quote</SelectItem>
+              <SelectItem value="Sales">Sales</SelectItem>
+              <SelectItem value="Open">Open</SelectItem>
+              <SelectItem value="Scheduled">Scheduled</SelectItem>
+              <SelectItem value="Waiting On Parts">Waiting On Parts</SelectItem>
+              <SelectItem value="Waiter">Waiter</SelectItem>
+              <SelectItem value="In Works">In Works</SelectItem>
+              <SelectItem value="Work Completed">Work Completed</SelectItem>
+              <SelectItem value="Scheduled for Delivery">Scheduled for Delivery</SelectItem>
+              <SelectItem value="Long Term Storage">Long Term Storage</SelectItem>
+              <SelectItem value="Winter Storage">Winter Storage</SelectItem>
+              <SelectItem value="Closed">Closed</SelectItem>
+            </SelectContent>
+          </Select>
+        )
+      },
+    },
+    {
+      id: 'location',
+      accessorKey: "location",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+      header: ({ column }) => {
+        return (
+          <Select
+            onValueChange={(value) => {
+              let status = table.getColumn("location");
+              status.setFilterValue(value);
+            }}
+            name='filter'>
+            <SelectTrigger className="w-auto focus:border-primary mx-auto">
+              <SelectValue placeholder='Location' />
+            </SelectTrigger>
+            <SelectContent className='bg-background text-foreground border-border'>
+              <SelectItem value="Garage">Garage</SelectItem>
+              <SelectItem value="Storage">Storage</SelectItem>
+              <SelectItem value="In Lot">In Lot</SelectItem>
+              <SelectItem value="In Secondary Lot">In Secondary Lot</SelectItem>
+              <SelectItem value="Outback">Outback</SelectItem>
+              <SelectItem value="Sales Floor">Sales Floor</SelectItem>
+              <SelectItem value="In Store">In Store</SelectItem>
+            </SelectContent>
+          </Select>
+        )
+      },
+    },
+    {
+      id: 'Unit',
+      accessorKey: "unit",
+      header: ({ column }) => {
+        return (
+          <p className='text-center'>Unit</p>
+        )
+      },
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+    },
+    {
+      id: 'vin',
+      header: ({ column }) => {
+        return (
+          <p className='text-center'>VIN</p>
+        )
+      },
+      accessorKey: "VIN",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+    },
+    {
+      id: 'tag',
+      header: ({ column }) => {
+        return (
+          <p className='text-center'>Tag</p>
+        )
+      },
+      accessorKey: "tag",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+    },
+    {
+      id: 'Work Order #',
+      accessorKey: "Work Order #",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <div className='grid grid-cols-1'>
+            <p className='text-center'>{data.workOrderId}</p>
+          </div>
+        )
+      },
+    },
+    {
+      id: 'createdAt',
+      header: ({ column }) => {
+        return (
+          <p className='text-center'>Created At</p>
+        )
+      },
+      accessorKey: "createdAt",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <p className='text-center'>{new Date(data.createdAt).toLocaleDateString("en-US", options2)}</p>
+        )
+      },
+    },
+    {
+      id: 'Actions',
+      header: ({ column }) => {
+        return (
+          <p className='text-center'>Actions</p>
+        )
+      },
+      accessorKey: "Actions",
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
+      cell: ({ row, column: { id } }) => {
+        const data = row.original
+        return (
+          <div className='flex items-center'>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="mr-3 hover:bg-primary"
+                  onClick={() => {
+                    setValue(data.workOrderId);
+                    showPrevOrderById(data.workOrderId)
+                  }}
+                >
+                  <Eye className="h-5 w-5" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                Show Order
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link to={`/dealer/service/workOrder/${data.workOrderId}`} >
+
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="mr-3 hover:bg-primary"
+
+                  >
+                    <Navigation className="h-5 w-5" />
+                  </Button>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                Go To Order
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        )
+      },
+    },
+  ]
+  const table = useReactTable({
+    data,
+    columns,
+    defaultColumn,
+    filterFns: { fuzzy: fuzzyFilter, },
+    globalFilterFn: 'fuzzy',
+    initialState: { columnVisibility },
+
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+      globalFilter,
+    },
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+
+    onColumnVisibilityChange: setColumnVisibility,
+
+
+    onRowSelectionChange: setRowSelection,
+    enableColumnResizing: true,
+    columnResizeMode: 'onChange',
+    onGlobalFilterChange: setGlobalFilter,
+    enableRowSelection: true,
+  });
+
+  // clears filters
+  const setAllFilters = () => {
+    setColumnFilters([]);
+    setSorting([]);
+    setFilterBy("");
+    setGlobalFilter([]);
+  };
+  const toggleFilter = () => {
+    setAllFilters()
+    setShowFilter(!showFilter);
+  };
+  const setColumnFilterDropdown = (event) => {
+    const columnId = event.target.getAttribute("data-value");
+    setSelectedColumn(columnId);
+    console.log("Selected column:", columnId);
+    // Add your logic here to handle the column selection
+  };
+  const handleGlobalChange = (value) => {
+    console.log("value", value);
+    table.getColumn(selectedColumn)?.setFilterValue(value);
+  };
+  const CallsList = [
+    {
+      key: "inStock",
+      name: "In Stock",
+    },
+    {
+      key: "available",
+      name: "Available",
+    },
+    {
+      key: "inStockArrived",
+      name: "In Stock and Available",
+    },
+    {
+      key: "newStock",
+      name: "New Stock",
+    },
+    {
+      key: "usedStock",
+      name: "Used Stock",
+    },
+    {
+      key: "sold",
+      name: "Sold",
+    },
+    {
+      key: "otd",
+      name: "Out The Door",
+    },
+    {
+      key: "deposits",
+      name: "Sold Units - Waiting To Be Picked Up",
+    },
+  ];
+  const DeliveriesList = [
+    {
+      key: "todaysDeliveries",
+      name: "Deliveries - Today",
+    },
+    {
+      key: "tomorowsDeliveries",
+      name: "Deliveries - Tomorrow",
+    },
+    {
+      key: "yestDeliveries",
+      name: "Deliveries - Yesterday",
+    },
+    {
+      key: "deliveredThisMonth",
+      name: "Delivered - Current Month",
+    },
+    {
+      key: "deliveredLastMonth",
+      name: "Delivered - Last Month",
+    },
+    {
+      key: "deliveredThisYear",
+      name: "Delivered - Year",
+    },
+  ];
+  const DepositsTakenList = [
+    {
+      key: "depositsToday",
+      name: "Deposit Taken - Need to Finalize Deal",
+    },
+  ];
+  const handleFilterChange = (selectedFilter) => {
+    setAllFilters()
+    const customerStateColumn = table.getColumn('customerState');
+    const nextAppointmentColumn = table.getColumn('nextAppointment');
+    const deliveredDate = table.getColumn('deliveredDate');
+    const pickUpDate = table.getColumn('pickUpDate');
+    const status = table.getColumn('status');
+    const depositMade = table.getColumn('depositMade');
+    const sold = table.getColumn('sold')
+    const delivered = table.getColumn('delivered')
+    const signed = table.getColumn('signed')
+    const financeApp = table.getColumn('financeApp')
+
+    switch (selectedFilter) {
+      case 'inStock':
+        table.getColumn('status')?.setFilterValue('available');
+        table.getColumn('onOrder')?.setFilterValue('false');
+        break;
+      case 'available':
+        table.getColumn('status')?.setFilterValue('available');
+        break;
+      case 'inStockArrived':
+        table.getColumn('status')?.setFilterValue('available');
+        table.getColumn('orderStatus')?.setFilterValue('STOCK');
+        break;
+      case 'newStock':
+        table.getColumn('new')?.setFilterValue(true);
+        break;
+      case 'usedStock':
+        table.getColumn('new')?.setFilterValue(false);
+        break;
+      case 'sold':
+        table.getColumn('status')?.setFilterValue('reserved');
+        break;
+      case 'otd':
+        table.getColumn('status')?.setFilterValue('sold');
+        break;
+      case 'deposits':
+        table.getColumn('status')?.setFilterValue('reserved');
+        break;
+      case 'customerOrders':
+        table.getColumn('orderStatus')?.setFilterValue('WISH');
+        break;
+      case 'deliveredThisMonth':
+        customerStateColumn?.setFilterValue('delivered');
+        deliveredDate?.setFilterValue(getFirstDayOfCurrentMonth);
+        status?.setFilterValue('active');
+        break;
+      case 'todaysDeliveries':
+        pickUpDate?.setFilterValue(getToday);
+        status?.setFilterValue('active');
+        sold?.setFilterValue(sold && sold.length > 3);
+        delivered?.setFilterValue(null)
+        break;
+      case 'tomorowsDeliveries':
+        pickUpDate?.setFilterValue(getTomorrow);
+        status?.setFilterValue('active');
+        depositMade?.setFilterValue(depositMade && depositMade.length > 3);
+        sold?.setFilterValue(sold && sold.length > 3);
+        delivered?.setFilterValue(null)
+        break;
+      case 'yestDeliveries':
+        pickUpDate?.setFilterValue(getYesterday);
+        status?.setFilterValue('active');
+        depositMade?.setFilterValue(depositMade && depositMade.length > 3);
+        sold?.setFilterValue(sold && sold.length > 3);
+        delivered?.setFilterValue(null)
+        break;
+
+      case 'deliveredThisYear':
+        customerStateColumn?.setFilterValue('delivered');
+        deliveredDate?.setFilterValue(getThisYear);
+        status?.setFilterValue('active');
+        break;
+      case 'depositsToday':
+        status?.setFilterValue('active');
+        depositMade?.setFilterValue('on');
+        sold?.setFilterValue('on');
+        delivered?.setFilterValue('off')
+        signed?.setFilterValue('off')
+        financeApp?.setFilterValue('off')
+        break;
+      default:
+        null;
+    }
+  }
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+  };
+  const formatMonth = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-indexed in JavaScript
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}`;
+  };
+  const showPrevOrderById = (id) => {
+    const filteredOrder = orders.find(order => order.workOrderId === id);
+    setShowPrev(true)
+    setShowPrevOrder(filteredOrder);
+  }
+  const now = new Date();
+  const formattedDate = formatDate(now);
+  function getToday() {
+    const today = new Date();
+    today.setDate(today.getDate());
+    console.log(formatDate(today), 'today')
+    return formatDate(today);
+  }
+  function getTomorrow() {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return formatDate(tomorrow);
+  }
+  function getYesterday() {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    return formatDate(yesterday);
+  }
+  function getLastDayOfPreviousMonth() {
+    const date = new Date();
+    date.setDate(1); // sets the day to the last day of the previous month
+    return formatMonth(date);
+  }
+  function getFirstDayOfCurrentMonth() {
+    const date = new Date();
+    date.setDate(1); // sets the day to the first day of the current month
+    return formatDate(date);
+  }
+  function getFirstDayOfTwoMonthsAgo() {
+    const date = new Date();
+    date.setMonth(date.getMonth() - 2);
+    date.setDate(1); // sets the day to the first day of the month two months ago
+    return formatMonth(date);
+  }
+  function getYear() {
+    const today = new Date();
+    return today.getFullYear().toString();
+  }
+  const getThisYear = getYear();
+
+  return (
+    <div className="w-[95%] ">
+      <div className="container mx-auto py-3">
+        <div className="flex items-center py-3">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size='sm' variant="outline" className='mr-3' >Menu</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56 border border-border bg-background text-foreground">
+              <DropdownMenuLabel>Dashboard Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onSelect={() => setSelectedGlobal(true)}
+                >
+                  Global Filter
+                </DropdownMenuItem>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="cursor-pointer">
+                    Default Filters
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent className="h-auto max-h-[175px] overflow-y-auto border border-border bg-background text-foreground">
+                      <DropdownMenuLabel>
+                        {todayfilterBy || "Default Filters"}
+                      </DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {CallsList.map((item) => (
+                        <DropdownMenuItem
+                          onSelect={(event) => {
+                            const value =
+                              event.currentTarget.getAttribute("data-value");
+                            const item =
+                              CallsList.find((i) => i.key === value) ||
+                              DeliveriesList.find((i) => i.key === value) ||
+                              DepositsTakenList.find((i) => i.key === value);
+                            if (item) {
+                              handleFilterChange(item.key);
+                              setTodayfilterBy(item.name);
+                            }
+                          }}
+                          data-value={item.key}
+                          textValue={item.key}
+                        >
+                          {item.name}
+                        </DropdownMenuItem>
+                      ))}
+
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="cursor-pointer">
+                    Global Filters
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                      {table
+                        .getAllColumns()
+                        .filter((column) => column.getCanHide())
+                        .map((column) => (
+                          <DropdownMenuItem
+                            onSelect={(event) => {
+                              setColumnFilterDropdown(event);
+                            }}
+                            data-value={column.id}
+                            key={column.id}
+                            className="cursor-pointer bg-background capitalize text-foreground  hover:text-primary hover:underline"
+                          >
+                            {column.id}
+                          </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onSelect={() => {
+                    setAllFilters([]);
+                    setSelectedGlobal(false);
+                  }}
+                >
+                  Clear
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onSelect={toggleFilter}
+                >
+                  Toggle All Columns
+                </DropdownMenuItem>
+                <DropdownMenuSub>
+                  <DropdownMenuSubTrigger className="cursor-pointer">
+                    Column Toggle
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuPortal>
+                    <DropdownMenuSubContent className="h-[350px] max-h-[350px] overflow-y-auto border border-border bg-background text-foreground">
+                      {table
+                        .getAllColumns()
+                        .filter((column) => column.getCanHide())
+                        .map((column) => {
+                          return (
+                            <DropdownMenuCheckboxItem
+                              key={column.id}
+                              className="cursor-pointer bg-background  capitalize text-foreground"
+                              checked={column.getIsVisible()}
+                              onCheckedChange={(value) =>
+                                column.toggleVisibility(!!value)
+                              }
+                            >
+                              {column.id}
+                            </DropdownMenuCheckboxItem>
+                          );
+                        })}
+                    </DropdownMenuSubContent>
+                  </DropdownMenuPortal>
+                </DropdownMenuSub>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {selectedColumn && (
+            <div className="relative flex-1 md:grow-0 ">
+              <Input
+                placeholder={`Filter ${selectedColumn}...`}
+                onChange={(e) => handleGlobalChange(e.target.value)}
+                className="ml-2 max-w-sm w-auto "
+                autoFocus
+              />
+              <Button
+                onClick={() => {
+                  setAllFilters([]);
+                  setSelectedGlobal(false);
+                }}
+                size="icon"
+                variant="ghost"
+                className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                <X />
+              </Button>
+            </div>
+          )}
+          <div className="relative flex-1 md:grow-0 ">
+            <DebouncedInput
+              value={globalFilter ?? ""}
+              onChange={(value) => setGlobalFilter(String(value))}
+              className="mx-1 ml-3 rounded-md border border-border bg-background p-2 text-foreground shadow w-[300px] "
+              placeholder="Search..." autoFocus
+            />
+            <Button
+              onClick={() => {
+                setGlobalFilter([]);
+                setSelectedGlobal(false);
+              }}
+              size="icon"
+              variant="ghost"
+              className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+              <X size={16} />
+            </Button>
+          </div>
+        </div>
+        <div className="rounded-md border border-border    h-auto max-h-[600px] overflow-y-auto  ">
+          <Table className='border border-border text-foreground bg-background'>
+            <TableHeader className='border border-border text-muted-foreground bg-background text-center'>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} className='border-border'>
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                        {header.column.getCanFilter() && showFilter && (
+                          <div className="sticky  z-5 mx-auto items-center justify-center cursor-pointer text-center ">
+                            <Filter column={header.column} table={table} />
+                          </div>
+                        )}
+                      </TableHead>
+                    )
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+            <TableBody className='border border-border text-foreground bg-background '>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                    className='border border-border text-foreground bg-background'
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={columns.length} className="h-24 text-center border border-border text-foreground bg-background">
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        <DataTablePagination table={table} />
+      </div>
+    </div>
+  )
+}
+export const WorkOrderBar = ({ order, showPrev, user, clientfile, showPrevOrder, setShowPrevOrder }) => {
+  const status = useFetcher()
+  const navigate = useNavigate()
+  const submit = useSubmit()
+  let addProduct = useFetcher();
+  const tax = clientfile.Dealer
+  let formRef = useRef();
+
+  const [totalAccessoriesCost, setTotalAccessoriesCost] = useState(0.00);
+  const [total, setTotal] = useState(0.00);
+  const [totalAmountPaid, setTotalAmountPaid] = useState(0.00);
+
+
+  let toReceipt
+
+  if (showPrevOrder) {
+    const client = showPrevOrder.Clientfile
+    const maxAccessories = 19;
+
+    toReceipt = {
+      qrCode: showPrevOrder.workOrderId,
+      subTotal: `$${totalAccessoriesCost.toFixed(2)}`,
+      tax: `${tax.userTax}%`,
+      total: `$${total}`,
+      remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
+      firstName: client.firstName,
+      lastName: client.lastName,
+      phone: client.phone,
+      email: client.email,
+      address: client.address,
+      date: new Date().toLocaleDateString("en-US", options2),
+      cardNum: '',
+      paymentType: '',
+      image: user.Dealer.DealerLogo.dealerLogo
+    };
+
+    let accessoryIndex = 0;
+  }
+  return (
+    <div className='lg:col-span-1'>
+      {showPrev && (
+        <Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4"          >
+          <CardHeader className="flex flex-row items-start bg-muted/50">
+            <div className="grid gap-0.5">
+              <CardTitle className="group flex items-center gap-2 text-lg">
+                W / O #{order.workOrderId}
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                >
+                  <Copy className="h-3 w-3" />
+                  <span className="sr-only">Copy Order ID</span>
+                </Button>
+              </CardTitle>
+              {order.status && (
+                <div>
+                  <div className="relative mt-4">
+                    <Select
+                      name='status'
+                      defaultValue={order.status}
+                      onValueChange={(value) => {
+                        const formData = new FormData();
+                        formData.append("id", order.workOrderId);
+
+                        formData.append("intent", 'updateStatus');
+                        formData.append("status", value);
+                        console.log(formData, 'formData');
+                        status.submit(formData, { method: "post" });
+                        toast.success(`Changed status to ${value}`)
+                      }}>
+                      <SelectTrigger className="w-[200px] " >
+                        <SelectValue defaultValue={order.status} />
+                      </SelectTrigger>
+                      <SelectContent className='border-border'>
+                        <SelectGroup>
+                          <SelectLabel>Status</SelectLabel>
+                          <SelectItem value="Quote">Quote</SelectItem>
+                          <SelectItem value="Sales">Sales</SelectItem>
+                          <SelectItem value="Open">Open / Scheduled</SelectItem>
+                          <SelectItem value="Waiting On Parts">Waiting On Parts</SelectItem>
+                          <SelectItem value="Waiter">Waiter</SelectItem>
+                          <SelectItem value="In Works">In Works</SelectItem>
+                          <SelectItem value="Work Completed">Work Completed</SelectItem>
+                          <SelectItem value="Scheduled For Delivery">Scheduled For Delivery</SelectItem>
+                          <SelectItem value="Long Term Storage">Long Term Storage</SelectItem>
+                          <SelectItem value="Winter Storage">Winter Storage</SelectItem>
+                          <SelectItem value="Closer" disabled>Closed</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-muted/50 transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Status</label>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="ml-auto flex items-center gap-1">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="icon" variant="outline" className="h-8 w-8">
+                    <MoreVertical className="h-3.5 w-3.5" />
+                    <span className="sr-only">More</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="border border-border"
+                >
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      navigate(`/dealer/service/workOrder/${order.workOrderId}`)
+                    }}>
+                    Go To Order
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      console.log(toReceipt)
+                      PrintReceipt(toReceipt)
+                    }}>
+                    Reprint Receipt
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    disabled>
+                    Show Discount
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      const formData = new FormData();
+                      formData.append("workOrderId", order.workOrderId);
+                      formData.append("intent", 'deleteOrder');
+                      submit(formData, { method: "post", });
+                    }}>
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6 text-sm h-auto max-h-[850px] overflow-y-auto">
+            <Accordion type="single" collapsible className="w-full border-border mt-3">
+              <AccordionItem value="item-1" className='border-border'>
+                <AccordionTrigger>Customer Information</AccordionTrigger>
+                <AccordionContent>
+                  <div className="grid gap-3">
+                    <dl className="grid gap-3">
+                      <div className="flex items-center justify-between">
+                        <dt className="text-muted-foreground">Customer</dt>
+                        <dd>{order.Clientfile.name}</dd>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <dt className="text-muted-foreground">Email</dt>
+                        <dd>
+                          <a href="mailto:">{order.Clientfile.email}</a>
+                        </dd>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <dt className="text-muted-foreground">Phone</dt>
+                        <dd>
+                          <a href="tel:">{order.Clientfile.phone}</a>
+                        </dd>
+                      </div>
+                    </dl>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+            <Accordion type="single" collapsible className="w-full border-border mt-3">
+              <AccordionItem value="item-1" className='border-border'>
+                <AccordionTrigger>Customer Unit</AccordionTrigger>
+                <AccordionContent>
+                  <dl className="grid gap-3">
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">Unit</dt>
+                      <dd>
+                        <EditableText
+                          value={order.unit}
+                          fieldName="name"
+                          inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                          buttonClassName="text-center py-1 px-2 text-foreground"
+                          buttonLabel={`Edit quantity`}
+                          inputLabel={`Edit quantity`}
+                        >
+                          <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                          <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                          <input type="hidden" name="col" value='unit' />
+                        </EditableText>
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">Color</dt>
+                      <dd>
+                        <EditableText
+                          value={order.color}
+                          fieldName="name"
+                          inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                          buttonClassName="text-center py-1 px-2 text-foreground"
+                          buttonLabel={`Edit quantity`}
+                          inputLabel={`Edit quantity`}
+                        >
+                          <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                          <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                          <input type="hidden" name="col" value='color' />
+                        </EditableText>
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">Mileage</dt>
+                      <dd>
+                        <EditableText
+                          value={order.mileage}
+                          fieldName="name"
+                          inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                          buttonClassName="text-center py-1 px-2 text-foreground"
+                          buttonLabel={`Edit quantity`}
+                          inputLabel={`Edit quantity`}
+                        >
+                          <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                          <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                          <input type="hidden" name="col" value='mileage' />
+                        </EditableText>
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">vin</dt>
+                      <dd>
+                        <EditableText
+                          value={order.vin}
+                          fieldName="name"
+                          inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                          buttonClassName="text-center py-1 px-2 text-foreground"
+                          buttonLabel={`Edit quantity`}
+                          inputLabel={`Edit quantity`}
+                        >
+                          <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                          <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                          <input type="hidden" name="col" value='vin' />
+                        </EditableText>
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">Motor</dt>
+                      <dd>
+                        <EditableText
+                          value={order.motor}
+                          fieldName="name"
+                          inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                          buttonClassName="text-center py-1 px-2 text-foreground"
+                          buttonLabel={`Edit quantity`}
+                          inputLabel={`Edit quantity`}
+                        >
+                          <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                          <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                          <input type="hidden" name="col" value='motor' />
+                        </EditableText>
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">Tag</dt>
+                      <dd>
+                        <EditableText
+                          value={order.tag}
+                          fieldName="name"
+                          inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                          buttonClassName="text-center py-1 px-2 text-foreground"
+                          buttonLabel={`Edit quantity`}
+                          inputLabel={`Edit quantity`}
+                        >
+                          <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                          <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                          <input type="hidden" name="col" value='tag' />
+                        </EditableText>
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">location</dt>
+                      <dd>
+                        <EditableText
+                          value={order.location}
+                          fieldName="name"
+                          inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[150px] "
+                          buttonClassName="text-center py-1 px-2 text-foreground"
+                          buttonLabel={`Edit quantity`}
+                          inputLabel={`Edit quantity`}
+                        >
+                          <input type="hidden" name="intent" value='updateWorkOrderUnit' />
+                          <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                          <input type="hidden" name="col" value='location' />
+                        </EditableText>
+                      </dd>
+                    </div>
+                  </dl>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+
+            <div className="grid gap-3 mt-3">
+              <div className="font-semibold">Work Order Services</div>
+              <ul className="grid gap-3">
+                {order.ServicesOnWorkOrders && order.ServicesOnWorkOrders.map((result, index) => {
+                  const hours = result.hr || result.service.estHr || 0.00;
+                  return (
+                    <li key={index} className="flex items-center justify-between">
+                      <div>
+                        <ContextMenu>
+                          <ContextMenuTrigger>
+                            <div className='grid grid-cols-1'>
+                              <div className='flex items-center group '>
+                                <div className="font-medium">
+                                  {result.service.service}
+                                </div>
+                                <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                  <input type="hidden" name="id" value={result.id} />
+                                  <input type='hidden' name='total' value={total} />
+                                  <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                                  <Button
+                                    size="icon"
+                                    variant="outline"
+                                    name="intent" value='deleteServiceItem'
+                                    className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                    type='submit'
+                                  >
+                                    <X className="h-4 w-4 text-foreground" />
+                                  </Button>
+                                </addProduct.Form>
+                              </div>
+                              <div className="hidden text-sm text-muted-foreground md:inline">
+                                <div className='flex items-center'>
+                                  <div className="font-medium">
+                                    <EditableText
+                                      value={hours}
+                                      fieldName="name"
+                                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
+                                      buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                                      buttonLabel={`Edit name`}
+                                      inputLabel={`Edit name`}
+                                    >
+                                      <input type="hidden" name="intent" value='updateHr' />
+                                      <input type="hidden" name="id" value={result.id} />
+                                      <input type="hidden" name="colName" value='hr' />
+                                    </EditableText>
+
+                                  </div>
+                                  <p>{" "}hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                                </div>
+                              </div>
+                              {result.status && (
+                                <div>
+                                  <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
+                                </div>
+                              )}
+                            </div>
+                          </ContextMenuTrigger>
+                          <ContextMenuContent className='border-border'>
+                            <ContextMenuSub>
+                              <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
+                              <ContextMenuSubContent className="w-48 border-border">
+                                <ContextMenuItem>{result.service.service}</ContextMenuItem>
+                                <ContextMenuItem>{result.service.description}</ContextMenuItem>
+                                <ContextMenuSeparator />
+                                <ContextMenuItem>
+                                  Est. Hours
+                                  <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
+                                </ContextMenuItem>
+                                <ContextMenuItem>
+                                  Price
+                                  <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
+                                </ContextMenuItem>
+                              </ContextMenuSubContent>
+                            </ContextMenuSub>
+                            <ContextMenuSeparator />
+                            <ContextMenuCheckboxItem
+                              checked={result.status === 'In Stock'}
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("id", result.id);
+                                formData.append("status", 'In Stock');
+                                formData.append("intent", 'updateServiceOnOrders');
+                                submit(formData, { method: "post", });
+                              }}
+                            >In Stock</ContextMenuCheckboxItem>
+                            <ContextMenuCheckboxItem
+                              checked={result.status === 'On Order'}
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("id", result.id);
+                                formData.append("status", 'On Order');
+                                formData.append("intent", 'updateServiceOnOrders');
+                                submit(formData, { method: "post", });
+                              }}
+                            >On Order</ContextMenuCheckboxItem>
+                            <ContextMenuCheckboxItem
+                              checked={result.status === 'Completed'}
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("id", result.id);
+                                formData.append("status", 'Completed');
+                                formData.append("intent", 'updateServiceOnOrders');
+                                submit(formData, { method: "post", });
+                              }}
+                            >Completed</ContextMenuCheckboxItem>
+                            <ContextMenuCheckboxItem
+                              checked={result.status === 'Back Order'}
+                              onSelect={() => {
+                                const formData = new FormData();
+                                formData.append("id", result.id);
+                                formData.append("status", 'Back Order');
+                                formData.append("intent", 'updateServiceOnOrders');
+                                submit(formData, { method: "post", });
+                              }}
+                            >Back Order</ContextMenuCheckboxItem>
+                          </ContextMenuContent>
+                        </ContextMenu>
+                      </div>
+                      <span>
+                        x{" "}{" "}{result.quantity}
+
+                      </span>
+                    </li>
+                  )
+                })}
+              </ul>
+              <Separator className="my-4" />
+              <div className="font-semibold">Work Order Parts</div>
+              <ul className="grid gap-3">
+                {order?.AccOrders?.length > 0 ? (
+                  order.AccOrders.map((accOrder, accOrderIndex) => (
+                    <div key={accOrderIndex}>
+                      {accOrder?.AccessoriesOnOrders?.length > 0 ? (
+                        accOrder.AccessoriesOnOrders.map((accessoryOnOrder, accessoryIndex) => (
+                          <li key={accessoryIndex} className="flex items-center justify-between">
+                            <div>
+                              <ContextMenu>
+                                <ContextMenuTrigger>
+                                  <div className='grid grid-cols-1'>
+                                    <div className='flex items-center group '>
+                                      <div className="font-medium">
+
+                                        {accessoryOnOrder.accessory.name}
+                                      </div>
+                                      <addProduct.Form method="post" ref={formRef} className='mr-auto'>
+                                        <input type="hidden" name="id" value={accessoryOnOrder.id} />
+                                        <input type='hidden' name='total' value={accessoryOnOrder.accessory.price * accessoryOnOrder.quantity} />
+                                        <input type='hidden' name='accOrderId' value={accOrder.id} />
+                                        <Button
+                                          size="icon"
+                                          variant="outline"
+                                          name="intent" value='deleteOrderItem'
+                                          className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                                          type='submit'
+                                        >
+                                          <X className="h-4 w-4 text-foreground" />
+                                        </Button>
+                                      </addProduct.Form>
+                                    </div>
+                                    <div className="hidden text-sm text-muted-foreground md:inline">
+                                      {accessoryOnOrder.accessory.brand}
+                                    </div>
+                                    <div>
+                                      <Badge className='text-sm  px-2 py-1 '>{accessoryOnOrder.status}</Badge>
+                                    </div>
+                                  </div>
+                                </ContextMenuTrigger>
+                                <ContextMenuContent className='border-border'>
+                                  <ContextMenuSub>
+                                    <ContextMenuSubTrigger inset>Part Details</ContextMenuSubTrigger>
+                                    <ContextMenuSubContent className="w-48 border-border">
+                                      <ContextMenuItem>{accessoryOnOrder.accessory.partNumber}</ContextMenuItem>
+                                      <ContextMenuItem>{accessoryOnOrder.accessory.brand} </ContextMenuItem>
+                                      <ContextMenuItem>{accessoryOnOrder.accessory.name} </ContextMenuItem>
+                                      <ContextMenuItem>{accessoryOnOrder.accessory.description} </ContextMenuItem>
+                                      <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
+                                      <ContextMenuItem>{accessoryOnOrder.accessory.category} </ContextMenuItem>
+                                      <ContextMenuSeparator />
+                                      <ContextMenuItem>
+                                        Cost
+                                        <ContextMenuShortcut>${accessoryOnOrder.accessory.cost}</ContextMenuShortcut>
+                                      </ContextMenuItem>
+                                      <ContextMenuItem>
+                                        Price
+                                        <ContextMenuShortcut>${accessoryOnOrder.accessory.price}</ContextMenuShortcut>
+                                      </ContextMenuItem>
+                                      <ContextMenuItem>
+                                        In Stock
+                                        <ContextMenuShortcut>{accessoryOnOrder.accessory.quantity}</ContextMenuShortcut>
+                                      </ContextMenuItem>
+                                      <ContextMenuItem>
+                                        On Order
+                                        <ContextMenuShortcut>{accessoryOnOrder.accessory.onOrder}</ContextMenuShortcut>
+                                      </ContextMenuItem>
+                                      <ContextMenuItem>
+                                        Location
+                                        <ContextMenuShortcut>{accessoryOnOrder.accessory.location}</ContextMenuShortcut>
+                                      </ContextMenuItem>
+                                    </ContextMenuSubContent>
+                                  </ContextMenuSub>
+                                  <ContextMenuCheckboxItem
+                                    checked={accessoryOnOrder.status === 'In Stock'}
+                                    onSelect={() => {
+                                      const formData = new FormData();
+                                      formData.append("id", accessoryOnOrder.id);
+                                      formData.append("status", 'In Stock');
+                                      formData.append("intent", 'updateAccOnOrders');
+                                      submit(formData, { method: "post", });
+                                    }}
+                                  >In Stock</ContextMenuCheckboxItem>
+                                  <ContextMenuCheckboxItem
+                                    checked={accessoryOnOrder.status === 'On Order'}
+                                    onSelect={() => {
+                                      const formData = new FormData();
+                                      formData.append("id", accessoryOnOrder.id);
+                                      formData.append("status", 'On Order');
+                                      formData.append("intent", 'updateAccOnOrders');
+                                      submit(formData, { method: "post", });
+                                    }}
+                                  >On Order</ContextMenuCheckboxItem>
+                                  <ContextMenuCheckboxItem
+                                    checked={accessoryOnOrder.status === 'Back Order'}
+                                    onSelect={() => {
+                                      const formData = new FormData();
+                                      formData.append("id", accessoryOnOrder.id);
+                                      formData.append("status", 'Back Order');
+                                      formData.append("intent", 'updateAccOnOrders');
+                                      submit(formData, { method: "post", });
+                                    }}
+                                  >Back Order</ContextMenuCheckboxItem>
+                                </ContextMenuContent>
+                              </ContextMenu>
+                            </div>
+                            <span>${accessoryOnOrder.accessory.price} x {accessoryOnOrder.quantity}</span>
+                          </li>
+                        ))
+                      ) : (
+                        <p>No Accessories On Orders available.</p>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <p>No Orders available.</p>
+                )}
+              </ul>
+              <Separator className="my-2" />
+
+            </div>
+
+            <Separator className="my-4" />
+            <div className='gap-3'>
+              <div className="font-semibold">Staff</div>
+              <ul className="grid gap-3">
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">
+                    Technician
+                  </span>
+                  <span>{order.tech}</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">
+                    Service Writer
+                  </span>
+                  <span>{order.writer}</span>
+                </li>
+              </ul>
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-row items-center border-t bg-muted/50 px-6 py-3 border-border">
+            <div className="text-xs text-muted-foreground">
+              Updated <time dateTime="2023-11-23">November 23, 2023</time>
+            </div>
+            <Pagination className="ml-auto mr-0 w-auto">
+              <PaginationContent>
+                <PaginationItem>
+                  <Button size="icon" variant="outline" className="h-6 w-6">
+                    <ChevronLeft className="h-3.5 w-3.5" />
+                    <span className="sr-only">Previous Order</span>
+                  </Button>
+                </PaginationItem>
+                <PaginationItem>
+                  <Button size="icon" variant="outline" className="h-6 w-6">
+                    <ChevronRight className="h-3.5 w-3.5" />
+                    <span className="sr-only">Next Order</span>
+                  </Button>
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </CardFooter>
+        </Card>
+      )}
+    </div>
   )
 }
 export const MySidebar = ({
@@ -1373,11 +2287,13 @@ export const MySidebar = ({
                     Reprint Receipt
                   </DropdownMenuItem>
                   <DropdownMenuItem
+                    disabled
                     onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>
                     Show Discount
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
+                    disabled
                     onSelect={() => {
                       setShowPrev(false)
                       setShowPrevOrder(null)
@@ -1385,7 +2301,7 @@ export const MySidebar = ({
                     Back
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem
+                  <DropdownMenuItem disabled
                     onSelect={() => {
                       const formData = new FormData();
                       formData.append("orderId", showPrevOrder.id);
@@ -1419,203 +2335,6 @@ export const MySidebar = ({
                     <span>${result.accessory.price}{" "}{" "}x{" "}{" "}{result.quantity}</span>
                   </li>
                 ))}
-              </ul>
-              <Separator className="my-2" />
-              <ul className="grid gap-3">
-                <li className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span>${totalAccessoriesCost.toFixed(2)}</span>
-                </li>
-                {discount && (
-                  <>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Discount $</span>
-                      <fetcher.Form
-                        method="post"
-                        onSubmit={() => {
-                          buttonRef.current?.focus();
-                        }}
-                        preventScrollReset
-                      >
-                        <input
-                          name='accOrderId'
-                          defaultValue={showPrevOrder.id}
-                          type='hidden'
-                        />
-                        <input
-                          name='intent'
-                          defaultValue='updateDiscount'
-                          type='hidden'
-                        />
-                        <input
-                          name='total'
-                          defaultValue={totalAccessoriesCost}
-                          type='hidden'
-                        />
-                        <div className="relative ml-auto flex-1 md:grow-0 ">
-                          <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-foreground" />
-                          <Input
-                            ref={inputRef}
-                            name='discDollar'
-                            className='text-right pr-10 w-[100px]'
-                            defaultValue={discDollar}
-                            onChange={(event) => setDiscDollar(event.target.value)}
-                            onKeyDown={(event) => {
-                              if (event.key === "Escape") {
-                                buttonRef.current?.focus();
-                              }
-                            }}
-                            onBlur={(event) => {
-                              if (
-                                inputRef.current?.value !== discDollar &&
-                                inputRef.current?.value.trim() !== ""
-                              ) {
-                                fetcher.submit(event.currentTarget);
-                              }
-                            }}
-                          />
-                          <Button
-                            type="submit"
-                            size="icon"
-
-                            disabled={!discDollar}
-                            className='bg-primary mr-2 absolute right-1.5 top-2.5 h-4 w-4 text-foreground '>
-                            <PaperPlaneIcon className="h-4 w-4" />
-                            <span className="sr-only">Cash</span>
-                          </Button>
-                        </div>
-                      </fetcher.Form>
-                    </li>
-                    <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Discount %</span>
-                      <fetcher.Form
-                        method="post"
-                        onSubmit={() => {
-                          buttonRef.current?.focus();
-                        }}
-                        preventScrollReset
-                      >
-                        <input
-                          name='accOrderId'
-                          defaultValue={showPrevOrder.id}
-                          type='hidden'
-                        />
-                        <input
-                          name='intent'
-                          defaultValue='updateDiscPerc'
-                          type='hidden'
-                        />
-                        <input
-                          name='total'
-                          defaultValue={totalAccessoriesCost}
-                          type='hidden'
-                        />
-                        <div className="relative ml-auto flex-1 md:grow-0 ">
-                          <Input
-                            ref={inputRef}
-                            name='discPer'
-                            className='text-right pr-[43px] w-[100px]'
-                            value={discPer}
-                            onChange={(event) => setDiscPer(event.target.value)}
-                            onKeyDown={(event) => {
-                              if (event.key === "Escape") {
-                                buttonRef.current?.focus();
-                              }
-                            }}
-                            onBlur={(event) => {
-                              if (
-                                inputRef.current?.value !== discPer &&
-                                inputRef.current?.value.trim() !== ""
-                              ) {
-                                fetcher.submit(event.currentTarget);
-                              }
-                            }}
-                          />
-                          <Percent className="absolute right-10 top-[9px] h-4 w-4 text-foreground" />
-                          <Button
-                            type="submit"
-                            size="icon"
-
-                            disabled={!discPer}
-                            className='bg-primary mr-2 absolute right-1.5 top-[9px] h-4 w-4 text-foreground '>
-                            <PaperPlaneIcon className="h-4 w-4" />
-                            <span className="sr-only">Cash</span>
-                          </Button>
-                        </div>
-                      </fetcher.Form>
-
-                    </li>
-                  </>
-                )}
-                <li className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Tax</span>
-                  <span>{tax.userTax}%</span>
-                </li>
-                <li className="flex items-center justify-between font-semibold">
-                  <span className="text-muted-foreground">Total</span>
-                  <span>${total}</span>
-                </li>
-              </ul>
-            </div>
-            <Separator className="my-4" />
-            <div className="grid gap-3">
-              <div className="font-semibold flex justify-between">
-                <p>
-                  Customer Information
-                </p>
-
-              </div>
-              <dl className="grid gap-3">
-                <div className="flex items-center justify-between">
-                  <dt className="text-muted-foreground">Customer</dt>
-                  <dd>
-                    {showPrevOrder.Clientfile.firstName}{" "}
-                    {showPrevOrder.Clientfile.lastName}
-                  </dd>
-                </div>
-                <div className="flex items-center justify-between">
-                  <dt className="text-muted-foreground">Email</dt>
-                  <dd>
-                    <a href="mailto:">{showPrevOrder.Clientfile.email}</a>
-                  </dd>
-                </div>
-                <div className="flex items-center justify-between">
-                  <dt className="text-muted-foreground">Phone</dt>
-                  <dd>
-                    <a href="tel:">{showPrevOrder.Clientfile.phone}</a>
-                  </dd>
-                </div>
-                <div className="flex items-center justify-between">
-                  <dt className="text-muted-foreground">Address</dt>
-                  <dd>
-                    <address className="grid gap-0.5 not-italic  ">
-                      <span className='text-right'>{showPrevOrder.Clientfile.address}</span>
-                      <span>
-                        {showPrevOrder.Clientfile.city},{" "}
-                        {showPrevOrder.Clientfile.province}{" "}
-                        {showPrevOrder.Clientfile.postal}
-                      </span>
-                    </address>
-                  </dd>
-                </div>
-              </dl>
-
-            </div>
-
-            <Separator className="my-4" />
-            <div className="grid gap-3">
-              <div className="font-semibold">Payment</div>
-              <ul className="grid gap-3">
-                {showPrevOrder.Payments && showPrevOrder.Payments.map((result, index) => (
-                  <li className="flex items-center justify-between" key={index}                    >
-                    <span className="text-muted-foreground">{result.paymentType}</span>
-                    <span>${result.amountPaid}</span>
-                  </li>
-                ))}
-                <li className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Balance</span>
-                  <span>${parseFloat(total) - parseFloat(totalAmountPaid)}</span>
-                </li>
               </ul>
             </div>
 
@@ -2159,6 +2878,20 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     })
     return json({ update })
   }
+  if (intent === 'addComms') {
+    const coms = await prisma.comm.create({
+      data: {
+        userEmail: formData.userEmail,
+        type: formData.type,
+        body: formData.body,
+        subject: formData.subject,
+        userName: formData.userName,
+        direction: formData.direction,
+        result: formData.result,
+        ClientfileId: formData.clientfileId,
+      }
+    })
+  }
 
 }
 export const links: LinksFunction = () => [
@@ -2170,7 +2903,6 @@ export async function loader({ params, request }: DataFunctionArgs) {
 
   const user = await GetUser(email)
   if (!user) { redirect('/login') }
-  console.log(user, 'user profile')
   let { clientId, financeId } = params;
   const clientfile = await prisma.clientfile.findUnique({
     where: { id: clientId },
@@ -3887,9 +4619,12 @@ export async function loader({ params, request }: DataFunctionArgs) {
       //Comm
     }
   })
+  const comms = await prisma.comm.findMany({
+    where: { ClientfileId: clientfile.id }
+  })
+  session2.set("clientEmail", clientfile.email)
 
-
-  return json({ clientfile, user })
+  return json({ clientfile, user, comms }, { headers: { "Set-Cookie": await commitSession(session2), }, })
 }
 export const meta = () => {
 
@@ -3906,8 +4641,7 @@ export const meta = () => {
     },
   ];
 };
-
-export function AccTable({ AccOrders, }) {
+export function AccTable({ AccOrders, showPrevOrderById, setValue }) {
   const [data, setData] = useState(AccOrders);
   const [showFilter, setShowFilter] = useState(false);
   const [selectedColumn, setSelectedColumn] = useState("");
@@ -4073,7 +4807,6 @@ export function AccTable({ AccOrders, }) {
         const data = row.original
         return (
           <div className='flex items-center'>
-
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -4094,7 +4827,7 @@ export function AccTable({ AccOrders, }) {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link to={`/dealer/acceessories/order/${data.id}`} >
+                <Link to={`/dealer/accessories/newOrder/${data.id}`} >
 
                   <Button
                     size="icon"

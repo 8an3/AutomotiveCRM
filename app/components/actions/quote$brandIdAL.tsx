@@ -270,13 +270,17 @@ export async function quoteAction({ params, request }: ActionArgs) {
             return json({ finance }), redirect(`/dealer/sales/overview/Used`, { headers });
           case "Switch":
             await createFinanceManitou(formData);
-            return json({ finance }), redirect(`/dealer/sales/options/${formData.brand}`, { headers });
+            return json({ finance }), redirect(`/dealer/sales/options/${formData.brand}/${finance.id}`, { headers });
           case "Manitou":
             await createFinanceManitou(formData);
-            return json({ finance }), redirect(`/dealer/sales/options/${formData.brand}`, { headers });
+            return json({ finance }), redirect(`/dealer/sales/options/${formData.brand}/${finance.id}`, { headers });
           case "BMW-Motorrad":
-            await createBMWOptions(formData);
-            return json({ finance }), redirect(`/dealer/sales/options/${formData.brand}`, { headers });
+            const bmw = await prisma.bmwMotoOptions.create({
+              data: {
+                financeId: finance.id,
+              },
+            });
+            return json({ finance, bmw }), redirect(`/dealer/sales/options/${formData.brand}/${finance.id}`, { headers });
           default:
             return json({ finance }), redirect(`/dealer/sales/overview/${formData.brand}`, { headers });
         }
@@ -356,13 +360,17 @@ export async function quoteAction({ params, request }: ActionArgs) {
             return json({ finance }), redirect(`/dealer/sales/overview/Used`, { headers });
           case "Switch":
             await createFinanceManitou(formData);
-            return json({ finance }), redirect(`/dealer/sales/options/${formData.brand}`, { headers });
+            return json({ finance }), redirect(`/dealer/sales/options/${formData.brand}/${finance.id}`, { headers });
           case "Manitou":
             await createFinanceManitou(formData);
-            return json({ finance }), redirect(`/dealer/sales/options/${formData.brand}`, { headers });
+            return json({ finance }), redirect(`/dealer/sales/options/${formData.brand}/${finance.id}`, { headers });
           case "BMW-Motorrad":
-            await createBMWOptions(formData);
-            return json({ finance }), redirect(`/dealer/sales/options/${formData.brand}`, { headers });
+            const bmw = await prisma.bmwMotoOptions.create({
+              data: {
+                financeId: finance.id,
+              },
+            });
+            return json({ finance, bmw }), redirect(`/dealer/sales/options/${formData.brand}/${finance.id}`, { headers });
           default:
             return json({ finance }), redirect(`/dealer/sales/overview/${formData.brand}`, { headers });
         }

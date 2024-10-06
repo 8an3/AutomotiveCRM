@@ -32,7 +32,7 @@ import {
   DialogTrigger,
 
 } from "~/components/ui/dialog"
-import { SendEmail, TokenRegen } from "~/routes/__authorized/dealer/features/email/notifications.client";
+import { SendEmail, TokenRegen } from "~/components/zRoutes/oldRoutes/notifications.client";
 import Highlight from "@tiptap/extension-highlight"
 import Link from "@tiptap/extension-link"
 import Placeholder from "@tiptap/extension-placeholder"

@@ -16,14 +16,34 @@ async function ensureClient(authProvider: AuthCodeMSALBrowserAuthenticationProvi
   graphClient = await Client.initWithMiddleware(clientOptions);
   return graphClient;
 }
+
+
 export async function getUser(authProvider: AuthCodeMSALBrowserAuthenticationProvider): Promise<User> {
-  ensureClient(authProvider);
+  await ensureClient(authProvider);
   const user: User = await graphClient!
     .api('/me')
     //.select('id,displayName,mail,mailboxSettings,userPrincipalName')
     .get();
+  //await createMailSubscription(authProvider)
   return user;
 }
+
+export async function createMailSubscription(authProvider: AuthCodeMSALBrowserAuthenticationProvider): Promise<User> {
+  ensureClient(authProvider);
+  const subscription = {
+    changeType: 'created',
+    notificationUrl: 'https://webhook.azurewebsites.net/api/send/myNotifyClient',
+    resource: 'me/mailFolders(\'Inbox\')/messages',
+    clientState: 'secretClientValue',
+    latestSupportedTlsVersion: 'v1_2'
+  };
+
+  const user: User = await graphClient!
+    .api('/subscriptions')
+    .post(subscription);
+  return user;
+}
+
 export async function getUserWeekCalendar(authProvider: AuthCodeMSALBrowserAuthenticationProvider,
   timeZone: string): Promise<Event[]> {
   ensureClient(authProvider);
@@ -217,7 +237,7 @@ export async function getCount(
 export async function testInbox(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
 ) {
-  ensureClient(authProvider);
+  await ensureClient(authProvider);
   var email = await graphClient!
     .api(`/me/messages`)
     .top(75)
@@ -627,9 +647,6 @@ export async function ComposeEmailDashboardEmailClient(
   };
   const email = await graphClient!.api('/me/sendMail')
     .post(sendMail);
-  await SaveComs(to, body, subject)
-
-
   return email
 }
 export async function ComposeEmailTwo(
@@ -659,17 +676,72 @@ export async function ComposeEmailTwo(
         }
       ]
     },
-    saveToSentItems: 'false'
+
   };
   console.log(sendMail, 'email1')
-
   const email = await graphClient!.api('/me/sendMail')
     .post(sendMail);
 
-  // await SaveComs(to, body, subject)
   console.log(email, 'email2')
   return email;
 }
+function generateGUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+export async function ComposeFinanceClient(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  subject: any,
+  body: any,
+  to: any,
+  name: any,
+  financeId: any
+) {
+  await ensureClient(authProvider);
+  console.log(subject, body, to, name, financeId, 'emails tff');
+  const newGUID = generateGUID();
+  const namespaceGuid = "66f5a359-4659-4830-9070-00047ec6ac6e";
+  const sendMail = {
+    message: {
+      isReadReceiptRequested: true,
+      subject: subject,
+      body: {
+        contentType: 'HTML',
+        content: body
+      },
+      toRecipients: [
+        {
+          emailAddress: {
+            address: to,
+            name: name
+          }
+        }
+      ],
+      singleValueExtendedProperties: [
+        {
+          id: `String ${namespaceGuid} Name financeId`,
+          value: financeId
+        }
+      ]
+    },
+  };
+
+
+
+  try {
+    const email = await graphClient!.api('/me/sendMail').post(sendMail);
+    console.log(email, 'email2');
+    return email;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw error;
+  }
+}
+
 
 export async function MassEmail(
   authProvider,
@@ -788,25 +860,73 @@ export async function deleteFile(authProvider, fileId) {
     return { success: false, error: error.message };
   }
 }
-async function SaveComs(to, body, subject) {
+export async function SaveComs(to, body, subject) {
   const { user } = useRootLoaderData()
-  const finance = await prisma.finance.findFirst({ where: { email: to } })
+  let finance = await prisma.finance.findFirst({ where: { email: to } })
   await prisma.comm.create({
     data: {
-      financeId: finance.id,
+      userEmail: user.email,
+      type: 'email',
       body: body,
-      userName: user?.name,
-      type: 'Email',
-      customerEmail: to,
-      direction: 'Outgoing',
       subject: subject,
+      userName: user.name,
+      direction: 'outgoing',
       result: 'Attempted',
-      userEmail: user?.email,
-      dept: 'Sales',
+      // ClientfileId: '',
+      financeId: finance.id,
+    }
+  })
+}
+export async function SaveComsProfile(to, body, subject) {
+  const { user } = useRootLoaderData()
+  let clientfile = await prisma.clientfile.findUnique({ where: { email: to } })
+  await prisma.comm.create({
+    data: {
+      userEmail: user.email,
+      type: 'email',
+      body: body,
+      subject: subject,
+      userName: user.name,
+      direction: 'outgoing',
+      result: 'Attempted',
+      ClientfileId: clientfile.id,
     }
   })
 }
 
+export async function SingleCustomerInbox(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  email: string
+) {
+  await ensureClient(authProvider);
+  try {
+    console.log('emails:', email)
+
+    const allMessages = await graphClient!
+      .api(`/me/messages`)
+      .search('"participants:skylerzanth@gmail.com"')
+      .expand("singleValueExtendedProperties")
+      .get();
+
+    console.log(allMessages, 'CreateNotifications')
+    return allMessages;
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    throw error;
+  }
+}
+export async function CreateNotifications(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+) {
+  await ensureClient(authProvider);
+  var email = await graphClient!
+    .api(`/me/messages`)
+    .filter("isRead eq false") // Use boolean value without quotes
+    // .select('sender,subject,toRecipients,body')
+    .get();
+
+  return email;
+}
 
 /**import { Client, type GraphRequestOptions, type PageCollection, PageIterator, type ClientOptions } from '@microsoft/microsoft-graph-client';
 import { type AuthCodeMSALBrowserAuthenticationProvider } from '@microsoft/microsoft-graph-client/authProviders/authCodeMsalBrowser';

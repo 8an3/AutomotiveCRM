@@ -76,7 +76,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { Outlet, Link, useLoaderData, useFetcher, Form, useSubmit, NavLink } from "@remix-run/react";
+import { Outlet, Link, useLoaderData, useFetcher, Form, useSubmit, NavLink, useActionData } from "@remix-run/react";
 import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { GetUser } from "~/utils/loader.server";
 import { getSession } from "~/sessions/auth-session.server";
@@ -90,7 +90,7 @@ import { toast } from "sonner";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { BrowserMultiFormatReader, BarcodeFormat, DecodeHintType, NotFoundException, ChecksumException, FormatException } from '@zxing/library';
 import ScanSound from '~/images/scan.mp4'
-import { EditableText } from "~/components/shared/shared";
+import { DebouncedInput, EditableText } from "~/components/shared/shared";
 import { Percent } from "lucide-react";
 import { ArrowDownUp } from 'lucide-react';
 import { cn } from '~/utils';
@@ -129,7 +129,17 @@ import {
 } from "~/components/ui/context-menu"
 import { ClientOnly } from "remix-utils";
 import PrintReceipt from "../document/printReceiptAcc.client";
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "~/components/ui/alert-dialog"
 
 export function playScanSound() {
   const audio = new Audio(ScanSound);
@@ -253,7 +263,7 @@ export async function loader({ request, params }: LoaderFunction) {
   })
   const tax = await prisma.dealer.findUnique({
     where: { id: 1 },
-    select: { userTax: true },
+    select: { userTax: true, pacDiscount: true },
   });
   const dealerImage = await prisma.dealerLogo.findUnique({
     where: { id: 1 }
@@ -483,7 +493,6 @@ export async function action({ request, params }: LoaderFunction) {
       where: { id: formPayload.accOrderId },
       data: {
         discount: parseFloat(formPayload.discDollar),
-        total: parseFloat(formPayload.total),
       },
     });
     return payment;
@@ -493,7 +502,6 @@ export async function action({ request, params }: LoaderFunction) {
       where: { id: formPayload.accOrderId },
       data: {
         discPer: parseFloat(formPayload.discPer),
-        total: parseFloat(formPayload.total),
       },
     });
     return payment;
@@ -508,12 +516,55 @@ export async function action({ request, params }: LoaderFunction) {
     });
     return payment;
   }
-
+  if (intent === 'deletePayment') {
+    const payment = await prisma.payment.delete({ where: { id: formPayload.paymentId } });
+    await prisma.accOrder.update({
+      where: { id: formPayload.accOrderId },
+      data: {
+        total: parseFloat(formPayload.total),
+      },
+    });
+    return payment;
+  }
+  if (intent === 'updatePayments') {
+    const payment = await prisma.payment.update({
+      where: { id: formPayload.id },
+      data: {
+        amountPaid: parseFloat(formPayload.amountPaid),
+      }
+    });
+    await prisma.accOrder.update({
+      where: { id: formPayload.accOrderId },
+      data: {
+        total: parseFloat(formPayload.total),
+      },
+    });
+    return payment;
+  }
+  if (intent === 'password') {
+    const dealer = await prisma.dealer.findUnique({
+      where: { id: 1 }
+    })
+    const pacPassword = dealer.pacDiscount
+    if (pacPassword === formPayload.pacPassword) {
+      const data = true
+      return json({ data })
+    } else {
+      const data = false
+      return json({ data })
+    }
+  }
 
 }
 
 export default function Purchase() {
   const { user, order, tax, salesPerson, dealerImage } = useLoaderData();
+
+  const [showPayments, setShowPayments] = useState(false)
+  const [showDiscount, setShowDiscount] = useState(false)
+  const [showDiscountDialog, setShowDiscountDialog] = useState(false)
+  const [password, setPassword] = useState('')
+
 
   const [paymentType, setPaymentType] = useState('');
   const [input, setInput] = useState("");
@@ -692,8 +743,8 @@ export default function Purchase() {
 
   }, [scannedCode]);
 
-  const [discDollar, setDiscDollar] = useState(0.00)
-  const [discPer, setDiscPer] = useState(0.00)
+  const [discDollar, setDiscDollar] = useState(order.discount ? order.discount : 0.00)
+  const [discPer, setDiscPer] = useState(order.discPer ? order.discPer : 0.00)
   useEffect(() => {
     // console.log('useEffect triggered');
     // console.log('order.discount:', order.discount);
@@ -767,6 +818,8 @@ export default function Purchase() {
   }, [remaining]);
 
   const orderStatus = order.status ? order.status : user.dept
+
+
   return (
     <div>
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
@@ -1444,8 +1497,12 @@ export default function Purchase() {
                     align="end"
                     className="border border-border"
                   >
-                    <DropdownMenuItem onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>Show Discount</DropdownMenuItem>
-                    <DropdownMenuItem>Discount</DropdownMenuItem>
+
+                    <DropdownMenuItem onSelect={() => {
+                      setShowDiscountDialog(true)
+                    }}>Show Discount</DropdownMenuItem>
+
+
                     <DropdownMenuItem
                       onSelect={() => {
                         const formData = new FormData();
@@ -1456,10 +1513,19 @@ export default function Purchase() {
                       }}
                     >Push Sub Total to Finance</DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onSelect={() => {
+                    {hasAdminPosition && (
+                      <div>
+                        <DropdownMenuItem
+                          onSelect={() => {
+                            setShowPayments(true)
+                          }}>Payments</DropdownMenuItem>
+                        <DropdownMenuItem
+                          disabled
+                          onSelect={() => {
 
-                      }}>Delete</DropdownMenuItem>
+                          }}>Delete</DropdownMenuItem>
+                      </div>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -1560,143 +1626,62 @@ export default function Purchase() {
               </div>
               <div className='mt-auto'>
                 <Separator className="my-2 mt-auto" />
-                <ul className="grid gap-3">
+                {showDiscount && (
+                  <ul className="grid gap-3">
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Discount $</span>
+                      <span>
+                        <Input
+                          className='w-[100px] text-right'
+                          type='float'
+                          defaultValue={discDollar}
+                          onChange={(e) => {
+                            setDiscDollar(Number(e.currentTarget.value))
+                            const formData = new FormData();
+                            formData.append("discDollar", e.currentTarget.value);
+                            formData.append("intent", 'updateDiscount');
+                            formData.append("accOrderId", order.id);
+                            console.log(formData, 'formData');
+                            fetcher.submit(formData, { method: "post" });
+                          }} />
+                      </span>
+                    </li>
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Discount %</span>
+                      <span>
+                        <Input
+                          className='w-[100px]  text-right'
+                          type='number'
+                          defaultValue={discPer}
+                          onChange={(e) => {
+                            setDiscPer(Number(e.currentTarget.value))
+                            const formData = new FormData();
+                            formData.append("discPer", e.currentTarget.value);
+                            formData.append("intent", 'updateDiscPerc');
+                            formData.append("accOrderId", order.id);
+                            console.log(formData, 'formData');
+                            fetcher.submit(formData, { method: "post" });
+                          }} />
+                      </span>
+                    </li>
+                  </ul>
+                )}
+                <ul className="grid gap-3 mt-3">
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span>${totalAccessoriesCost.toFixed(2)}</span>
                   </li>
-                  {order.discount && (
+                  {discDollar > 0.00 && (
                     <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Discount</span>
-                      <span>${order.discount}</span>
+                      <span className="text-muted-foreground">Discount $</span>
+                      <span>${discDollar}</span>
                     </li>
                   )}
-                  {order.discPer && (
+                  {discPer > 0.00 && (
                     <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Discount</span>
-                      <span>{order.discPer}%</span>
+                      <span className="text-muted-foreground">Discount %</span>
+                      <span>{discPer}%</span>
                     </li>
-                  )}
-                  {discount && (
-                    <>
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Discount $</span>
-                        <fetcher.Form
-                          method="post"
-                          onSubmit={() => {
-                            buttonRef.current?.focus();
-                          }}
-                          preventScrollReset
-                        >
-                          <input
-                            name='accOrderId'
-                            defaultValue={order.id}
-                            type='hidden'
-                          />
-                          <input
-                            name='intent'
-                            defaultValue='updateDiscount'
-                            type='hidden'
-                          />
-                          <input
-                            name='total'
-                            defaultValue={totalAccessoriesCost}
-                            type='hidden'
-                          />
-                          <div className="relative ml-auto flex-1 md:grow-0 ">
-                            <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-foreground" />
-                            <Input
-                              ref={inputRef}
-                              name='discDollar'
-                              className='text-right pr-10 w-[100px]'
-                              defaultValue={discDollar}
-                              onChange={(event) => setDiscDollar(event.target.value)}
-                              onKeyDown={(event) => {
-                                if (event.key === "Escape") {
-                                  buttonRef.current?.focus();
-                                }
-                              }}
-                              onBlur={(event) => {
-                                if (
-                                  inputRef.current?.value !== discDollar &&
-                                  inputRef.current?.value.trim() !== ""
-                                ) {
-                                  fetcher.submit(event.currentTarget);
-                                }
-                              }}
-                            />
-                            <Button
-                              type="submit"
-                              size="icon"
-
-                              disabled={!discDollar}
-                              className='bg-primary mr-2 absolute right-1.5 top-2.5 h-4 w-4 text-foreground '>
-                              <PaperPlaneIcon className="h-4 w-4" />
-                              <span className="sr-only">Cash</span>
-                            </Button>
-                          </div>
-                        </fetcher.Form>
-                      </li>
-                      <li className="flex items-center justify-between">
-                        <span className="text-muted-foreground">Discount %</span>
-                        <fetcher.Form
-                          method="post"
-                          onSubmit={() => {
-                            buttonRef.current?.focus();
-                          }}
-                          preventScrollReset
-                        >
-                          <input
-                            name='accOrderId'
-                            defaultValue={order.id}
-                            type='hidden'
-                          />
-                          <input
-                            name='intent'
-                            defaultValue='updateDiscPerc'
-                            type='hidden'
-                          />
-                          <input
-                            name='total'
-                            defaultValue={totalAccessoriesCost}
-                            type='hidden'
-                          />
-                          <div className="relative ml-auto flex-1 md:grow-0 ">
-                            <Input
-                              ref={inputRef}
-                              name='discPer'
-                              className='text-right pr-[43px] w-[100px]'
-                              value={discPer}
-                              onChange={(event) => setDiscPer(event.target.value)}
-                              onKeyDown={(event) => {
-                                if (event.key === "Escape") {
-                                  buttonRef.current?.focus();
-                                }
-                              }}
-                              onBlur={(event) => {
-                                if (
-                                  inputRef.current?.value !== discPer &&
-                                  inputRef.current?.value.trim() !== ""
-                                ) {
-                                  fetcher.submit(event.currentTarget);
-                                }
-                              }}
-                            />
-                            <Percent className="absolute right-10 top-[8px] h-4 w-4 text-foreground" />
-                            <Button
-                              type="submit"
-                              size="icon"
-
-                              disabled={!discPer}
-                              className='bg-primary mr-2 absolute right-1.5 top-[8px] h-4 w-4 text-foreground '>
-                              <PaperPlaneIcon className="h-4 w-4" />
-                              <span className="sr-only">Cash</span>
-                            </Button>
-                          </div>
-                        </fetcher.Form>
-
-                      </li>
-                    </>
                   )}
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Tax</span>
@@ -1704,14 +1689,13 @@ export default function Purchase() {
                   </li>
                   <li className="flex items-center justify-between font-semibold">
                     <span className="text-muted-foreground">Total</span>
-                    <span>${total}</span>
+                    <span>${parseFloat(total).toFixed(2)}</span>
                   </li>
                 </ul>
                 <Separator className="my-4" />
                 <div className="grid gap-3">
                   <div className="font-semibold">Payment</div>
                   <dl className="grid gap-3">
-
                     <div className="flex flex-col" >
                       <div className='flex items-center justify-center text-foreground'>
                         <Button
@@ -1793,8 +1777,7 @@ export default function Purchase() {
                     ))}
                     <li className="flex items-center justify-between">
                       <span className="text-muted-foreground">Balance</span>
-                      <span>${remaining}</span>
-
+                      <span>${remaining.toFixed(2)}</span>
                     </li>
                     {remaining === 0 && (
                       <li className="flex items-center justify-between">
@@ -1836,7 +1819,6 @@ export default function Purchase() {
                         </li>
                       </>
                     )}
-
                   </ul>
                 </div>
               </div>
@@ -1848,7 +1830,6 @@ export default function Purchase() {
                     {salesPerson.name}
                   </Badge>
                 </div>
-
                 <ClientOnly fallback={<p>Fallback component ...</p>}>
                   {() => (
                     <React.Suspense fallback={<div>Loading...</div>}>
@@ -1864,12 +1845,97 @@ export default function Purchase() {
                     </React.Suspense>
                   )}
                 </ClientOnly>
-
               </div>
             </CardFooter>
           </Card>
         </div >
       </main >
+      {showPayments && (
+        <AlertDialog open={showPayments} onOpenChange={setShowPayments}>
+          <AlertDialogContent className='border-border'>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Payments</AlertDialogTitle>
+              <AlertDialogDescription>
+                <div className="grid gap-3">
+                  <ul className="grid gap-3">
+                    {order.Payments && order.Payments.map((result, index) => (
+                      <li key={index} className="flex items-center justify-between group" key={index} >
+                        <div className='flex items-center' >
+                          <span className="text-muted-foreground">{result.paymentType}</span>
+                          <fetcher.Form method="post" ref={formRef} className=''>
+                            <input type="hidden" name="paymentId" value={result.id} />
+                            <input type='hidden' name='accOrderId' value={order.id} />
+                            <input type='hidden' name='total' value={total} />
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              name="intent" value='deletePayment'
+                              className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                              type='submit'
+                            >
+                              <X className="h-4 w-4 text-foreground" />
+                            </Button>
+                          </fetcher.Form>
+
+                        </div>
+                        <div className='items-center flex'><p>$</p>
+                          <EditableText
+                            value={result.amountPaid}
+                            fieldName="amountPaid"
+                            inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
+                            buttonClassName="text-center py-1 px-2 text-foreground"
+                            buttonLabel={`Edit amount paid`}
+                            inputLabel={`Edit amount paid`}
+                          >
+                            <input type="hidden" name="accOrderId" value={order.id} />
+                            <input type="hidden" name="total" value={total} />
+                            <input type="hidden" name="intent" value='updatePayments' />
+                            <input type="hidden" name="id" value={result.id} />
+                          </EditableText>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Close</AlertDialogCancel>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+      {showDiscountDialog && (
+        <AlertDialog open={showDiscountDialog} onOpenChange={setShowDiscountDialog}>
+          <AlertDialogContent className='border-border'>
+            <AlertDialogHeader>
+              <AlertDialogTitle>PAC Discount Password</AlertDialogTitle>
+              <AlertDialogDescription>
+                <Input
+                  autoFocus
+                  type='password'
+                  name='pacPassword'
+                  onChange={(e) => {
+                    setPassword(e.currentTarget.value)
+                  }} />
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  console.log(tax.pacDiscount, password, 'passwords')
+
+                  if (tax.pacDiscount === password) {
+                    setShowDiscount(true)
+                  }
+                }} >
+                Submit
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div >
   );
 }

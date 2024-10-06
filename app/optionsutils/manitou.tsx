@@ -61,15 +61,72 @@ export default function EquipManitou() {
 		}
 		setformData((prevData) => ({ ...prevData, [name]: newValue }))
 	}
+
+	const optionalEquip = [
+		{ name: 'battery', value: '700', placeholder: 'Marine Battery' },
+		{ name: 'gps', value: '262', placeholder: 'Garmin LakeVu Canada Mapping Card' },
+		{ name: 'saltwaterPkg', value: '596', placeholder: 'Saltwater Package' },
+		{ name: 'propeller', value: '995', placeholder: 'Prop Outboard' },
+	]
+	const accessories = [
+		{ name: 'baseInst', value: '45', placeholder: 'LinQ Base Installation Kit' },
+		{ name: 'cupHolder', value: '44', placeholder: 'LinQ Lite Cup Holder' },
+		{ name: 'multiHolder', value: '41', placeholder: 'LinQ Lite Multi Holder' },
+		{ name: 'cooler13', value: '940', placeholder: 'LinQ 13.5 Gal Cooler' },
+		{ name: 'coolerExtension', value: '370', placeholder: 'LinQ 13.5 Gal Cooler Extension' },
+		{ name: 'coolerBag14', value: '215', placeholder: 'LinQ 14 L Cooler Bag' },
+		{ name: 'singleHolder', value: '260', placeholder: 'LinQ Lite Single Holder' },
+		{ name: 'stemwareHolder', value: '56', placeholder: 'LinQ Lite Stemware Holder' },
+		{ name: 'cargoBox10', value: '188', placeholder: 'LinQ Modular Cargo Box 10 L' },
+		{ name: 'cargoBox20', value: '210', placeholder: 'LinQ Modular Cargo Box 20 L' },
+		{ name: 'cargoBox30', value: '230', placeholder: 'LinQ Modular Cargo Box 30 L' },
+		{ name: 'rodHolder', value: '39', placeholder: 'LinQ Rod Holder' },
+		{ name: 'batteryCharger', value: '545', placeholder: 'Battery Charger' },
+		{ name: 'bowFillerBench', value: '1011', placeholder: 'Bow Filler Bench' },
+		{ name: 'portAquaLounger', value: '342', placeholder: 'Port Aqua Lounger' },
+		{ name: 'skiTowMirror', value: '516', placeholder: 'Ski Tow Mirror' },
+	]
+
+	const cruise = [
+		{ name: 'biminiCr', value: '4015', placeholder: 'Bimini' },
+		{ name: 'signature', value: '4480', placeholder: 'Signature Package' },
+	]
+	const explore = [
+		{ name: 'signature', value: '5047', placeholder: 'Signature Package' },
+		{ name: 'select', value: '6735', placeholder: 'Select Package' },
+		{ name: 'tubeColor', value: '7680', placeholder: 'Painted tubes' },
+	]
+	const lx = [
+		{ name: 'signature', value: '3178', placeholder: 'Signature Package' },
+		{ name: 'selRFXPkgLX', value: '26684', placeholder: 'Select Package RFX / SRS' },
+		{ name: 'selRFXWPkgLX', value: '28160', placeholder: 'Select Package RFXW / SRW' },
+		{ name: 'tubeColor', value: '7680', placeholder: 'Painted tubes' },
+		{ name: 'blkPkg', value: '3666', placeholder: 'Blackout Package' },
+		{ name: 'colMatchedFiberLX', value: '12530', placeholder: 'Color Matched Fiberglass' },
+	]
+	const lxBimini = [
+		{ name: 'powderCoatingLX', value: '2305', placeholder: 'Bimini Top, Double w/ Powder Coating' },
+		{ name: 'blackAnoLX', value: '2342', placeholder: '	Bimini Top, Power Arm w/ Black Ano' },
+	]
+	const lxSpeaker = [
+		{ name: 'JLTowerLX', value: '3338', placeholder: 'JL Tower Speakers (Select package required)' },
+		{ name: 'premiumJLLX', value: '3585', placeholder: 'Premium JL MM105 Stereo' },
+	]
+	const xt = [
+		{ name: 'signature', value: '17658', placeholder: 'Signature Package' },
+		{ name: 'blkPkg', value: '516', placeholder: 'Blackout Package' },
+		{ name: 'premAudioPkg', value: '1505', placeholder: 'Premium Audio Package' },
+		{ name: 'XTPremiumcolor', value: '1920', placeholder: 'XT Premium color' },
+	]
+	const xtSpeaker = [
+		{ name: 'JLPremiumxt', value: '1505', placeholder: 'JL Premium Audio pkg(base)' },
+		{ name: 'JlPremiumAudio', value: '3380', placeholder: 'Jl premium audio pkg (signature pkg)' },
+	]
 	return (
 		<>
 
 
-			<div className="sm container mx-auto mt-3">
-				<div>
-					<h1 className="text-2xl font-extralight">Optional Equipment</h1>
-				</div>
-				<Separator />
+			<div className="sm container mx-auto mt-5 lg:w-[95%] w-[95%]">
 
 				{finance.model.includes('Cruise') ? (
 					<>
@@ -80,46 +137,39 @@ export default function EquipManitou() {
 						</div>
 						<Separator />
 
-						<div className="grid  grid-cols-2">
-
-
-
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									name="biminiCr"
-									value="4015"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Bimini
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight  ">
-								${formData.biminiCr}
-							</p>
-
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="signature"
-									name="signature"
-									value="4480"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Signature Package
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.signature}
-							</p>
+						<div className="grid  grid-cols-1">
+							{cruise.map((result, index) => (
+								<div key={index} className='flex justify-between items-center'>
+									<div className="inline-flex items-center">
+										<label className="relative flex items-center rounded-full cursor-pointer" htmlFor={result.name}>
+											<input
+												type="checkbox"
+												name={result.name}
+												value={result.value}
+												className="form-checkbox peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-primary transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-secondary checked:bg-primary checked:before:bg-secondary hover:before:opacity-10"
+												onChange={handleInputChange}
+											/>
+											<span
+												className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+												<svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+													stroke="currentColor" strokeWidth="1">
+													<path fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"></path>
+												</svg>
+											</span>
+										</label>
+										<label
+											htmlFor={result.name}
+											className=" ml-3 font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-xl">
+											{result.placeholder}
+										</label>
+									</div>
+									<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight text-xl">
+										${formData[result.name]}
+									</p>
+								</div>
+							))}
 						</div>
 
 						<div className="mt-3">
@@ -127,7 +177,7 @@ export default function EquipManitou() {
 						</div>
 						<Separator />
 
-						<div className="grid grid-cols-1 ">
+						<div className="grid grid-cols-1 gap-y-4">
 							<label
 								htmlFor="bimini"
 								className="mt-3  text-sm font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -138,8 +188,8 @@ export default function EquipManitou() {
 								name="intColor"
 								onChange={handleInputChange}
 								data-te-select-init
-								className=" mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className=" mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between
+                                        border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
 								<option ></option>
 								<option value="stone red - interior">
 									stone red - interior
@@ -168,8 +218,7 @@ export default function EquipManitou() {
 								name="wallCol"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option >
 									Select Wall Color
 								</option>
@@ -189,61 +238,39 @@ export default function EquipManitou() {
 						</div>
 						<Separator />
 
-						<div className="grid  grid-cols-2">
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="signature"
-									name="signature"
-									value="5047"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Signature Package
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight  ">
-								${formData.signature}
-							</p>
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="select"
-									name="select"
-									value="6735"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Select Package
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.select}
-							</p>
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="tubeColor"
-									name="tubeColor"
-									value="7680"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Painted tubes
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.tubeColor}
-							</p>
+						<div className="grid  grid-cols-1">
+							{explore.map((result, index) => (
+								<div key={index} className='flex justify-between items-center'>
+									<div className="inline-flex items-center">
+										<label className="relative flex items-center rounded-full cursor-pointer" htmlFor={result.name}>
+											<input
+												type="checkbox"
+												name={result.name}
+												value={result.value}
+												className="form-checkbox peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-primary transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-secondary checked:bg-primary checked:before:bg-secondary hover:before:opacity-10"
+												onChange={handleInputChange}
+											/>
+											<span
+												className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+												<svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+													stroke="currentColor" strokeWidth="1">
+													<path fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"></path>
+												</svg>
+											</span>
+										</label>
+										<label
+											htmlFor={result.name}
+											className=" ml-3 font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-xl">
+											{result.placeholder}
+										</label>
+									</div>
+									<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight text-xl">
+										${formData[result.name]}
+									</p>
+								</div>
+							))}
 						</div>
 
 						<div className="mt-3">
@@ -251,7 +278,7 @@ export default function EquipManitou() {
 						</div>
 						<Separator />
 
-						<div className="grid grid-cols-1 ">
+						<div className="grid grid-cols-1 gap-y-4">
 							<label
 								htmlFor="bimini"
 								className="mt-3  text-sm font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
@@ -262,8 +289,7 @@ export default function EquipManitou() {
 								name="intColor"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option></option>
 								<option value="stone red - interior">
 									stone red - interior
@@ -292,8 +318,7 @@ export default function EquipManitou() {
 								name="wallCol"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option ></option>
 								<option value="great white - Wall Color">
 									great white
@@ -314,115 +339,39 @@ export default function EquipManitou() {
 							</h3>
 						</div>
 						<Separator />
-						<div className="grid  grid-cols-2 mt-2">
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="signature"
-									name="signature"
-									value="3178"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Signature Package
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight  ">
-								${formData.signature}
-							</p>
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="selRFXPkgLX"
-									name="selRFXPkgLX"
-									value="26684"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Select Package RFX / SRS
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.selRFXPkgLX}
-							</p>
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="selRFXWPkgLX"
-									name="selRFXWPkgLX"
-									value="28160"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Select Package RFXW / SRW
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.selRFXWPkgLX}
-							</p>
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="tubeColor"
-									name="tubeColor"
-									value="7680"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Painted tubes
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.tubeColor}
-							</p>
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="blkPkg"
-									name="blkPkg"
-									value="3666"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Blackout Package
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.blkPkg}
-							</p>
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="colMatchedFiberLX"
-									name="colMatchedFiberLX"
-									value="12530"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Color Matched Fiberglass
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.colMatchedFiberLX}
-							</p>
+						<div className="grid  grid-cols-1">
+							{lx.map((result, index) => (
+								<div key={index} className='flex justify-between items-center'>
+									<div className="inline-flex items-center">
+										<label className="relative flex items-center rounded-full cursor-pointer" htmlFor={result.name}>
+											<input
+												type="checkbox"
+												name={result.name}
+												value={result.value}
+												className="form-checkbox peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-primary transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-secondary checked:bg-primary checked:before:bg-secondary hover:before:opacity-10"
+												onChange={handleInputChange}
+											/>
+											<span
+												className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+												<svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+													stroke="currentColor" strokeWidth="1">
+													<path fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"></path>
+												</svg>
+											</span>
+										</label>
+										<label
+											htmlFor={result.name}
+											className=" ml-3 font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-xl">
+											{result.placeholder}
+										</label>
+									</div>
+									<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight text-xl">
+										${formData[result.name]}
+									</p>
+								</div>
+							))}
 						</div>
 
 						<div className="mt-3">
@@ -430,43 +379,39 @@ export default function EquipManitou() {
 						</div>
 						<Separator />
 
-						<div className="grid  grid-cols-2 mtg-2">
-							<div className="flex items-center space-x-2 mt-2">
-								<input
-									type="checkbox"
-									id="powderCoatingLX"
-									name="powderCoatingLX"
-									value="2305"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Bimini Top, Double w/ Powder Coating
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight  ">
-								${formData.powderCoatingLX}
-							</p>
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="blackAnoLX"
-									name="blackAnoLX"
-									value="2342"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Bimini Top, Power Arm w/ Black Ano
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.blackAnoLX}
-							</p>
+						<div className="grid  grid-cols-1">
+							{lxBimini.map((result, index) => (
+								<div key={index} className='flex justify-between items-center'>
+									<div className="inline-flex items-center">
+										<label className="relative flex items-center rounded-full cursor-pointer" htmlFor={result.name}>
+											<input
+												type="checkbox"
+												name={result.name}
+												value={result.value}
+												className="form-checkbox peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-primary transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-secondary checked:bg-primary checked:before:bg-secondary hover:before:opacity-10"
+												onChange={handleInputChange}
+											/>
+											<span
+												className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+												<svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+													stroke="currentColor" strokeWidth="1">
+													<path fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"></path>
+												</svg>
+											</span>
+										</label>
+										<label
+											htmlFor={result.name}
+											className=" ml-3 font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-xl">
+											{result.placeholder}
+										</label>
+									</div>
+									<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight text-xl">
+										${formData[result.name]}
+									</p>
+								</div>
+							))}
 						</div>
 
 						<div className="mt-3">
@@ -476,43 +421,39 @@ export default function EquipManitou() {
 						</div>
 						<Separator />
 
-						<div className="grid  grid-cols-2 mt-2">
-							<div className="flex items-center space-x-2 mt-2">
-								<input
-									type="checkbox"
-									id="JLTowerLX"
-									name="JLTowerLX"
-									value="3338"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									JL Tower Speakers (Select package required)
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.JLTowerLX}
-							</p>
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="premiumJLLX"
-									name="premiumJLLX"
-									value="3585"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Premium JL MM105 Stereo
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.premiumJLLX}
-							</p>
+						<div className="grid  grid-cols-1">
+							{lxSpeaker.map((result, index) => (
+								<div key={index} className='flex justify-between items-center'>
+									<div className="inline-flex items-center">
+										<label className="relative flex items-center rounded-full cursor-pointer" htmlFor={result.name}>
+											<input
+												type="checkbox"
+												name={result.name}
+												value={result.value}
+												className="form-checkbox peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-primary transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-secondary checked:bg-primary checked:before:bg-secondary hover:before:opacity-10"
+												onChange={handleInputChange}
+											/>
+											<span
+												className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+												<svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+													stroke="currentColor" strokeWidth="1">
+													<path fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"></path>
+												</svg>
+											</span>
+										</label>
+										<label
+											htmlFor={result.name}
+											className=" ml-3 font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-xl">
+											{result.placeholder}
+										</label>
+									</div>
+									<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight text-xl">
+										${formData[result.name]}
+									</p>
+								</div>
+							))}
 						</div>
 
 						<div className="mt-3">
@@ -531,8 +472,7 @@ export default function EquipManitou() {
 								name="wallCol"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option></option>
 								<option value="charcoal - wall">charcoal - wall</option>
 								<option value="white pearl - wall">
@@ -556,8 +496,7 @@ export default function EquipManitou() {
 								name="wallGraphic"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option></option>
 
 								<option value="carbon - wall graphic">
@@ -584,8 +523,7 @@ export default function EquipManitou() {
 								name="wallGraphicAccentLX"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option></option>
 								<option value="carmal - wall graphic accent">
 									carmal - wall graphic accent
@@ -614,8 +552,7 @@ export default function EquipManitou() {
 								name="fibreGlassPodsLX"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option></option>
 								<option value="gray - fibre glass pods">
 									gray - fibre glass pods
@@ -641,8 +578,7 @@ export default function EquipManitou() {
 								name="tubeColor"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option></option>
 
 								<option value="antique silver - powder coat">
@@ -663,8 +599,7 @@ export default function EquipManitou() {
 								name="furnitureColor"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option></option>
 
 								<option value="tan/black - furniture">
@@ -694,8 +629,7 @@ export default function EquipManitou() {
 								name="flooringLX"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option></option>
 
 								<option value="Standard Flooring">
@@ -722,79 +656,39 @@ export default function EquipManitou() {
 						</div>
 						<Separator />
 
-						<div className="grid  grid-cols-2 mt-2">
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="signature"
-									name="signature"
-									value="17658"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Signature Package
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight  ">
-								${formData.signature}
-							</p>
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="blkPkg"
-									name="blkPkg"
-									value="516"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Blackout Package
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.blkPkg}
-							</p>
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="premAudioPkg"
-									name="premAudioPkg"
-									value="1505"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Premium Audio Package
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.premAudioPkg}
-							</p>
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="XTPremiumcolor"
-									name="XTPremiumcolor"
-									value="1920"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									XT Premium color
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.XTPremiumcolor}
-							</p>
+						<div className="grid  grid-cols-1">
+							{xt.map((result, index) => (
+								<div key={index} className='flex justify-between items-center'>
+									<div className="inline-flex items-center">
+										<label className="relative flex items-center rounded-full cursor-pointer" htmlFor={result.name}>
+											<input
+												type="checkbox"
+												name={result.name}
+												value={result.value}
+												className="form-checkbox peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-primary transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-secondary checked:bg-primary checked:before:bg-secondary hover:before:opacity-10"
+												onChange={handleInputChange}
+											/>
+											<span
+												className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+												<svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+													stroke="currentColor" strokeWidth="1">
+													<path fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"></path>
+												</svg>
+											</span>
+										</label>
+										<label
+											htmlFor={result.name}
+											className=" ml-3 font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-xl">
+											{result.placeholder}
+										</label>
+									</div>
+									<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight text-xl">
+										${formData[result.name]}
+									</p>
+								</div>
+							))}
 						</div>
 
 						<div className="mt-3">
@@ -803,45 +697,41 @@ export default function EquipManitou() {
 							</h3>
 						</div>
 						<Separator />
-
-						<div className="grid  grid-cols-2 mt-2">
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="JLPremiumxt"
-									name="JLPremiumxt"
-									value="1505"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									JL Premium Audio pkg(base)
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight  ">
-								${formData.JLPremiumxt}
-							</p>
-							<div className="flex items-center space-x-2">
-								<input
-									type="checkbox"
-									id="JlPremiumAudio"
-									name="JlPremiumAudio"
-									value="3380"
-									className="form-checkbox"
-									onChange={handleInputChange}
-								/>
-								<label
-									htmlFor="bimini"
-									className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-									Jl premium audio pkg (signature pkg)
-								</label>
-							</div>
-							<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-								${formData.JlPremiumAudio}
-							</p>
+						<div className="grid  grid-cols-1">
+							{xtSpeaker.map((result, index) => (
+								<div key={index} className='flex justify-between items-center'>
+									<div className="inline-flex items-center">
+										<label className="relative flex items-center rounded-full cursor-pointer" htmlFor={result.name}>
+											<input
+												type="checkbox"
+												name={result.name}
+												value={result.value}
+												className="form-checkbox peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-primary transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-secondary checked:bg-primary checked:before:bg-secondary hover:before:opacity-10"
+												onChange={handleInputChange}
+											/>
+											<span
+												className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+												<svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+													stroke="currentColor" strokeWidth="1">
+													<path fillRule="evenodd"
+														d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+														clipRule="evenodd"></path>
+												</svg>
+											</span>
+										</label>
+										<label
+											htmlFor={result.name}
+											className=" ml-3 font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-xl">
+											{result.placeholder}
+										</label>
+									</div>
+									<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight text-xl">
+										${formData[result.name]}
+									</p>
+								</div>
+							))}
 						</div>
+
 
 						<div className="mt-3">
 							<h3 className="text-2xl font-extralight">Color</h3>
@@ -859,8 +749,7 @@ export default function EquipManitou() {
 								name="fibreglassFrontXT"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option>
 									fibreglass front & pods
 								</option>
@@ -903,8 +792,7 @@ export default function EquipManitou() {
 								name="wallGraphic"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option>wall graphic</option>
 								<option value="none - wall graphic">
 									none - wall graphic
@@ -933,8 +821,7 @@ export default function EquipManitou() {
 								name="tubeColor"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option>		Tube Color</option>
 								<option value="antique silver - powder coat">
 									antique silver - powder coat
@@ -954,8 +841,7 @@ export default function EquipManitou() {
 								name="furnitureColor"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option>		Furniture Color</option>
 
 								<option value="beige/black">
@@ -1008,395 +894,87 @@ export default function EquipManitou() {
 					</>
 				) : null}
 
-				<div>
-					<h3 className="mt-3 text-2xl font-extralight">
-						Optional Equipment
-					</h3>
-				</div>
-				<Separator />
+
 
 				<Accordion type="single" collapsible className=" w-full">
 					<AccordionItem value="item-1">
-						<AccordionTrigger>Show Optional Equipment</AccordionTrigger>
+						<AccordionTrigger className="text-2xl font-extralight">	Optional Equipment</AccordionTrigger>
 						<AccordionContent>
-							<div className="grid  grid-cols-2">
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="battery"
-										name="battery"
-										value="700"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="battery"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										Marine Battery
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight  ">
-									${formData.battery}
-								</p>
-								<div className="flex space-x-2 mt-2 items-center ">
-									<input
-										type="checkbox"
-										id="gps"
-										name="gps"
-										value="262"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="gps"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										Garmin LakeVu Canada Mapping Card
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.gps}
-								</p>
-
-								<div className="flex items-center space-x-2 mt-2">
-									<input
-										type="checkbox"
-										id="saltwaterPkg"
-										name="saltwaterPkg"
-										value="596"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="gps"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										Saltwater Package
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.saltwaterPkg}
-								</p>
-								<div className="flex items-center space-x-2 mt-2">
-									<input
-										type="checkbox"
-										id="propeller"
-										name="propeller"
-										value="995"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="propeller"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										Prop Outboard
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.propeller}
-								</p>
+							<div className="grid  grid-cols-1">
+								{optionalEquip.map((result, index) => (
+									<div key={index} className='flex justify-between items-center'>
+										<div className="inline-flex items-center">
+											<label className="relative flex items-center rounded-full cursor-pointer" htmlFor={result.name}>
+												<input
+													type="checkbox"
+													name={result.name}
+													value={result.value}
+													className="form-checkbox peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-primary transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-secondary checked:bg-primary checked:before:bg-secondary hover:before:opacity-10"
+													onChange={handleInputChange}
+												/>
+												<span
+													className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+													<svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+														stroke="currentColor" strokeWidth="1">
+														<path fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"></path>
+													</svg>
+												</span>
+											</label>
+											<label
+												htmlFor={result.name}
+												className=" ml-3 font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-xl">
+												{result.placeholder}
+											</label>
+										</div>
+										<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight text-xl">
+											${formData[result.name]}
+										</p>
+									</div>
+								))}
 							</div>
 						</AccordionContent>
 					</AccordionItem>
-				</Accordion>
 
-				<div>
-					<h3 className="mt-3 text-2xl font-extralight">Accessories</h3>
-				</div>
-				<Separator />
-
-				<Accordion type="single" collapsible className=" w-full">
-					<AccordionItem value="item-1">
-						<AccordionTrigger>Show Accessories</AccordionTrigger>
+					<AccordionItem value="item-2">
+						<AccordionTrigger className="text-2xl font-extralight">Accessories</AccordionTrigger>
 						<AccordionContent>
-							<div className="grid  grid-cols-2">
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="baseInst"
-										name="baseInst"
-										value="45"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="battery"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										LinQ Base Installation Kit
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight  ">
-									${formData.baseInst}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="cupHolder"
-										name="cupHolder"
-										value="44"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="gps"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										LinQ Lite Cup Holder
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.cupHolder}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="multiHolder"
-										name="multiHolder"
-										value="41"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="gps"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										LinQ Lite Multi Holder
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.multiHolder}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="cooler13"
-										name="cooler13"
-										value="940"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="propeller"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										LinQ 13.5 Gal Cooler
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.cooler13}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="coolerExtension"
-										name="coolerExtension"
-										value="370"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="battery"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										LinQ 13.5 Gal Cooler Extension
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight  ">
-									${formData.coolerExtension}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="coolerBag14"
-										name="coolerBag14"
-										value="215"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="gps"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										LinQ 14 L Cooler Bag
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.coolerBag14}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="singleHolder"
-										name="singleHolder"
-										value="260"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="gps"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										LinQ Lite Single Holder
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.singleHolder}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="stemwareHolder"
-										name="stemwareHolder"
-										value="56"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="propeller"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										LinQ Lite Stemware Holder
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.stemwareHolder}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="cargoBox10"
-										name="cargoBox10"
-										value="188"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="battery"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										LinQ Modular Cargo Box 10 L
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight  ">
-									${formData.cargoBox10}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="cargoBox20"
-										name="cargoBox20"
-										value="210"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="gps"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										LinQ Modular Cargo Box 20 L
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.cargoBox20}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="cargoBox30"
-										name="cargoBox30"
-										value="230"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="gps"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										LinQ Modular Cargo Box 30 L
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.cargoBox30}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="rodHolder"
-										name="rodHolder"
-										value="39"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="propeller"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										LinQ Rod Holder
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.rodHolder}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="batteryCharger"
-										name="batteryCharger"
-										value="545"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="battery"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										Battery Charger
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight  ">
-									${formData.batteryCharger}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="bowFillerBench"
-										name="bowFillerBench"
-										value="1011"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="gps"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										Bow Filler Bench
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.bowFillerBench}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="portAquaLounger"
-										name="portAquaLounger"
-										value="342"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="gps"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										Port Aqua Lounger
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.portAquaLounger}
-								</p>
-								<div className="flex items-center space-x-2">
-									<input
-										type="checkbox"
-										id="skiTowMirror"
-										name="skiTowMirror"
-										value="516"
-										className="form-checkbox"
-										onChange={handleInputChange}
-									/>
-									<label
-										htmlFor="propeller"
-										className="text-sm  font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-										Ski Tow Mirror
-									</label>
-								</div>
-								<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight">
-									${formData.skiTowMirror}
-								</p>
+							<div className="grid  grid-cols-1">
+								{accessories.map((result, index) => (
+									<div key={index} className='flex justify-between items-center'>
+										<div className="inline-flex items-center">
+											<label className="relative flex items-center rounded-full cursor-pointer" htmlFor={result.name}>
+												<input
+													type="checkbox"
+													name={result.name}
+													value={result.value}
+													className="form-checkbox peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-primary transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-secondary checked:bg-primary checked:before:bg-secondary hover:before:opacity-10"
+													onChange={handleInputChange}
+												/>
+												<span
+													className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+													<svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+														stroke="currentColor" strokeWidth="1">
+														<path fillRule="evenodd"
+															d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+															clipRule="evenodd"></path>
+													</svg>
+												</span>
+											</label>
+											<label
+												htmlFor={result.name}
+												className="ml-3 font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-xl">
+												{result.placeholder}
+											</label>
+										</div>
+										<p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight text-xl">
+											${formData[result.name]}
+										</p>
+									</div>
+								))}
 							</div>
+
 						</AccordionContent>
 					</AccordionItem>
 				</Accordion>
@@ -1420,8 +998,7 @@ export default function EquipManitou() {
 								name="dts"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option >DTS</option>
 								<option value="33105">250xl</option>
 								<option value="33789">250cxl</option>
@@ -1446,8 +1023,7 @@ export default function EquipManitou() {
 								name="verado"
 								onChange={handleInputChange}
 								data-te-select-init
-								className="mt-2 border-input ring-offset-background placeholder:text-muted-foreground focus:ring-ring h-9 w-full items-center justify-between
-                                        border bg-transparent px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50">
+								className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
 								<option>Verado</option>
 								<option value="35476">250xl</option>
 								<option value="36145">250cxl</option>

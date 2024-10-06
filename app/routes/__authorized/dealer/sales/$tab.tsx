@@ -85,7 +85,7 @@ import IndeterminateCheckbox, { fuzzyFilter, fuzzySort, login, getToken, invaria
 import { DataTablePagination } from "~/components/dashboard/calls/pagination";
 import { TextFunction } from '~/components/dashboard/calls/massSms';
 import money from '~/images/favicons/money.svg'
-import ComposeClient from '../features/email/composeClient';
+import ComposeClient from '../../../../components/zRoutes/oldRoutes/composeClient';
 
 export const links: LinksFunction = () => [
     { rel: "stylesheet", href: secondary },
@@ -144,7 +144,7 @@ export default function Mainboard() {
                     </TabsList>
                 </div>
                 {selectedTab === "dashboard" && (
-                    <TabsContent className="w-[98%] mx-auto mt-5" value="dashboard">
+                    <TabsContent className="w-[88%] mx-auto mt-5" value="dashboard">
                         <MainDashbaord
                             user={user}
                         />

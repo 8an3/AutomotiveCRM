@@ -10,7 +10,7 @@ import { Theme, useTheme } from "remix-themes";
 import UserSideBar from '~/components/zRoutes/oldComps/userSideBar';
 import Interruptions from '~/components/shared/interruptions';
 import financeFormSchema from '~/overviewUtils/financeFormSchema';
-import GetData from './dealer/features/email/notifications.client';
+import GetData from '../../components/zRoutes/oldRoutes/notifications.client';
 import SearchFunction from './dealer/search';
 import {
   DropdownMenu,

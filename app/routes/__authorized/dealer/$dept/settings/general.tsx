@@ -61,9 +61,10 @@ import { model } from "~/models";
 import { GetUser } from "~/utils/loader.server";
 import financeFormSchema from "~/overviewUtils/financeFormSchema";
 import { getUserById, updateUser, updateDealerFees, getDealerFeesbyEmail } from '~/utils/user.server'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UploadIcon } from "lucide-react";
 import { toast } from "sonner";
+import GetNotifications from "~/routes/__auth/auth/emailCheckNotifcations";
 
 export async function loader({ request, params }: LoaderArgs) {
   const session = await getSession(request.headers.get("Cookie"));
@@ -78,13 +79,12 @@ export async function loader({ request, params }: LoaderArgs) {
   })
   const userEmail = user?.email
   const comsRecords = await prisma.comm.findMany({ where: { userEmail: user.email, }, });
+
   return json(
     { user, metrics, dealer, comsRecords },
     { headers: createCacheHeaders(request) }
   );
 }
-
-
 
 export async function action({ request }: ActionArgs) {
   const formPayload = Object.fromEntries(await request.formData())
@@ -167,9 +167,21 @@ export async function action({ request }: ActionArgs) {
     })
     return dealer
   }
+  if (intent === 'updatePasswords') {
+    const dealer = await prisma.dealer.update({
+      data: {
+        serviceDiscount: formPayload.serviceDiscount,
+        pacDiscount: formPayload.pacDiscount,
+        salesDiscount: formPayload.salesDiscount,
+      },
+      where: {
+        id: 1
+      }
+    })
+    return dealer
+  }
   return null
 }
-
 
 export default function SettingsGenerral() {
   const { user, dealer, } = useLoaderData()
@@ -187,6 +199,12 @@ export default function SettingsGenerral() {
     { name: "dealerEmailAdmin", value: dealer.dealerEmailAdmin, placeholder: "Admin Email" },
   ];
 
+  const passwords = [
+    { name: "pacDiscount", value: dealer.pacDiscount, placeholder: "PAC Discount" },
+    { name: "salesDiscount", value: dealer.salesDiscount, placeholder: "Sales Discount" },
+    { name: "serviceDiscount", value: dealer.serviceDiscount, placeholder: "Service Discount" },
+
+  ];
 
   const [base64, setBase64] = useState('');
   const [error, setError] = useState('');
@@ -212,8 +230,14 @@ export default function SettingsGenerral() {
 
   const [isFile, setIsfile] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  useEffect(() => {
+    async function GetNoti() {
 
-
+      const notifications = await GetNotifications();
+      console.log("Retrieved notifications:", notifications);
+    }
+    GetNoti()
+  }, []);
 
 
   return (
@@ -232,7 +256,7 @@ export default function SettingsGenerral() {
                 <Input
                   name={fee.name}
                   defaultValue={fee.value}
-                  placeholder={fee.name}
+                  placeholder={fee.placeholder}
                   className='mt-4'
                 />
 
@@ -289,6 +313,37 @@ export default function SettingsGenerral() {
           </Form>
 
         </CardContent>
+      </Card>
+      <Card x-chunk="dashboard-04-chunk-1">
+        <Form method="post" className="">
+          <CardHeader>
+            <CardTitle>Discount passwords</CardTitle>
+            <CardDescription>
+              Used so only certain employees can give a discount.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {passwords.map((fee, index) => (
+              <div className=" " key={index}>
+                <Input
+                  name={fee.name}
+                  defaultValue={fee.value}
+                  placeholder={fee.placeholder}
+                  className='mt-4'
+                />
+
+              </div>
+            ))}
+          </CardContent>
+          <CardFooter className="border-t border-border px-6 py-4">
+            <Button
+              type='submit'
+              name='intent'
+              value='updatePasswords'>
+              Save
+            </Button>
+          </CardFooter>
+        </Form>
       </Card>
     </div>
   )

@@ -1,5 +1,5 @@
 import { json, redirect, type LoaderFunction, type ActionFunction } from '@remix-run/node';
-import { Outlet, useFetcher, useLoaderData, useLocation, NavLink, useSubmit, Form } from '@remix-run/react';
+import { Outlet, useFetcher, useLoaderData, useLocation, NavLink, useSubmit, Form, useNavigate } from '@remix-run/react';
 import { getSession, commitSession, authSessionStorage, destroySession } from "~/sessions/auth-session.server";
 import { prisma } from '~/libs';
 import { Theme, useTheme } from "remix-themes";
@@ -207,7 +207,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 25, left: 25 });
-
+  const navigate = useNavigate()
 
   // Handle keydown events
   const handleKeyDown = (event) => {
@@ -216,7 +216,12 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
 
       setDropdownOpen(true);
     }
+    if (event.key === 'F5') {
+      event.preventDefault();
+      navigate(-1);
+    }
   };
+
 
   // Handle mousemove to track cursor position
   const handleMouseMove = (event) => {
@@ -1897,15 +1902,19 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                       <DropdownMenuShortcut>F2</DropdownMenuShortcut>
                     </DropdownMenuItem>
                     <DropdownMenuItem className='w-[98%] mx-auto rounded-lg hover:bg-accent'>
-                      Global customer search
+                      Open Global customer search
                       <DropdownMenuShortcut>F3</DropdownMenuShortcut>
                     </DropdownMenuItem>
                     <DropdownMenuItem className='w-[98%] mx-auto rounded-lg hover:bg-accent'>
-                      Open dropdown menu
+                      Open dropdown menu at mouse
                       <DropdownMenuShortcut>F4</DropdownMenuShortcut>
                     </DropdownMenuItem>
                     <DropdownMenuItem className='w-[98%] mx-auto rounded-lg hover:bg-accent'>
-                      Interruption reminder
+                      Navigate to last page
+                      <DropdownMenuShortcut>F5</DropdownMenuShortcut>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem className='w-[98%] mx-auto rounded-lg hover:bg-accent'>
+                      Activate interruption reminder
                       <DropdownMenuShortcut>ctrl + i</DropdownMenuShortcut>
                     </DropdownMenuItem>
                   </DropdownMenuSubContent>

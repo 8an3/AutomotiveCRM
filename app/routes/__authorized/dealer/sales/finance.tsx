@@ -83,7 +83,7 @@ import IndeterminateCheckbox, { fuzzyFilter, fuzzySort, login, getToken, invaria
 import { DataTablePagination } from "~/components/dashboard/calls/pagination";
 import { TextFunction } from '~/components/dashboard/calls/massSms';
 import money from '~/images/favicons/money.svg'
-import ComposeClient from '../features/email/composeClient';
+import ComposeClient from '../../../../components/zRoutes/oldRoutes/composeClient';
 import { getSession, commitSession } from '~/sessions/auth-session.server';
 import { GetUser } from "~/utils/loader.server";
 import { json, type ActionFunction, createCookie, type LoaderFunction, redirect, defer } from "@remix-run/node";

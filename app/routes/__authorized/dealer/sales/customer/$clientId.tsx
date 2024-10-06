@@ -110,7 +110,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
   const financeList = await prisma.finance.findMany({
     where: {
       email: clientfile.email
-    }
+    },
   })
   return json({ financeList, clientfile })
 }
@@ -205,7 +205,7 @@ function SidebarNav({ financeList, clientfile }) {
             <Tooltip key={index}>
               <TooltipTrigger asChild>
                 <Link
-                  to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
+                  to={`/dealer/sales/customer/${item.clientfileId}/${item.id}`}
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <Button variant="ghost" className="bg-transparent hover:bg-transparent">
@@ -299,7 +299,7 @@ function SidebarNav({ financeList, clientfile }) {
             <Tooltip key={index}>
               <TooltipTrigger asChild>
                 <Link
-                  to={`/dealer/customer/${item.clientfileId}/${item.financeId}`}
+                  to={`/dealer/sales/customer/${item.clientfileId}/${item.id}`}
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8 "
                 >
                   <Button variant="ghost" className="bg-transparent    hover:bg-transparent">

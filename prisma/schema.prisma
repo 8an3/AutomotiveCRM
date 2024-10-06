@@ -133,6 +133,9 @@ model Dealer {
   userFreight          String?
   userAdmin            String?
   userEmail            String?     @unique
+  serviceDiscount      String?
+  pacDiscount          String?
+  salesDiscount        String?
   DealerLogo           DealerLogo?
 
   users User[]
@@ -411,6 +414,7 @@ model NotificationsUser {
   userEmail    String
   customerName String?
   read         Boolean  @default(false)
+  messageId    String?  @unique
 
   User User @relation(fields: [userEmail], references: [email], onDelete: Cascade)
 

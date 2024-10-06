@@ -36,7 +36,7 @@ import ProvideAppContext, {
 } from "~/components/microsoft/AppContext";
 import { toast } from "sonner";
 import secondary from "~/styles/secondary.css";
-import { SaveDraft, SendEmail } from "./notifications.client";
+import { SaveDraft, SendEmail } from "../../../../../components/zRoutes/oldRoutes/notifications.client";
 import Highlight from "@tiptap/extension-highlight"
 import Text from '@tiptap/extension-text'
 

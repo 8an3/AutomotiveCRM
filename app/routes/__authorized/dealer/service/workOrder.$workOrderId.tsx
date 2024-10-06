@@ -169,7 +169,17 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/components/ui/drawer"
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "~/components/ui/alert-dialog"
 
 export default function Dashboard() {
   const { orderFirst, user, tax, dealerImage, services, techs } = useLoaderData();
@@ -311,8 +321,8 @@ export default function Dashboard() {
   const [fore, setFore] = useState('#000000');
   const [size, setSize] = useState(100);
   const [discount, setDiscount] = useState(false)
-  const [discDollar, setDiscDollar] = useState(parseFloat(order.discDollar) > 0.00 ? parseFloat(order.discDollar) : 0.00)
-  const [discPer, setDiscPer] = useState(parseFloat(order.discPer) > 0.00 ? parseFloat(order.discPer) : 0.00)
+  const [discDollar, setDiscDollar] = useState(orderFirst.discount ? orderFirst.discount : 0.00)
+  const [discPer, setDiscPer] = useState(order.discPer ? parseFloat(order.discPer) : 0.00)
   const [showPrev, setShowPrev] = useState(false)
   const [totalAccessoriesCost, setTotalAccessoriesCost] = useState(0.00);
   const [totalAmountPaid, setTotalAmountPaid] = useState(0.00);
@@ -603,6 +613,12 @@ export default function Dashboard() {
   let inputRef = useRef<HTMLInputElement>(null);
   let buttonRef = useRef<HTMLButtonElement>(null);
   let buttonFetcher = useFetcher();
+
+  const [showDiscount, setShowDiscount] = useState(false)
+  const [showDiscountDialog, setShowDiscountDialog] = useState(false)
+  const [password, setPassword] = useState('')
+  const [showPayments, setShowPayments] = useState(false)
+  const hasAdminPosition = user.positions.some(position => position.position === 'Administrator' || position.position === 'Manager');
 
   return (
     <div>
@@ -1366,7 +1382,7 @@ export default function Dashboard() {
                       Reprint Receipt
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>
+                      onSelect={() => setShowDiscountDialog(true)}>
                       Show Discount
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -1378,15 +1394,24 @@ export default function Dashboard() {
                       Back
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const formData = new FormData();
-                        formData.append("workOrderId", order.workOrderId);
-                        formData.append("intent", 'deleteOrder');
-                        submit(formData, { method: "post", });
-                      }}>
-                      Delete
-                    </DropdownMenuItem>
+                    {hasAdminPosition && (
+                      <div>
+                        <DropdownMenuItem
+                          onSelect={() => {
+                            setShowPayments(true)
+                          }}>Payments</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onSelect={() => {
+                            const formData = new FormData();
+                            formData.append("workOrderId", order.workOrderId);
+                            formData.append("intent", 'deleteOrder');
+                            submit(formData, { method: "post", });
+                          }}>
+                          Delete
+                        </DropdownMenuItem>
+
+                      </div>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -1977,6 +2002,7 @@ export default function Dashboard() {
 
 
                   </li>
+
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Hourly Rate</span>
                     <span>${tax.userLabour} / hr</span>
@@ -1989,14 +2015,62 @@ export default function Dashboard() {
                     <span className="text-muted-foreground">Parts Subtotal</span>
                     <span>${partsSubTotal}</span>
                   </li>
+                  <p className='text-center'> {showDiscount}</p>
+
+                  {showDiscount === true && (
+                    <ul className="grid gap-3">
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Discount $</span>
+                        <span>
+                          <Input
+                            className='w-[100px] text-right'
+                            type='float'
+                            defaultValue={discDollar}
+                            onChange={(e) => {
+                              setDiscDollar(Number(e.currentTarget.value))
+                              const formData = new FormData();
+                              formData.append("discDollar", e.currentTarget.value);
+                              formData.append("intent", 'updateDiscount');
+                              formData.append("accOrderId", order.workOrderId);
+                              console.log(formData, 'formData');
+                              fetcher.submit(formData, { method: "post" });
+                            }} />
+                        </span>
+                      </li>
+                      <li className="flex items-center justify-between">
+                        <span className="text-muted-foreground">Discount %</span>
+                        <span>
+                          <Input
+                            className='w-[100px]  text-right'
+                            type='number'
+                            defaultValue={discPer}
+                            onChange={(e) => {
+                              setDiscPer(Number(e.currentTarget.value))
+                              const formData = new FormData();
+                              formData.append("discPer", e.currentTarget.value);
+                              formData.append("intent", 'updateDiscPerc');
+                              formData.append("accOrderId", order.workOrderId);
+                              console.log(formData, 'formData');
+                              fetcher.submit(formData, { method: "post" });
+                            }} />
+                        </span>
+                      </li>
+                    </ul>
+                  )}
                   <li className="flex items-center justify-between">
                     <span className="text-muted-foreground">Subtotal</span>
                     <span>${totalPreTax}</span>
                   </li>
-                  {discount && (
+                  {discDollar > 0.00 && (
                     <li className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Discount</span>
-                      <span>{discDollar > 0.00 ? <p>${discDollar}</p> : <p>{discPer} %</p>}</span>
+                      <span className="text-muted-foreground">Discount $</span>
+                      <span>${discDollar}</span>
+                    </li>
+                  )}
+                  {discPer > 0.00 && (
+                    <li className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Discount %</span>
+                      <span>{discPer}%</span>
                     </li>
                   )}
                   <li className="flex items-center justify-between">
@@ -2241,6 +2315,89 @@ export default function Dashboard() {
           </Card>
         </div>
       </main>
+      {showPayments && (
+        <AlertDialog open={showPayments} onOpenChange={setShowPayments}>
+          <AlertDialogContent className='border-border'>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Payments</AlertDialogTitle>
+              <AlertDialogDescription>
+                <div className="grid gap-3">
+                  <ul className="grid gap-3">
+                    {order.Payments && order.Payments.map((result, index) => (
+                      <li key={index} className="flex items-center justify-between group" key={index} >
+                        <div className='flex items-center' >
+                          <span className="text-muted-foreground">{result.paymentType}</span>
+                          <fetcher.Form method="post" ref={formRef} className=''>
+                            <input type="hidden" name="paymentId" value={result.id} />
+                            <input type='hidden' name='workOrderId' value={order.workOrderId} />
+                            <Button
+                              size="icon"
+                              variant="outline"
+                              name="intent" value='deletePayment'
+                              className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
+                              type='submit'
+                            >
+                              <X className="h-4 w-4 text-foreground" />
+                            </Button>
+                          </fetcher.Form>
+                        </div>
+                        <div className='items-center flex'><p>$</p>
+                          <EditableText
+                            value={result.amountPaid}
+                            fieldName="amountPaid"
+                            inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
+                            buttonClassName="text-center py-1 px-2 text-foreground"
+                            buttonLabel={`Edit amount paid`}
+                            inputLabel={`Edit amount paid`}
+                          >
+                            <input type="hidden" name="workOrderId" value={order.workOrderId} />
+                            <input type="hidden" name="intent" value='updatePayments' />
+                            <input type="hidden" name="id" value={result.id} />
+                          </EditableText>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Close</AlertDialogCancel>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
+      {showDiscountDialog && (
+        <AlertDialog open={showDiscountDialog} onOpenChange={setShowDiscountDialog}>
+          <AlertDialogContent className='border-border'>
+            <AlertDialogHeader>
+              <AlertDialogTitle>PAC Discount Password</AlertDialogTitle>
+              <AlertDialogDescription>
+                <Input
+                  autoFocus
+                  type='password'
+                  name='pacPassword'
+                  onChange={(e) => {
+                    setPassword(e.currentTarget.value)
+                  }} />
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => {
+                  console.log(tax.serviceDiscount, password, 'passwords')
+
+                  if (tax.pacDiscount === password) {
+                    setShowDiscount(true)
+                  }
+                }} >
+                Submit
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div>
   )
 }
@@ -2683,6 +2840,7 @@ export async function loader({ request, params }: LoaderFunction) {
     select: {
       userTax: true,
       userLabour: true,
+      serviceDiscount: true,
     },
   });
   const dealerImage = await prisma.dealerLogo.findUnique({ where: { id: 1 } })
@@ -2727,16 +2885,23 @@ export async function action({ request, params }: ActionFunction) {
 
     return json({ update });
   }
-  if (intent === "updatediscDollar") {
-    const update = await prisma.workOrder.update({
-      where: { workOrderId: Number(formPayload.workOrderId) },
+  if (intent === 'updateDiscount') {
+    const payment = await prisma.workOrder.update({
+      where: { id: formPayload.workOrderId },
       data: {
-        discDollar: parseFloat(discDollar) > 0.00 ? parseFloat(discDollar) : 0.00,
-        discPer: parseFloat(discPer) > 0.00 ? parseFloat(discPer) : 0.00,
+        discount: parseFloat(formPayload.discDollar),
       },
     });
-
-    return json({ update });
+    return payment;
+  }
+  if (intent === 'updateDiscPerc') {
+    const payment = await prisma.workOrder.update({
+      where: { id: formPayload.workOrderId },
+      data: {
+        discPer: parseFloat(formPayload.discPer),
+      },
+    });
+    return payment;
   }
 
   if (intent === "deleteAppt") {
@@ -3292,15 +3457,15 @@ export async function action({ request, params }: ActionFunction) {
     });
     if (formPayload.remaining === '0') {
       await prisma.workOrder.update({
-        where: { workOrderId: formPayload.workOrderId },
+        where: { workOrderId: Number(formPayload.workOrderId), },
         data: {
           total: parseFloat(formPayload.total),
           paid: 'Yes',
         },
       });
     } else {
-      await prisma.accOrder.update({
-        where: { id: formPayload.accOrderId },
+      await prisma.workOrder.update({
+        where: { workOrderId: Number(formPayload.workOrderId), },
         data: {
           total: parseFloat(formPayload.total),
         },
@@ -3474,11 +3639,24 @@ export async function action({ request, params }: ActionFunction) {
     });
     return json({ sendtoacc })
   }
+  if (intent === 'deletePayment') {
+    const payment = await prisma.payment.delete({ where: { id: formPayload.paymentId } });
+    return payment;
+  }
+  if (intent === 'updatePayments') {
+    const payment = await prisma.payment.update({
+      where: { id: formPayload.id },
+      data: {
+        amountPaid: parseFloat(formPayload.amountPaid),
+      }
+    });
+    return payment;
+  }
 }
 
 export const meta = () => {
   return [
-    { title: 'Service Center - Dealer Sales Assistant' },
+    { title: 'Work Order || Service Center || Dealer Sales Assistant' },
     {
       property: "og:title",
       content: "Your very own assistant!",

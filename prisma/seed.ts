@@ -6642,7 +6642,18 @@ export async function Board() {
     { board: "dev", column: "ROLES", item: "forgot driver, need to add delivery schedule, add it as a resource like the techs need to give the ability to set deliveries to everyoneyt" },
     { board: "dev", column: "ISSUE", item: "with production demo site, problem started after you manually had to update the files from remote because github action was not working" },
     { board: "dev", column: "ISSUE", item: "redesign index" },
+    { board: "dev", column: "ISSUE", item: "redesign index" },
+    { board: "dev", column: "IDEAS", item: "sort by conversationid if sent from the unit file it will always have the extended value this way it will always be able to pull the replies from the customer as well by matching the conversationid" },
+    { board: "dev", column: "DONE NEEDS TESTING", item: "use same system as notifications to check on new mail - USE SWR" },
+    { board: "dev", column: "DONE NEEDS TESTING", item: "webhook for incoming emails, save notifiation and messeages" },
+
     { board: "dev", column: "USER", item: "documents  - ok - need to add legend so peopole can upload the document themselves" },
+    { board: "dev", column: "IDEAS", item: "sales / cust / profile put in email client / text client so if customer emails in without reply to a finance file email atleast you stil get the email and keep it looged to the customer" },
+
+    { board: "dev", column: "IDEAS", item: "client also needs to beon dashboard,finance file and client file" },
+    { board: "dev", column: "IDEAS", item: "passwords for discounts for each dept" },
+    { board: "dev", column: "IDEAS", item: "email create custom values in microsft to input client and finance ids to easily bring them up where you need to, use comms records for the quick look up where it may not be possible to use the microsoft libraries" },
+    { board: "dev", column: "IDEAS", item: "put financeid in extended properties for emails so you can pull them for the finance files" },
     { board: "dev", column: "IDEAS", item: "import / export allow to downlaod a template example so people can see the columns needed for that dataset" },
 
     { board: "dev", column: "DONE NEEDS TESTING", item: "email - somehow auth is now broken? havent touched in months but now just doesnt work... convert to .client" },
@@ -6996,17 +7007,12 @@ export async function Board() {
   const getDoneNow = [
     { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
 
-    { board: "dev", column: "IDEAS", item: "sales / cust / profile put in email client / text client so if customer emails in without reply to a finance file email atleast you stil get the email and keep it looged to the customer" },
     { board: "dev", column: "IDEAS", item: "admin dashboard - when going over clients and other objects ie for clients open dialog on left have nave menu with a first level of items such as finance, work order, acc order and the when you click on it you can then click on the tabs for each layer on that data segment" },
-    { board: "dev", column: "IDEAS", item: "email create custom values in microsft to input client and finance ids to easily bring them up where you need to, use comms records for the quick look up where it may not be possible to use the microsoft libraries" },
-    { board: "dev", column: "IDEAS", item: "client also needs to beon dashboard,finance file and client file" },
-
+    { board: "dev", column: "IDEAS", item: "need to save emails so others can see the corespoandance since you can only see your accounts emaisl. in auth / checkemailnotifications" },
 
     { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH SMS AND EMAIL TESTING BEFORE RELEASE -----" },
 
     { board: "dev", column: "DONE NEEDS TESTING", item: "sms" },
-    { board: "dev", column: "DONE NEEDS TESTING", item: "webhook for incoming emails, save notifiation and messeages" },
-    { board: "dev", column: "DONE NEEDS TESTING", item: "use same system as notifications to check on new mail - USE SWR" },
 
     { board: "dev", column: "ISSUE", item: "----- FINAL TESTING ON PROD SITE -----" },
     { board: "dev", column: "ROLES", item: "service manager" },
@@ -7051,8 +7057,6 @@ export async function Board() {
 
     { board: "dev", column: "SERVICE", item: "----- SERVICE -----" },
     { board: "dev", column: "SERVICE", item: "dealer/service/technician - need to cahnge techs email for data fetching when testing is dsone" },
-
-
 
 
 

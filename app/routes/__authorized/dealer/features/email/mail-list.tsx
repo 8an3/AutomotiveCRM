@@ -13,11 +13,11 @@ interface MailListProps {
   setMail: any
   mail: any
   ReadMessage: any
+  user: any
 }
 
-export function MailList({ emails, setMail, mail, ReadMessage }: MailListProps) {
+export function MailList({ emails, setMail, mail, ReadMessage, user }: MailListProps) {
   // ----- sales card model and brand ---- //
-
   /// console.log('mail list before return', emails)
   // --------- the sacred timeline -------//
   const options2 = {
@@ -31,7 +31,7 @@ export function MailList({ emails, setMail, mail, ReadMessage }: MailListProps) 
   };
   //console.log(emails, 'in maillist')
   return (
-    <ScrollArea className="h-screen">
+    <div className="h-auto max-h-[700px]  overflow-y-auto">
       <div className="flex flex-col gap-2 p-4 pt-0">
         {emails && Array.isArray(emails) && emails.map((email: any, index: any) => (
           email && email.id && (
@@ -70,21 +70,26 @@ export function MailList({ emails, setMail, mail, ReadMessage }: MailListProps) 
               </div>
               {email && email.flag && email.flag.length > 0 ? (
                 <div className="flex items-center gap-2">
-                  {email.flag.status.map((label) => (
+                  {email.flag.map((label) => (
                     <Badge key={label} variant={getBadgeVariantFromLabel(label)}>
-                      {label}
+                      {label.flagStatus}
                     </Badge>
                   ))}
                 </div>
               ) : null}
+              {user && user.email === email.sender?.emailAddress.address && (
+                <Badge variant="outline" className="mt-1">
+                  Sent
+                </Badge>
+              )}
             </button>
           )
         ))}
       </div>
-    </ScrollArea>
+    </div>
   )
 }
-
+/**   */
 
 function getBadgeVariantFromLabel(
   label: string
@@ -94,6 +99,9 @@ function getBadgeVariantFromLabel(
   }
 
   if (["personal"].includes(label.toLowerCase())) {
+    return "outline"
+  }
+  if (["sent"].includes(label.toLowerCase())) {
     return "outline"
   }
 

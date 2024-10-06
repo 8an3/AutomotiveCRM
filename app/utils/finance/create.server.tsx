@@ -185,15 +185,15 @@ export async function createUCDAForm({
     throw error;
   }
 }
-export async function createBMWOptions({ ...data }) {
+export async function createBMWOptions({ finance }) {
   try {
-    const finance = await prisma.bmwMotoOptions.create({
+    const finance2 = await prisma.bmwMotoOptions.create({
       data: {
-        ...data,
+        financeId: finance.id,
       },
     });
     //console.log('finance created successfully')
-    return finance;
+    return finance2;
   } catch (error) {
     console.error("Error creating finance:", error);
     throw error;

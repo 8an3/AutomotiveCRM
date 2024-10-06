@@ -90,10 +90,17 @@ export default function NotificationSystem(interruptionsData, getEmails) {
   const { data: leadData, error: leadError, isLoading: leadLoading, isValidating } = useSWR(
     `http://localhost:3000/dealer/systems/notifications/newLead`,
     dataFetcher,
-    { refreshInterval: 180000 }
+    { refreshInterval: 300000 }
+  );
+  const { data: emailData, error: emailError } = useSWR(`http://localhost:3000/auth/emailCheckNotifcations`, dataFetcher,
+    { refreshInterval: 300000 }
   );
 
-  const { data: updateData, error: updateError, isLoading: updateLoading } = useSWR('http://localhost:3000/dealer/systems/notifications/updates', dataFetcher, { refreshInterval: 180000 });
+  useEffect(() => {
+    console.log(emailData, 'emailData')
+  }, [emailData]);
+
+  const { data: updateData, error: updateError, isLoading: updateLoading } = useSWR('http://localhost:3000/dealer/systems/notifications/updates', dataFetcher, { refreshInterval: 300000 });
   //const { data: emailData } = useSWR('http://localhost:3000/dealer/email/server', dataFetcher, { refreshInterval: 180000 });
   // 60,000 ms is one min
   useEffect(() => {

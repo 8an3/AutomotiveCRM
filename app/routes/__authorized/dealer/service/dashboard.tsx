@@ -888,7 +888,7 @@ export default function Dashboard() {
     return `${year}-${month}`;
   };
 
-  const now = new Date(); // Current date and time
+  const now = new Date();
   const formattedDate = formatDate(now);
   function getToday() {
     const today = new Date();
@@ -908,18 +908,18 @@ export default function Dashboard() {
   }
   function getLastDayOfPreviousMonth() {
     const date = new Date();
-    date.setDate(1); // sets the day to the last day of the previous month
+    date.setDate(1);
     return formatMonth(date);
   }
   function getFirstDayOfCurrentMonth() {
     const date = new Date();
-    date.setDate(1); // sets the day to the first day of the current month
+    date.setDate(1);
     return formatDate(date);
   }
   function getFirstDayOfTwoMonthsAgo() {
     const date = new Date();
     date.setMonth(date.getMonth() - 2);
-    date.setDate(1); // sets the day to the first day of the month two months ago
+    date.setDate(1);
     return formatMonth(date);
   }
   function getYear() {
@@ -1050,7 +1050,6 @@ export default function Dashboard() {
               <TabsTrigger value="week">W / O</TabsTrigger>
               <TabsTrigger value="Services">Services</TabsTrigger>
             </TabsList>
-
             <TabsContent value="week">
               <div className="w-[95%] mt-[5px]">
 
@@ -1281,7 +1280,6 @@ export default function Dashboard() {
 
                 </div>
               </div>
-
             </TabsContent>
             <TabsContent value="Services">
               <Card>

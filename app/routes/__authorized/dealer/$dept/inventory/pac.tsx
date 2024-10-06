@@ -1,3 +1,4 @@
+import SearchCustomers from "../../accessories/products";
 
 
 export const links: LinksFunction = () => [
@@ -19,3 +20,11 @@ export const meta = () => {
     },
   ];
 };
+
+export default function PAC() {
+  return (
+    <>
+      <SearchCustomers />
+    </>
+  )
+}

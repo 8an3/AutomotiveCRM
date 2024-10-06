@@ -68,7 +68,7 @@ import {
 import { useMsal } from "@azure/msal-react";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { toast } from "sonner";
-import { Form, useFetcher, useNavigate, useNavigation } from "@remix-run/react";
+import { Form, useFetcher, useLoaderData, useNavigate, useNavigation } from "@remix-run/react";
 import { Forward, User, Reply } from "iconoir-react";
 import {
   FaReply,
@@ -127,7 +127,7 @@ import {
 } from "~/components/ui/tooltip";
 import IndeterminateCheckbox, { fuzzyFilter, fuzzySort, getToken, invariant, Loading, checkForMobileDevice, TableMeta, Filter, DebouncedInput, defaultColumn } from '~/components/shared/shared'
 import secondary from "~/styles/secondary.css";
-import { type LinksFunction } from "@remix-run/node";
+import { json, type LinksFunction } from "@remix-run/node";
 import useSWR, { SWRConfig, mutate, useSWRConfig } from 'swr';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "~/components/ui/resizable";
 import { Nav } from "./nav";
@@ -136,8 +136,12 @@ import { AlertCircle, Archive, ArchiveX, File, Inbox, MessagesSquare, Search, Se
 import { MailList } from "./mail-list";
 import { MailDisplay } from "./mail-display";
 import { AccountInfo, InteractionRequiredAuthError, InteractionStatus } from "@azure/msal-browser";
-import { callMsGraph } from "~/routes/__authorized/dealer/features/email/MsGraphApiCall";
 import { loginRequest } from "~/components/microsoft/Config";
+import { ComposeClientTextEditor } from "~/routes/__auth/auth/textEditor";
+import { getSession } from "~/sessions/auth-session.server";
+import { prisma } from "~/libs";
+import { GetUser } from "~/utils/loader.server";
+
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: secondary },
@@ -154,14 +158,23 @@ export const links: LinksFunction = () => [
     }
   }, [data]); */
 
+export async function loader({ params, request }: DataFunctionArgs) {
+  const session2 = await getSession(request.headers.get("Cookie"));
+  const email = session2.get("email")
+  const user = await GetUser(email)
 
+  return json({ user })
+
+}
 
 export default function NewCLient() {
+  const { user } = useLoaderData()
+
   const app = useAppContext();
   const { instance, accounts, inProgress } = useMsal();
   let search = useFetcher();
   let ref = useRef();
-  const user = getUser(app.authProvider!);
+  // const user = getUser(app.authProvider!);
 
   const [emails, setEmails] = useState();
   const [getCountOf, setGetCountOf] = useState('');
@@ -175,26 +188,60 @@ export default function NewCLient() {
   const [attachment, setAttachment] = useState()
   const navigate = useNavigate()
   console.log(folders, 'folgers')
+  const [key, setKey] = useState()
 
 
   useEffect(() => {
-    // fetch emails
+    async function Signinsilent() {
+      const response = await instance.acquireTokenSilent({
+        ...loginRequest,
+        account: account
+      });
+      const accessToken = response.accessToken;
+      setKey(accessToken)
+      console.log(accessToken)
+      if (!account) {
+        throw Error("No active account! Verify a user has been signed in and setActiveAccount has been called.");
+      }
+    }
+    Signinsilent()
+
     const fetchEmails = async () => {
       try {
         const response = await testInbox(app.authProvider!);
-        setEmails(response.value);
+        setEmails(response.value, 'emails1');
         console.log('emails succesfull fetched,', response.value)
-
       } catch (error) {
         console.error("Error fetching emails:", error);
+        async function GetEmail() {
+          try {
+            const endpoints = `https://graph.microsoft.com/v1.0/me/messages"`
 
-        try {
-          const response = await testInbox(app.authProvider!);
-          setEmails(response.value);
+            const fetchMessages = async (url: string) => {
+              const response = await fetch(endpoints, {
+                method: 'GET',
+                headers: {
+                  'Authorization': `Bearer ${key}`,
+                  'Content-Type': 'application/json',
+                },
+              });
 
-        } catch (error) {
-          console.error("Error fetching emails 222:", error);
+              if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+
+              return response.json();
+            };
+            const messages = await fetchMessages(endpoints)
+            setEmails(messages.value);
+
+            return messages;
+          } catch (error) {
+            console.error('Error fetching messages:', error);
+            throw error;
+          }
         }
+        GetEmail()
       }
     };
     fetchEmails()
@@ -206,36 +253,48 @@ export default function NewCLient() {
     fetchFolders();
   }, []);
 
-  async function SetNewEmails() {
+  async function SetNewEmails(label) {
     if (label === "Deleted Items") {
       const response = await getList(app.authProvider!, "deleteditems");
-      return response.value
+      console.log('response', response)
+      setEmails(response.value);
     }
     if (label === "Junk Email") {
       const response = await getList(app.authProvider!, "junkemail");
-      return response.value
+      console.log('response', response)
+      setEmails(response.value);
     }
     if (label === "Sent Items") {
       const response = await getList(app.authProvider!, "sentitems");
-      return response.value
+      console.log('response', response)
+      setEmails(response.value);
     }
     if (label === "Conversation History") {
       const response = await getList(app.authProvider!, "conversationhistory");
-      return response.value
+      console.log('response', response)
+      setEmails(response.value);
     }
     if (label === "Drafts") {
       const response = await getList(app.authProvider!, 'drafts');
-      return response.value
+      console.log('response', response)
+      setEmails(response.value);
     }
     if (label === "Archive") {
       const response = await getList(app.authProvider!, "archive");
-      return response.value
+      console.log('response', response)
+      setEmails(response.value);
+    }
+    if (label === 'Inbox') {
+      const response = await testInbox(app.authProvider!);
+      console.log('response', response)
+      setEmails(response.value);
     }
   }
   async function GetEmailByFolder(labelName) {
     setLabel(labelName);
-    const data = await SetNewEmails();
-    setEmails(data);
+    const data = await SetNewEmails(labelName);
+    return data
+    //setEmails(data);
   }
 
   useEffect(() => {
@@ -421,47 +480,117 @@ export default function NewCLient() {
     },
   ];
 
+  const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
+
+  const MyIFrameComponent = () => {
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+      const handleHeightMessage = (event: MessageEvent) => {
+        if (
+          event.data &&
+          event.data.type === "iframeHeight" &&
+          event.data.height
+        ) {
+          setIsLoading(false);
+          if (iFrameRef.current) {
+            iFrameRef.current.style.height = `${event.data.height}px`;
+          }
+        }
+      };
+      const currentHost =
+        typeof window !== "undefined" ? window.location.host : null;
+      console.log(currentHost, 'currentHost')
+      if (iFrameRef.current) {
+        if (currentHost === "localhost:3000") {
+          iFrameRef.current.src = "http://localhost:3000/dealer/features/email/composeClient";
+        }
+        if (currentHost === "dealersalesassistant.ca") {
+          iFrameRef.current.src =
+            "https://www.dealersalesassistant.ca/dealer/features/email/composeClient";
+        }
+        window.addEventListener("message", handleHeightMessage);
+
+        /**    const cust = {
+              email: data.email,
+              name: data.name,
+              financeId: data.financeId,
+            };
+            const sendData = { cust, user }; */
+
+        // Add load event listener to ensure iframe is loaded
+        //   const onLoad = () => {
+        //    iFrameRef.current.contentWindow.postMessage(sendData, '*');
+        // };
+        //   iFrameRef.current.addEventListener('load', onLoad);
+
+        return () => {
+          window.removeEventListener("message", handleHeightMessage);
+          //   iFrameRef.current?.removeEventListener('load', onLoad);
+        };
+      }
+    }, []);
+
+    return (
+      <>
+        <div className="size-full ">
+          <iframe
+            ref={iFrameRef}
+            title="my-iframe"
+            width="100%"
+            className=" border-none"
+            style={{
+              minHeight: "250px"
+            }}
+          />
+        </div>
+      </>
+    );
+  };
+
+  const [compose, setCompose] = useState(false)
   return (
     <>
       <div className='mt-10 m-5 border border-border rounded-md'>
-        <TooltipProvider delayDuration={0}>
-          <ResizablePanelGroup
-            direction="horizontal"
-            onLayout={(sizes: number[]) => { }}
-            className="h-full max-h-[800px] items-stretch"
-          >
-            <ResizablePanel
-              defaultSize={defaultLayout[0]}
-              collapsedSize={navCollapsedSize}
-              collapsible={true}
-              minSize={15}
-              maxSize={20}
-              onCollapse={() => setIsCollapsed(true)}
-              onResize={() => setIsCollapsed(false)}
-              className={cn(isCollapsed && "min-w-[50px] transition-all duration-300 ease-in-out")}
+        <Tabs defaultValue="all">
+
+          <TooltipProvider delayDuration={0}>
+            <ResizablePanelGroup
+              direction="horizontal"
+              onLayout={(sizes: number[]) => { }}
+              className="h-full max-h-[800px] items-stretch"
             >
-              <Separator className='mt-[39px]' />
-              <Nav
-                isCollapsed={isCollapsed}
-                links={primaryLinks}
-                label={label}
-                setGetCountOf={setGetCountOf}
-                GetEmailByFolder={GetEmailByFolder} />
-              <Separator />
-              <Nav
-                isCollapsed={isCollapsed}
-                links={secondaryLinks2}
-                label={label}
-                GetEmailByFolder={GetEmailByFolder} />
-            </ResizablePanel>
-            <ResizableHandle />
-            <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
-              <Tabs defaultValue="all">
+              <ResizablePanel
+                defaultSize={defaultLayout[0]}
+                collapsedSize={navCollapsedSize}
+                collapsible={true}
+                minSize={15}
+                maxSize={20}
+                onCollapse={() => setIsCollapsed(true)}
+                onResize={() => setIsCollapsed(false)}
+                className={cn(isCollapsed && "min-w-[50px] transition-all duration-300 ease-in-out")}
+              >
+                <Separator className='mt-[39px]' />
+                <Nav
+                  isCollapsed={isCollapsed}
+                  links={primaryLinks}
+                  label={label}
+                  setGetCountOf={setGetCountOf}
+                  GetEmailByFolder={GetEmailByFolder} />
+                <Separator />
+                <Nav
+                  isCollapsed={isCollapsed}
+                  links={secondaryLinks2}
+                  label={label}
+                  GetEmailByFolder={GetEmailByFolder} />
+              </ResizablePanel>
+              <ResizableHandle />
+              <ResizablePanel defaultSize={defaultLayout[1]} minSize={30}>
                 <div className="flex items-center px-4 py-2">
                   <h1 className="text-xl font-bold">{label}</h1>
                   <TabsList className="ml-auto">
-                    <TabsTrigger value="all" className="text-zinc-600 dark:text-zinc-200">All mail</TabsTrigger>
-                    <TabsTrigger value="unread" className="text-zinc-600 dark:text-zinc-200">Unread</TabsTrigger>
+                    <TabsTrigger value="all" onClick={() => { setCompose(false) }} className="text-zinc-600 dark:text-zinc-200">All mail</TabsTrigger>
+                    <TabsTrigger value="unread" onClick={() => { setCompose(false) }} className="text-zinc-600 dark:text-zinc-200">Unread</TabsTrigger>
+                    <TabsTrigger value="compose" onClick={() => { setCompose(true) }} className="text-zinc-600 dark:text-zinc-200">Compose</TabsTrigger>
                   </TabsList>
                 </div>
                 <Separator />
@@ -501,7 +630,8 @@ export default function NewCLient() {
                       emails={emails}
                       ReadMessage={ReadMessage}
                       setMail={setMail}
-                      mail={mail} />
+                      mail={mail}
+                      user={user} />
                   )}
                 </TabsContent>
                 <TabsContent value="unread" className="m-0">
@@ -512,26 +642,62 @@ export default function NewCLient() {
                       emails={emails?.filter(item => !item.isRead)}
                       setMail={setMail}
                       ReadMessage={ReadMessage}
-                      mail={mail} />
+                      mail={mail}
+                      user={user} />
                   )}
                 </TabsContent>
-              </Tabs>
-            </ResizablePanel>
-            <ResizableHandle />
-            <ResizablePanel defaultSize={defaultLayout[2]} minSize={30}>
-              <MailDisplay
-                mail={mail}
-                app={app}
-                handleDeleteClick={handleDeleteClick}
-                handlesetToUnread={handlesetToUnread}
-                setFolder={setFolder}
-                attachment={attachment}
-                user={user}
-              />
-            </ResizablePanel>
-          </ResizablePanelGroup>
-        </TooltipProvider>
+              </ResizablePanel>
+              <ResizableHandle />
+              <ResizablePanel defaultSize={defaultLayout[2]} minSize={30}>
+                {compose ?
+                  (<>
+                    <ComposeClientTextEditor
+                      to={''}
+                      app={app}
+                      user={user}
+                      customer={''}
+                      content=''
+                    />
+                  </>) : (<>
+                    <MailDisplay
+                      mail={mail}
+                      app={app}
+                      handleDeleteClick={handleDeleteClick}
+                      handlesetToUnread={handlesetToUnread}
+                      setFolder={setFolder}
+                      attachment={attachment}
+                      user={user}
+                    />
+                  </>)}
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </TooltipProvider>
+        </Tabs>
+
       </div>
     </>
   )
+}
+
+export const action: ActionFunction = async ({ req, request, params }) => {
+  const formPayload = Object.fromEntries(await request.formData());
+  if (formPayload.intent === 'saveComms') {
+    const clientfile = await prisma.clientfile.findUnique({
+      where: { email: formPayload.to }
+    })
+    const comms = await prisma.comm.create({
+      data: {
+        userEmail: formPayload.userEmail,
+        type: 'Email',
+        body: formPayload.body,
+        subject: formPayload.subject,
+        userName: formPayload.userName,
+        direction: 'Incoming',
+        result: 'Reached',
+        financeId: formPayload.financeId ? formPayload.financeId : null,
+        ClientfileId: !formPayload.financeId ? clientfile.id : null
+      }
+    })
+    return comms
+  }
 }

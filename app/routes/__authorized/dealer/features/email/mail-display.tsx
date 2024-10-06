@@ -55,7 +55,7 @@ import {
 } from "~/components/ui/tooltip"
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { ScrollArea } from "~/components"
-import { EmailClientTextEditor } from "./textEditor"
+import { EmailClientTextEditor } from "~/routes/__auth/auth/textEditor"
 import {
   deleteMessage,
   getDrafts,
@@ -340,14 +340,14 @@ export function MailDisplay({ mail, app, handleDeleteClick, handlesetToUnread, s
             direction="vertical"
             className="min-h-[65vh]  border border-border "
           >
-            <ResizablePanel defaultSize={80}>
-              <ScrollArea className="h-[65vh]">
+            <ResizablePanel defaultSize={75}>
+              <ScrollArea className="h-[95%]">
 
                 <div className="flex-1 swhitespace-pre-wrap p-4 text-sm " dangerouslySetInnerHTML={{ __html: mail.body.content }} />
               </ScrollArea>
             </ResizablePanel>
             <ResizableHandle />
-            <ResizablePanel defaultSize={20}>
+            <ResizablePanel defaultSize={25}>
               <div className="p-4">
                 <EmailClientTextEditor
                   to={mail.from?.emailAddress.address}

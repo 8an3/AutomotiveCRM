@@ -154,6 +154,518 @@ export function EquipBMW() {
         }
         setBmwData((prevData) => ({ ...prevData, [name]: newValue }))
     }
+    const modelColors = {
+        f750gs: [
+            { value: '1', placeholder: 'Light White' },
+            { value: '285', placeholder: 'White / Blue / red' },
+            { value: '390', placeholder: 'Black Storm Metallic' },
+        ],
+        f850gs: [
+            { value: '1', placeholder: 'Racing Red' },
+            { value: '810', placeholder: 'Gravity Blue' },
+            { value: '390', placeholder: 'Black Storm Metallic' },
+        ],
+        m1000r: [
+            { value: '1', placeholder: 'Light White / M Motorsport' },
+            { value: '1', placeholder: 'Black Storm Metallic / M Motorsport' },
+        ],
+        m1000rr: [
+            { value: '111', placeholder: 'test' },
+        ],
+        s1000rr: [
+            { value: '111', placeholder: 'test' },
+        ],
+        f850gsa: [
+            { value: '111', placeholder: 'test' },
+        ],
+        r1250gs: [
+            { value: '111', placeholder: 'test' },
+        ],
+        r1250gsa: [
+            { value: '111', placeholder: 'test' },
+        ],
+        f900xr: [
+            { value: '111', placeholder: 'test' },
+        ],
+        s1000xr: [
+            { value: '111', placeholder: 'test' },
+        ],
+        g310gs: [
+            { value: '111', placeholder: 'test' },
+        ],
+        g310r: [
+            { value: '111', placeholder: 'test' },
+        ],
+        r1250rs: [
+            { value: '111', placeholder: 'test' },
+        ],
+        r1250rt: [
+            { value: '111', placeholder: 'test' },
+        ],
+        k1600b: [
+            { value: '111', placeholder: 'test' },
+        ],
+        k1600ga: [
+            { value: '111', placeholder: 'test' },
+        ],
+        k1600gt: [
+            { value: '111', placeholder: 'test' },
+        ],
+        k1600gtl: [
+            { value: '111', placeholder: 'test' },
+        ],
+        r1250r: [
+            { value: '111', placeholder: 'test' },
+        ],
+        s1000r: [
+            { value: '111', placeholder: 'test' },
+        ],
+        f900r: [
+            { value: '111', placeholder: 'test' },
+        ],
+        r18: [
+            { value: '111', placeholder: 'test' },
+        ],
+        r18classic: [
+            { value: '111', placeholder: 'test' },
+        ],
+        r18b: [
+            { value: '111', placeholder: 'test' },
+        ],
+        r18t: [
+            { value: '111', placeholder: 'test' },
+        ],
+        r9t: [
+            { value: '111', placeholder: 'test' },
+        ],
+        r9tp: [
+            { value: '111', placeholder: 'test' },
+        ],
+        r9ts: [
+            { value: '111', placeholder: 'test' },
+        ],
+        r9tu: [
+            { value: '111', placeholder: 'test' },
+        ],
+
+    }
+    const modelStandard = {
+        f750gs: [
+            { name: 'Ride Modes' },
+            { name: 'Heated Grips' },
+            { name: 'USB Charging Socket' },
+            { name: 'LED lighting' },
+        ],
+        f850gs: [
+            { name: 'Ride Modes' },
+            { name: 'Heated Grips' },
+            { name: 'USB Charging Socket' },
+            { name: 'LED lighting' },
+            { name: 'Connectivity' },
+            { name: 'Hand Protectors' },
+            { name: 'Power Socket' },
+            { name: 'Gear Shift Assist Pro' },
+        ],
+        m1000r: [
+            { name: 'Ride Modes' },
+            { name: 'Heated Grips' },
+            { name: 'USB Charging Socket' },
+            { name: 'LED lighting' },
+            { name: 'Connectivity' },
+            { name: 'High Windshield' },
+            { name: 'Titanium Exhaust' },
+            { name: 'M Lightweight Battery' },
+            { name: 'M Chassis Kit' },
+            { name: 'M Winglets' },
+            { name: 'Forged Wheels' },
+            { name: 'M Brakes' },
+            { name: 'Cruise Control' },
+            { name: 'Launch Control' },
+            { name: 'TPC' },
+            { name: 'Gear Shift Assist Pro' },
+            { name: 'Keyless Ride' },
+        ],
+        m1000rr: [
+            { name: 'test' },
+        ],
+        s1000rr: [
+            { name: 'test' },
+        ],
+        f850gsa: [
+            { name: 'test' },
+        ],
+        r1250gs: [
+            { name: 'test' },
+        ],
+        r1250gsa: [
+            { name: 'test' },
+        ],
+        f900xr: [
+            { name: 'test' },
+        ],
+        s1000xr: [
+            { name: 'test' },
+        ],
+        g310gs: [
+            { name: 'test' },
+        ],
+        g310r: [
+            { name: 'test' },
+        ],
+        r1250rs: [
+            { name: 'test' },
+        ],
+        r1250rt: [
+            { name: 'test' },
+        ],
+        k1600b: [
+            { name: 'test' },
+        ],
+        k1600ga: [
+            { name: 'test' },
+        ],
+        k1600gt: [
+            { name: 'test' },
+        ],
+        k1600gtl: [
+            { name: 'test' },
+        ],
+        r1250r: [
+            { name: 'test' },
+        ],
+        s1000r: [
+            { name: 'test' },
+        ],
+        f900r: [
+            { name: 'test' },
+        ],
+        r18: [
+            { name: 'test' },
+        ],
+        r18classic: [
+            { name: 'test' },
+        ],
+        r18b: [
+            { name: 'test' },
+        ],
+        r18t: [
+            { name: 'test' },
+        ],
+        r9t: [
+            { name: 'test' },
+        ],
+        r9tp: [
+            { name: 'test' },
+        ],
+        r9ts: [
+            { name: 'test' },
+        ],
+        r9tu: [
+            { name: 'test' },
+        ],
+    }
+    const modelOptions = {
+        f750gs: [
+            { name: 'chain', value: '180', placeholder: 'M Endurance Chain' },
+            { name: 'keyless', value: '315', placeholder: 'Keyless Ride' },
+            { name: 'tpc', value: '260', placeholder: 'TPC' },
+            { name: 'alarm', value: '270', placeholder: 'Alarm' },
+            { name: 'f7gsConn', value: '705', placeholder: 'Connectivity' },
+            { name: 'lowKitLowSeat', value: '240', placeholder: 'Lowering Kit Low Seat' },
+            { name: 'lowSeat', value: '1', placeholder: 'Extra Low Seat' },
+            { name: 'comfortSeat', value: '1', placeholder: 'Comfort Seat' },
+        ],
+        f850gs: [
+            { name: 'chain', value: '180', placeholder: 'M Endurance Chain' },
+            { name: 'keyless', value: '315', placeholder: 'Keyless Ride' },
+            { name: 'tpc', value: '260', placeholder: 'TPC' },
+            { name: 'alarm', value: '270', placeholder: 'Alarm' },
+            { name: 'cruise', value: '400', placeholder: 'Cruise Control' },
+            { name: 'silencer', value: '750', placeholder: 'Sports Silencer' },
+            { name: 'offTire', value: '70', placeholder: 'Off-Road Tires' },
+            { name: 'loweringKit', value: '240', placeholder: 'Lowering Kit 805 mm' },
+            { name: 'lowSeat', value: '1', placeholder: 'Extra Low Seat 825 mm' },
+            { name: 'comfortSeat', value: '1', placeholder: 'Comfort Seat 875 mm' },
+        ],
+        m1000r: [
+            { name: 'psgrKit', value: '150', placeholder: 'Passenger Kit' },
+            { name: 'sportShield', value: '200', placeholder: 'Sport Windshield' },
+            { name: 'pilSeatCover', value: '140', placeholder: 'Pillion Seat Cover' },
+            { name: 'm1000rTitEx', value: '2870', placeholder: 'M Titanium Exhaust' },
+        ],
+        m1000rr: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        s1000rr: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        f850gsa: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r1250gs: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r1250gsa: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        f900xr: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        s1000xr: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        g310gs: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        g310r: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r1250rs: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r1250rt: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        k1600b: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        k1600ga: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        k1600gt: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        k1600gtl: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r1250r: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        s1000r: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        f900r: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r18: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r18classic: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r18b: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r18t: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r9t: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r9tp: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r9ts: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r9tu: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+
+    }
+    const modelPkgs = {
+        f750gs: [
+            { name: 'comfortPkg', value: '1065', placeholder: 'Comfort Package' },
+            { name: 'touringPkg', value: '565', placeholder: 'Touring Package' },
+            { name: 'dynamicPkg', value: '565', placeholder: 'Dynamic Package' },
+            { name: 'activePkg', value: '375', placeholder: 'Active Package' },
+        ],
+        f850gs: [
+            { name: 'comfortPkg', value: '1065', placeholder: 'Comfort Package' },
+            { name: 'touringPkg', value: '565', placeholder: 'Touring Package' },
+            { name: 'activePkg', value: '375', placeholder: 'Active Package' },
+        ],
+        m1000r: [
+            { name: 'm1000rMPkg', value: '7520', placeholder: 'M Competition Package' },
+        ],
+        m1000rr: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        s1000rr: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        f850gsa: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r1250gs: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r1250gsa: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        f900xr: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        s1000xr: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        g310gs: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        g310r: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r1250rs: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r1250rt: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        k1600b: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        k1600ga: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        k1600gt: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        k1600gtl: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r1250r: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        s1000r: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        f900r: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r18: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r18classic: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r18b: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r18t: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r9t: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r9tp: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r9ts: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+        r9tu: [
+            { name: 'test', value: '111', placeholder: 'test' },
+        ],
+
+    }
+
+    let modelName
+    switch (finance.model) {
+        case 'F 750 GS':
+            modelName = 'f750gs'
+            break;
+        case 'F 850 GS':
+            modelName = 'f850gs'
+            break;
+        case 'M 1000 R':
+            modelName = 'm1000r'
+            break;
+        case 'M 1000 RR':
+            modelName = 'm1000rr'
+            break;
+        case 'S 1000 RR':
+            modelName = 's1000rr'
+            break;
+        case 'F 850 GSA':
+            modelName = 'f850gsa'
+            break;
+        case 'R 1250 GS':
+            modelName = 'r1250gs'
+            break;
+        case 'R 1250 GSA':
+            modelName = 'r1250gsa'
+            break;
+        case 'F 900 XR':
+            modelName = 'f900xr'
+            break;
+        case 'S 1000 XR':
+            modelName = 's1000xr'
+            break;
+        case 'G 310 GS':
+            modelName = 'g310gs'
+            break;
+        case 'G 310 R':
+            modelName = 'g310r'
+            break;
+        case 'R 1250 RS':
+            modelName = 'r1250rs'
+            break;
+        case 'R 1250 RT':
+            modelName = 'r1250rt'
+            break;
+        case 'K 1600 B':
+            modelName = 'k1600b'
+            break;
+        case 'K 1600 Grand America':
+            modelName = 'k1600ga'
+            break;
+        case 'K 1600 GT':
+            modelName = 'k1600gt'
+            break;
+        case 'K 1600 GTL':
+            modelName = 'k1600gtl'
+            break;
+        case 'R 1250 R':
+            modelName = 'r1250r'
+            break;
+        case 'S 1000 R':
+            modelName = 's1000r'
+            break;
+        case 'F 900 R':
+            modelName = 'f900r'
+            break;
+        case 'R 18':
+            modelName = 'r18'
+            break;
+        case 'R 18 Classic':
+            modelName = 'r18classic'
+            break;
+        case 'R 18 B':
+            modelName = 'r18b'
+            break;
+        case 'R 18 Transcontinental':
+            modelName = 'r18t'
+            break;
+        case 'R nine T':
+            modelName = 'r9t'
+            break;
+        case 'R nineT Pure':
+            modelName = 'r9tp'
+            break;
+        case 'R nineT Scrambler':
+            modelName = 'r9ts'
+            break;
+        case 'R nineT Urban':
+            modelName = 'r9tu'
+            break;
+        default:
+            modelName = ''
+    }
+
+    const modelColorArray = modelName ? modelColors[modelName] : [];
+    const modelStandardArray = modelName ? modelStandard[modelName] : []; //window[`${modelName}Standard`] || [];
+    const modelOptionsArray = modelName ? modelOptions[modelName] : []; //window[`${modelName}Options`] || [];
+    const modelPkgsArray = modelName ? modelPkgs[modelName] : []; //window[`${modelName}Pkgs`] || [];
     return (
         <>
 
@@ -161,280 +673,112 @@ export function EquipBMW() {
                 <h2 className="font-extralight text-center mt-2">{finance.model}</h2>
             </div>
             <div className="sm container mx-auto mt-3">
-                {finance.model === 'F 750 GS' ? (
-                    <>
-                        <div><h1 className="text-2xl font-extralight">Color</h1></div><Separator />
-                        <select name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
-                            <option >Select Color</option>
-                            <option value="1">Light White</option>
-                            <option value="285">White / Blue / red</option>
-                            <option value="390">Black Storm Metallic</option>
-                        </select>
 
-                        <div><h1 className="text-2xl font-extralight mt-3">Standard Equipment</h1></div>
-                        <Separator />
-                        <div className="flex justify-between flex-wrap  ">
-                            <p className="basis-2/4 font-thin">Ride Modes</p>
-                            <p className="flex basis-2/4 font-thin justify-end items-end ">Heated Grips</p>
-                            <p className="basis-2/4 font-thin">USB Charging Socket</p>
-                            <p className="flex basis-2/4 font-thin justify-end items-end ">LED lighting</p>
-                        </div>
-
-                        <div><h1 className="text-2xl font-extralight mt-3">Available Factory Options</h1></div><Separator />
-                        <Separator />
-                        <div className="grid  grid-cols-2">
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="chain" value='180' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" >
-                                    M Endurance Chain
+                <div><h1 className="text-2xl font-extralight">Color</h1></div><Separator />
+                <select
+                    name="color"
+                    onChange={handleInputChange}
+                    data-te-select-init
+                    className="mt-2 border-border text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                    <option>Select Color</option>
+                    {modelColorArray.map((color, index) => (
+                        <option key={index} value={color.value}>
+                            {color.placeholder}
+                        </option>
+                    ))}
+                </select>
+                <div><h1 className="text-2xl font-extralight mt-3">Standard Equipment</h1></div>
+                <Separator />
+                <div>
+                    {modelStandardArray.map((result, index) => (
+                        index % 2 === 0 ? (
+                            <div key={index} className='flex justify-between items-center'>
+                                <p className="font-thin">{result.name}</p>
+                                <p className="font-thin">{modelStandardArray[index + 1]?.name || ''}</p>
+                            </div>
+                        ) : null
+                    ))}
+                </div>
+                <div><h1 className="text-2xl font-extralight mt-3">Available Factory Options</h1></div><Separator />
+                <Separator />
+                <div className="grid  grid-cols-1">
+                    {modelOptionsArray.map((result, index) => (
+                        <div key={index} className='flex justify-between items-center'>
+                            <div className="inline-flex items-center">
+                                <label className="relative flex items-center rounded-full cursor-pointer" htmlFor={result.name}>
+                                    <input
+                                        type="checkbox"
+                                        name={result.name}
+                                        value={result.value}
+                                        className="form-checkbox peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-primary transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-secondary checked:bg-primary checked:before:bg-secondary hover:before:opacity-10"
+                                        onChange={handleInputChange}
+                                    />
+                                    <span
+                                        className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+                                            stroke="currentColor" strokeWidth="1">
+                                            <path fillRule="evenodd"
+                                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                clipRule="evenodd"></path>
+                                        </svg>
+                                    </span>
+                                </label>
+                                <label
+                                    htmlFor={result.name}
+                                    className=" ml-3 font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-xl">
+                                    {result.placeholder}
                                 </label>
                             </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.chain}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="keyless" value='315' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" >Keyless Ride</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.keyless}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="tpc" value='260' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" >TPC</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.tpc}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="alarm" value='270' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" >Alarm</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.alarm}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="f7gsConn" value='705' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" >Connectivity</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.f7gsConn}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="lowKitLowSeat" value='240' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" >
-
-                                    Lowering Kit Low Seat
-                                </label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.lowKitLowSeat}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="lowSeat" value='170' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" >
-                                    Extra Low Seat
-                                </label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">N/C</p>
-
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="comfortSeat" value='60' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" >
-                                    Comfort Seat
-                                </label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.comfortSeat}</p>
-
-
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">  N/C</p>
-                        </div>
-
-                        <div><h1 className="text-2xl font-extralight mt-3">Available Factory Packages</h1></div>
-                        <Separator />
-                        <div className="grid  grid-cols-2">
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="comfortPkg" value='1065' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Comfort Package</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.comfortPkg}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="touringPkg" value='565' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Touring Package</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.touringPkg}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="dynamicPkg" value='565' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Dynamic Package</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.dynamicPkg}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="activePkg" value='375' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                                    Actrive Package
-                                </label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">
-                                ${bmwData.activePkg}
+                            <p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight text-xl">
+                                {bmwData[result.name] === '1' ? <p>N / C</p> : <>${bmwData[result.name]}</>}
                             </p>
-
                         </div>
-                    </>
-                ) : (null)}
-                {finance.model === 'F 850 GS' ? (
-                    <>
-                        <div><h1 className="text-2xl font-extralight">Color</h1></div><Separator />
-                        <select name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
-                            <option>Select Color</option>
-                            <option value="1">Racing Red</option>
-                            <option value="810">Gravity Blue</option>
-                            <option value="390">Black Storm Metallic</option>
-                        </select>
-
-                        <div><h1 className="text-2xl font-extralight mt-3">Standard Equipment</h1></div><Separator />
-                        <div className="flex justify-between flex-wrap  ">
-                            <p className="basis-2/4 font-thin">Ride Modes</p>
-                            <p className="flex basis-2/4 font-thin justify-end items-end">Heated Grips</p>
-                            <p className="basis-2/4 font-thin">USB Charging Socket</p>
-                            <p className="flex basis-2/4 font-thin justify-end items-end">LED lighting</p>
-                            <p className="basis-2/4 font-thin">Connectivity</p>
-                            <p className="flex basis-2/4 font-thin justify-end items-end">Hand Protectors</p>
-                            <p className="basis-2/4 font-thin">Power Socket</p>
-                            <p className="flex basis-2/4 font-thin justify-end items-end">Gear Shift Assist Pro</p>
+                    ))}
+                </div>
+                <div><h1 className="text-2xl font-extralight mt-3">Available Factory Packages</h1></div>
+                <Separator />
+                <div className="grid  grid-cols-1">
+                    {modelPkgsArray.map((result, index) => (
+                        <div key={index} className='flex justify-between items-center'>
+                            <div className="inline-flex items-center">
+                                <label className="relative flex items-center rounded-full cursor-pointer" htmlFor={result.name}>
+                                    <input
+                                        type="checkbox"
+                                        name={result.name}
+                                        value={result.value}
+                                        className="form-checkbox peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-primary transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-secondary checked:bg-primary checked:before:bg-secondary hover:before:opacity-10"
+                                        onChange={handleInputChange}
+                                    />
+                                    <span
+                                        className="absolute text-foreground transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor"
+                                            stroke="currentColor" strokeWidth="1">
+                                            <path fillRule="evenodd"
+                                                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                clipRule="evenodd"></path>
+                                        </svg>
+                                    </span>
+                                </label>
+                                <label
+                                    htmlFor={result.name}
+                                    className=" ml-3 font-extralight leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-xl">
+                                    {result.placeholder}
+                                </label>
+                            </div>
+                            <p className="mb-0 flex basis-2/4 items-end justify-end pb-0 font-extralight text-xl">
+                                {bmwData[result.name] === '1' ? <p>N / C</p> : <>${bmwData[result.name]}</>}
+                            </p>
                         </div>
+                    ))}
+                </div>
 
-                        <div><h1 className="text-2xl font-extralight mt-3">Available Factory Options</h1></div><Separator />
-                        <div className="grid grid-cols-2">
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="chain" value='180' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">M Endurance Chain</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.chain}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="keyless" value='315' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Keyless Ride</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.keyless}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="tpc" value='260' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" >TPC</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.tpc}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="alarm" value='270' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Alarm</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.alarm}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="cruise" value='400' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Cruise Control</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.cruise}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="silencer" value='750' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Sports Silencer</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.silencer}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="offTire" value='70' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Off-Road Tires</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.offTire}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="loweringKit" value='240' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Lowering Kit 805 mm</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.loweringKit}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="lowSeat" value='1' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Extra Low Seat 825 mm</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">N/C</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="comfortSeat" value='60' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Comfort Seat 875 mm</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.comfortSeat}</p>
-                        </div>
 
-                        <div><h1 className="text-2xl font-extralight mt-3">Available Factory Packages</h1></div>
-                        <Separator />
-                        <div className="grid  grid-cols-2">
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="comfortPkg" value='1065' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Comfort Package</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.comfortPkg}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="touringPkg" value='565' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Touring Package</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.touringPkg}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" name="activePkg" value='375' className="form-checkbox" onChange={handleInputChange} />
-                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Active Package</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.activePkg}</p>
-                        </div>
-                    </>
-                ) : (null)}
-                {finance.model === 'M 1000 R' ? (
-                    <>
-                        <div><h1 className="text-2xl font-extralight">Color</h1></div><Separator />
-                        <select id="color" name="color" onChange={handleInputChange} data-te-select-init className=" mt-3 h-9 w-full items-center justify-between  border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
-                            <option value="0">Select Color</option>
-                            <option value="1">Light White / M Motorsport</option>
-                            <option value="1">Black Storm Metallic / M Motorsport</option>
-                        </select>
 
-                        <div><h1 className="text-2xl font-extralight mt-3">Standard Equipment</h1></div><Separator />
-                        <div className="flex justify-between flex-wrap  ">
-                            <p className="basis-2/4 font-thin">Ride Modes Pro</p>
-                            <p className="flex basis-2/4 font-thin justify-end items-end ">High Windshield</p>
-                            <p className="basis-2/4 font-thin">Connectivity</p>
-                            <p className="flex basis-2/4 font-thin justify-end items-end ">LED lighting</p>
-                            <p className="basis-2/4 font-thin">Titanium Exhaust</p>
-                            <p className="flex basis-2/4 font-thin justify-end items-end ">USB Charging Socket</p>
-                            <p className="basis-2/4 font-thin">M Lightweight Battery</p>
-                            <p className="flex basis-2/4 font-thin justify-end items-end ">M Chassis Kit</p>
-                            <p className="basis-2/4 font-thin">M Winglets</p>
-                            <p className="flex basis-2/4 font-thin justify-end items-end ">Forged Wheels</p>
-                            <p className="basis-2/4 font-thin">M Brakes</p>
-                            <p className="flex basis-2/4 font-thin justify-end items-end ">Heated Grips</p>
-                            <p className="basis-2/4 font-thin">Cruise Control</p>
-                            <p className="flex basis-2/4 font-thin justify-end items-end ">Launch Control</p>
-                            <p className="basis-2/4 font-thin">TPC</p>
-                            <p className="flex basis-2/4 font-thin justify-end items-end ">Gear Shift Assist Pro</p>
-                            <p className="basis-2/4 font-thin">Keyless Ride</p>
-                        </div>
-
-                        <div><h1 className="text-2xl font-extralight mt-5">Available Factory Options</h1></div><Separator />
-                        <div className="grid  grid-cols-2">
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" id="psgrKit" name="psgrKit" value='140' className="form-checkbox" onChange={handleInputChange} />
-                                <label htmlFor="bimini" className="text-sm  font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" >Passenger Kit</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.psgrKit}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" id="sportShield" name="sportShield" value='200' className="form-checkbox" onChange={handleInputChange} />
-                                <label htmlFor="bimini" className="text-sm  font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Sport Windshield</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.sportShield}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" id="psgrKit" name="pilSeatCover" value='140' className="form-checkbox" onChange={handleInputChange} />
-                                <label htmlFor="bimini" className="text-sm  font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Pillion Seat Cover</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.pilSeatCover}</p>
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" id="m1000rTitEx" name="m1000rTitEx" value='2870' className="form-checkbox" onChange={handleInputChange} />
-                                <label htmlFor="bimini" className="text-sm  font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">M Titanium Exhaust</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.m1000rTitEx}</p>
-                        </div>
-
-                        <div><h1 className="text-2xl font-extralight mt-5">Available Factory Packages</h1></div><Separator />
-                        <div className="grid  grid-cols-2">
-                            <div className="flex items-center space-x-2">
-                                <input type="checkbox" id="m1000rMPkg" name="m1000rMPkg" value='7520' className="form-checkbox" onChange={handleInputChange} />
-                                <label htmlFor="bimini" className="text-sm  font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" >M Competition Package</label>
-                            </div>
-                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.m1000rMPkg}</p>
-                        </div>
-
-                    </>
-                ) : (null)}
                 {finance.model === 'M 1000 RR' ? (
                     <>
                         <div><h1 className="text-2xl font-extralight">Color</h1></div><Separator />
-                        <select id="color" name="color" onChange={handleInputChange} data-te-select-init className=" mt-3 h-9 w-full items-center justify-between  border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
+                        <select id="color" name="color" onChange={handleInputChange} data-te-select-init className=" mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
                             <option value="0">Select Color</option>
                             <option value="1">Light White / M Motorsport</option>
                             <option value="1">Black Storm Metallic / M Motorsport</option>
@@ -493,7 +837,7 @@ export function EquipBMW() {
                 {finance.model === 'S 1000 RR' ? (
                     <>
                         <div><h1 className="text-2xl font-extralight">Color</h1></div><Separator />
-                        <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
+                        <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
                             <option >Select Color</option>
                             <option value="1">Black Storm Metallic</option>
                             <option value="485">Racing Red</option>
@@ -617,7 +961,7 @@ export function EquipBMW() {
                 {finance.model === 'F 850 GSA' ? (
                     <>
                         <div><h1 className="text-2xl font-extralight">Color</h1></div><Separator />
-                        <select name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
+                        <select name="color" onChange={handleInputChange} data-te-select-init className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
                             <option >Select Color</option>
                             <option value="1">Light White</option>
                             <option value="810">Kalamata</option>
@@ -1365,7 +1709,7 @@ export function EquipBMW() {
                     <>
                         <div><h1 className="text-2xl font-extralight">Color</h1></div>
                         <Separator />
-                        <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-3 h-9 w-full items-center justify-between  border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
+                        <select id="color" name="color" onChange={handleInputChange} data-te-select-init className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
                             <option >Select Color</option>
                             <option value="1">Light White</option>
                             <option value="685">White / Blue / Red</option>
@@ -3515,3 +3859,166 @@ export function EquipBMW() {
         </>
     )
 }
+/** {finance.model === 'M 1000 R' ? (
+                    <>
+                        <div><h1 className="text-2xl font-extralight">Color</h1></div><Separator />
+                        <select id="color" name="color" onChange={handleInputChange} data-te-select-init className=" mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
+                            <option value="0">Select Color</option>
+                            <option value="1">Light White / M Motorsport</option>
+                            <option value="1">Black Storm Metallic / M Motorsport</option>
+                        </select>
+
+                        <div><h1 className="text-2xl font-extralight mt-3">Standard Equipment</h1></div><Separator />
+                        <div className="flex justify-between flex-wrap  ">
+                            <p className="basis-2/4 font-thin"></p>
+                            <p className="flex basis-2/4 font-thin justify-end items-end "></p>
+                            <p className="basis-2/4 font-thin"></p>
+                            <p className="flex basis-2/4 font-thin justify-end items-end "></p>
+                            <p className="basis-2/4 font-thin"></p>
+                            <p className="flex basis-2/4 font-thin justify-end items-end "></p>
+                            <p className="basis-2/4 font-thin"></p>
+                            <p className="flex basis-2/4 font-thin justify-end items-end "></p>
+                            <p className="basis-2/4 font-thin"></p>
+                            <p className="flex basis-2/4 font-thin justify-end items-end "></p>
+                            <p className="basis-2/4 font-thin"></p>
+                            <p className="flex basis-2/4 font-thin justify-end items-end "></p>
+                            <p className="basis-2/4 font-thin"></p>
+                            <p className="flex basis-2/4 font-thin justify-end items-end "></p>
+                            <p className="basis-2/4 font-thin"></p>
+                            <p className="flex basis-2/4 font-thin justify-end items-end ">G</p>
+                            <p className="basis-2/4 font-thin"></p>
+                        </div>
+
+                        <div><h1 className="text-2xl font-extralight mt-5">Available Factory Options</h1></div><Separator />
+                        <div className="grid  grid-cols-2">
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" id="psgrKit" name="psgrKit" value='140' className="form-checkbox" onChange={handleInputChange} />
+                                <label htmlFor="bimini" className="text-sm  font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" >Passenger Kit</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.psgrKit}</p>
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" id="sportShield" name="sportShield" value='200' className="form-checkbox" onChange={handleInputChange} />
+                                <label htmlFor="bimini" className="text-sm  font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Sport Windshield</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.sportShield}</p>
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" id="psgrKit" name="pilSeatCover" value='140' className="form-checkbox" onChange={handleInputChange} />
+                                <label htmlFor="bimini" className="text-sm  font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Pillion Seat Cover</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.pilSeatCover}</p>
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" id="m1000rTitEx" name="m1000rTitEx" value='2870' className="form-checkbox" onChange={handleInputChange} />
+                                <label htmlFor="bimini" className="text-sm  font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">M Titanium Exhaust</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.m1000rTitEx}</p>
+                        </div>
+
+                        <div><h1 className="text-2xl font-extralight mt-5">Available Factory Packages</h1></div><Separator />
+                        <div className="grid  grid-cols-2">
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" id="m1000rMPkg" name="m1000rMPkg" value='7520' className="form-checkbox" onChange={handleInputChange} />
+                                <label htmlFor="bimini" className="text-sm  font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" >M Competition Package</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.m1000rMPkg}</p>
+                        </div>
+
+                    </>
+                ) : (null)} */
+
+/**  {finance.model === 'F 850 GS' ? (
+                    <>
+                        <div><h1 className="text-2xl font-extralight">Color</h1></div><Separator />
+                        <select name="color" onChange={handleInputChange} data-te-select-init className="mt-2 border-border  text-foreground rounded-lg h-9 w-full items-center justify-between border bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1  disabled:cursor-not-allowed disabled:opacity-50">
+                            <option>Select Color</option>
+                            <option value="1">Racing Red</option>
+                            <option value="810">Gravity Blue</option>
+                            <option value="390">Black Storm Metallic</option>
+                        </select>
+
+                        <div><h1 className="text-2xl font-extralight mt-3">Standard Equipment</h1></div><Separator />
+                        <div className="flex justify-between flex-wrap  ">
+                            <p className="basis-2/4 font-thin">Ride Modes</p>
+                            <p className="flex basis-2/4 font-thin justify-end items-end">Heated Grips</p>
+                            <p className="basis-2/4 font-thin">USB Charging Socket</p>
+                            <p className="flex basis-2/4 font-thin justify-end items-end">LED lighting</p>
+                            <p className="basis-2/4 font-thin">Connectivity</p>
+                            <p className="flex basis-2/4 font-thin justify-end items-end">Hand Protectors</p>
+                            <p className="basis-2/4 font-thin">Power Socket</p>
+                            <p className="flex basis-2/4 font-thin justify-end items-end">Gear Shift Assist Pro</p>
+                        </div>
+
+                        <div><h1 className="text-2xl font-extralight mt-3">Available Factory Options</h1></div><Separator />
+                        <div className="grid grid-cols-2">
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" name="chain" value='180' className="form-checkbox" onChange={handleInputChange} />
+                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">M Endurance Chain</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.chain}</p>
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" name="keyless" value='315' className="form-checkbox" onChange={handleInputChange} />
+                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Keyless Ride</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.keyless}</p>
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" name="tpc" value='260' className="form-checkbox" onChange={handleInputChange} />
+                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" >TPC</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.tpc}</p>
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" name="alarm" value='270' className="form-checkbox" onChange={handleInputChange} />
+                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Alarm</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.alarm}</p>
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" name="cruise" value='400' className="form-checkbox" onChange={handleInputChange} />
+                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Cruise Control</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.cruise}</p>
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" name="silencer" value='750' className="form-checkbox" onChange={handleInputChange} />
+                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Sports Silencer</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.silencer}</p>
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" name="offTire" value='70' className="form-checkbox" onChange={handleInputChange} />
+                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Off-Road Tires</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.offTire}</p>
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" name="loweringKit" value='240' className="form-checkbox" onChange={handleInputChange} />
+                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Lowering Kit 805 mm</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.loweringKit}</p>
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" name="lowSeat" value='1' className="form-checkbox" onChange={handleInputChange} />
+                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Extra Low Seat 825 mm</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">N/C</p>
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" name="comfortSeat" value='60' className="form-checkbox" onChange={handleInputChange} />
+                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Comfort Seat 875 mm</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0">${bmwData.comfortSeat}</p>
+                        </div>
+
+                        <div><h1 className="text-2xl font-extralight mt-3">Available Factory Packages</h1></div>
+                        <Separator />
+                        <div className="grid  grid-cols-2">
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" name="comfortPkg" value='1065' className="form-checkbox" onChange={handleInputChange} />
+                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Comfort Package</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.comfortPkg}</p>
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" name="touringPkg" value='565' className="form-checkbox" onChange={handleInputChange} />
+                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Touring Package</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.touringPkg}</p>
+                            <div className="flex items-center space-x-2">
+                                <input type="checkbox" name="activePkg" value='375' className="form-checkbox" onChange={handleInputChange} />
+                                <label className="text-sm font-thin leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Active Package</label>
+                            </div>
+                            <p className="flex basis-2/4 font-thin justify-end items-end mb-0 pb-0  ">${bmwData.activePkg}</p>
+                        </div>
+                    </>
+                ) : (null)} */

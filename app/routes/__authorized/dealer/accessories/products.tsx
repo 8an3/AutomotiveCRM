@@ -278,6 +278,9 @@ export default function SearchCustomers() {
     }
   }, [scannedCode]);
   console.log(JSON.stringify(search.data), data, 'serarch')
+
+
+
   return (
     <Card x-chunk="dashboard-05-chunk-3 " className='mx-5 w-[95%] '>
       <CardHeader className="px-7">
@@ -447,166 +450,233 @@ export default function SearchCustomers() {
 
             </TableRow>
           </TableHeader>
-          <TableBody className='max-h-[700px] h-auto overflow-y-auto'>
+          <TableBody className='max-h-[700px] h-auto overflow-y-auto text-foreground'>
             {search.data &&
               search.data.map((result, index) => (
                 <TableRow key={index} className="hover:bg-accent border-border">
                   <TableCell>
-                    <div className="font-medium">
+                    {hasAdminPosition ? (
+                      <div className="">
+                        <div className="font-medium">
+                          <EditableText
+                            value={result.name}
+                            fieldName="name"
+                            inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  "
+                            buttonClassName="text-center py-1 px-2 text-foreground"
+                            buttonLabel={`Edit name`}
+                            inputLabel={`Edit name`}
+                          >
+                            <input type="hidden" name="intent" value='updateProductManager' />
+                            <input type="hidden" name="id" value={result.id} />
+                            <input type="hidden" name="colName" value='name' />
+                          </EditableText>
+                        </div>
+                        <div className="text-sm text-muted-foreground ">
+                          <EditableText
+                            value={result.brand}
+                            fieldName="name"
+                            inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  "
+                            buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                            buttonLabel={`Edit brand`}
+                            inputLabel={`Edit brand`}
+                          >
+                            <input type="hidden" name="intent" value='updateProductManager' />
+                            <input type="hidden" name="id" value={result.id} />
+                            <input type="hidden" name="colName" value='brand' />
+                          </EditableText>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className='grid grid-cols-1' >
+                        <p className='font-medium'>{result.name}</p>
+                        <p className='text-muted-foreground'>{result.brand}</p>
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell className="hidden sm:table-cell">
+                    {hasAdminPosition ? (
                       <EditableText
-                        value={result.name}
-                        fieldName="name"
-                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  "
-                        buttonClassName="text-center py-1 px-2 text-foreground"
-                        buttonLabel={`Edit name`}
-                        inputLabel={`Edit name`}
-                      >
-                        <input type="hidden" name="intent" value='updateProductManager' />
-                        <input type="hidden" name="id" value={result.id} />
-                        <input type="hidden" name="colName" value='name' />
-                      </EditableText>
-                    </div>
-                    <div className="text-sm text-muted-foreground ">
-                      <EditableText
-                        value={result.brand}
+                        value={result.description}
                         fieldName="name"
                         inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  "
                         buttonClassName="text-center py-1 px-2 text-muted-foreground"
-                        buttonLabel={`Edit brand`}
-                        inputLabel={`Edit brand`}
+                        buttonLabel={`Edit description`}
+                        inputLabel={`Edit description`}
                       >
                         <input type="hidden" name="intent" value='updateProductManager' />
                         <input type="hidden" name="id" value={result.id} />
-                        <input type="hidden" name="colName" value='brand' />
+                        <input type="hidden" name="colName" value='description' />
                       </EditableText>
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden sm:table-cell">
-                    <EditableText
-                      value={result.description}
-                      fieldName="name"
-                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  "
-                      buttonClassName="text-center py-1 px-2 text-muted-foreground"
-                      buttonLabel={`Edit description`}
-                      inputLabel={`Edit description`}
-                    >
-                      <input type="hidden" name="intent" value='updateProductManager' />
-                      <input type="hidden" name="id" value={result.id} />
-                      <input type="hidden" name="colName" value='description' />
-                    </EditableText>
+                    ) : (
+                      <div className='grid grid-cols-1' >
+                        <p className='text-muted-foreground'>{result.description}</p>
+                      </div>
+                    )}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    <EditableText
-                      value={result.category}
-                      fieldName="name"
-                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  "
-                      buttonClassName="text-center py-1 px-2 text-muted-foreground"
-                      buttonLabel={`Edit category`}
-                      inputLabel={`Edit category`}
-                    >
-                      <input type="hidden" name="intent" value='updateProductManager' />
-                      <input type="hidden" name="id" value={result.id} />
-                      <input type="hidden" name="colName" value='category' />
-                    </EditableText>
+                    {hasAdminPosition ? (
+                      <EditableText
+                        value={result.category}
+                        fieldName="name"
+                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  "
+                        buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                        buttonLabel={`Edit category`}
+                        inputLabel={`Edit category`}
+                      >
+                        <input type="hidden" name="intent" value='updateProductManager' />
+                        <input type="hidden" name="id" value={result.id} />
+                        <input type="hidden" name="colName" value='category' />
+                      </EditableText>
+                    ) : (
+                      <div className='grid grid-cols-1' >
+                        <p className='text-muted-foreground'>{result.category}</p>
+                      </div>
+                    )}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    <EditableText
-                      value={result.subCategory}
-                      fieldName="name"
-                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2"
-                      buttonClassName="text-center py-1 px-2 text-muted-foreground"
-                      buttonLabel={`Edit subCategory`}
-                      inputLabel={`Edit subCategory`}
-                    >
-                      <input type="hidden" name="intent" value='updateProductManager' />
-                      <input type="hidden" name="id" value={result.id} />
-                      <input type="hidden" name="colName" value='subCategory' />
-                    </EditableText>
+                    {hasAdminPosition ? (
+                      <EditableText
+                        value={result.subCategory}
+                        fieldName="name"
+                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2"
+                        buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                        buttonLabel={`Edit subCategory`}
+                        inputLabel={`Edit subCategory`}
+                      >
+                        <input type="hidden" name="intent" value='updateProductManager' />
+                        <input type="hidden" name="id" value={result.id} />
+                        <input type="hidden" name="colName" value='subCategory' />
+                      </EditableText>
+                    ) : (
+                      <div className='grid grid-cols-1' >
+                        <p className='text-muted-foreground'>{result.subCategory}</p>
+                      </div>
+                    )}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    <EditableText
-                      value={result.onOrder}
-                      fieldName="name"
-                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[30px] "
-                      buttonClassName="text-center py-1 px-2 text-foreground"
-                      buttonLabel={`Edit onOrder`}
-                      inputLabel={`Edit onOrder`}
-                    >
-                      <input type="hidden" name="intent" value='updateProductManager' />
-                      <input type="hidden" name="id" value={result.id} />
-                      <input type="hidden" name="colName" value='onOrder' />
-                    </EditableText>
+                    {hasAdminPosition ? (
+                      <EditableText
+                        value={result.onOrder}
+                        fieldName="name"
+                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[30px] "
+                        buttonClassName="text-center py-1 px-2 text-foreground"
+                        buttonLabel={`Edit onOrder`}
+                        inputLabel={`Edit onOrder`}
+                      >
+                        <input type="hidden" name="intent" value='updateProductManager' />
+                        <input type="hidden" name="id" value={result.id} />
+                        <input type="hidden" name="colName" value='onOrder' />
+                      </EditableText>
+                    ) : (
+                      <div className='grid grid-cols-1' >
+                        <p className=''>{result.onOrder}</p>
+                      </div>
+                    )}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    <EditableText
-                      value={result.distributer}
-                      fieldName="name"
-                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  "
-                      buttonClassName="text-center py-1 px-2 text-muted-foreground"
-                      buttonLabel={`Edit distributer`}
-                      inputLabel={`Edit distributer`}
-                    >
-                      <input type="hidden" name="intent" value='updateProductManager' />
-                      <input type="hidden" name="id" value={result.id} />
-                      <input type="hidden" name="colName" value='distributer' />
-                    </EditableText>
+                    {hasAdminPosition ? (
+                      <EditableText
+                        value={result.distributer}
+                        fieldName="name"
+                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  "
+                        buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                        buttonLabel={`Edit distributer`}
+                        inputLabel={`Edit distributer`}
+                      >
+                        <input type="hidden" name="intent" value='updateProductManager' />
+                        <input type="hidden" name="id" value={result.id} />
+                        <input type="hidden" name="colName" value='distributer' />
+                      </EditableText>
+                    ) : (
+                      <div className='grid grid-cols-1' >
+                        <p className='text-muted-foreground'>{result.brand}</p>
+                      </div>
+                    )}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    <EditableText
-                      value={result.location}
-                      fieldName="name"
-                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 "
-                      buttonClassName="text-center py-1 px-2 text-foreground"
-                      buttonLabel={`Edit location`}
-                      inputLabel={`Edit location`}
-                    >
-                      <input type="hidden" name="intent" value='updateProduct' />
-                      <input type="hidden" name="id" value={result.id} />
-                      <input type="hidden" name="colName" value='location' />
-                    </EditableText>
+                    {hasAdminPosition ? (
+                      <EditableText
+                        value={result.location}
+                        fieldName="name"
+                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 "
+                        buttonClassName="text-center py-1 px-2 text-foreground"
+                        buttonLabel={`Edit location`}
+                        inputLabel={`Edit location`}
+                      >
+                        <input type="hidden" name="intent" value='updateProduct' />
+                        <input type="hidden" name="id" value={result.id} />
+                        <input type="hidden" name="colName" value='location' />
+                      </EditableText>
+                    ) : (
+                      <div className='grid grid-cols-1' >
+                        <p className=''>{result.brand}</p>
+                      </div>
+                    )}
+
                   </TableCell>
                   {hidden &&
                     <TableCell className="hidden md:table-cell">
+
+                      {hasAdminPosition ? (
+                        <EditableText
+                          value={result.cost}
+                          fieldName="name"
+                          inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[50px] "
+                          buttonClassName="text-center py-1 px-2 text-foreground"
+                          buttonLabel={`Edit cost`}
+                          inputLabel={`Edit cost`}
+                        >
+                          <input type="hidden" name="intent" value='updateProductManagerCost' />
+                          <input type="hidden" name="id" value={result.id} />
+                          <input type="hidden" name="colName" value='cost' />
+                        </EditableText>
+                      ) : (
+                        <div className='grid grid-cols-1' >
+                          <p className=''>{result.cost}</p>
+                        </div>
+                      )}
+                    </TableCell>
+
+                  }
+                  <TableCell className="hidden md:table-cell">
+                    {hasAdminPosition ? (
                       <EditableText
-                        value={result.cost}
+                        value={result.price}
                         fieldName="name"
                         inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[50px] "
                         buttonClassName="text-center py-1 px-2 text-foreground"
-                        buttonLabel={`Edit cost`}
-                        inputLabel={`Edit cost`}
+                        buttonLabel={`Edit price`}
+                        inputLabel={`Edit price`}
                       >
                         <input type="hidden" name="intent" value='updateProductManagerCost' />
                         <input type="hidden" name="id" value={result.id} />
-                        <input type="hidden" name="colName" value='cost' />
+                        <input type="hidden" name="colName" value='price' />
                       </EditableText>
-                    </TableCell>}
-                  <TableCell className="hidden md:table-cell">
-                    <EditableText
-                      value={result.price}
-                      fieldName="name"
-                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[50px] "
-                      buttonClassName="text-center py-1 px-2 text-foreground"
-                      buttonLabel={`Edit price`}
-                      inputLabel={`Edit price`}
-                    >
-                      <input type="hidden" name="intent" value='updateProductManagerCost' />
-                      <input type="hidden" name="id" value={result.id} />
-                      <input type="hidden" name="colName" value='price' />
-                    </EditableText>
+                    ) : (
+                      <div className='grid grid-cols-1' >
+                        <p className=''>{result.price}</p>
+                      </div>
+                    )}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    <EditableText
-                      value={result.quantity}
-                      fieldName="name"
-                      inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[30px] "
-                      buttonClassName="text-right py-1 px-2 text-foreground"
-                      buttonLabel={`Edit quantity`}
-                      inputLabel={`Edit quantity`}
-                    >
-                      <input type="hidden" name="intent" value='updateProduct' />
-                      <input type="hidden" name="id" value={result.id} />
-                      <input type="hidden" name="colName" value='quantity' />
-                    </EditableText>
+                    {hasAdminPosition ? (
+                      <EditableText
+                        value={result.quantity}
+                        fieldName="name"
+                        inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2 w-[30px] "
+                        buttonClassName="text-right py-1 px-2 text-foreground"
+                        buttonLabel={`Edit quantity`}
+                        inputLabel={`Edit quantity`}
+                      >
+                        <input type="hidden" name="intent" value='updateProduct' />
+                        <input type="hidden" name="id" value={result.id} />
+                        <input type="hidden" name="colName" value='quantity' />
+                      </EditableText>
+                    ) : (
+                      <div className='grid grid-cols-1' >
+                        <p className=''>{result.quantity}</p>
+                      </div>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

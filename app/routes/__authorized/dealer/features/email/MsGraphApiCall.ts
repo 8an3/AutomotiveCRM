@@ -16,58 +16,34 @@ export default async function CallMsGraph() {
 
   const jsontoken = JSON.stringify(response.accessToken)
   window.localStorage.setItem("remix-stutter-66-3145", jsontoken);
-  let senderResponse: any = []
-  let toRecipientsResponse: any = []
+
   if (response.accessToken) {
     const accessToken = response.accessToken;
-    //const emailAddress = parsecusta.email
-    const sender = `https://graph.microsoft.com/v1.0/me/messages?$select=sender,subject,toRecipients,receivedDateTime&$filter=sender/emailAddress/address eq 'skylerzanth@gmail.com'`;
+    const endpoints = [
+      `https://graph.microsoft.com/v1.0/me/messages?$select=sender,subject,toRecipients,receivedDateTime&$filter=sender/emailAddress/address eq 'skylerzanth@gmail.com'`,
+      `https://graph.microsoft.com/v1.0/me/messages?$select=sender,subject,toRecipients,receivedDateTime&$filter=toRecipients/any(r: r/emailAddress/address eq 'skylerzanth@gmail.com')`
+    ];
 
-    const toRecipients = `https://graph.microsoft.com/v1.0/me/messages?$select=sender,subject,toRecipients,receivedDateTime&$filter=sender/emailAddress/address eq 'skylerzanth@gmail.com'`
-
-    fetch(sender, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => {
-        if (!response.ok) { throw new Error(`HTTP error! Status: ${response.status}`); }
-        return response.json();
-      })
-      .then(data => {
-        console.log(data, 'msghraphapical.l')
-        console.log('Messages:', data);
-        senderResponse = data.value
-      })
-      .catch(error => { console.error('Error fetching messages:', error); });
-
-    fetch(toRecipients, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+    const fetchMessages = (url) =>
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
         }
-        return response.json();
       })
-      .then(data => {
-        console.log(data, 'msghraphapical.2')
-        console.log('Messages:', data);
-        toRecipientsResponse = data.value
-      })
-      .catch(error => {
-        console.error('Error fetching messages:', error);
-      });
-  }
-  const combinedArray = [...senderResponse, ...toRecipientsResponse];
-  return combinedArray
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+          return response.json();
+        });
 
+    Promise.all(endpoints.map(fetchMessages))
+      .then(([senderResponse, toRecipientsResponse]) => {
+        const combinedArray = [...senderResponse.value, ...toRecipientsResponse.value];
+        console.log('Combined Messages:', combinedArray);
+      })
+      .catch(error => console.error('Error fetching messages:', error));
+  }
 }
 
 
