@@ -26,6 +26,7 @@ import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';
 import PrintEndofDay from "~/routes/__authorized/dealer/document/printEndOfDay.client";
+import { Calendar } from "~/components/ui/calendar"
 
 export async function loader({ request, params }: LoaderFunction) {
   const fees = await prisma.dealer.findUnique({ where: { id: 1 } })
@@ -243,12 +244,15 @@ export default function EndOfDay() {
                   <CalendarIcon className="mr-2 size-8 " />
                   {date ? format(date, "PPP") : <span>{format(newDate, "PPP")}</span>}
                 </div>
-                <SmallCalendar
-                  className='mx-auto w-auto   bg-[#020817] text-foreground'
+                <Calendar
+                  className='w-auto'
                   mode="single"
+                  fromYear={1900}
                   selected={date}
                   onSelect={setDate}
-                  initialFocus
+                  disabled={(date) =>
+                    date > new Date() || date < new Date("1900-01-01")
+                  }
                 />
               </div>
               <div className='mx-auto'>

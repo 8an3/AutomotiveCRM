@@ -3367,12 +3367,12 @@ export function MainDashbaord({ user }) {
         setColumnVisibility(jsonString)
     }, []);
 
-    useEffect(() => {
-        fetcher.submit(
-            { state: JSON.stringify(columnVisibility), intent: 'columnState' },
-            { method: "post" }
-        );
-    }, [columnVisibility]);
+    /** useEffect(() => {
+         fetcher.submit(
+             { state: JSON.stringify(columnVisibility), intent: 'columnState' },
+             { method: "post" }
+         );
+     }, [columnVisibility]); */
 
     const [sorting, setSorting] = useState<SortingState>([]);
     const [rowSelection, setRowSelection] = useState({});

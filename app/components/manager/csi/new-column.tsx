@@ -24,14 +24,12 @@ export function NewColumn({
   return editing ? (
     <Form
       method="post"
-      navigate={false}
-      className="p-2 flex-shrink-0 flex flex-col gap-5 overflow-hidden max-h-full w-[250px] border rounded-[6px] shadow bg-background"
+      className="p-2 flex-shrink-0 flex flex-col gap-5 overflow-hidden max-h-full w-[250px] border border-border rounded-[6px] shadow bg-background"
       onSubmit={(event) => {
         event.preventDefault();
         let formData = new FormData(event.currentTarget);
         formData.set("id", crypto.randomUUID());
         submit(formData, {
-          navigate: false,
           method: "post",
           unstable_flushSync: true,
         });

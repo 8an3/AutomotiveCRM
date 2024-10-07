@@ -23,10 +23,7 @@ export async function updateBoardName(
   name: string,
   userId: string,
 ) {
-  return prisma.board.update({
-    where: { id: boardId },
-    data: { name },
-  });
+
 }
 
 export function upsertItem(

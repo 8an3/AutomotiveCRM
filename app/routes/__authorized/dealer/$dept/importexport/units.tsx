@@ -105,9 +105,9 @@ export default function SettingsGenerral() {
   };
 
   return (
-    <div className="grid gap-6">
+    <div className="grid gap-6 mx-auto w-full">
 
-      <Card x-chunk="dashboard-04-chunk-2">
+      <Card x-chunk="dashboard-04-chunk-2" className='mx-auto'>
         <CardHeader>
           <CardTitle>Export Data</CardTitle>
           <CardDescription>
@@ -166,7 +166,7 @@ export default function SettingsGenerral() {
           </a>
         </CardFooter>
       </Card>
-      <Card x-chunk="dashboard-04-chunk-2">
+      <Card x-chunk="dashboard-04-chunk-2" className='mx-auto'>
         <CardHeader>
           <CardTitle>Upload Units</CardTitle>
           <CardDescription>Upload your CSV file to add to the database.</CardDescription>

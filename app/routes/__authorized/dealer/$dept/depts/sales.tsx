@@ -3199,19 +3199,20 @@ export function MainDashbaord() {
       } */
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>([]);
 
-  useEffect(() => {
-    const jsonString = user.columnStateSales.state
-    console.log(user.columnStateSales.state, 'columnState')
+  /**  useEffect(() => {
+      const jsonString = user.columnStateSales.state
+      console.log(user.columnStateSales.state, 'columnState')
+  
+      setColumnVisibility(jsonString)
+    }, []);
+    useEffect(() => {
+      fetcher.submit(
+        { state: JSON.stringify(columnVisibility), intent: 'columnState' },
+        { method: "post" }
+      );
+    }, [columnVisibility]);
+    */
 
-    setColumnVisibility(jsonString)
-  }, []);
-
-  useEffect(() => {
-    fetcher.submit(
-      { state: JSON.stringify(columnVisibility), intent: 'columnState' },
-      { method: "post" }
-    );
-  }, [columnVisibility]);
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});

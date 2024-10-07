@@ -2240,27 +2240,25 @@ export default function UnitInv() {
                             </Button>
                         </div>
                     )}
-                    {selectedGlobal === true && (
-                        <div className="relative flex-1 md:grow-0 ">
-                            <DebouncedInput
-                                value={globalFilter ?? ""}
-                                onChange={(value) => setGlobalFilter(String(value))}
-                                className="mx-1 ml-3 rounded-md border border-border bg-background p-2 text-foreground shadow max-w-sm w-auto"
-                                placeholder="Search all columns..." autoFocus
-                            />
+                    <div className="relative flex-1 md:grow-0 ">
+                        <DebouncedInput
+                            value={globalFilter ?? ""}
+                            onChange={(value) => setGlobalFilter(String(value))}
+                            className="mx-1 ml-3 rounded-md border border-border bg-background p-2 text-foreground shadow max-w-sm w-auto"
+                            placeholder="Search..." autoFocus
+                        />
 
-                            <Button
-                                onClick={() => {
-                                    setGlobalFilter([]);
-                                    setSelectedGlobal(false);
-                                }}
-                                size="icon"
-                                variant="ghost"
-                                className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
-                                <X size={16} />
-                            </Button>
-                        </div>
-                    )}
+                        <Button
+                            onClick={() => {
+                                setGlobalFilter([]);
+                                setSelectedGlobal(false);
+                            }}
+                            size="icon"
+                            variant="ghost"
+                            className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+                            <X size={16} />
+                        </Button>
+                    </div>
                     {referrer === '/dealer/manager/inventory' && (
                         <Button size='sm' variant="outline" className='mr-3' onClick={() => {
                             navigate(-1)

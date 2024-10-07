@@ -17,6 +17,7 @@ import styles1 from "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import styles2 from "react-big-calendar/lib/css/react-big-calendar.css";
 import rbc from "~/styles/rbc.css";
 import base from "~/styles/base.css";
+import { Separator } from "~/components";
 
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/calendar.svg' },
@@ -314,14 +315,14 @@ export function StoreHoursCalendar() {
 
 export default function SettingsAccountPage() {
   return (
-    <div className="space-y-6 text-foreground">
+    <div className="space-y-6 text-foreground m-5 lg:w-[900px]">
       <div>
         <h3 className="text-lg font-medium">Store Hours</h3>
         <p className="text-sm text-muted-foreground">
           Update your stores hours to enable apps functionality.
         </p>
       </div>
-      <hr className="solid text-[#2b2b2d]" />
+      <Separator className='text-border bg-border border-border' />
       <StoreHoursCalendar />
     </div>
   )

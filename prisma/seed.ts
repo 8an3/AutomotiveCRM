@@ -6643,6 +6643,8 @@ export async function Board() {
     { board: "dev", column: "ISSUE", item: "with production demo site, problem started after you manually had to update the files from remote because github action was not working" },
     { board: "dev", column: "ISSUE", item: "redesign index" },
     { board: "dev", column: "ISSUE", item: "redesign index" },
+    { board: "dev", column: "IDEAS", item: "need to save emails so others can see the corespoandance since you can only see your accounts emaisl. in auth / checkemailnotifications" },
+
     { board: "dev", column: "IDEAS", item: "sort by conversationid if sent from the unit file it will always have the extended value this way it will always be able to pull the replies from the customer as well by matching the conversationid" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "use same system as notifications to check on new mail - USE SWR" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "webhook for incoming emails, save notifiation and messeages" },
@@ -7007,8 +7009,9 @@ export async function Board() {
   const getDoneNow = [
     { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
 
-    { board: "dev", column: "IDEAS", item: "admin dashboard - when going over clients and other objects ie for clients open dialog on left have nave menu with a first level of items such as finance, work order, acc order and the when you click on it you can then click on the tabs for each layer on that data segment" },
-    { board: "dev", column: "IDEAS", item: "need to save emails so others can see the corespoandance since you can only see your accounts emaisl. in auth / checkemailnotifications" },
+    { board: "dev", column: "IDEAS", item: "admin dashboard - when going over clients and other objects ie for clients open dialog on left have nave men`u with a first level of items such as finance, work order, acc order and the when you click on it you can then click on the tabs for each layer on that data segment" },
+    { board: "dev", column: "DONE NEEDS TESTING", item: "check notifications needs to be fixed" },
+
 
     { board: "dev", column: "ISSUE", item: "----- IN CONJUCTION WITH SMS AND EMAIL TESTING BEFORE RELEASE -----" },
 

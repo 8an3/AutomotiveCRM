@@ -12,13 +12,12 @@ import {
   useLoaderData,
   useNavigation,
 } from "@remix-run/react";
-
 import { getSession } from '~/sessions/auth-session.server';
 import { GetUser } from "~/utils/loader.server";
 import { Button } from "~/components/ui/button";
 import { Label, } from "~/components/ui/label";
 import { badRequest } from "~/utils/http";
-
+import { parseItemMutation } from "~/components/manager/csi/utils";
 import { getHomeData, createBoard, deleteBoard } from "~/components/manager/csi/queries";
 import { INTENTS } from "~/components/manager/csi/types";
 import { Input } from "~/components";

@@ -615,7 +615,7 @@ export function StoreHoursCalendar() {
   //
   const newDate = new Date()
   return (
-    <div className='flex w-auto ' >
+    <div className='flex w-auto overflow-auto ' >
 
       <div className='h-screen w-[310px] border-r border-[#3d3d3d]'>
         <div className=' mt-5 flex-col mx-auto justify-center'>
@@ -727,11 +727,11 @@ export function StoreHoursCalendar() {
         </div>
       </div>
 
-      <div className="flex w-[97%] justify-center overflow-hidden">
+      <div className="flex  justify-center overflow-hidden">
         {showResources ? (
           <DnDCalendar
             style={{
-              width: `calc(100vw - 310px)`,
+              width: `calc(100vw - 510px)`,
               height: "100vh",
               overflowX: "hidden",
               overflowY: "scroll",
@@ -893,13 +893,7 @@ export default function SettingsAccountPage() {
   return (
 
     <>
-      <div className="h-[75px]  w-auto  border-b border-[#3d3d3d] bg-background text-foreground">
-        <h2 className="  ml-[125px] text-2xl font-bold tracking-tight">Manager Section</h2>
-        <p className="text-muted-foreground   ml-[125px]  ">
-          Salesperson Schedule.
-        </p>
-      </div>
-      <div className=" grow">
+      <div className="">
         <StoreHoursCalendar />
       </div>
     </>

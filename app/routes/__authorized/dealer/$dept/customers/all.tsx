@@ -106,6 +106,7 @@ import { GetUser } from '~/utils/loader.server';
 import { getSession, commitSession } from '~/sessions/auth-session.server';
 import { redirect, type ActionFunction, type LoaderFunction } from '@remix-run/node';
 import { prisma } from '~/libs';
+import { DrawerDemo } from '~/components/dashboard/admin/newdialog';
 
 
 
@@ -171,8 +172,11 @@ export default function MainDashbaord() {
       },
       cell: ({ row, column: { id } }) => {
         const data = row.original
+        //<ClientDialog data={data} user={user} deFees={deFees} salesPerson={salesPerson} />
+
         return (
-          <ClientDialog data={data} user={user} deFees={deFees} salesPerson={salesPerson} />
+
+          <   DrawerDemo data={data} />
         )
       },
     },
@@ -977,37 +981,25 @@ export function DataTable({ columns, data, user }) {
               </Button>
             </div>
           )}
-          {selectedGlobal === true && (
-            <div className="relative flex-1 md:grow-0 ">
-              <DebouncedInput
-                value={globalFilter ?? ""}
-                onChange={(value) => setGlobalFilter(String(value))}
-                className="mx-1 ml-3 rounded-md border border-border bg-background p-2 text-foreground shadow max-w-sm w-auto"
-                placeholder="Search all columns..." autoFocus
-              />
+          <div className="relative flex-1 md:grow-0 ">
+            <DebouncedInput
+              value={globalFilter ?? ""}
+              onChange={(value) => setGlobalFilter(String(value))}
+              className="mx-1 ml-3 rounded-md border border-border bg-background p-2 text-foreground shadow max-w-xl w-auto"
+              placeholder="Search..." autoFocus
+            />
 
-              <Button
-                onClick={() => {
-                  setGlobalFilter([]);
-                  setSelectedGlobal(false);
-                }}
-                size="icon"
-                variant="ghost"
-                className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
-                <X size={16} />
-              </Button>
-            </div>
-          )}
-          <Button size='sm' variant="outline" className='mr-3' onClick={() => {
-
-          }} >Work Orders</Button>
-          <Button size='sm' variant="outline" className='mr-3' onClick={() => {
-
-          }} >PAC Orders</Button>
-          <Button size='sm' variant="outline" className='mr-3' onClick={() => {
-
-          }} >Sales Deals</Button>
-
+            <Button
+              onClick={() => {
+                setGlobalFilter([]);
+                setSelectedGlobal(false);
+              }}
+              size="icon"
+              variant="ghost"
+              className='bg-transparent mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
+              <X size={16} />
+            </Button>
+          </div>
         </div>
         <div className="rounded-md border border-border    h-auto max-h-[600px] overflow-y-auto  ">
           <ShadTable className='border border-border text-foreground bg-background'>

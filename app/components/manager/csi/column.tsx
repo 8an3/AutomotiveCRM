@@ -88,7 +88,7 @@ export function Column({ name, questionId, answers, csi }: ColumnProps) {
           inputLabel="Edit column name"
           buttonLabel={`Edit column "${name}" name`}
           inputClassName="border border-border w-full rounded-lg py-1 px-2  text-foreground bg-background"
-          buttonClassName="block rounded-lg text-left w-auto py-1 px-2 font-medium text-slate-600"
+          buttonClassName="block rounded-lg text-left w-auto py-1 px-2 font-medium text-foreground"
         >
           <input type="hidden" name="intent" value={INTENTS.updateColumn} />
           <input type="hidden" name="columnId" value={questionId} />

@@ -127,6 +127,7 @@ export default function SettingsLayout() {
   const submit = useSubmit();
   const navigate = useNavigate()
 
+
   // pac
   const mergeAcc = [
     ...(clientfile.AccOrder || []),
@@ -159,7 +160,7 @@ export default function SettingsLayout() {
 
   const lastWorkOrder = workOrders[0];
   const lastAccOrder = AccOrders[0];
-  const taxMultiplier = Number(tax.userTax);
+  const taxMultiplier = Number(tax);
   const taxRate = 1 + taxMultiplier / 100;
 
   let customerCard = [
@@ -192,10 +193,7 @@ export default function SettingsLayout() {
       title: "Work Orders",
       href: "/examples/forms/appearance",
     },
-    {
-      title: "Sales Deals",
-      href: "/examples/forms/notifications",
-    },
+
   ]
   const [tabState, setTabState] = useState('Profile')
   function SidebarNav({ className, items, ...props }: SidebarNavProps) {
@@ -253,28 +251,35 @@ export default function SettingsLayout() {
   }
   const [showPrevOrder, setShowPrevOrder] = useState(null)
   const [showPrev, setShowPrev] = useState(false)
-  let totalAccessoriesCost;
-  let totalAmountPaid;
-  if (lastWorkOrder) {
-    totalAmountPaid = calculateTotalAmountPaid(lastWorkOrder)
-    totalAccessoriesCost = calculateTotalAccessoriesCost(lastWorkOrder);
-  }
-  if (lastAccOrder) {
-    totalAmountPaid = calculateTotalAmountPaid(lastAccOrder)
-    totalAccessoriesCost = calculateTotalAccessoriesCost(lastAccOrder);
-  }
+  const [totalAccessoriesCost, setTotalAccessoriesCost] = useState();
+  const [totalAmountPaid, setTotalAmountPaid] = useState();
+
+  useEffect(() => {
+    if (lastWorkOrder) {
+      setTotalAmountPaid(calculateTotalAmountPaid(lastWorkOrder))
+      setTotalAccessoriesCost(calculateTotalAccessoriesCost(lastWorkOrder))
+    }
+  }, [lastWorkOrder]);
+
+  useEffect(() => {
+    if (lastAccOrder) {
+      setTotalAmountPaid(calculateTotalAmountPaid(lastAccOrder))
+      setTotalAccessoriesCost(calculateTotalAccessoriesCost(lastAccOrder))
+    }
+  }, [lastAccOrder]);
 
   useEffect(() => {
     if (showPrevOrder) {
-      totalAmountPaid = calculateTotalAmountPaid(showPrevOrder)
-      totalAccessoriesCost = calculateTotalAccessoriesCost(showPrevOrder)
+      setTotalAmountPaid(calculateTotalAmountPaid(showPrevOrder))
+      setTotalAccessoriesCost(calculateTotalAccessoriesCost(showPrevOrder))
     }
   }, [showPrevOrder]);
+
   const [value, setValue] = useState('');
 
   const total2 = ((parseFloat(totalAccessoriesCost) - parseFloat(discDollar)) * taxRate).toFixed(2)
   const total1 = (((parseFloat(totalAccessoriesCost) * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2)
-  const total = discDollar && discDollar > 0.00 ? total1 : total2
+  const [total, setTotal] = useState(discDollar && discDollar > 0.00 ? total1 : total2);
 
   // ---- pagination all orders
   const [pageIndexAll, setPageIndexAll] = useState(1);
@@ -313,50 +318,19 @@ export default function SettingsLayout() {
   // ---- pagination all orders
 
   let toReceipt
-  if (showPrevOrder) {
-    const client = showPrevOrder.Clientfile
-    const maxAccessories = 19;
 
-    toReceipt = {
-      qrCode: showPrevOrder.id,
-      subTotal: `$${totalAccessoriesCost.toFixed(2)}`,
-      tax: `${tax.userTax}%`,
-      total: `$${total}`,
-      remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
-      firstName: client.firstName,
-      lastName: client.lastName,
-      phone: client.phone,
-      email: client.email,
-      address: client.address,
-      date: new Date().toLocaleDateString("en-US", options2),
-      cardNum: '',
-      paymentType: '',
-      image: user.Dealer.DealerLogo.dealerLogo
-    };
-
-    showPrevOrder.AccessoriesOnOrders.forEach((result, index) => {
-      if (index < maxAccessories) {
-        toReceipt[`desc${index + 1}`] = `${result.accessory.brand} ${result.accessory.name}`;
-        toReceipt[`qt${index + 1}`] = String(result.quantity);
-        toReceipt[`price${index + 1}`] = String(result.accessory.price);
-      }
-    });
-
-    for (let i = showPrevOrder.AccessoriesOnOrders.length + 1; i <= maxAccessories; i++) {
-      toReceipt[`desc${i}`] = '';
-      toReceipt[`qt${i}`] = '';
-      toReceipt[`price${i}`] = '';
-    }
-  }
 
   const showPrevOrderById = (id) => {
     const filteredOrder = AccOrders.find(order => order.id === id);
     setShowPrev(true)
     setShowPrevOrder(filteredOrder);
   }
+  const [order, setOrder] = useState();
+
   const showPrevWorkOrderById = (id) => {
     const filteredOrder = workOrders.find(order => order.workOrderId === id);
     setShowPrev(true)
+    setOrder(filteredOrder)
     setShowPrevOrder(filteredOrder);
   }
   // -------------- workorder
@@ -370,9 +344,6 @@ export default function SettingsLayout() {
       console.log('66', searchWorkOrder.value)
     }
   }, [searchWorkOrder]);
-
-  const order = showPrevOrder
-  console.log('77', workOrders, accOrders)
 
   const iFrameRef: React.LegacyRef<HTMLIFrameElement> = useRef(null);
 
@@ -438,7 +409,82 @@ export default function SettingsLayout() {
   const [showPrevOrderWO, setShowPrevOrderWO] = useState(null)
 
   const [openComms, setOpenComms] = useState(false)
+  const [partsSubTotal, setPartsSubTotal] = useState(0.00);
+  const [totalPreTax, setTotalPreTax] = useState(0.00);
+  const [serviceSubTotal, setServiceSubTotal] = useState(0.00);
+  const [serviceHours, setServiceHours] = useState(0.00);
+  const [serviceHoursVar, setServiceHoursVar] = useState(0.00);
+  const [adjustedService, setAdjustedService] = useState(false);
 
+  let totalTime = 0.00
+  let totalHours = 0.00
+  useEffect(() => {
+    if (order) {
+      const partsSub = order?.AccOrders?.reduce((total, accOrder) => {
+        return total + accOrder?.AccessoriesOnOrders?.reduce((subTotal, accessoryOnOrder) => {
+          return subTotal + (accessoryOnOrder.accessory.price * accessoryOnOrder.quantity);
+        }, 0);
+      }, 0);
+      setPartsSubTotal(partsSub.toFixed(2))
+
+      let serviceHoursTotal = 0.00;
+
+      const serviceSub = order?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
+        const hours = serviceOnOrder.hr || serviceOnOrder.service.estHr;
+        const quantity = serviceOnOrder.quantity || 1; // Make sure quantity is correct
+        const subtotal = hours * tax.userLabour * quantity;
+        //   console.log('hours:', hours, 'quantity:', quantity, 'subtotal:', subtotal); // Log values here
+        return total + subtotal;
+      }, 0);
+
+      serviceHoursTotal = order?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
+        const hours = serviceOnOrder.hr ?? serviceOnOrder.service.estHr ?? 0;
+        const quantity = serviceOnOrder.quantity ?? 1;
+        return total + (hours * quantity);
+      }, 0);
+
+      setServiceHours(serviceHoursTotal);
+
+      const adjustedServiceSub = serviceHoursVar * tax.userLabour;
+
+      setServiceSubTotal(adjustedService ? adjustedServiceSub.toFixed(2) : serviceSub.toFixed(2));
+
+      const totalPreTax = parseFloat(partsSub) + parseFloat(serviceSub);
+      setTotalPreTax(totalPreTax.toFixed(2));
+
+      //  console.log('partsSub:', partsSub, 'serviceSub:', serviceSub, 'totalPreTax:', totalPreTax);
+
+      const total2 = ((parseFloat(partsSub + serviceSub) - parseFloat(discDollar)) * taxRate).toFixed(2);
+      const total1 = (((parseFloat(partsSub + serviceSub) * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
+      const calculatedTotal = discPer > 0.00 ? total1 : total2;
+
+      setTotal(parseFloat(calculatedTotal));
+
+      const totalAmountPaid2 = order.Payments.reduce((total, payment) => {
+        return total + payment.amountPaid;
+      }, 0);
+
+      if (totalAmountPaid2) { setTotalAmountPaid(totalAmountPaid2) }
+
+      if (order.WorkOrderClockEntries) {
+        totalTime = order.WorkOrderClockEntries.reduce((acc, entry) => {
+          if (entry.start && entry.end) {
+            const startTime = new Date(entry.start);
+            const endTime = new Date(entry.end);
+            const duration = (endTime - startTime) / (1000 * 60 * 60); // duration in hours
+            return acc + duration;
+          }
+          return acc;
+        }, 0);
+      }
+
+      totalHours = serviceHoursTotal
+      //  console.log('Service Hours Total:', serviceHoursTotal);
+      // console.log('Total Clocked Time:', totalTime);
+
+      //  console.log('Order Services:', order.ServicesOnWorkOrders);
+    }
+  }, [order, serviceHours, serviceHoursVar, adjustedService, discDollar, discPer]);
   return (
     <>
       <div className=" space-y-6 p-10 pb-16 ">
@@ -805,6 +851,7 @@ export default function SettingsLayout() {
                     options2={options2}
                     setShowPrev={setShowPrev}
                     setShowPrevOrder={setShowPrevOrder}
+                    user={user}
                   />
                 </div>
               </div>
@@ -817,7 +864,17 @@ export default function SettingsLayout() {
                     user={user}
                     clientfile={clientfile}
                     showPrevOrder={showPrevOrderWO}
+                    setShowPrev={setShowPrev}
                     setShowPrevOrder={setShowPrevOrderWO}
+                    showPrevWorkOrderById={showPrevWorkOrderById}
+                    setPartsSubTotal={setPartsSubTotal}
+                    setTotalAmountPaid={setTotalAmountPaid}
+                    setTotal={setTotal}
+                    taxRate={taxRate}
+                    discDollar={discDollar}
+                    discPer={discPer}
+                    setTotalPreTax={setTotalPreTax}
+                    setServiceSubTotal={setServiceSubTotal}
                   />
                 </div>
                 <WorkOrderBar
@@ -827,6 +884,17 @@ export default function SettingsLayout() {
                   clientfile={clientfile}
                   showPrevOrder={showPrevOrderWO}
                   setShowPrevOrder={setShowPrevOrderWO}
+                  totalAccessoriesCost={totalAccessoriesCost}
+                  totalAmountPaid={totalAmountPaid}
+                  total={total}
+                  partsSubTotal={partsSubTotal}
+                  totalPreTax={totalPreTax}
+                  serviceSubTotal={serviceSubTotal}
+                  serviceHours={serviceHours}
+                  serviceHoursVar={serviceHoursVar}
+                  adjustedService={adjustedService}
+                  taxRate={taxRate}
+
                 />
               </div>
             )}
@@ -837,7 +905,8 @@ export default function SettingsLayout() {
   )
 }
 
-export function WorkorderTabled({ orders, user, clientfile, showPrevOrder, setShowPrevOrder }) {
+
+export function WorkorderTabled({ orders, user, clientfile, showPrevOrder, setShowPrevOrder, setShowPrev, showPrevWorkOrderById, setPartsSubTotal, setTotalAmountPaid, setTotal, discDollar, discPer, setTotalPreTax, setServiceSubTotal, taxRate }) {
 
   //  table
   const [data, setData] = useState(orders);
@@ -913,7 +982,6 @@ export function WorkorderTabled({ orders, user, clientfile, showPrevOrder, setSh
 
     }
   }, [showPrevOrder]);
-
   const [date, setDate] = useState<Date>()
 
   const newDate = new Date()
@@ -1088,8 +1156,10 @@ export function WorkorderTabled({ orders, user, clientfile, showPrevOrder, setSh
                   variant="ghost"
                   className="mr-3 hover:bg-primary"
                   onClick={() => {
-                    setValue(data.workOrderId);
-                    showPrevOrderById(data.workOrderId)
+                    setShowPrevOrder(data)
+
+                    setShowPrev(true)
+                    showPrevWorkOrderById(data.workOrderId)
                   }}
                 >
                   <Eye className="h-5 w-5" />
@@ -1102,7 +1172,6 @@ export function WorkorderTabled({ orders, user, clientfile, showPrevOrder, setSh
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link to={`/dealer/service/workOrder/${data.workOrderId}`} >
-
                   <Button
                     size="icon"
                     variant="ghost"
@@ -1610,18 +1679,13 @@ export function WorkorderTabled({ orders, user, clientfile, showPrevOrder, setSh
     </div>
   )
 }
-export const WorkOrderBar = ({ order, showPrev, user, clientfile, showPrevOrder, setShowPrevOrder }) => {
+export const WorkOrderBar = ({ order, showPrev, user, clientfile, showPrevOrder, setShowPrevOrder, partsSubTotal, totalPreTax, serviceSubTotal, serviceHours, serviceHoursVar, adjustedService, totalAmountPaid, totalAccessoriesCost, total, taxRate }) => {
   const status = useFetcher()
   const navigate = useNavigate()
   const submit = useSubmit()
   let addProduct = useFetcher();
   const tax = clientfile.Dealer
   let formRef = useRef();
-
-  const [totalAccessoriesCost, setTotalAccessoriesCost] = useState(0.00);
-  const [total, setTotal] = useState(0.00);
-  const [totalAmountPaid, setTotalAmountPaid] = useState(0.00);
-
 
   let toReceipt
 
@@ -1632,7 +1696,7 @@ export const WorkOrderBar = ({ order, showPrev, user, clientfile, showPrevOrder,
     toReceipt = {
       qrCode: showPrevOrder.workOrderId,
       subTotal: `$${totalAccessoriesCost.toFixed(2)}`,
-      tax: `${tax.userTax}%`,
+      tax: `${user.Dealer.userTax}%`,
       total: `$${total}`,
       remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
       firstName: client.firstName,
@@ -1954,7 +2018,7 @@ export const WorkOrderBar = ({ order, showPrev, user, clientfile, showPrevOrder,
                                     </EditableText>
 
                                   </div>
-                                  <p>{" "}hrs{" "}{" "}@{" "}${tax.userLabour}</p>
+                                  <p>{" "}hrs{" "}{" "}@{" "}${user.Dealer.userLabour}</p>
                                 </div>
                               </div>
                               {result.status && (
@@ -2202,7 +2266,7 @@ export const WorkOrderBar = ({ order, showPrev, user, clientfile, showPrevOrder,
   )
 }
 export const MySidebar = ({
-  showPrev, lastOrder, searchResults, showPrevOrder, options2, setShowPrev, setShowPrevOrder, tax, toggleOrderDetails, showPrevOrderById, showOrder, taxRate, toReceipt
+  showPrev, lastOrder, searchResults, showPrevOrder, options2, setShowPrev, setShowPrevOrder, tax, toggleOrderDetails, showPrevOrderById, showOrder, taxRate, toReceipt, user
 }) => {
   const navigate = useNavigate()
   const [paymentType, setPaymentType] = useState('');
@@ -2218,9 +2282,7 @@ export const MySidebar = ({
   const [discPer, setDiscPer] = useState(0.00)
   const submit = useSubmit()
 
-  const [totalAccessoriesCost, setTotalAccessoriesCost] = useState(0.00);
-  const [totalAmountPaid, setTotalAmountPaid] = useState(0.00);
-  const [total, setTotal] = useState(0.00);
+
 
   useEffect(() => {
     if (showPrev && showPrevOrder) {
@@ -2555,7 +2617,7 @@ export const MySidebar = ({
                 )}
                 <li className="flex items-center justify-between">
                   <span className="text-muted-foreground">Tax</span>
-                  <span>{tax.userTax}%</span>
+                  <span>{user.Dealer.userTax}%</span>
                 </li>
                 <li className="flex items-center justify-between font-semibold">
                   <span className="text-muted-foreground">Total</span>
@@ -2811,7 +2873,7 @@ export const MySidebar = ({
                           <span className="text-muted-foreground">
                             Tax
                           </span>
-                          <span>{tax.userTax}%</span>
+                          <span>{user.Dealer.userTax}%</span>
                         </li>
                         <li className="flex items-center justify-between font-semibold">
                           <span className="text-muted-foreground">

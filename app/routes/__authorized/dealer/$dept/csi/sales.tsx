@@ -33,7 +33,7 @@ export default function Csis() {
   let navigation = useNavigation();
   let isCreating = navigation.formData?.get("intent") === "createBoard";
   return (
-    <div className='mt-5 '>
+    <div className='m-5 '>
       <p className='text-xl'>CSI Questionaires</p>
       <div className="mx-auto grid w-full max-w-8xl items-start gap-4 md:grid-cols-[250px_1fr] lg:grid-cols-[250px_1fr]">
         <nav className="grid gap-4 text-sm text-muted-foreground" x-chunk="dashboard-04-chunk-0"        >
@@ -81,7 +81,7 @@ function Questionaires({
     <div className="group flex">
       <Link
         to={`/dealer/manager/csi/sales/${id}`}
-        className="w-[250px] h-8 shadow border border-border rounded-lg bg-background text-center my-auto  "
+        className="w-[250px] h-9  border border-border rounded-lg bg-background text-center my-auto items-center justify-start content-center"
       >
         <p className='my-auto'>{name}</p>
       </Link >
@@ -91,7 +91,8 @@ function Questionaires({
         <Button
           size="icon"
           variant="outline"
-          type='submit' className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+          type='submit'
+          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
           onClick={(event) => {
             event.stopPropagation();
           }}
