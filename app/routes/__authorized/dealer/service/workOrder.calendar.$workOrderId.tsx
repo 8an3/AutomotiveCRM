@@ -1361,7 +1361,7 @@ export function EventInfoModal({ user, open, handleClose, currentEvent, techs, s
                       <SelectLabel>Technicians</SelectLabel>
                       {techs.map((user) => (
                         <SelectItem key={user.email} value={user.email} className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
-                          {user.username}
+                          {user.name}
                         </SelectItem>
                       ))}
                     </SelectGroup>

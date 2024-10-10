@@ -111,7 +111,7 @@ import { BanknoteIcon } from "lucide-react";
 import { DollarSign } from "lucide-react";
 import { Wrench } from "lucide-react";
 import { Shirt } from "lucide-react";
-import PrintReceiptAcc from "~/routes/__authorized/dealer/document/printReceiptAcc.client";
+import PrintReceiptAcc from "~/routes/__authorized/dealer/document/printReceiptAcc";
 import { Receipt } from "lucide-react";
 import WorkOrderSales from "~/routes/__authorized/dealer/document/printWorkOrder.client";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "~/components/ui/accordion"
@@ -997,8 +997,8 @@ export default function Dashboard() {
       { name: 'metManager', value: formData.metManager, label: 'Met Manager', },
       { name: 'metParts', value: formData.metParts, label: 'Met Parts', },
       { name: 'sold', value: formData.sold, label: 'Sold', },
-      { name: 'deposit', value: formData.deposit, label: 'Deposit', },
       { name: 'refund', value: formData.refund, label: 'Refund', },
+      { name: 'deposit', value: formData.deposit, label: 'Deposit', },
       { name: 'turnOver', value: formData.turnOver, label: 'Turn Over', },
       { name: 'financeApp', value: formData.financeApp, label: 'Finance Application Done', },
       { name: 'approved', value: formData.approved, label: 'approved', },
@@ -2692,26 +2692,36 @@ export default function Dashboard() {
                   )
                   }
                   {editProgress === false && (
-                    items && items
-                      .filter((item) => {
-                        const isChecked =
-                          item.value === 'on' ||
-                          (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'));
-                        return checkedItems[item.name] ?? isChecked;
-                      })
-                      .map((item) => {
-                        const isChecked =
-                          item.value === 'on' ||
-                          (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'));
-                        return (
-                          <div key={item.name} className="flex justify-between items-center mt-1 mr-1">
-                            <label className="text-muted-foreground" htmlFor={item.name}>{item.label}</label>
-                            <span>{formatDate2(item.value)}</span>
+                    <>
+                      {items && items
+                        .filter((item) =>
+                          (checkedItems[item.name] ?? (item.value !== null && item.value !== undefined && item.value !== '')) &&
+                          item.name !== 'deposit' // Exclude finance.deposit
+                        )
+                        .map((item) => {
+                          const isChecked =
+                            item.value === 'on' ||
+                            (isDate(new Date(item.value)) && new Date(item.value) > new Date('2022-01-01'));
 
-                          </div>
-                        );
-                      })
+                          return (
+                            <div key={item.name} className="flex justify-between items-center mt-1 mr-1">
+                              <label className="text-muted-foreground" htmlFor={item.name}>{item.label}</label>
+                              <span>{formatDate2(item.value)}</span>
+                            </div>
+                          );
+                        })
+                      }
+
+
+                      {finance.deposit && (
+                        <div className="flex justify-between items-center mt-1 mr-1">
+                          <label className="text-muted-foreground">Deposit</label>
+                          <span>{formatDate2(finance.deposit)}</span>
+                        </div>
+                      )}
+                    </>
                   )}
+
                 </div>
               </CardContent>
               <CardFooter className="flex justify-self-end flex-row items-center border-t border-border  bg-muted/50  px-6 py-3">
@@ -8357,6 +8367,11 @@ export const action: ActionFunction = async ({ req, request, params }) => {
     return json({ update })
   }
   if (intent === 'createFinancePayment') {
+    const finance = await prisma.finance.findUnique({ where: { id: formData.finance.id } })
+    const update = await prisma.finance.update({
+      where: { id: formData.finance.id },
+      data: { deposit: finance.deposit ? finance.deposit : new Date() }
+    })
     const payments = await prisma.payment.create({
       data: {
         financeId: formData.financeId,
@@ -9167,6 +9182,7 @@ export const action: ActionFunction = async ({ req, request, params }) => {
   }
   // client info
   if (intent === 'updateClientInfoFinance') {
+    console.log(formData, 'update')
     const updateClient = await prisma.finance.update({
       where: { id: formData.financeId },
       data: {
@@ -11165,7 +11181,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
   });
   // ----------------------service -----------------------------
   const orders = finance.WorkOrders
-  console.log(orders, 'work ordfers')
+  // console.log(orders, 'work ordfers')
   const tax = user.Dealer
   const dealerImage = await prisma.dealerLogo.findUnique({ where: { id: 1 } })
   const services = await prisma.services.findMany({})
@@ -11640,6 +11656,7 @@ export async function loader({ params, request }: DataFunctionArgs) {
     default:
     // code block
   }
+  //, 'deposit')
   const APP_URL = process.env.APP_URL
   return await cors(request, json({ modelData, apptFinance2, aptFinance3, ok: true, getTemplates, SetClient66Cookie, Coms, merged, docs: docTemplates, clientFile, finance, deFees, sliderWidth, user, financeNotes, userList, clientfileId, searchData, convoList, conversations, emailTemplatesDropdown, salesPeople, financeManagers, manOptions, bmwMoto, bmwMoto2, dealerImage, services, tax, orders, tableData, APP_URL }, { headers: { "Set-Cookie": await commitSession(session2), }, }));
 }

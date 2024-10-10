@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select"
-import PrintReceipt from "../document/printReceiptAcc";
+import PrintReceipt from "~/routes/__authorized/dealer/document/printReceiptAcc.client";
 import { CalendarIcon, ClockIcon } from "@radix-ui/react-icons"
 import { format } from "date-fns"
 import { Calendar as SmallCalendar } from '~/components/ui/calendar';

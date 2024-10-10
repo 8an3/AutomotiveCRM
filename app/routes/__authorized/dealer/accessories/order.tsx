@@ -88,7 +88,7 @@ import {
 } from "~/components/ui/pagination"
 import axios from "axios";
 import { FileCheck } from "lucide-react";
-import PrintReceipt from "../document/printReceiptAcc.client";
+import PrintReceipt from "../document/printReceiptAcc";
 import { Users } from "lucide-react";
 import { ArrowUpRight } from "lucide-react";
 import { Avatar } from "~/components";
@@ -1608,7 +1608,7 @@ export const calculateTotalAmountPaid = (order) => {
 };
 
 const MySidebar = ({
-  showPrev, lastOrder, searchResults, showPrevOrder, options2, setShowPrev, setShowPrevOrder, tax, toggleOrderDetails, showPrevOrderById, showOrder, taxRate, toReceipt
+  showPrev, lastOrder, searchResults, showPrevOrder, options2, setShowPrev, setShowPrevOrder, tax, toggleOrderDetails, showPrevOrderById, showOrder, taxRate, toReceipt,
 }) => {
   const navigate = useNavigate()
   const [paymentType, setPaymentType] = useState('');

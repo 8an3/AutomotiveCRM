@@ -78,7 +78,7 @@ import { cn } from "~/utils";
 import { BanknoteIcon } from "lucide-react";
 import { ArrowDownUp } from "lucide-react";
 import { ClientOnly } from "remix-utils";
-import PrintLabels from "../document/printLabels.client";
+import PrintLabels from "../document/printLabels.";
 import useSWR from 'swr'
 import ScanSound from '~/images/scan.mp4'
 import { BrowserMultiFormatReader, BarcodeFormat, DecodeHintType, NotFoundException, ChecksumException, FormatException } from '@zxing/library';
@@ -104,7 +104,7 @@ import {
 } from "~/components/ui/pagination"
 import axios from "axios";
 import { FileCheck } from "lucide-react";
-import PrintReceipt from "../document/printReceiptAcc.client";
+import PrintReceipt from "../document/printReceiptAcc";
 import { Users } from "lucide-react";
 import { Activity } from "lucide-react";
 import { ArrowUpRight } from "lucide-react";

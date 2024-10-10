@@ -88,7 +88,7 @@ import { cn } from "~/utils";
 import { BanknoteIcon } from "lucide-react";
 import { ArrowDownUp } from "lucide-react";
 import { ClientOnly } from "remix-utils";
-import PrintLabels from "../document/printLabels.client";
+import PrintLabels from "../document/printLabels.";
 import useSWR from 'swr'
 import ScanSound from '~/images/scan.mp4'
 import { BrowserMultiFormatReader, BarcodeFormat, DecodeHintType, NotFoundException, ChecksumException, FormatException } from '@zxing/library';

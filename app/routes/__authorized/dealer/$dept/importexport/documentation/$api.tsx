@@ -1671,11 +1671,6 @@ Clientfile: data.Clientfile,
         setApiInfo(userData)
         setGetCopy(clientFileCopy)
         break;
-      case 'workOrderTechTimes':
-        setApiName('Work Order Tech Times')
-        setApiInfo(userData)
-        setGetCopy(clientFileCopy)
-        break;
       case 'servicesOnWorkOrders':
         setApiName('Services On Work Orders')
         setApiInfo(userData)

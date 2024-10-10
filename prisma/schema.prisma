@@ -1351,86 +1351,88 @@ model LockFinanceTerminals {
 
 model Finance {
   // employees
-  financeManager           String?
-  userEmail                String?
-  userName                 String? // need to add //   // need to add on site actions //
-  financeManagerName       String? // need to add //   // need to add on site actions //
+  financeManager      String?
+  userEmail           String?
+  userName            String? // need to add //   // need to add on site actions //
+  financeManagerName  String? // need to add //   // need to add on site actions //
   // client
-  email                    String?
-  firstName                String?
-  lastName                 String?
-  phone                    String?
-  name                     String?
-  address                  String?
-  city                     String?
-  postal                   String?
-  province                 String?
-  dl                       String?
-  typeOfContact            String?
-  timeToContact            String?
-  dob                      String?
+  email               String?
+  firstName           String?
+  lastName            String?
+  phone               String?
+  name                String?
+  address             String?
+  city                String?
+  postal              String?
+  province            String?
+  dl                  String?
+  typeOfContact       String?
+  timeToContact       String?
+  dob                 String?
   // finance
-  othTax                   String?
-  optionsTotal             String?
-  lienPayout               String?
-  leadNote                 String?
-  sendToFinanceNow         String?
-  dealNumber               String?
-  iRate                    String?
-  months                   String?
-  discount                 String?
-  total                    String?
-  onTax                    String?
-  on60                     String?
-  biweekly                 String?
-  weekly                   String?
-  weeklyOth                String?
-  biweekOth                String?
-  oth60                    String?
-  weeklyqc                 String?
-  biweeklyqc               String?
-  qc60                     String?
-  deposit                  String?
-  biweeklNatWOptions       String?
-  weeklylNatWOptions       String?
-  nat60WOptions            String?
-  weeklyOthWOptions        String?
-  biweekOthWOptions        String?
-  oth60WOptions            String?
-  biweeklNat               String?
-  weeklylNat               String?
-  nat60                    String?
-  qcTax                    String?
-  otherTax                 String?
-  totalWithOptions         String?
-  otherTaxWithOptions      String?
-  desiredPayments          String?
-  admin                    String?
-  commodity                String?
-  pdi                      String?
-  discountPer              String?
-  userLoanProt             Int?
-  userTireandRim           String?
-  userGap                  Int?
-  userExtWarr              String?
-  userServicespkg          Int?
-  deliveryCharge           Int?
-  vinE                     Int?
-  lifeDisability           Int?
-  rustProofing             Int?
-  userOther                Int?
+  othTax              String?
+  optionsTotal        String?
+  lienPayout          String?
+  leadNote            String?
+  sendToFinanceNow    String?
+  dealNumber          String?
+  iRate               String?
+  months              String?
+  discount            String?
+  total               String?
+  onTax               String?
+  on60                String?
+  biweekly            String?
+  weekly              String?
+  weeklyOth           String?
+  biweekOth           String?
+  oth60               String?
+  weeklyqc            String?
+  biweeklyqc          String?
+  qc60                String?
+  biweeklNatWOptions  String?
+  weeklylNatWOptions  String?
+  nat60WOptions       String?
+  weeklyOthWOptions   String?
+  biweekOthWOptions   String?
+  oth60WOptions       String?
+  biweeklNat          String?
+  weeklylNat          String?
+  nat60               String?
+  qcTax               String?
+  otherTax            String?
+  totalWithOptions    String?
+  otherTaxWithOptions String?
+  desiredPayments     String?
+  admin               String?
+  commodity           String?
+  pdi                 String?
+  discountPer         String?
+  userLoanProt        Int?
+  userTireandRim      String?
+  userGap             Int?
+  userExtWarr         String?
+  userServicespkg     Int?
+  deliveryCharge      Int?
+  vinE                Int?
+  lifeDisability      Int?
+  rustProofing        Int?
+  userOther           Int?
   // dates
-  referral                 String?
-  visited                  String?
-  bookedApt                String?
-  aptShowed                String?
-  aptNoShowed              String?
-  testDrive                String?
-  metService               String?
-  metManager               String?
-  metParts                 String?
-  sold                     String?
-  depositMade              String?
+  referral            String?
+  visited             String?
+  bookedApt           String?
+  aptShowed           String?
+  aptNoShowed         String?
+  testDrive           String?
+  metService          String?
+  metManager          String?
+  metParts            String?
+  sold                String?
+  depositMade         String?
+  depositTakenDate    String?
+  deposit             String?
+
   refund                   String?
   turnOver                 String?
   financeApp               String?
@@ -1456,7 +1458,6 @@ model Finance {
   financeApplication       String?
   pickUpDate               String?
   pickUpTime               String?
-  depositTakenDate         String?
   docsSigned               String?
   tradeRepairs             String?
   seenTrade                String?

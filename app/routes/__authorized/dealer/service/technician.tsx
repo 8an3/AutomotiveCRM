@@ -547,7 +547,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const id = params.workOrderId
 
   let allServiceApts = await prisma.workOrderApts.findMany({
-    where: { techEmail: 'tech@email.com' },
+    where: { techEmail: 'techdealer1282@email.com' },
     select: {
       id: true,
       tech: true,

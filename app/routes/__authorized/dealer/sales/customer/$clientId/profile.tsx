@@ -88,7 +88,7 @@ import { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState,
 import { fuzzyFilter, fuzzySort, TableMeta, getTableMeta, DebouncedInput, options2, EditableText } from "~/components/shared/shared";
 import { DataTablePagination } from "~/components/dashboard/calls/pagination";
 import { Check } from "lucide-react";
-import PrintReceipt from "../../../document/printReceiptAcc.client";
+import PrintReceipt from "../../../document/printReceiptAcc";
 import {
   Accordion,
   AccordionContent,

@@ -34,7 +34,6 @@ export async function loader({ request, params }: LoaderFunction) {
             customerId: true,
             returning: true,
             phone: true,
-            position: true,
             roleId: true,
             profileId: true,
             omvicNumber: true,

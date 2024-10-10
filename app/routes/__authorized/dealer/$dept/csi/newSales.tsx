@@ -112,7 +112,6 @@ export async function action({ request }: ActionFunction) {
       throw badRequest(`Unknown intent: ${intent}`);
     }
   }
-
 }
 export async function loader({ request }: LoaderFunction) {
   const session = await getSession(request.headers.get("Cookie"));

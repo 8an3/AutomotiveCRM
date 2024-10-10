@@ -128,7 +128,7 @@ import {
   ContextMenuTrigger,
 } from "~/components/ui/context-menu"
 import { ClientOnly } from "remix-utils";
-import PrintReceipt from "../document/printReceiptAcc.client";
+import PrintReceipt, { PrintReceipt2 } from "../document/printReceiptAcc";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -1502,7 +1502,29 @@ export default function Purchase() {
                       setShowDiscountDialog(true)
                     }}>Show Discount</DropdownMenuItem>
 
+                    {/**
+                    //
+                    //
+                    //
+                    //}}
+                    //
+                   <ClientOnly fallback={<p>Fallback component ...</p>}>
+                      {() => (
+                  </ClientOnly>        <React.Suspense fallback={<div>Loading...</div>}>
+                  </DropdownMenuItem>          <PrintReceipt data={toReceipt} />
+                         </React.Suspense>
 
+                    </ClientOnly>
+              </DropdownMenuItem>
+                    >*/}
+
+                    <DropdownMenuItem
+                      onSelect={() => {
+                        console.log(toReceipt)
+                        PrintReceipt2(toReceipt)
+                      }}>
+                      Print Receipt
+                    </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={() => {
                         const formData = new FormData();
@@ -1838,7 +1860,7 @@ export default function Purchase() {
                         className='bg-background text-foreground border-border border ml-3'
                         onClick={() => {
                           console.log(toReceipt)
-                          PrintReceipt(toReceipt)
+                          PrintReceipt2(toReceipt)
                         }}>
                         Print Receipt
                       </Button>
@@ -1859,7 +1881,7 @@ export default function Purchase() {
                 <div className="grid gap-3">
                   <ul className="grid gap-3">
                     {order.Payments && order.Payments.map((result, index) => (
-                      <li key={index} className="flex items-center justify-between group" key={index} >
+                      <li key={index} className="flex items-center justify-between group" >
                         <div className='flex items-center' >
                           <span className="text-muted-foreground">{result.paymentType}</span>
                           <fetcher.Form method="post" ref={formRef} className=''>
@@ -1904,38 +1926,41 @@ export default function Purchase() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-      )}
-      {showDiscountDialog && (
-        <AlertDialog open={showDiscountDialog} onOpenChange={setShowDiscountDialog}>
-          <AlertDialogContent className='border-border'>
-            <AlertDialogHeader>
-              <AlertDialogTitle>PAC Discount Password</AlertDialogTitle>
-              <AlertDialogDescription>
-                <Input
-                  autoFocus
-                  type='password'
-                  name='pacPassword'
-                  onChange={(e) => {
-                    setPassword(e.currentTarget.value)
-                  }} />
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction
-                onClick={() => {
-                  console.log(tax.pacDiscount, password, 'passwords')
+      )
+      }
+      {
+        showDiscountDialog && (
+          <AlertDialog open={showDiscountDialog} onOpenChange={setShowDiscountDialog}>
+            <AlertDialogContent className='border-border'>
+              <AlertDialogHeader>
+                <AlertDialogTitle>PAC Discount Password</AlertDialogTitle>
+                <AlertDialogDescription>
+                  <Input
+                    autoFocus
+                    type='password'
+                    name='pacPassword'
+                    onChange={(e) => {
+                      setPassword(e.currentTarget.value)
+                    }} />
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    console.log(tax.pacDiscount, password, 'passwords')
 
-                  if (tax.pacDiscount === password) {
-                    setShowDiscount(true)
-                  }
-                }} >
-                Submit
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
+                    if (tax.pacDiscount === password) {
+                      setShowDiscount(true)
+                    }
+                  }} >
+                  Submit
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )
+      }
     </div >
   );
 }
@@ -2136,7 +2161,7 @@ export const links: LinksFunction = () => [
 
 export const meta = () => {
   return [
-    { title: "New Order || PAC || Dealer Sales Assistant" },
+    { title: "Accessories Order || PAC || Dealer Sales Assistant" },
     {
       property: "og:title",
       content: "Your very own assistant!",

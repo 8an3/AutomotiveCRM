@@ -370,7 +370,6 @@ export async function loader({ request, params }: LoaderFunction) {
       activisUserId: true,
       activixEmail: true,
       activixActivated: true,
-      newLook: true,
       activixId: true,
       dealerAccountId: true,
       microId: true,
@@ -422,7 +421,7 @@ export async function loader({ request, params }: LoaderFunction) {
 
   const comsRecords = await prisma.comm.findMany({ where: { userEmail: email }, });
   const statsData = await prisma.finance.findMany({
-    where: { userEmail: { equals: email, }, },
+    where: { userEmail: email },
   });
   const finances = await prisma.finance.findMany({
     where: {
@@ -432,6 +431,7 @@ export async function loader({ request, params }: LoaderFunction) {
     },
     select: {
       sold: true,
+      delivered: true,
     },
   });
   const finNotSold = await prisma.finance.findMany({
@@ -441,29 +441,28 @@ export async function loader({ request, params }: LoaderFunction) {
     },
   });
   const allComms = finNotSold.flatMap(finance => finance.Comm);
-
+  const accOrders = await prisma.accOrder.findMany({
+    where: { paid: true }
+  })
+  const workOrders = await prisma.workOrder.findMany({
+    where: { paid: 'true' }
+  })
   return json({
-    user, deptGoals, userGoals, thirtyDayGoals, statsData, comsRecords, finances, allComms
+    user, deptGoals, userGoals, thirtyDayGoals, statsData, comsRecords, finances, allComms, accOrders, workOrders
   });
 };
 
-const calcPer = (goal, achiev) => {
-  if (goal === 0) return 0;
-  return Math.round((achiev / goal) * 100);
+const calcPer = (goal, actual) => {
+  // Avoid division by zero
+  return goal > 0 ? (actual / goal) * 100 : 0;
 };
 
 
-const chartConfigSales = {
-  sales: {
-    label: "Sales",
-    color: "#0090ff",
-  },
 
-} satisfies ChartConfig
 
 
 export default function NewFile() {
-  const { user, deptGoals, userGoals, thirtyDayGoals, statsData, comsRecords, finances, allComms } = useLoaderData()
+  const { user, deptGoals, userGoals, thirtyDayGoals, statsData, comsRecords, finances, allComms, accOrders, workOrders } = useLoaderData()
   const submit = useSubmit()
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
@@ -511,6 +510,23 @@ export default function NewFile() {
     },
   } satisfies ChartConfig
 
+  const chartConfigSales = {
+    sold: {
+      label: "Sold",
+      color: "#0090ff",
+    },
+    otd: {
+      label: "Out The Door",
+      color: "#2eb88a",
+    },
+
+  } satisfies ChartConfig
+  const chartConfigDepts = {
+    sold: {
+      label: "Sold",
+      color: "#0090ff",
+    },
+  } satisfies ChartConfig
   // --------------- dept chart --------------------//
 
   const chartData = months.map(month => {
@@ -526,26 +542,7 @@ export default function NewFile() {
 
   // --------------- dept chart --------------------//
   // --------------- user chart monthly ------------//
-  const salesData = months.map(month => ({
-    month,
-    goal: cards.find(card => card.dept === 'Sales')[`${month.toLowerCase()}Goal`],
-    achieved: cards.find(card => card.dept === 'Sales')[`${month.toLowerCase()}Ach`],
-  }));
-  const serviceData = months.map(month => ({
-    month,
-    goal: cards.find(card => card.dept === 'Service')[`${month.toLowerCase()}Goal`],
-    achieved: cards.find(card => card.dept === 'Service')[`${month.toLowerCase()}Ach`],
-  }));
-  const partsData = months.map(month => ({
-    month,
-    goal: cards.find(card => card.dept === 'Parts')[`${month.toLowerCase()}Goal`],
-    achieved: cards.find(card => card.dept === 'Parts')[`${month.toLowerCase()}Ach`],
-  }));
-  const accessoriesData = months.map(month => ({
-    month,
-    goal: cards.find(card => card.dept === 'Accessories')[`${month.toLowerCase()}Goal`],
-    achieved: cards.find(card => card.dept === 'Accessories')[`${month.toLowerCase()}Ach`],
-  }));
+
 
   const userGoalsData = userGoals.flatMap(userGoal =>
     months.map(month => ({
@@ -557,56 +554,109 @@ export default function NewFile() {
   let flattenedUserGoalsData = userGoalsData[0] ? userGoalsData : userGoalsData[0];
 
   const userChartData = userGoals[0];
+
+  const filterDataByMonth = (data, month) => {
+    // Check if data is valid
+    if (!data || !Array.isArray(data)) {
+      console.error("Data is not defined or not an array");
+      return 0; // Return 0 if data is invalid
+    }
+
+    // Count the number of sold dates in the specified month
+    return data.reduce((count, item) => {
+      const soldDate = new Date(item.sold);
+
+      // Check if the sold date falls in the specified month
+      if (soldDate.getMonth() === month - 1) {
+        return count + 1; // Increment the count if it matches
+      }
+      return count; // Return the current count if it doesn't match
+    }, 0);
+  };
+  // ------------------- depts
+  const accessoryGoals = deptGoals.filter(card => card.dept === 'Accessories')
+  const filterDataByMonthAccessories = (data) => {
+    return data.reduce((totals, item) => {
+      if (item.paid) {
+        const month = new Date(item.paidDate).getMonth();
+        if (month >= 0 && month < 12) {
+          totals[month] += Number(item.total) || 0;
+        }
+      }
+      return totals;
+    }, Array(12).fill(0));
+  };
+  const partsGoals = deptGoals.filter(card => card.dept === 'Parts')
+  const serviceGoals = deptGoals.filter(card => card.dept === 'Service')
+  const salesGoals = deptGoals.filter(card => card.dept === 'Sales')
+  const partsData = accOrders.filter(card => card.dept === 'Parts')
+  const accessoriesData = accOrders.filter(card => card.dept === 'Accessories')
+  console.log(accessoriesData, 'accessoriesData')
   const chartData2 = [
     {
       month: "January",
-      sales: calcPer(userChartData.janGoal, userChartData.janAch),
+      sold: calcPer(Number(userChartData.janGoal), filterDataByMonth(statsData, 1)),
+      otd: calcPer(Number(userChartData.janAch), filterDataByMonth(statsData, 1)),
     },
     {
       month: "February",
-      sales: calcPer(userChartData.febGoal, userChartData.febAch),
+      sold: calcPer(Number(userChartData.febGoal), filterDataByMonth(statsData, 2)),
+      otd: calcPer(Number(userChartData.febAch), filterDataByMonth(statsData, 2)),
     },
     {
       month: "March",
-      sales: calcPer(userChartData.marGoal, userChartData.marAch),
+      sold: calcPer(Number(userChartData.marGoal), filterDataByMonth(statsData, 3)),
+      otd: calcPer(Number(userChartData.marAch), filterDataByMonth(statsData, 3)),
     },
     {
       month: "April",
-      sales: calcPer(userChartData.aprGoal, userChartData.aprAch),
+      sold: calcPer(Number(userChartData.aprGoal), filterDataByMonth(statsData, 4)),
+      otd: calcPer(Number(userChartData.aprAch), filterDataByMonth(statsData, 4)),
     },
     {
       month: "May",
-      sales: calcPer(userChartData.mayGoal, userChartData.mayAch),
+      sold: calcPer(Number(userChartData.mayGoal), filterDataByMonth(statsData, 5)),
+      otd: calcPer(Number(userChartData.mayAch), filterDataByMonth(statsData, 5)),
     },
     {
       month: "June",
-      sales: calcPer(userChartData.junGoal, userChartData.junAch),
+      sold: calcPer(Number(userChartData.junGoal), filterDataByMonth(statsData, 6)),
+      otd: calcPer(Number(userChartData.junAch), filterDataByMonth(statsData, 6)),
     },
     {
       month: "July",
-      sales: calcPer(userChartData.julGoal, userChartData.julAch),
+      sold: calcPer(Number(userChartData.julGoal), filterDataByMonth(statsData, 7)),
+      otd: calcPer(Number(userChartData.julAch), filterDataByMonth(statsData, 7)),
     },
     {
       month: "August",
-      sales: calcPer(userChartData.augGoal, userChartData.augAch),
+      sold: calcPer(Number(userChartData.augGoal), filterDataByMonth(statsData, 8)),
+      otd: calcPer(Number(userChartData.augAch), filterDataByMonth(statsData, 8)),
     },
     {
       month: "September",
-      sales: calcPer(userChartData.sepGoal, userChartData.sepAch),
+      sold: calcPer(Number(userChartData.sepGoal), filterDataByMonth(statsData, 9)),
+      otd: calcPer(Number(userChartData.sepAch), filterDataByMonth(statsData, 9)),
     },
     {
       month: "October",
-      sales: calcPer(userChartData.octGoal, userChartData.octAch),
+      sold: calcPer(Number(userChartData.octGoal), filterDataByMonth(statsData, 10)),
+      otd: calcPer(Number(userChartData.octAch), filterDataByMonth(statsData, 10)),
     },
     {
       month: "November",
-      sales: calcPer(userChartData.novGoal, userChartData.novAch),
+      sold: calcPer(Number(userChartData.novGoal), filterDataByMonth(statsData, 11)),
+      otd: calcPer(Number(userChartData.novAch), filterDataByMonth(statsData, 11)),
     },
     {
       month: "December",
-      sales: calcPer(userChartData.decGoal, userChartData.decAch),
+      sold: calcPer(Number(userChartData.decGoal), filterDataByMonth(statsData, 12)),
+      otd: calcPer(Number(userChartData.decAch), filterDataByMonth(statsData, 12)),
     },
   ];
+
+
+
   // --------------- user chart monthly ------------//
   // --------------- single goals extra --------------------//
 
@@ -670,7 +720,6 @@ export default function NewFile() {
 
   // --------------- 30day call chart  --------------------//
   //
-  console.log(chartData2, 'chartData2')
   return (
     <div>
       <Tabs defaultValue="username" className="w-[95%]">
@@ -722,7 +771,7 @@ export default function NewFile() {
                             <TableBody>
                               <TableRow>
                                 <TableCell className="font-medium">
-                                  Goal
+                                  Sold Goal
                                 </TableCell>
                                 {flattenedUserGoalsData.map((item, index) => (
                                   <TableCell key={index} >
@@ -745,7 +794,7 @@ export default function NewFile() {
                               </TableRow>
                               <TableRow>
                                 <TableCell className="font-medium">
-                                  Achieved
+                                  Out The Door Goal
                                 </TableCell>
                                 {flattenedUserGoalsData.map((item, index) => (
                                   <TableCell key={index}>
@@ -789,7 +838,8 @@ export default function NewFile() {
 
               <ChartTooltip content={<ChartTooltipContent />} />
               <ChartLegend content={<ChartLegendContent />} />
-              <Bar dataKey="sales" fill="var(--color-sales)" radius={4} />
+              <Bar dataKey="sold" fill="#0090ff" radius={4} />
+              <Bar dataKey="otd" fill="var(--color-otd)" radius={4} />
             </BarChart>
           </ChartContainer>
           <Tabs defaultValue="Goals" className="w-[95%] mt-10">
@@ -972,10 +1022,54 @@ export default function NewFile() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                < InteractiveChart />
+                <Card>
+                  <Tabs defaultValue="account" className="">
+                    <CardHeader>
+                      <TabsList>
+                        <TabsTrigger value="account">Accessories</TabsTrigger>
+                        <TabsTrigger value="Service">Service</TabsTrigger>
+                        <TabsTrigger value="Parts">Parts</TabsTrigger>
+                        <TabsTrigger value="Sales">Sales</TabsTrigger>
+                      </TabsList>
+                    </CardHeader>
+                    <CardContent>
+                      <TabsContent value="account">
+                        <StoreChart
+                          userChartData={accessoryGoals}
+                          chartConfigDepts={chartConfigDepts}
+                          statsData={accOrders}
+                          filterDataByMonth={filterDataByMonthAccessories}
+                        />
+                      </TabsContent>
+                      <TabsContent value="Service">
+                        <StoreChart
+                          userChartData={serviceGoals}
+                          chartConfigDepts={chartConfigDepts}
+                          statsData={workOrders}
+                          filterDataByMonth={filterDataByMonthAccessories}
+                        />
+                      </TabsContent>
+                      <TabsContent value="Parts">
+                        <StoreChart
+                          userChartData={partsGoals}
+                          chartConfigDepts={chartConfigDepts}
+                          statsData={partsData}
+                          filterDataByMonth={filterDataByMonthAccessories}
+                        />
+                      </TabsContent>
+                      <TabsContent value="Sales">
+                        <StoreChart
+                          userChartData={salesGoals}
+                          chartConfigDepts={chartConfigDepts}
+                          statsData={accOrders}
+                          filterDataByMonth={filterDataByMonthAccessories}
+                        />
+                      </TabsContent>
+                    </CardContent>
+                  </Tabs>
+                </Card>
               </CardContent>
               <CardFooter className="border-t px-6 py-4 border-border">
-
               </CardFooter>
             </Card>
           </div>
@@ -986,3 +1080,48 @@ export default function NewFile() {
 }
 
 
+function StoreChart({ chartConfigDepts, userChartData, statsData, filterDataByMonth }) {
+  const monthlyTotals = filterDataByMonth(statsData);
+
+  const chartData2 = [
+    { month: "January", sold: calcPer(Number(userChartData.janGoal), monthlyTotals[0]) },
+    { month: "February", sold: calcPer(Number(userChartData.febGoal), monthlyTotals[1]) },
+    { month: "March", sold: calcPer(Number(userChartData.marGoal), monthlyTotals[2]) },
+    { month: "April", sold: calcPer(Number(userChartData.aprGoal), monthlyTotals[3]) },
+    { month: "May", sold: calcPer(Number(userChartData.mayGoal), monthlyTotals[4]) },
+    { month: "June", sold: calcPer(Number(userChartData.junGoal), monthlyTotals[5]) },
+    { month: "July", sold: calcPer(Number(userChartData.julGoal), monthlyTotals[6]) },
+    { month: "August", sold: calcPer(Number(userChartData.augGoal), monthlyTotals[7]) },
+    { month: "September", sold: calcPer(Number(userChartData.sepGoal), monthlyTotals[8]) },
+    { month: "October", sold: calcPer(Number(userChartData.octGoal), monthlyTotals[9]) },
+    { month: "November", sold: calcPer(Number(userChartData.novGoal), monthlyTotals[10]) },
+    { month: "December", sold: calcPer(Number(userChartData.decGoal), monthlyTotals[11]) },
+  ];
+  console.log(chartData2, 'chartdata2')
+  return (
+    <ChartContainer config={chartConfigDepts} className="min-h-[200px] w-full">
+      <BarChart accessibilityLayer data={chartData2}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          tickFormatter={(value) => value.slice(0, 3)}
+        />
+        <YAxis
+          type="number"
+          domain={[0, 100]} // Adjust domain to limit Y-axis to 0 to 100
+          ticks={[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]} // Customize tick marks if needed
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+        />
+
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <ChartLegend content={<ChartLegendContent />} />
+        <Bar dataKey="sold" fill="#0090ff" radius={4} />
+      </BarChart>
+    </ChartContainer>
+  )
+}

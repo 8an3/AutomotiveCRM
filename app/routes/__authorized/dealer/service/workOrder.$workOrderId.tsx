@@ -85,7 +85,6 @@ import { cn } from "~/utils";
 import { BanknoteIcon } from "lucide-react";
 import { ArrowDownUp } from "lucide-react";
 import { ClientOnly } from "remix-utils";
-import PrintLabels from "../document/printLabels.client";
 import useSWR from 'swr'
 import ScanSound from '~/images/scan.mp4'
 import { BrowserMultiFormatReader, BarcodeFormat, DecodeHintType, NotFoundException, ChecksumException, FormatException } from '@zxing/library';
@@ -111,7 +110,7 @@ import {
 } from "~/components/ui/pagination"
 import axios from "axios";
 import { FileCheck } from "lucide-react";
-import PrintReceipt from "../document/printReceiptAcc.client";
+import PrintReceipt from "../document/printReceiptAcc";
 import { Users } from "lucide-react";
 import { Activity } from "lucide-react";
 import { ArrowUpRight } from "lucide-react";
@@ -180,6 +179,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog"
+import WorkOrderSales from "../document/printWorkOrder.client";
+import PrintReceiptService from "../document/printReceiptService.client";
 
 export default function Dashboard() {
   const { orderFirst, user, tax, dealerImage, services, techs } = useLoaderData();
@@ -363,33 +364,7 @@ export default function Dashboard() {
     timeZoneName: "short"
   };
 
-  let toReceipt
-  useEffect(() => {
-    if (order) {
-      const client = order.Clientfile
-      const maxAccessories = 19;
 
-      toReceipt = {
-        qrCode: order.workOrderId,
-        subTotal: `$${totalAccessoriesCost.toFixed(2)}`,
-        tax: `${tax.userTax}%`,
-        total: `$${total}`,
-        remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
-        firstName: client.firstName,
-        lastName: client.lastName,
-        phone: client.phone,
-        email: client.email,
-        address: client.address,
-        date: new Date().toLocaleDateString("en-US", options2),
-        cardNum: '',
-        paymentType: '',
-        image: dealerImage.dealerLogo
-      };
-
-      let accessoryIndex = 0;
-    }
-    // console.log(order, 'order');
-  }, [order]);
 
   useEffect(() => {
     if (order) {
@@ -619,6 +594,60 @@ export default function Dashboard() {
   const [password, setPassword] = useState('')
   const [showPayments, setShowPayments] = useState(false)
   const hasAdminPosition = user.positions.some(position => position.position === 'Administrator' || position.position === 'Manager');
+  const client = order.Clientfile
+  let toReceipt
+  useEffect(() => {
+    if (order) {
+
+      const maxAccessories = 19;
+
+      toReceipt = {
+        qrCode: order.workOrderId,
+        tax: `${tax.userTax}%`,
+        total: `$${total}`,
+        name: client.firstName + ' ' + client.lastName,
+        phone: client.phone,
+        email: client.email,
+        address: client.address,
+        date: new Date().toLocaleDateString("en-US", options2),
+        image: dealerImage.dealerLogo,
+        unit: order.unit,
+        mileage: order.mileage,
+        vin: order.vin,
+        tag: order.tag,
+        motor: order.motor,
+        budget: order.budget,
+        writer: order.writer,
+        tech: order.tech,
+        labourHrs: `${serviceHours} hrs x $${tax.userLabour}`,
+        labour: `$${serviceSubTotal}`,
+        parts: `$${totalAccessoriesCost}`,
+        subTotal: `$${totalPreTax}`,
+      };
+
+      let accessoryIndex = 0;
+    }
+    // console.log(order, 'order');
+  }, [order]);
+
+
+  const toReceiptAcc = {
+    qrCode: order.id,
+    subTotal: `$${totalAccessoriesCost.toFixed(2)}`,
+    tax: `${tax.userTax}%`,
+    total: `$${total}`,
+    remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
+    firstName: client.firstName,
+    lastName: client.lastName,
+    phone: client.phone,
+    email: client.email,
+    address: client.address,
+    date: new Date(order.createdAt).toLocaleDateString("en-US", options2),
+    cardNum: '',
+    paymentType: '',
+    image: dealerImage.dealerLogo
+  };
+
 
   return (
     <div>
@@ -1377,9 +1406,23 @@ export default function Dashboard() {
                     <DropdownMenuItem
                       onSelect={() => {
                         //    console.log(toReceipt)
-                        PrintReceipt(toReceipt)
+                        WorkOrderSales(toReceipt)
                       }}>
-                      Reprint Receipt
+                      Print Work Order
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => {
+                        //    console.log(toReceipt)
+                        PrintReceipt(toReceiptAcc)
+                      }}>
+                      Print Parts Order
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => {
+                        //    console.log(toReceipt)
+                        PrintReceiptService(toReceipt)
+                      }}>
+                      Print Receipt
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={() => setShowDiscountDialog(true)}>
@@ -2324,7 +2367,7 @@ export default function Dashboard() {
                 <div className="grid gap-3">
                   <ul className="grid gap-3">
                     {order.Payments && order.Payments.map((result, index) => (
-                      <li key={index} className="flex items-center justify-between group" key={index} >
+                      <li key={index} className="flex items-center justify-between group" >
                         <div className='flex items-center' >
                           <span className="text-muted-foreground">{result.paymentType}</span>
                           <fetcher.Form method="post" ref={formRef} className=''>

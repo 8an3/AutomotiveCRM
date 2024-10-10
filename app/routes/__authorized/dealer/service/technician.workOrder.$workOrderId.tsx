@@ -84,7 +84,7 @@ import { cn } from "~/utils";
 import { BanknoteIcon } from "lucide-react";
 import { ArrowDownUp } from "lucide-react";
 import { ClientOnly } from "remix-utils";
-import PrintLabels from "../document/printLabels.client";
+import PrintLabels from "../document/printLabels.";
 import useSWR from 'swr'
 import ScanSound from '~/images/scan.mp4'
 import { BrowserMultiFormatReader, BarcodeFormat, DecodeHintType, NotFoundException, ChecksumException, FormatException } from '@zxing/library';
@@ -110,7 +110,7 @@ import {
 } from "~/components/ui/pagination"
 import axios from "axios";
 import { FileCheck } from "lucide-react";
-import PrintReceipt from "../document/printReceiptAcc.client";
+import PrintReceipt from "../document/printReceiptAcc";
 import { Users } from "lucide-react";
 import { Activity } from "lucide-react";
 import { ArrowUpRight } from "lucide-react";
@@ -835,11 +835,15 @@ export default function Dashboard() {
                           <SelectGroup>
                             <SelectLabel>Status</SelectLabel>
                             <SelectItem value="Quote">Quote</SelectItem>
-                            <SelectItem value="Open">Open</SelectItem>
+                            <SelectItem value="Sales">Sales</SelectItem>
+                            <SelectItem value="Open">Open / Scheduled</SelectItem>
                             <SelectItem value="Waiting On Parts">Waiting On Parts</SelectItem>
                             <SelectItem value="Waiter">Waiter</SelectItem>
                             <SelectItem value="In Works">In Works</SelectItem>
                             <SelectItem value="Work Completed">Work Completed</SelectItem>
+                            <SelectItem value="Scheduled For Delivery">Scheduled For Delivery</SelectItem>
+                            <SelectItem value="Long Term Storage">Long Term Storage</SelectItem>
+                            <SelectItem value="Winter Storage">Winter Storage</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
