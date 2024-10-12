@@ -2,7 +2,6 @@ import { z } from "zod";
 
 export const schemaEnv = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
-  NODE_ENV: z.string().optional(),
   VERCEL: z.boolean().optional(),
 
   UPLOADCARE_PUBLIC_KEY: z.string().optional(),

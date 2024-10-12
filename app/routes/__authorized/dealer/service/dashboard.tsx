@@ -104,7 +104,7 @@ import {
 } from "~/components/ui/pagination"
 import axios from "axios";
 import { FileCheck } from "lucide-react";
-import PrintReceipt from "../document/printReceiptAcc";
+import { PrintReceipt2 } from "../document/printReceiptAcc";
 import { Users } from "lucide-react";
 import { Activity } from "lucide-react";
 import { ArrowUpRight } from "lucide-react";
@@ -148,6 +148,8 @@ import { fuzzyFilter, fuzzySort, TableMeta, getTableMeta, DebouncedInput } from 
 import { DataTablePagination } from "~/components/dashboard/calls/pagination";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger, } from "~/components/ui/dropdown-menu"
 import AddUnitDialog from "~/components/dashboard/inventory/addUnitDiaolog";
+import { PrintPartsPicker } from "../document/partPickerSheet";
+import { PrintReceiptService } from "../document/printReceiptService";
 
 export function Filter({ data }) {
   const fetcher = useFetcher();
@@ -186,9 +188,6 @@ export function Filter({ data }) {
 
 export default function Dashboard() {
   const { orders, user, tax, dealerImage, sales } = useLoaderData();
-  const userIsManager = user.positions.some(
-    (pos) => pos.position === 'Manager' || pos.position === 'Administrator'
-  );
   const [referrer, setReferrer] = useState()
 
   const [scannedCode, setScannedCode] = useState('')
@@ -317,12 +316,16 @@ export default function Dashboard() {
   const [serviceSubTotal, setServiceSubTotal] = useState(0.00);
   const [partsSubTotal, setPartsSubTotal] = useState(0.00);
   const [totalPreTax, setTotalPreTax] = useState(0.00);
-
+  const [serviceHours, setServiceHours] = useState(0.00);
+  const [serviceHoursVar, setServiceHoursVar] = useState(0.00);
+  const [adjustedService, setAdjustedService] = useState(false);
   const [input, setInput] = useState("");
+
   const inputLength = input.trim().length
+  let totalTime = 0.00
+  let totalHours = 0.00
   let payment = useFetcher();
   let fetcher = useFetcher();
-  let searchWorkOrder = useFetcher();
   let submitWorkOrder = useFetcher();
   let status = useFetcher();
 
@@ -344,32 +347,6 @@ export default function Dashboard() {
     timeZoneName: "short"
   };
 
-  let toReceipt
-  if (showPrevOrder) {
-    const client = showPrevOrder.Clientfile
-    const maxAccessories = 19;
-
-    toReceipt = {
-      qrCode: showPrevOrder.workOrderId,
-      subTotal: `$${totalAccessoriesCost.toFixed(2)}`,
-      tax: `${tax.userTax}%`,
-      total: `$${total}`,
-      remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
-      firstName: client.firstName,
-      lastName: client.lastName,
-      phone: client.phone,
-      email: client.email,
-      address: client.address,
-      date: new Date().toLocaleDateString("en-US", options2),
-      cardNum: '',
-      paymentType: '',
-      image: dealerImage.dealerLogo
-    };
-
-    let accessoryIndex = 0;
-  }
-  // console.log(showPrevOrder, 'showPrevOrder');
-
   useEffect(() => {
     if (showPrevOrder) {
       const partsSub = showPrevOrder?.AccOrders?.reduce((total, accOrder) => {
@@ -379,28 +356,60 @@ export default function Dashboard() {
       }, 0);
       setPartsSubTotal(partsSub.toFixed(2))
 
-      const serviceSub = showPrevOrder?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
-        return total + (serviceOnOrder.service.price * serviceOnOrder.hr * serviceOnOrder.quantity);
-      }, 0);
-      setServiceSubTotal(serviceSub.toFixed(2))
+      let serviceHoursTotal = 0.00;
 
-      const totalPreTax = partsSub + serviceSub;
+      const serviceSub = showPrevOrder?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
+        const hours = serviceOnOrder.hr || serviceOnOrder.service.estHr;
+        const quantity = serviceOnOrder.quantity || 1;
+        const subtotal = hours * tax.userLabour * quantity;
+        return total + subtotal;
+      }, 0);
+
+      serviceHoursTotal = showPrevOrder?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
+        const hours = serviceOnOrder.hr ?? serviceOnOrder.service.estHr ?? 0;
+        const quantity = serviceOnOrder.quantity ?? 1;
+        return total + (hours * quantity);
+      }, 0);
+
+      setServiceHours(serviceHoursTotal);
+
+      const adjustedServiceSub = serviceHoursVar * tax.userLabour;
+
+      setServiceSubTotal(adjustedService ? adjustedServiceSub.toFixed(2) : serviceSub.toFixed(2));
+
+      const totalPreTax = parseFloat(partsSub) + parseFloat(serviceSub);
       setTotalPreTax(totalPreTax.toFixed(2));
 
       const total2 = ((parseFloat(partsSub + serviceSub) - parseFloat(discDollar)) * taxRate).toFixed(2);
       const total1 = (((parseFloat(partsSub + serviceSub) * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
-      const calculatedTotal = discDollar && discDollar > 0.00 ? total1 : total2;
+      const calculatedTotal = discPer > 0.00 ? total1 : total2;
 
-      setTotal(calculatedTotal);
+      setTotal(parseFloat(calculatedTotal));
+
       const totalAmountPaid2 = showPrevOrder.Payments.reduce((total, payment) => {
         return total + payment.amountPaid;
       }, 0);
-      if (totalAmountPaid2) {
-        setTotalAmountPaid(totalAmountPaid2)
+
+      if (totalAmountPaid2) { setTotalAmountPaid(totalAmountPaid2) }
+
+      if (showPrevOrder.WorkOrderClockEntries) {
+        totalTime = showPrevOrder.WorkOrderClockEntries.reduce((acc, entry) => {
+          if (entry.start && entry.end) {
+            const startTime = new Date(entry.start);
+            const endTime = new Date(entry.end);
+            const duration = (endTime - startTime) / (1000 * 60 * 60); // duration in hours
+            return acc + duration;
+          }
+          return acc;
+        }, 0);
       }
 
+      totalHours = serviceHoursTotal
+      showPrevOrder.ServicesOnWorkOrders?.forEach(serviceOnOrder => {
+      });
+
     }
-  }, [showPrevOrder]);
+  }, [showPrevOrder, serviceHours, serviceHoursVar, adjustedService, discDollar, discPer]);
 
   const remaining = parseFloat(total) - parseFloat(totalAmountPaid)
   const [list, setList] = useState([])
@@ -411,7 +420,6 @@ export default function Dashboard() {
   }, [orders]);
 
   const order = showPrevOrder
-  console.log(search.data, 'services.data')
 
   //  table
   const [data, setData] = useState(orders);
@@ -448,15 +456,12 @@ export default function Dashboard() {
   const [modelName, setModelName] = useState([]);
   const [subModel, setSubModel] = useState([]);
 
-  const handleDropdownChange = (value) => {
-    setGlobalFilter(value);
-  };
+  /**  const handleDropdownChange = (value) => {
+      setGlobalFilter(value);
+    };
 
-  const [date, setDate] = useState<Date>()
 
-  const newDate = new Date()
-  const [datefloorPlanDueDate, setDatefloorPlanDueDate] = useState<Date>()
-
+    */
 
   const columns = [
     {
@@ -927,6 +932,132 @@ export default function Dashboard() {
     return today.getFullYear().toString();
   }
   const getThisYear = getYear();
+
+  let maxAccessories = 25;
+  const maxServices = 25;
+
+
+  const client = showPrevOrder ? showPrevOrder.Clientfile : []
+
+  let toReceipt = {
+    qrCode: order ? String(order.workOrderId) : '',
+    tax: tax ? `${tax.userTax}%` : '',
+    total: total ? `$${total}` : '',
+    name: client ? `${client.firstName} ${client.lastName}` : '',
+    name2: client ? `${client.firstName} ${client.lastName}` : '',
+    phone: client ? client.phone : '',
+    email: client ? client.email : '',
+    address: client ? client.address : '',
+    date: new Date().toLocaleDateString("en-US", options2),
+    image: dealerImage && dealerImage.dealerLogo ? dealerImage.dealerLogo : '',
+    unit: order ? order.unit : '',
+    mileage: order ? order.mileage : '',
+    vin: order ? order.vin : '',
+    tag: order ? order.tag : '',
+    motor: order ? order.motor : '',
+    budget: order ? order.budget : '',
+    writer: order ? order.writer : '',
+    tech: order ? order.tech : '',
+    labourHrs: serviceHours && tax ? `${serviceHours} hrs x $${tax.userLabour}` : '',
+    labour: serviceSubTotal ? `$${serviceSubTotal}` : '',
+    partsSubTotal: partsSubTotal ? `$${partsSubTotal}` : '',
+    subTotal: totalPreTax ? `$${totalPreTax}` : '',
+  };
+  const accessories = order && order.AccOrders?.reduce((acc, accOrder) => {
+    return acc.concat(accOrder.AccessoriesOnOrders || []);
+  }, []) || [];
+
+  accessories && accessories.forEach((result, index) => {
+    if (index < maxAccessories) {
+      toReceipt[`desc${index + 1}`] = `${result.accessory.brand} ${result.accessory.name}`;
+      toReceipt[`part${index + 1}`] = `${result.accessory.partNumber}`;
+      toReceipt[`qty${index + 1}`] = `${result.quantity}`;
+      toReceipt[`price${index + 1}`] = `$${result.accessory.price}`;
+      toReceipt[`total${index + 1}`] = `$${(result.quantity * result.accessory.price).toFixed(2)}`;
+    }
+  });
+
+  for (let i = accessories.length; i < maxAccessories; i++) {
+    toReceipt[`desc${i + 1}`] = '';
+    toReceipt[`part${i + 1}`] = '';
+    toReceipt[`qt${i + 1}`] = '';
+    toReceipt[`price${i + 1}`] = '';
+    toReceipt[`total${i + 1}`] = '';
+  }
+
+  const services2 = order && order.ServicesOnWorkOrders && order.ServicesOnWorkOrders?.map((serviceOrder) => {
+    return {
+      quantity: serviceOrder.quantity,
+      service: serviceOrder.service.service,
+      price: serviceOrder.service.price,
+      estHr: serviceOrder.service.estHr
+    };
+  }) || [];
+
+  services2.forEach((service, index) => {
+    if (index < maxServices) {
+      const serviceIndex = index + accessories.length + 1;
+      toReceipt[`service${serviceIndex}`] = service.service || '';
+      toReceipt[`qty${serviceIndex}`] = String(service.quantity || 1);
+      toReceipt[`hr${serviceIndex}`] = service.estHr ? `${service.estHr}` : '';
+      toReceipt[`price${serviceIndex}`] = `$${tax.userLabour}`;
+      toReceipt[`total${serviceIndex}`] = service.quantity ? `$${((parseFloat(service.estHr) * parseFloat(tax.userLabour)) * parseFloat(service.quantity))}` : '';
+    }
+  });
+
+  for (let i = services2.length + accessories.length; i < maxAccessories + maxServices; i++) {
+    toReceipt[`service${i + 1}`] = '';
+    toReceipt[`qty${i + 1}`] = '';
+    toReceipt[`hr${i + 1}`] = '';
+    toReceipt[`price${i + 1}`] = '';
+    toReceipt[`total${i + 1}`] = '';
+  }
+
+
+  let PrintPartsPickerSheet = {
+    qrCode: order ? String(order.workOrderId) : '',
+    tax: tax ? `${tax.userTax}%` : '',
+    total: total ? `$${total}` : '',
+    name: client ? `${client.firstName} ${client.lastName}` : '',
+    name2: client ? `${client.firstName} ${client.lastName}` : '',
+    phone: client ? client.phone : '',
+    email: client ? client.email : '',
+    address: client ? client.address : '',
+    date: new Date().toLocaleDateString("en-US", options2),
+    image: dealerImage && dealerImage.dealerLogo ? dealerImage.dealerLogo : '',
+    unit: order ? order.unit : '',
+    mileage: order ? order.mileage : '',
+    vin: order ? order.vin : '',
+    tag: order ? order.tag : '',
+    motor: order ? order.motor : '',
+    budget: order ? order.budget : '',
+    writer: order ? order.writer : '',
+    tech: order ? order.tech : '',
+    labourHrs: serviceHours && tax ? `${serviceHours} hrs x $${tax.userLabour}` : '',
+    labour: serviceSubTotal ? `$${serviceSubTotal}` : '',
+    partsSubTotal: partsSubTotal ? `$${partsSubTotal}` : '',
+    subTotal: totalPreTax ? `$${totalPreTax}` : '',
+  };
+
+  accessories.forEach((result, index) => {
+    if (index < maxAccessories) {
+      PrintPartsPickerSheet[`desc${index + 1}`] = `${result.accessory.brand} ${result.accessory.name}`;
+      PrintPartsPickerSheet[`part${index + 1}`] = `${result.accessory.partNumber}`;
+      PrintPartsPickerSheet[`qty${index + 1}`] = `${result.quantity}`;
+      PrintPartsPickerSheet[`price${index + 1}`] = `$${result.accessory.price}`;
+      PrintPartsPickerSheet[`location${index + 1}`] = `${result.accessory.location}`;
+      PrintPartsPickerSheet[`total${index + 1}`] = `$${(result.quantity * result.accessory.price).toFixed(2)}`;
+    }
+  });
+
+  for (let i = accessories.length; i < maxAccessories; i++) {
+    PrintPartsPickerSheet[`desc${i + 1}`] = '';
+    PrintPartsPickerSheet[`part${i + 1}`] = '';
+    PrintPartsPickerSheet[`qt${i + 1}`] = '';
+    PrintPartsPickerSheet[`price${i + 1}`] = '';
+    PrintPartsPickerSheet[`location${i + 1}`] = '';
+    PrintPartsPickerSheet[`total${i + 1}`] = '';
+  }
 
 
   return (
@@ -1729,10 +1860,17 @@ export default function Dashboard() {
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onSelect={() => {
-                          console.log(toReceipt)
-                          PrintReceipt(toReceipt)
+                          console.log(PrintPartsPickerSheet)
+                          PrintPartsPicker(PrintPartsPickerSheet)
                         }}>
-                        Reprint Receipt
+                        Parts Picker Sheet
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onSelect={() => {
+                          console.log(toReceipt)
+                          PrintReceiptService(toReceipt)
+                        }}>
+                        Print Receipt
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>
@@ -2377,278 +2515,8 @@ export default function Dashboard() {
   )
 }
 
-/**  <div className="ml-auto flex items-center gap-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-7 gap-1 text-sm"
-                    >
-                      <ListFilter className="h-3.5 w-3.5" />
-                      <span className="sr-only sm:not-sr-only">Filter</span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className='border-border'>
-                    <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) => result.status === 'Quote')
-                        setList(result)
-                      }}   >
-                      Quote
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) => result.status === 'Sales')
-                        setList(result)
-                      }}>
-                      Sales
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) => result.status === 'Open')
-                        setList(result)
-                      }}>
-                      Open
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) => result.status === 'Waiting On Parts')
-                        setList(result)
-                      }}>
-                      Waiting On Parts
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) => result.status === 'Waiter')
-                        setList(result)
-                      }}>
-                      Waiter
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) => result.status === 'In Works')
-                        setList(result)
-                      }}>
-                      In Works
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) => result.status === 'Work Completed')
-                        setList(result)
-                      }}>
-                      Work Completed
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) => result.status === 'Scheduled For Delivery')
-                        setList(result)
-                      }}>
-                      Scheduled For Delivery
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) => result.status === 'Long Term Storage')
-                        setList(result)
-                      }}>
-                      Long Term Storage
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) => result.status === 'Winter Storage')
-                        setList(result)
-                      }}>
-                      Winter Storage
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const result = orders.filter((result) => result.status === 'Closed')
-                        setList(result)
-                      }}>
-                      Closed
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div> */
-
-/**    <Card x-chunk="dashboard-05-chunk-3">
-                <CardHeader className="px-7">
-                  <CardTitle>Orders</CardTitle>
-                  <CardDescription>
-                    <searchWorkOrder.Form
-                      method="get"
-                      action="/dealer/service/workOrder/searchAll"
-                    >
-                      <div className="relative ml-auto flex-1 md:grow-0 ">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          ref={ref}
-                          type="search"
-                          name="q"
-                          onChange={(e) => {
-                            //   search.submit(`/dealer/accessories/search?name=${e.target.value}`);
-                            submitWorkOrder.submit(e.currentTarget.form);
-                          }}
-                          autoFocus
-                          placeholder="Search..."
-                          className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
-                        />
-                      </div>
-                    </searchWorkOrder.Form>
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow className='border-border'>
-                        <TableHead>
-                          Customer
-                        </TableHead>
-                        <TableHead className="text-center sm:table-cell">
-                          Status
-                        </TableHead>
-                        <TableHead className="text-center sm:table-cell">
-                          Location
-                        </TableHead>
-                        <TableHead className="text-center sm:table-cell">
-                          Unit
-                        </TableHead>
-                        <TableHead className="text-center hidden sm:table-cell">
-                          VIN
-                        </TableHead>
-                        <TableHead className="text-center hidden md:table-cell">
-                          Tag
-                        </TableHead>
-                        <TableHead className="text-center ">
-                          Work Order ID
-                        </TableHead>
-                        <TableHead className="text-center ">
-                          Date Created
-                        </TableHead>
-                        <TableHead className=" text-right">
-                          Actions
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {searchWorkOrder.data ?
-                        searchWorkOrder.data.map((result, index) => (
-                          <TableRow key={index} className="hover:bg-accent border-border">
-                            <TableCell>
-                              <div className="font-medium">
-                                {capitalizeFirstLetter(result.Clientfile.firstName)}{" "}
-                                {capitalizeFirstLetter(result.Clientfile.lastName)}
-                              </div>
-                              <div className="text-sm text-muted-foreground ">
-                                {result.Clientfile.email}
-                              </div>
-                            </TableCell>
-                            <TableCell className="text-center  hidden sm:table-cell">
-                              {result.status}
-                            </TableCell>
-                            <TableCell className="text-center  hidden md:table-cell">
-                              {result.location}
-                            </TableCell>
-                            <TableCell className="text-center  hidden md:table-cell">
-                              {result.unit}
-                            </TableCell>
-                            <TableCell className="text-center  hidden md:table-cell">
-                              {result.vin}
-                            </TableCell>
-                            <TableCell className="text-center  hidden md:table-cell">
-                              {result.tag}
-                            </TableCell>
-                            <TableCell className="text-center  hidden md:table-cell">
-                              {result.workOrderId}
-                            </TableCell>
-                            <TableCell className="text-center  hidden md:table-cell">
-                              {result.createdAt}
-                            </TableCell>
-                            <TableCell className="text-right flex">
-
-                            </TableCell>
-                          </TableRow>
-                        )) : (
-                          <>
-                            {list && list.map((result, index) => (
-                              <TableRow key={index} className="hover:bg-accent border-border">
-                                <TableCell>
-                                  <div className="font-medium">
-                                    {capitalizeFirstLetter(result.Clientfile.firstName)}{" "}
-                                    {capitalizeFirstLetter(result.Clientfile.lastName)}
-                                  </div>
-                                  <div className="text-sm text-muted-foreground ">
-                                    {result.Clientfile.email}
-                                  </div>
-                                </TableCell>
-                                <TableCell className="text-center  hidden sm:table-cell">
-                                  {result.status}
-                                </TableCell>
-                                <TableCell className="text-center  hidden md:table-cell">
-                                  {result.location}
-                                </TableCell>
-                                <TableCell className="text-center  hidden md:table-cell">
-                                  {result.unit}
-                                </TableCell>
-                                <TableCell className="text-center  hidden md:table-cell">
-                                  {result.vin}
-                                </TableCell>
-                                <TableCell className="text-center  hidden md:table-cell">
-                                  {result.tag}
-                                </TableCell>
-                                <TableCell className="text-center  hidden md:table-cell">
-                                  {result.workOrderId}
-                                </TableCell>
-                                <TableCell className="text-center flex">
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        size="icon"
-                                        variant="ghost"
-                                        className="mr-3 hover:bg-primary"
-                                        onClick={() => {
-                                          setValue(result.workOrderId);
-                                          showPrevOrderById(result.workOrderId)
-                                        }}
-                                      >
-                                        <ShoppingCart className="h-5 w-5" />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="right">
-                                      Show Order
-                                    </TooltipContent>
-                                  </Tooltip>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        size="icon"
-                                        variant="ghost"
-                                        className="mr-3 hover:bg-primary"
-                                        onClick={() => {
-                                          navigate(`/dealer/service/workOrder/${result.workOrderId}`)
-                                        }}
-                                      >
-                                        <FileCheck className="h-5 w-5" />
-                                      </Button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="right">
-                                      Go To Order
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </>
-                        )}
 
 
-                    </TableBody>
-                  </Table>
-                </CardContent>
-              </Card> */
 export function playScanSound() {
   const audio = new Audio(ScanSound);
   audio.play();
@@ -3032,8 +2900,17 @@ export async function loader({ request, params }: LoaderFunction) {
             }
           }
         }
-      }
-
+      },
+      WorkOrderClockEntries: {
+        select: {
+          id: true,
+          start: true,
+          end: true,
+          userEmail: true,
+          username: true,
+          workOrderId: true,
+        }
+      },
     },
   });
 
@@ -3041,7 +2918,16 @@ export async function loader({ request, params }: LoaderFunction) {
 
   const tax = await prisma.dealer.findUnique({
     where: { id: 1 },
-    select: { userTax: true },
+    select: {
+      userTax: true,
+      userLabour: true,
+      serviceDiscount: true,
+      DealerLogo: {
+        select: {
+          dealerLogo: true,
+        }
+      }
+    },
   });
   const dealerImage = await prisma.dealerLogo.findUnique({ where: { id: 1 } })
 

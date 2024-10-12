@@ -10,7 +10,6 @@ import type { schemaEnv, schemaEnvPrivate } from "~/schemas";
 export function getEnv(): z.infer<typeof schemaEnv> {
   return {
     NODE_ENV: process.env.NODE_ENV || "development", // development | test | production
-    NODE_ENV: process.env.NODE_ENV || "unknown", // local | development | test | staging | production
     VERCEL: Boolean(process.env.VERCEL) || false,
 
     // REMIX variables are mostly private

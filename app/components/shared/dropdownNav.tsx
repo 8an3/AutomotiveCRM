@@ -648,7 +648,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                     <DropdownMenuSub>
                       <DropdownMenuSubTrigger className='cursor-pointer'>MY24</DropdownMenuSubTrigger>
                       <DropdownMenuPortal>
-                        <DropdownMenuSubContent className="bg-background    border border-border">
+                        <DropdownMenuSubContent className="bg-background    border border-border ">
                           <DropdownMenuSub>
                             <DropdownMenuSubTrigger className='cursor-pointer'>Watercraft</DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
@@ -728,7 +728,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                             <DropdownMenuSubTrigger disabled className='cursor-pointer'>On-Road</DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
                               <DropdownMenuSubContent className="bg-background  w-[300px] border border-border">
-                                <DropdownMenuItem>Email</DropdownMenuItem>
+                                <DropdownMenuItem>N / A</DropdownMenuItem>
                               </DropdownMenuSubContent>
                             </DropdownMenuPortal>
                           </DropdownMenuSub>
@@ -743,7 +743,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                           <DropdownMenuSub>
                             <DropdownMenuSubTrigger className='cursor-pointer'>Watercraft</DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
-                              <DropdownMenuSubContent className="bg-background   border border-border">
+                              <DropdownMenuSubContent className="bg-background w-[300px]  border border-border">
                                 {my23Watercraft.map((item, index) => (
                                   <DropdownMenuItem
                                     key={index}
@@ -768,7 +768,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                           <DropdownMenuSub>
                             <DropdownMenuSubTrigger className='cursor-pointer'>Motorcycle</DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
-                              <DropdownMenuSubContent className="bg-background   border border-border">
+                              <DropdownMenuSubContent className="bg-background w-[300px]  border border-border">
                                 {my23Moto.map((item, index) => (
                                   <DropdownMenuItem
                                     key={index}
@@ -793,7 +793,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                           <DropdownMenuSub>
                             <DropdownMenuSubTrigger className='cursor-pointer'>Off-Road</DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
-                              <DropdownMenuSubContent className="bg-background   border border-border">
+                              <DropdownMenuSubContent className="bg-background w-[300px]  border border-border">
                                 {my23OffRoad.map((item, index) => (
                                   <DropdownMenuItem
                                     key={index}
@@ -818,7 +818,7 @@ export default function MainDropwdown({ user, email, interruptionsData, loadNewL
                           <DropdownMenuSub>
                             <DropdownMenuSubTrigger disabled className='cursor-pointer'>On-Road</DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
-                              <DropdownMenuSubContent className="bg-background   border border-border">
+                              <DropdownMenuSubContent className="bg-background w-[300px]  border border-border">
                                 <DropdownMenuItem>Email</DropdownMenuItem>
                               </DropdownMenuSubContent>
                             </DropdownMenuPortal>

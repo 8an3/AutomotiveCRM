@@ -1353,8 +1353,10 @@ model Finance {
   // employees
   financeManager      String?
   userEmail           String?
-  userName            String? // need to add //   // need to add on site actions //
-  financeManagerName  String? // need to add //   // need to add on site actions //
+  userName            String? // need to add //
+  // need to add on site actions //
+  financeManagerName  String? // need to add //
+  // need to add on site actions //
   // client
   email               String?
   firstName           String?
@@ -1775,12 +1777,27 @@ model WorkOrder {
   WorkOrderNotes        WorkOrderNotes[]
   inventoryMotorcycleId String?
   InventoryMotorcycle   InventoryMotorcycle?   @relation(fields: [inventoryMotorcycleId], references: [id], onDelete: Cascade)
+  CustomerSignatureId   String?
+  CustomerSignature     CustomerSignature?
 
+  @@index([CustomerSignatureId])
   @@index([inventoryMotorcycleId])
   @@index([clientfileId])
   @@index([FinanceUnitId])
   @@index([financeId])
   @@index([ServiceUnitId])
+}
+
+model CustomerSignature {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  signature   String?
+  workOrderId Int        @unique
+  WorkOrder   WorkOrder? @relation(fields: [workOrderId], references: [workOrderId], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([workOrderId])
 }
 
 model WorkOrderApts {

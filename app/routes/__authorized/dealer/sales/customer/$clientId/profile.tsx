@@ -88,7 +88,7 @@ import { ColumnDef, ColumnFiltersState, FilterFn, SortingState, VisibilityState,
 import { fuzzyFilter, fuzzySort, TableMeta, getTableMeta, DebouncedInput, options2, EditableText } from "~/components/shared/shared";
 import { DataTablePagination } from "~/components/dashboard/calls/pagination";
 import { Check } from "lucide-react";
-import PrintReceipt from "../../../document/printReceiptAcc";
+import { PrintReceipt2 } from "../../../document/printReceiptAcc";
 import {
   Accordion,
   AccordionContent,
@@ -1791,9 +1791,9 @@ export const WorkOrderBar = ({ order, showPrev, user, clientfile, showPrevOrder,
                   <DropdownMenuItem
                     onSelect={() => {
                       console.log(toReceipt)
-                      PrintReceipt(toReceipt)
+                      PrintReceipt2(toReceipt)
                     }}>
-                    Reprint Receipt
+                    Reprint Acc Receipt
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     disabled>
@@ -2344,9 +2344,9 @@ export const MySidebar = ({
                   <DropdownMenuItem
                     onSelect={() => {
                       console.log(toReceipt)
-                      PrintReceipt(toReceipt)
+                      PrintReceipt2(toReceipt)
                     }}>
-                    Reprint Receipt
+                    Reprint Acc Receipt
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     disabled

@@ -269,9 +269,8 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
               <NavLink to={`/dealer/${params.dept}/depts/service`}  >
                 <Button variant='ghost' className={`flex items-center gap-2   md:text-base ml-[30px]
               ${pathname === `/dealer/${params.dept}/users/dashboard` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  justify-start'}`}>
-                  Employee Roles
+                  Service
                 </Button>
-                Service
               </NavLink>
               <NavLink to={`/dealer/${params.dept}/depts/admin`}  >
                 <Button variant='ghost' className={`flex items-center gap-2   md:text-base ml-[30px]

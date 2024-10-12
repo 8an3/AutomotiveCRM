@@ -196,9 +196,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
       await QuoteServerActivix(clientData, financeId, email, financeData, dashData)
     }
     try {
-      const clientfileUpdate = await prisma.clientfile.findUnique({
-        where: { email: formData.email },
-      });
+      const clientfileUpdate = await prisma.clientfile.findUnique({ where: { email: formData.email }, });
 
       const options = {
         weekday: 'short',
@@ -267,7 +265,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
 
         switch (formData.brand) {
           case "Used":
-            return json({ finance }), redirect(`/dealer/sales/overview/Used`, { headers });
+            return json({ finance }), redirect(`/dealer/sales/overview/Used/${finance.id}`, { headers });
           case "Switch":
             await createFinanceManitou(formData);
             return json({ finance }), redirect(`/dealer/sales/options/${formData.brand}/${finance.id}`, { headers });
@@ -282,7 +280,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
             });
             return json({ finance, bmw }), redirect(`/dealer/sales/options/${formData.brand}/${finance.id}`, { headers });
           default:
-            return json({ finance }), redirect(`/dealer/sales/overview/${formData.brand}`, { headers });
+            return json({ finance }), redirect(`/dealer/sales/overview/${formData.brand}/${finance.id}`, { headers });
         }
       } else {
         console.log('does not has clientfile')
@@ -304,7 +302,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
 
         const finance = await prisma.finance.create({
           data: {
-            clientfileId: clientfileUpdate.id,
+            clientfileId: clientfile.id,
             lastContact: today.toLocaleDateString('en-US', options),
             nextAppointment: 'TBD',
             status: 'Active',
@@ -357,7 +355,7 @@ export async function quoteAction({ params, request }: ActionArgs) {
 
         switch (formData.brand) {
           case "Used":
-            return json({ finance }), redirect(`/dealer/sales/overview/Used`, { headers });
+            return json({ finance }), redirect(`/dealer/sales/overview/Used/${finance.id}`, { headers });
           case "Switch":
             await createFinanceManitou(formData);
             return json({ finance }), redirect(`/dealer/sales/options/${formData.brand}/${finance.id}`, { headers });
@@ -365,14 +363,10 @@ export async function quoteAction({ params, request }: ActionArgs) {
             await createFinanceManitou(formData);
             return json({ finance }), redirect(`/dealer/sales/options/${formData.brand}/${finance.id}`, { headers });
           case "BMW-Motorrad":
-            const bmw = await prisma.bmwMotoOptions.create({
-              data: {
-                financeId: finance.id,
-              },
-            });
+            const bmw = await prisma.bmwMotoOptions.create({ data: { financeId: finance.id, }, });
             return json({ finance, bmw }), redirect(`/dealer/sales/options/${formData.brand}/${finance.id}`, { headers });
           default:
-            return json({ finance }), redirect(`/dealer/sales/overview/${formData.brand}`, { headers });
+            return json({ finance }), redirect(`/dealer/sales/overview/${formData.brand}/${finance.id}`, { headers });
         }
       }
     } catch (error) {

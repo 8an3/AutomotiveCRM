@@ -1,15 +1,140 @@
-import { LoaderFunction } from "@remix-run/node"
+import { json, LoaderFunction } from "@remix-run/node"
 import { prisma } from "~/libs"
 
 
 export async function loader({ request, params }: LoaderFunction) {
   const date = new Date(params.date)
   const dept = params.dept
+  console.log(date, dept, 'datedept')
   let result;
   let getIt
   if (dept === 'Service') {
     getIt = await prisma.workOrder.findMany({
-      where: { status: 'Closed' }
+      where: { status: 'Closed' },
+      select: {
+        workOrderId: true,
+        unit: true,
+        mileage: true,
+        vin: true,
+        tag: true,
+        motor: true,
+        budget: true,
+        totalLabour: true,
+        totalParts: true,
+        subTotal: true,
+        total: true,
+        writer: true,
+        userEmail: true,
+        tech: true,
+        notes: true,
+        customerSig: true,
+        status: true,
+        location: true,
+        quoted: true,
+        paid: true,
+        remaining: true,
+        FinanceUnitId: true,
+        financeId: true,
+        clientfileId: true,
+        createdAt: true,
+        updatedAt: true,
+        AccOrders: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            userEmail: true,
+            userName: true,
+            dept: true,
+            total: true,
+            discount: true,
+            discPer: true,
+            paid: true,
+            paidDate: true,
+            status: true,
+            workOrderId: true,
+            note: true,
+            financeId: true,
+            clientfileId: true,
+            AccessoriesOnOrders: {
+              select: {
+                id: true,
+                quantity: true,
+                accOrderId: true,
+                status: true,
+                orderNumber: true,
+                OrderInvId: true,
+                accessoryId: true,
+                accessory: {
+                  select: {
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    partNumber: true,
+                    brand: true,
+                    name: true,
+                    price: true,
+                    cost: true,
+                    quantity: true,
+                    description: true,
+                    category: true,
+                    subCategory: true,
+                    onOrder: true,
+                    distributer: true,
+                    location: true,
+                  },
+                },
+              },
+            },
+          }
+        },
+        ServicesOnWorkOrders: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            quantity: true,
+            status: true,
+            workOrderId: true,
+            serviceId: true,
+            hr: true,
+            service: {
+              select: {
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                description: true,
+                estHr: true,
+                service: true,
+                price: true,
+              }
+            }
+          }
+        },
+        Payments: {
+          select: {
+            id: true,
+            createdAt: true,
+            paymentType: true,
+            amountPaid: true,
+            cardNum: true,
+            receiptId: true,
+            financeId: true,
+            userEmail: true,
+            accOrderId: true,
+          },
+        },
+        WorkOrderClockEntries: {
+          select: {
+            id: true,
+            start: true,
+            end: true,
+            userEmail: true,
+            username: true,
+            workOrderId: true,
+          }
+        },
+      },
     });
     result = getIt.filter((workOrder) => {
       const closedDate = new Date(workOrder.closedAt);
@@ -22,7 +147,7 @@ export async function loader({ request, params }: LoaderFunction) {
   }
   if (dept === 'Accessories') {
     getIt = await prisma.accOrder.findMany({
-      where: { paid: true, sellingDept: 'Accessories' },
+      where: { paid: true, dept: 'Accessories' },
       select: {
         id: true,
         createdAt: true,
@@ -69,7 +194,41 @@ export async function loader({ request, params }: LoaderFunction) {
   }
   if (dept === 'Parts') {
     getIt = await prisma.accOrder.findMany({
-      where: { paid: true, sellingDept: 'Parts' },
+      where: { paid: true, dept: 'Parts' },
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        userEmail: true,
+        userName: true,
+        dept: true,
+        sellingDept: true,
+        total: true,
+        discount: true,
+        discPer: true,
+        paid: true,
+        paidDate: true,
+        status: true,
+        workOrderId: true,
+        note: true,
+        financeId: true,
+        clientfileId: true,
+        Payments: {
+          select: {
+            id: true,
+            createdAt: true,
+            paymentType: true,
+            cardType: true,
+            amountPaid: true,
+            cardNum: true,
+            receiptId: true,
+            financeId: true,
+            userEmail: true,
+            accOrderId: true,
+            workOrderId: true,
+          }
+        }
+      }
     });
     result = getIt.filter((accOrder) => {
       const closedDate = new Date(accOrder.paidDate);
@@ -82,10 +241,269 @@ export async function loader({ request, params }: LoaderFunction) {
   }
   if (dept === 'Sales') {
     getIt = await prisma.finance.findMany({
-      where: { delivered: 'true' },
+      where: { delivered: { not: null } },
+      select: {
+        //
+        financeManager: true,
+        userEmail: true,
+        userName: true,
+        //: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        phone: true,
+        name: true,
+        address: true,
+        city: true,
+        postal: true,
+        province: true,
+        dl: true,
+        typeOfContact: true,
+        timeToContact: true,
+        dob: true,
+        //: true,
+        othTax: true,
+        optionsTotal: true,
+        lienPayout: true,
+        leadNote: true,
+        sendToFinanceNow: true,
+        dealNumber: true,
+        iRate: true,
+        months: true,
+        discount: true,
+        total: true,
+        onTax: true,
+        on60: true,
+        biweekly: true,
+        weekly: true,
+        weeklyOth: true,
+        biweekOth: true,
+        oth60: true,
+        weeklyqc: true,
+        biweeklyqc: true,
+        qc60: true,
+        biweeklNatWOptions: true,
+        weeklylNatWOptions: true,
+        nat60WOptions: true,
+        weeklyOthWOptions: true,
+        biweekOthWOptions: true,
+        oth60WOptions: true,
+        biweeklNat: true,
+        weeklylNat: true,
+        nat60: true,
+        qcTax: true,
+        otherTax: true,
+        totalWithOptions: true,
+        otherTaxWithOptions: true,
+        desiredPayments: true,
+        admin: true,
+        commodity: true,
+        pdi: true,
+        discountPer: true,
+        userLoanProt: true,
+        userTireandRim: true,
+        userGap: true,
+        userExtWarr: true,
+        userServicespkg: true,
+        deliveryCharge: true,
+        vinE: true,
+        lifeDisability: true,
+        rustProofing: true,
+        userOther: true,
+        //: true,
+        referral: true,
+        visited: true,
+        bookedApt: true,
+        aptShowed: true,
+        aptNoShowed: true,
+        testDrive: true,
+        metService: true,
+        metManager: true,
+        metParts: true,
+        sold: true,
+        depositMade: true,
+        depositTakenDate: true,
+        deposit: true,
+
+        refund: true,
+        turnOver: true,
+        financeApp: true,
+        approved: true,
+        signed: true,
+        pickUpSet: true,
+        demoed: true,
+        lastContact: true,
+        status: true,
+        customerState: true,
+        result: true,
+        timesContacted: true,
+        nextAppointment: true,
+        followUpDay: true,
+        deliveryDate: true,
+        delivered: true,
+        deliveredDate: true,
+        notes: true,
+        visits: true,
+        progress: true,
+        metSalesperson: true,
+        metFinance: true,
+        financeApplication: true,
+        pickUpDate: true,
+        pickUpTime: true,
+        docsSigned: true,
+        tradeRepairs: true,
+        seenTrade: true,
+        lastNote: true,
+        applicationDone: true,
+        licensingSent: true,
+        liceningDone: true,
+        refunded: true,
+        cancelled: true,
+        lost: true,
+        dLCopy: true,
+        insCopy: true,
+        testDrForm: true,
+        voidChq: true,
+        loanOther: true,
+        signBill: true,
+        ucda: true,
+        tradeInsp: true,
+        customerWS: true,
+        otherDocs: true,
+        urgentFinanceNote: true,
+        funded: true,
+        leadSource: true,
+        financeDeptProductsTotal: true,
+        bank: true,
+        loanNumber: true,
+        idVerified: true,
+        dealerCommission: true,
+        financeCommission: true,
+        salesCommission: true,
+        firstPayment: true,
+        loanMaturity: true,
+        quoted: true,
+        //: true,
+        InPerson: true,
+        Phone: true,
+        SMS: true,
+        Email: true,
+        Other: true,
+        //------: true,
+        //: true,
+        paintPrem: true,
+        licensing: true,
+        stockNum: true,
+        options: true,
+        accessories: true,
+        freight: true,
+        labour: true,
+        year: true,
+        brand: true,
+        mileage: true,
+        model: true,
+        model1: true,
+        color: true,
+        modelCode: true,
+        msrp: true,
+        trim: true,
+        vin: true,
+        bikeStatus: true,
+        invId: true,
+        motor: true,
+        tag: true,
+        tradeValue: true,
+        tradeDesc: true,
+        tradeColor: true,
+        tradeYear: true,
+        tradeMake: true,
+        tradeVin: true,
+        tradeTrim: true,
+        tradeMileage: true,
+        tradeLocation: true,
+        lien: true,
+        id: true,
+        activixId: true,
+        theRealActId: true,
+        createdAt: true,
+        updatedAt: true,
+        clientfileId: true,
+        Payments: {
+          select: {
+            id: true,
+            createdAt: true,
+            paymentType: true,
+            cardType: true,
+            amountPaid: true,
+            cardNum: true,
+            receiptId: true,
+            financeId: true,
+            userEmail: true,
+            accOrderId: true,
+            workOrderId: true,
+          }
+        },
+        AccOrders: {
+          select: {
+            id: true,
+            createdAt: true,
+            updatedAt: true,
+            userEmail: true,
+            userName: true,
+            dept: true,
+            sellingDept: true,
+            total: true,
+            discount: true,
+            discPer: true,
+            paid: true,
+            paidDate: true,
+            status: true,
+            workOrderId: true,
+            note: true,
+            financeId: true,
+            clientfileId: true,
+
+            AccessoriesOnOrders: {
+              select: {
+                id: true,
+                quantity: true,
+                accOrderId: true,
+                status: true,
+                orderNumber: true,
+                OrderInvId: true,
+                accessoryId: true,
+                service: true,
+                hour: true,
+                accessory: {
+                  select: {
+                    id: true,
+                    createdAt: true,
+                    updatedAt: true,
+                    partNumber: true,
+                    brand: true,
+                    name: true,
+                    price: true,
+                    cost: true,
+                    quantity: true,
+                    minQuantity: true,
+                    description: true,
+                    category: true,
+                    subCategory: true,
+                    onOrder: true,
+                    distributer: true,
+                    location: true,
+                    note: true,
+                    workOrderSuggestion: true,
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     });
     result = getIt.filter((finance) => {
-      const closedDate = new Date(finance.deliveredDate);
+      const closedDate = new Date(finance.delivered);
       return (
         closedDate.getFullYear() === date.getFullYear() &&
         closedDate.getMonth() === date.getMonth() &&
@@ -93,6 +511,6 @@ export async function loader({ request, params }: LoaderFunction) {
       );
     });
   }
-
+  console.log(getIt, result, 'reulst')
   return result;
 }

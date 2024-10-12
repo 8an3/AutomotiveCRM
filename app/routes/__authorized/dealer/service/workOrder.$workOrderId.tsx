@@ -26,6 +26,7 @@ import {
   X,
   Users2Icon,
   Trash,
+  UploadIcon,
 } from "lucide-react";
 import { Badge } from "~/components/ui/badge";
 import {
@@ -72,7 +73,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { Outlet, Link, useLoaderData, useFetcher, useNavigate, useSubmit, Form, useNavigation } from "@remix-run/react";
+import { Outlet, Link, useLoaderData, useFetcher, useNavigate, useSubmit, Form, useNavigation, useActionData } from "@remix-run/react";
 import { ActionFunction, json, LinksFunction, LoaderFunction, redirect } from "@remix-run/node";
 import { GetUser } from "~/utils/loader.server";
 import { getSession } from "~/sessions/auth-session.server";
@@ -81,7 +82,7 @@ import { Printer } from "lucide-react";
 import { DollarSign } from "lucide-react";
 import { toast } from "sonner";
 import { PaperPlaneIcon } from "@radix-ui/react-icons";
-import { cn } from "~/utils";
+import { cn, invariant } from "~/utils";
 import { BanknoteIcon } from "lucide-react";
 import { ArrowDownUp } from "lucide-react";
 import { ClientOnly } from "remix-utils";
@@ -110,7 +111,7 @@ import {
 } from "~/components/ui/pagination"
 import axios from "axios";
 import { FileCheck } from "lucide-react";
-import PrintReceipt from "../document/printReceiptAcc";
+import { PrintReceipt2 } from "../document/printReceiptAcc";
 import { Users } from "lucide-react";
 import { Activity } from "lucide-react";
 import { ArrowUpRight } from "lucide-react";
@@ -179,13 +180,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog"
-import WorkOrderSales from "../document/printWorkOrder.client";
-import PrintReceiptService from "../document/printReceiptService.client";
+import { PrintReceiptService } from "../document/printReceiptService";
+import { PrintPartsPicker } from "../document/partPickerSheet";
+import { PrintSignature } from "../document/printSignature";
 
 export default function Dashboard() {
-  const { orderFirst, user, tax, dealerImage, services, techs } = useLoaderData();
+  const { orderFirst, user, tax, services, techs, CustomerSignature } = useLoaderData();
   const [order, setOrder] = useState(orderFirst)
-  console.log(order.WorkOrderNotes, 'order')
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting" || navigation.state === "loading";
 
@@ -365,7 +366,6 @@ export default function Dashboard() {
   };
 
 
-
   useEffect(() => {
     if (order) {
       const partsSub = order?.AccOrders?.reduce((total, accOrder) => {
@@ -379,9 +379,8 @@ export default function Dashboard() {
 
       const serviceSub = order?.ServicesOnWorkOrders?.reduce((total, serviceOnOrder) => {
         const hours = serviceOnOrder.hr || serviceOnOrder.service.estHr;
-        const quantity = serviceOnOrder.quantity || 1; // Make sure quantity is correct
+        const quantity = serviceOnOrder.quantity || 1;
         const subtotal = hours * tax.userLabour * quantity;
-        //   console.log('hours:', hours, 'quantity:', quantity, 'subtotal:', subtotal); // Log values here
         return total + subtotal;
       }, 0);
 
@@ -399,8 +398,6 @@ export default function Dashboard() {
 
       const totalPreTax = parseFloat(partsSub) + parseFloat(serviceSub);
       setTotalPreTax(totalPreTax.toFixed(2));
-
-      //  console.log('partsSub:', partsSub, 'serviceSub:', serviceSub, 'totalPreTax:', totalPreTax);
 
       const total2 = ((parseFloat(partsSub + serviceSub) - parseFloat(discDollar)) * taxRate).toFixed(2);
       const total1 = (((parseFloat(partsSub + serviceSub) * (100 - parseFloat(discPer))) / 100) * taxRate).toFixed(2);
@@ -427,12 +424,9 @@ export default function Dashboard() {
       }
 
       totalHours = serviceHoursTotal
-      //  console.log('Service Hours Total:', serviceHoursTotal);
-      // console.log('Total Clocked Time:', totalTime);
       order.ServicesOnWorkOrders?.forEach(serviceOnOrder => {
-        //   console.log('Service On Order:', serviceOnOrder);
       });
-      //  console.log('Order Services:', order.ServicesOnWorkOrders);
+
     }
   }, [order, serviceHours, serviceHoursVar, adjustedService, discDollar, discPer]);
   let unitCard = [
@@ -449,137 +443,6 @@ export default function Dashboard() {
   ];
 
   const remaining = parseFloat(total) - parseFloat(totalAmountPaid)
-  // console.log(order, 'order')
-  /**     <div className="grid gap-3">
-  <div className="font-semibold">Work Order Services</div>
-  <ul className="grid gap-3">
-    {order.ServicesOnWorkOrders && order.ServicesOnWorkOrders.map((result, index) => {
-      const hours = result.hr || result.service.estHr || 0.00;
-
-      return (
-        <li key={index} className="flex items-center justify-between">
-          <div>
-            <ContextMenu>
-              <ContextMenuTrigger>
-                <div className='grid grid-cols-1'>
-                  <div className='flex items-center group '>
-                    <div className="font-medium flex-col">
-                      <p>{result.service.service}</p>
-                      <p className='text-muted-foreground'>{result.service.description}</p>
-                    </div>
-                    <addProduct.Form method="post" ref={formRef} className='mr-auto'>
-                      <input type="hidden" name="id" value={result.id} />
-                      <input type='hidden' name='total' value={total} />
-                      <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                      <Button
-                        size="icon"
-                        variant="outline"
-                        name="intent" value='deleteServiceItem'
-                        className=" ml-2 bg-primary  opacity-0 transition-opacity group-hover:opacity-100"
-                        type='submit'
-                      >
-                        <X className="h-4 w-4 text-foreground" />
-                      </Button>
-                    </addProduct.Form>
-                  </div>
-                  <div className="hidden text-sm text-muted-foreground md:inline">
-                    <div className='flex items-center'>
-                      <div className="font-medium">
-                        <EditableText
-                          value={hours}
-                          fieldName="name"
-                          inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
-                          buttonClassName="text-center py-1 px-2 text-muted-foreground"
-                          buttonLabel={`Edit name`}
-                          inputLabel={`Edit name`}
-                        >
-                          <input type="hidden" name="intent" value='updateHr' />
-                          <input type="hidden" name="id" value={result.id} />
-                          <input type="hidden" name="colName" value='hr' />
-                        </EditableText>
-
-                      </div>
-                      <p>/hrs{" "}{" "}@{" "}${tax.userLabour}</p>
-                    </div>
-                  </div>
-                  {result.status && (
-                    <div>
-                      <Badge className='text-sm  px-2 py-1 '>{result.status}</Badge>
-                    </div>
-                  )}
-                </div>
-              </ContextMenuTrigger>
-              <ContextMenuContent className='border-border'>
-                <ContextMenuSub>
-                  <ContextMenuSubTrigger inset>Service Details</ContextMenuSubTrigger>
-                  <ContextMenuSubContent className="w-48 border-border">
-                    <ContextMenuItem>{result.service.service}</ContextMenuItem>
-                    <ContextMenuItem>{result.service.description}</ContextMenuItem>
-                    <ContextMenuSeparator />
-                    <ContextMenuItem>
-                      Est. Hours
-                      <ContextMenuShortcut>{result.service.estHr}</ContextMenuShortcut>
-                    </ContextMenuItem>
-                    <ContextMenuItem>
-                      Price
-                      <ContextMenuShortcut>${result.service.price}</ContextMenuShortcut>
-                    </ContextMenuItem>
-                  </ContextMenuSubContent>
-                </ContextMenuSub>
-                <ContextMenuSeparator />
-                <ContextMenuCheckboxItem
-                  checked={result.status === 'In Stock'}
-                  onSelect={() => {
-                    const formData = new FormData();
-                    formData.append("id", result.id);
-                    formData.append("status", 'In Stock');
-                    formData.append("intent", 'updateServiceOnOrders');
-                    submit(formData, { method: "post", });
-                  }}
-                >In Stock</ContextMenuCheckboxItem>
-                <ContextMenuCheckboxItem
-                  checked={result.status === 'On Order'}
-                  onSelect={() => {
-                    const formData = new FormData();
-                    formData.append("id", result.id);
-                    formData.append("status", 'On Order');
-                    formData.append("intent", 'updateServiceOnOrders');
-                    submit(formData, { method: "post", });
-                  }}
-                >On Order</ContextMenuCheckboxItem>
-                <ContextMenuCheckboxItem
-                  checked={result.status === 'Completed'}
-                  onSelect={() => {
-                    const formData = new FormData();
-                    formData.append("id", result.id);
-                    formData.append("status", 'Completed');
-                    formData.append("intent", 'updateServiceOnOrders');
-                    submit(formData, { method: "post", });
-                  }}
-                >Completed</ContextMenuCheckboxItem>
-                <ContextMenuCheckboxItem
-                  checked={result.status === 'Back Order'}
-                  onSelect={() => {
-                    const formData = new FormData();
-                    formData.append("id", result.id);
-                    formData.append("status", 'Back Order');
-                    formData.append("intent", 'updateServiceOnOrders');
-                    submit(formData, { method: "post", });
-                  }}
-                >Back Order</ContextMenuCheckboxItem>
-              </ContextMenuContent>
-            </ContextMenu>
-          </div>
-          <span>
-            x{" "}{" "}{result.quantity}
-
-          </span>
-        </li>
-      )
-    })}
-  </ul>
-  </div>
-  <Separator className="my-4" /> */
 
   const newDate = new Date()
 
@@ -595,58 +458,170 @@ export default function Dashboard() {
   const [showPayments, setShowPayments] = useState(false)
   const hasAdminPosition = user.positions.some(position => position.position === 'Administrator' || position.position === 'Manager');
   const client = order.Clientfile
-  let toReceipt
-  useEffect(() => {
-    if (order) {
-
-      const maxAccessories = 19;
-
-      toReceipt = {
-        qrCode: order.workOrderId,
-        tax: `${tax.userTax}%`,
-        total: `$${total}`,
-        name: client.firstName + ' ' + client.lastName,
-        phone: client.phone,
-        email: client.email,
-        address: client.address,
-        date: new Date().toLocaleDateString("en-US", options2),
-        image: dealerImage.dealerLogo,
-        unit: order.unit,
-        mileage: order.mileage,
-        vin: order.vin,
-        tag: order.tag,
-        motor: order.motor,
-        budget: order.budget,
-        writer: order.writer,
-        tech: order.tech,
-        labourHrs: `${serviceHours} hrs x $${tax.userLabour}`,
-        labour: `$${serviceSubTotal}`,
-        parts: `$${totalAccessoriesCost}`,
-        subTotal: `$${totalPreTax}`,
-      };
-
-      let accessoryIndex = 0;
-    }
-    // console.log(order, 'order');
-  }, [order]);
 
 
-  const toReceiptAcc = {
-    qrCode: order.id,
-    subTotal: `$${totalAccessoriesCost.toFixed(2)}`,
+  const maxAccessories = 25;
+  const maxServices = 25;
+
+  let toReceipt = {
+    qrCode: String(order.workOrderId),
     tax: `${tax.userTax}%`,
     total: `$${total}`,
-    remaining: `$${parseFloat(total) - parseFloat(totalAmountPaid)}`,
-    firstName: client.firstName,
-    lastName: client.lastName,
+    name: `${client.firstName} ${client.lastName}`,
+    name2: `${client.firstName} ${client.lastName}`,
     phone: client.phone,
     email: client.email,
     address: client.address,
-    date: new Date(order.createdAt).toLocaleDateString("en-US", options2),
-    cardNum: '',
-    paymentType: '',
-    image: dealerImage.dealerLogo
+    date: new Date().toLocaleDateString("en-US", options2),
+    image: tax.DealerLogo.dealerLogo,
+    unit: order.unit,
+    mileage: order.mileage,
+    vin: order.vin,
+    tag: order.tag,
+    motor: order.motor,
+    budget: order.budget,
+    writer: order.writer,
+    tech: order.tech,
+    labourHrs: `${serviceHours} hrs x $${tax.userLabour}`,
+    labour: `$${serviceSubTotal}`,
+    partsSubTotal: `$${partsSubTotal}`,
+    subTotal: `$${totalPreTax}`,
   };
+  const accessories = order.AccOrders?.reduce((acc, accOrder) => {
+    return acc.concat(accOrder.AccessoriesOnOrders || []);
+  }, []) || [];
+
+  accessories.forEach((result, index) => {
+    if (index < maxAccessories) {
+      toReceipt[`desc${index + 1}`] = `${result.accessory.brand} ${result.accessory.name}`;
+      toReceipt[`part${index + 1}`] = `${result.accessory.partNumber}`;
+      toReceipt[`qty${index + 1}`] = `${result.quantity}`;
+      toReceipt[`price${index + 1}`] = `$${result.accessory.price}`;
+      toReceipt[`total${index + 1}`] = `$${(result.quantity * result.accessory.price).toFixed(2)}`;
+    }
+  });
+
+  for (let i = accessories.length; i < maxAccessories; i++) {
+    toReceipt[`desc${i + 1}`] = '';
+    toReceipt[`part${i + 1}`] = '';
+    toReceipt[`qt${i + 1}`] = '';
+    toReceipt[`price${i + 1}`] = '';
+    toReceipt[`total${i + 1}`] = '';
+  }
+
+  const services2 = order.ServicesOnWorkOrders?.map((serviceOrder) => {
+    return {
+      quantity: serviceOrder.quantity,
+      service: serviceOrder.service.service,
+      price: serviceOrder.service.price,
+      estHr: serviceOrder.service.estHr
+    };
+  }) || [];
+
+  services2.forEach((service, index) => {
+    if (index < maxServices) {
+      const serviceIndex = index + accessories.length + 1;
+      toReceipt[`service${serviceIndex}`] = service.service || '';
+      toReceipt[`qty${serviceIndex}`] = String(service.quantity || 1);
+      toReceipt[`hr${serviceIndex}`] = service.estHr ? `${service.estHr}` : '';
+      toReceipt[`price${serviceIndex}`] = `$${tax.userLabour}`;
+      toReceipt[`total${serviceIndex}`] = service.quantity ? `$${((parseFloat(service.estHr) * parseFloat(tax.userLabour)) * parseFloat(service.quantity))}` : '';
+    }
+  });
+
+  for (let i = services2.length + accessories.length; i < maxAccessories + maxServices; i++) {
+    toReceipt[`service${i + 1}`] = '';
+    toReceipt[`qty${i + 1}`] = '';
+    toReceipt[`hr${i + 1}`] = '';
+    toReceipt[`price${i + 1}`] = '';
+    toReceipt[`total${i + 1}`] = '';
+  }
+
+
+  let PrintPartsPickerSheet = {
+    qrCode: String(order.workOrderId),
+    tax: `${tax.userTax}%`,
+    total: `$${total}`,
+    name: `${client.firstName} ${client.lastName}`,
+    name2: `${client.firstName} ${client.lastName}`,
+    phone: client.phone,
+    email: client.email,
+    address: client.address,
+    date: new Date().toLocaleDateString("en-US", options2),
+    image: tax.DealerLogo.dealerLogo,
+    unit: order.unit,
+    mileage: order.mileage,
+    vin: order.vin,
+    tag: order.tag,
+    motor: order.motor,
+    budget: order.budget,
+    writer: order.writer,
+    tech: order.tech,
+    labourHrs: `${serviceHours} hrs x $${tax.userLabour}`,
+    labour: `$${serviceSubTotal}`,
+    partsSubTotal: `$${partsSubTotal}`,
+    subTotal: `$${totalPreTax}`,
+  };
+
+  accessories.forEach((result, index) => {
+    if (index < maxAccessories) {
+      PrintPartsPickerSheet[`desc${index + 1}`] = `${result.accessory.brand} ${result.accessory.name}`;
+      PrintPartsPickerSheet[`part${index + 1}`] = `${result.accessory.partNumber}`;
+      PrintPartsPickerSheet[`qty${index + 1}`] = `${result.quantity}`;
+      PrintPartsPickerSheet[`price${index + 1}`] = `$${result.accessory.price}`;
+      PrintPartsPickerSheet[`location${index + 1}`] = `${result.accessory.location}`;
+      PrintPartsPickerSheet[`total${index + 1}`] = `$${(result.quantity * result.accessory.price).toFixed(2)}`;
+    }
+  });
+
+  for (let i = accessories.length; i < maxAccessories; i++) {
+    PrintPartsPickerSheet[`desc${i + 1}`] = '';
+    PrintPartsPickerSheet[`part${i + 1}`] = '';
+    PrintPartsPickerSheet[`qt${i + 1}`] = '';
+    PrintPartsPickerSheet[`price${i + 1}`] = '';
+    PrintPartsPickerSheet[`location${i + 1}`] = '';
+    PrintPartsPickerSheet[`total${i + 1}`] = '';
+  }
+
+
+  const [base64, setBase64] = useState('');
+  const [error, setError] = useState('');
+  const [isFile, setIsfile] = useState(false)
+  const [isPDF, setIsPDF] = useState(false)
+  const actionData = useActionData();
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setIsfile(true)
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBase64(reader.result);
+      };
+      reader.onerror = () => {
+        setError('Failed to read file!');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  let printSignature = {
+    signature: CustomerSignature ? CustomerSignature.signature : '',
+  };
+  useEffect(() => {
+    if (CustomerSignature && CustomerSignature.signature) {
+      setIsPDF(true)
+    }
+  }, []);
+
+  const refForm = useRef<HTMLFormElement>();
+  const formFetch = useFetcher()
+  useEffect(() => {
+    if (formFetch.state === 'submitting') {
+      console.log(formFetch, 'transition,')
+      invariant(inputRef.current)
+      inputRef.current.value = ''
+    }
+  }, [formFetch])
 
 
   return (
@@ -673,7 +648,7 @@ export default function Dashboard() {
                 <CardDescription>Scan Work Order</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="relative flex-1 md:grow-0   ">
+                <div className="relative  md:grow-0   ">
                   <main className="wrapper text-white mx-auto " >
                     <section className="container" id="demo-content">
                       <div className='flex items-center'>
@@ -978,7 +953,7 @@ export default function Dashboard() {
                             <AccordionContent>
                               <fetcher.Form method='post'>
                                 <input type='hidden' name='workOrderId' value={order.workOrderId} />
-                                <div className='flex'>
+                                <div className='grid 2xl:grid-cols-2'>
                                   <div className="flex-col" >
                                     <div className="relative mt-4">
                                       <Input name='name' className='w-[250px] mr-3' />
@@ -1376,7 +1351,7 @@ export default function Dashboard() {
                             <SelectItem value="Scheduled For Delivery">Scheduled For Delivery</SelectItem>
                             <SelectItem value="Long Term Storage">Long Term Storage</SelectItem>
                             <SelectItem value="Winter Storage">Winter Storage</SelectItem>
-                            <SelectItem value="Closer" >Closed</SelectItem>
+                            <SelectItem value="Closed" >Closed</SelectItem>
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -1405,21 +1380,14 @@ export default function Dashboard() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={() => {
-                        //    console.log(toReceipt)
-                        WorkOrderSales(toReceipt)
+                        console.log(PrintPartsPickerSheet)
+                        PrintPartsPicker(PrintPartsPickerSheet)
                       }}>
-                      Print Work Order
+                      Parts Picker Sheet
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onSelect={() => {
-                        //    console.log(toReceipt)
-                        PrintReceipt(toReceiptAcc)
-                      }}>
-                      Print Parts Order
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        //    console.log(toReceipt)
+                        console.log(toReceipt)
                         PrintReceiptService(toReceipt)
                       }}>
                       Print Receipt
@@ -1721,6 +1689,51 @@ export default function Dashboard() {
                     </ul>
                   </AccordionContent>
                 </AccordionItem>
+                <AccordionItem value="item-6" className='border-border'>
+                  <AccordionTrigger>Customer Signature</AccordionTrigger>
+                  <AccordionContent>
+                    <Form method='post' encType="multipart/form-data" className='grid grid-cols-5  items-center mt-4' >
+                      <input type='hidden' value={base64} name='dealerLogo' />
+                      <input type='hidden' value={order.workOrderId} name='id' />
+                      <div className="relative ml-2 mr-2 col-span-4 items-center">
+                        <Input id="file" type="file" className='hidden' name='file' onChange={handleFileChange} accept="application/pdf" />
+                        <label htmlFor="file" className={`h-[37px] cursor-pointer border border-border rounded-md text-foreground bg-background px-4 py-2 inline-block w-full
+                    ${isFile === false ? 'border-primary' : 'border-[#3dff3d]'}`}  >
+                          <span className="mr-4">
+                            {isFile === false ? <p>Choose File</p> : <p>File Selected</p>}
+                          </span>
+                        </label>
+                        <label className=" text-sm absolute left-3  rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground">
+                          File Upload PDF
+                        </label>
+                        {actionData?.error && <div style={{ color: 'red' }}>{actionData.error}</div>}
+                        {actionData?.success && <div style={{ color: 'green' }}>File uploaded successfully!</div>}
+                      </div>
+                      <div className='flex justify-end col-span-1'>
+                        <Button
+                          type='submit' name='intent' value='inputSignature'
+                          size="icon"
+                          onClick={() => {
+                            toast.success(`File uploaded!`)
+                          }}
+                          disabled={isFile === false}
+                          className='bg-primary ml-auto my-auto'>
+                          <UploadIcon className="h-4 w-4" />
+                          <span className="sr-only">Upload</span>
+                        </Button>
+                      </div>
+                    </Form>
+                    <Button
+                      size='sm'
+                      className='ml-2 mt-3'
+                      disabled={isPDF === false}
+                      onClick={() => {
+                        PrintSignature(printSignature)
+                      }}>
+                      Print Signature
+                    </Button>
+                  </AccordionContent>
+                </AccordionItem>
               </Accordion>
 
               <div className="grid gap-3 mt-3">
@@ -1830,6 +1843,16 @@ export default function Dashboard() {
                                 }}
                               >Back Order</ContextMenuCheckboxItem>
                               <ContextMenuCheckboxItem
+                                checked={result.status === 'Back Order'}
+                                onSelect={() => {
+                                  const formData = new FormData();
+                                  formData.append("id", result.id);
+                                  formData.append("status", 'In Works');
+                                  formData.append("intent", 'updateServiceOnOrders');
+                                  submit(formData, { method: "post", });
+                                }}
+                              >In Works</ContextMenuCheckboxItem>
+                              <ContextMenuCheckboxItem
                                 checked={result.status === 'Completed'}
                                 onSelect={() => {
                                   const formData = new FormData();
@@ -1842,10 +1865,24 @@ export default function Dashboard() {
                             </ContextMenuContent>
                           </ContextMenu>
                         </div>
-                        <span>
-                          x{" "}{" "}{result.quantity}
+                        <div className='flex items-center'>
+                          x{" "}{" "}
+                          <EditableText
+                            value={result.quantity}
+                            fieldName="quantity"
+                            inputClassName=" border border-border rounded-lg  text-foreground bg-background py-1 px-2  w-[75px]"
+                            buttonClassName="text-center py-1 px-2 text-muted-foreground"
+                            buttonLabel={`Edit quantity`}
+                            inputLabel={`Edit quantity`}
+                          >
+                            <input type="hidden" name="intent" value='updateQuantity' />
+                            <input type="hidden" name="id" value={result.id} />
+                            <input type="hidden" name="colName" value='quantity' />
 
-                        </span>
+                          </EditableText>
+                          { }
+
+                        </div>
                       </li>
                     )
                   })}
@@ -2139,7 +2176,7 @@ export default function Dashboard() {
                         onClick={() => setPaymentType('Visa')}
                       >
                         <CreditCard className="h-4 w-4 text-foreground" />
-                        <p className="">Visa</p>
+                        <span>{" "}</span>  <p className="">Visa</p>
                       </Button>
                       <Button
                         size="sm"
@@ -2148,7 +2185,7 @@ export default function Dashboard() {
                         onClick={() => setPaymentType('Mastercard')}
                       >
                         <CreditCard className="h-4 w-4 text-foreground" />
-                        <p className="">Mastercard</p>
+                        <span>{" "}</span>  <p className="">Mastercard</p>
                       </Button>
                       <Button
                         size="sm"
@@ -2157,7 +2194,7 @@ export default function Dashboard() {
                         className={cn(' bg-primary mr-2', paymentType === 'Debit' ? "bg-secondary" : "", "")}
                       >
                         <CreditCard className="h-4 w-4 text-foreground" />
-                        <p className="">Debit</p>
+                        <span>{" "}</span>  <p className="">Debit</p>
                       </Button>
                       <Button
                         size="sm"
@@ -2166,7 +2203,7 @@ export default function Dashboard() {
                         className={cn(' bg-primary', paymentType === 'Cheque' ? "bg-secondary" : "", "")}
                       >
                         <CreditCard className="h-4 w-4 text-foreground" />
-                        <p className="">Cheque</p>
+                        <span>{" "}</span>  <p className="">Cheque</p>
                       </Button>
                     </div>
                     <div className='flex items-center justify-center text-foreground mt-2'>
@@ -2177,7 +2214,7 @@ export default function Dashboard() {
                         onClick={() => setPaymentType('Cash')}
                       >
                         <BanknoteIcon className="h-4 w-4 text-foreground" />
-                        <p className="">Cash</p>
+                        <span>{" "}</span> <p className="">Cash</p>
                       </Button>
                       <Button
                         size="sm"
@@ -2186,7 +2223,7 @@ export default function Dashboard() {
                         onClick={() => setPaymentType('Online Transaction')}
                       >
                         <PanelTop className="h-4 w-4 text-foreground" />
-                        <p className="">Online Transaction</p>
+                        <span>{" "}</span><p className="">Online Transaction</p>
                       </Button>
                       <Button
                         size="sm"
@@ -2195,7 +2232,7 @@ export default function Dashboard() {
                         onClick={() => setPaymentType('E-Transfer')}
                       >
                         <PanelTop className="h-4 w-4 text-foreground" />
-                        <p className="">E-Transfer</p>
+                        <span>{" "}</span> <p className="">E-Transfer</p>
                       </Button>
                     </div>
                   </div>
@@ -2224,33 +2261,35 @@ export default function Dashboard() {
                     <>
                       <li className="flex items-center justify-between">
                         <span className="text-muted-foreground">Amount to be charged on {paymentType}</span>
-                        <payment.Form method="post" ref={formRef} >
+                        <formFetch.Form method="post" >
                           <input type='hidden' name='workOrderId' value={order.workOrderId} />
                           <input type='hidden' name='paymentType' value={paymentType} />
                           <input type='hidden' name='remaining' value={remaining} />
-                          <input type='hidden' name='intent' value='createPayment' />
                           <input type='hidden' name='total' value={total} />
                           <div className="relative ml-auto flex-1 md:grow-0 ">
                             <DollarSign className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input
                               name='amountPaid'
                               className='text-right pr-9'
-                              value={input}
-                              onChange={(event) => setInput(event.target.value)}
+                              ref={inputRef}
+                              autoFocus
+                              autoComplete="off"
                             />
                             <Button
                               type="submit"
                               size="icon"
+                              name='intent'
+                              value='createPayment'
                               onClick={() => {
                                 toast.success(`Payment rendered!`)
                               }}
-                              disabled={inputLength === 0}
+
                               className='bg-primary mr-2 absolute right-2.5 top-2.5 h-4 w-4 text-foreground '>
                               <PaperPlaneIcon className="h-4 w-4" />
                               <span className="sr-only">Cash</span>
                             </Button>
                           </div>
-                        </payment.Form>
+                        </formFetch.Form>
                       </li>
                     </>
                   )}
@@ -2457,9 +2496,10 @@ export async function loader({ request, params }: LoaderFunction) {
 
   const user = await GetUser(email);
   if (!user) { redirect("/login"); }
-  const id = params.workOrderId
+  const id = parseInt(params.workOrderId)
+  console.log(id, 'id')
   const orderFirst = await prisma.workOrder.findUnique({
-    where: { workOrderId: Number(id) },
+    where: { workOrderId: id },
     select: {
       workOrderId: true,
       unit: true,
@@ -2487,6 +2527,79 @@ export async function loader({ request, params }: LoaderFunction) {
       clientfileId: true,
       createdAt: true,
       updatedAt: true,
+      AccOrders: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          userEmail: true,
+          userName: true,
+          dept: true,
+          total: true,
+          discount: true,
+          discPer: true,
+          paid: true,
+          paidDate: true,
+          status: true,
+          workOrderId: true,
+          note: true,
+          financeId: true,
+          clientfileId: true,
+          AccessoriesOnOrders: {
+            select: {
+              id: true,
+              quantity: true,
+              accOrderId: true,
+              status: true,
+              orderNumber: true,
+              OrderInvId: true,
+              accessoryId: true,
+              accessory: {
+                select: {
+                  id: true,
+                  createdAt: true,
+                  updatedAt: true,
+                  partNumber: true,
+                  brand: true,
+                  name: true,
+                  price: true,
+                  cost: true,
+                  quantity: true,
+                  description: true,
+                  category: true,
+                  subCategory: true,
+                  onOrder: true,
+                  distributer: true,
+                  location: true,
+                },
+              },
+            },
+          },
+        }
+      },
+      ServicesOnWorkOrders: {
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          quantity: true,
+          status: true,
+          workOrderId: true,
+          serviceId: true,
+          hr: true,
+          service: {
+            select: {
+              id: true,
+              createdAt: true,
+              updatedAt: true,
+              description: true,
+              estHr: true,
+              service: true,
+              price: true,
+            }
+          }
+        }
+      },
       Clientfile: {
         select: {
           id: true,
@@ -2745,56 +2858,6 @@ export async function loader({ request, params }: LoaderFunction) {
           },
         },
       },
-      AccOrders: {
-        select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          userEmail: true,
-          userName: true,
-          dept: true,
-          total: true,
-          discount: true,
-          discPer: true,
-          paid: true,
-          paidDate: true,
-          status: true,
-          workOrderId: true,
-          note: true,
-          financeId: true,
-          clientfileId: true,
-          AccessoriesOnOrders: {
-            select: {
-              id: true,
-              quantity: true,
-              accOrderId: true,
-              status: true,
-              orderNumber: true,
-              OrderInvId: true,
-              accessoryId: true,
-              accessory: {
-                select: {
-                  id: true,
-                  createdAt: true,
-                  updatedAt: true,
-                  partNumber: true,
-                  brand: true,
-                  name: true,
-                  price: true,
-                  cost: true,
-                  quantity: true,
-                  description: true,
-                  category: true,
-                  subCategory: true,
-                  onOrder: true,
-                  distributer: true,
-                  location: true,
-                },
-              },
-            },
-          },
-        }
-      },
       Payments: {
         select: {
           id: true,
@@ -2808,29 +2871,7 @@ export async function loader({ request, params }: LoaderFunction) {
           accOrderId: true,
         },
       },
-      ServicesOnWorkOrders: {
-        select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          quantity: true,
-          status: true,
-          workOrderId: true,
-          serviceId: true,
-          hr: true,
-          service: {
-            select: {
-              id: true,
-              createdAt: true,
-              updatedAt: true,
-              description: true,
-              estHr: true,
-              service: true,
-              price: true,
-            }
-          }
-        }
-      },
+
       WorkOrderNotes: {
         select: {
           id: true,
@@ -2873,10 +2914,13 @@ export async function loader({ request, params }: LoaderFunction) {
           color: true,
           location: true,
         }
-      }
+      },
+
     },
   });
-
+  const CustomerSignature = await prisma.customerSignature.findUnique({
+    where: { workOrderId: id }
+  })
 
   const tax = await prisma.dealer.findUnique({
     where: { id: 1 },
@@ -2884,9 +2928,14 @@ export async function loader({ request, params }: LoaderFunction) {
       userTax: true,
       userLabour: true,
       serviceDiscount: true,
+      DealerLogo: {
+        select: {
+          dealerLogo: true,
+        }
+      }
     },
   });
-  const dealerImage = await prisma.dealerLogo.findUnique({ where: { id: 1 } })
+
   const services = await prisma.services.findMany({})
   const allUsers = await prisma.user.findMany({
     select: {
@@ -2904,7 +2953,7 @@ export async function loader({ request, params }: LoaderFunction) {
   const techs = allUsers.filter(user =>
     user.role.name === 'Technician'
   );
-  return json({ orderFirst, user, tax, dealerImage, services, techs });
+  return json({ orderFirst, user, tax, services, techs, CustomerSignature });
 }
 
 
@@ -2916,7 +2965,27 @@ export async function action({ request, params }: ActionFunction) {
   const user = await GetUser(email)
   const id = params.workOrderId
   // console.log(formPayload, 'formpayload')
+  if (intent === 'inputSignature') {
+    const signature = await prisma.customerSignature.findUnique({ where: { workOrderId: Number(formPayload.id) } })
+    let logo
+    if (!signature) {
+      logo = await prisma.customerSignature.create({
+        data: {
+          workOrderId: Number(formPayload.id),
+          signature: formPayload.dealerLogo
+        }
+      })
+    } else {
+      logo = await prisma.customerSignature.update({
+        where: { workOrderId: Number(formPayload.id) },
+        data: {
+          signature: formPayload.dealerLogo
+        }
+      })
+    }
 
+    return json({ logo })
+  }
   if (intent === "updateWorkOrderHours") {
 
     const subtotal = formPayload.hours * formPayload.userLabour
@@ -3456,6 +3525,14 @@ export async function action({ request, params }: ActionFunction) {
     });
     return redirect('/dealer/service/customerSync')
   }
+
+  if (intent === "updateQuantity") {
+    const update = await prisma.servicesOnWorkOrders.update({
+      where: { id: formPayload.id },
+      data: { quantity: parseInt(formPayload.quantity) }
+    });
+    return update
+  }
   if (intent === "updateHr") {
     const update = await prisma.servicesOnWorkOrders.update({
       where: { id: formPayload.id },
@@ -3515,7 +3592,7 @@ export async function action({ request, params }: ActionFunction) {
       });
     }
 
-    return payment;
+    return json({ payment })
   }
   if (intent === "addUnit") {
     const update = await prisma.workOrder.update({
@@ -3715,3 +3792,91 @@ export const meta = () => {
 export const links: LinksFunction = () => [
   { rel: "icon", type: "image/svg", href: '/favicons/wrench.svg' },
 ]
+
+
+export function EditableText2({
+  children,
+  fieldName,
+  value,
+  inputClassName,
+  inputLabel,
+  buttonClassName,
+  buttonLabel,
+}: {
+  children: React.ReactNode;
+  fieldName: string;
+  value: string;
+  inputClassName: string;
+  inputLabel: string;
+  buttonClassName: string;
+  buttonLabel: string;
+}) {
+  let fetcher = useFetcher();
+  let [edit, setEdit] = useState(false);
+  let inputRef = useRef<HTMLInputElement>(null);
+  let buttonRef = useRef<HTMLButtonElement>(null);
+
+  // optimistic update
+  if (fetcher.formData?.has(fieldName)) {
+    value = String(fetcher.formData.get("name"));
+  }
+
+  return edit ? (
+    <fetcher.Form
+      method="post"
+      onSubmit={() => {
+        flushSync(() => {
+          setEdit(false);
+        });
+        toast.success(`Saving ${fieldName}...`, {
+          description: `With ${value}.`,
+        })
+        buttonRef.current?.focus();
+      }}
+
+    >
+      {children}
+      <Input
+        required
+        ref={inputRef}
+        type="text"
+        aria-label={inputLabel}
+        name={fieldName}
+        defaultValue={value}
+        className={`w-full bg-background border border-border text-foreground rounded-[6px] ${inputClassName}`}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") {
+            flushSync(() => {
+              setEdit(false);
+            });
+            buttonRef.current?.focus();
+          }
+        }}
+        onBlur={(event) => {
+          if (
+            inputRef.current?.value !== value &&
+            inputRef.current?.value.trim() !== ""
+          ) {
+            fetcher.submit(event.currentTarget);
+          }
+          setEdit(false);
+        }}
+      />
+    </fetcher.Form>
+  ) : (
+    <button
+      aria-label={buttonLabel}
+      type="button"
+      ref={buttonRef}
+      onClick={() => {
+        flushSync(() => {
+          setEdit(true);
+        });
+        inputRef.current?.select();
+      }}
+      className={`cursor-pointer ${buttonClassName}`}
+    >
+      {value || <span className="text-foreground italic ">Edit</span>}
+    </button>
+  );
+}

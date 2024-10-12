@@ -263,10 +263,18 @@ export async function loader({ request, params }: LoaderFunction) {
   })
   const tax = await prisma.dealer.findUnique({
     where: { id: 1 },
-    select: { userTax: true, pacDiscount: true },
+    select: {
+      userTax: true,
+      pacDiscount: true,
+      DealerLogo: {
+        select: {
+          dealerLogo: true,
+        }
+      }
+    },
   });
   const dealerImage = await prisma.dealerLogo.findUnique({
-    where: { id: 1 }
+    where: { dealerId: 1 }
   })
   await prisma.customerSync.update({
     where: { userEmail: email },
@@ -787,7 +795,7 @@ export default function Purchase() {
     date: new Date(order.createdAt).toLocaleDateString("en-US", options2),
     cardNum: '',
     paymentType: '',
-    image: dealerImage.dealerLogo
+    image: tax.DealerLogo.dealerLogo
   };
 
   AccessoriesOnOrders.forEach((result, index) => {
@@ -1061,7 +1069,7 @@ export default function Purchase() {
                       <Form method='post' >
                         <input type='hidden' name='orderId' value={order.id} />
                         <div className="relative mt-4">
-                          <TextArea className='w-[200px]' defaultValue={order.note} name='note' />
+                          <TextArea className='w-[200px] 2xl:w-[200px] xl:w-[175px]' defaultValue={order.note} name='note' />
                           <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">Order Notes</label>
                         </div>
                         <Button
@@ -1501,23 +1509,6 @@ export default function Purchase() {
                     <DropdownMenuItem onSelect={() => {
                       setShowDiscountDialog(true)
                     }}>Show Discount</DropdownMenuItem>
-
-                    {/**
-                    //
-                    //
-                    //
-                    //}}
-                    //
-                   <ClientOnly fallback={<p>Fallback component ...</p>}>
-                      {() => (
-                  </ClientOnly>        <React.Suspense fallback={<div>Loading...</div>}>
-                  </DropdownMenuItem>          <PrintReceipt data={toReceipt} />
-                         </React.Suspense>
-
-                    </ClientOnly>
-              </DropdownMenuItem>
-                    >*/}
-
                     <DropdownMenuItem
                       onSelect={() => {
                         console.log(toReceipt)

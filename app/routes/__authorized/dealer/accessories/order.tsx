@@ -88,7 +88,7 @@ import {
 } from "~/components/ui/pagination"
 import axios from "axios";
 import { FileCheck } from "lucide-react";
-import PrintReceipt from "../document/printReceiptAcc";
+import PrintReceipt, { PrintReceipt2 } from "../document/printReceiptAcc";
 import { Users } from "lucide-react";
 import { ArrowUpRight } from "lucide-react";
 import { Avatar } from "~/components";
@@ -205,7 +205,14 @@ export async function loader({ request, params }: LoaderFunction) {
 
   const tax = await prisma.dealer.findUnique({
     where: { id: 1 },
-    select: { userTax: true },
+    select: {
+      userTax: true,
+      DealerLogo: {
+        select: {
+          dealerLogo: true,
+        }
+      }
+    },
   });
 
   const sevTotal = await getTotalFromLast7Days();
@@ -569,7 +576,7 @@ export default function Purchase() {
       date: new Date().toLocaleDateString("en-US", options2),
       cardNum: '',
       paymentType: '',
-      image: dealerImage.dealerLogo
+      image: tax.DealerLogo.dealerLogo
     };
 
     showPrevOrder.AccessoriesOnOrders.forEach((result, index) => {
@@ -1688,9 +1695,9 @@ const MySidebar = ({
                   <DropdownMenuItem
                     onSelect={() => {
                       console.log(toReceipt)
-                      PrintReceipt(toReceipt)
+                      PrintReceipt2(toReceipt)
                     }}>
-                    Reprint Receipt
+                    Print Receipt
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onSelect={() => setDiscount((prevDiscount) => !prevDiscount)}>
@@ -1993,8 +2000,17 @@ const MySidebar = ({
                   align="end"
                   className="border border-border"
                 >
-                  <DropdownMenuItem>Go To Order</DropdownMenuItem>
-                  <DropdownMenuItem>Reprint Receipt</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      navigate(`/dealer/accessories/newOrder/${lastOrder.id}`)
+                    }}>Go To Order</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={() => {
+                      console.log(toReceipt)
+                      PrintReceipt2(toReceipt)
+                    }}>
+                    Print Receipt
+                  </DropdownMenuItem>
                   <DropdownMenuItem>Go To Cash</DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>Trash</DropdownMenuItem>
