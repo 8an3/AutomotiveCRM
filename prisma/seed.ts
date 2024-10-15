@@ -6942,6 +6942,7 @@ export async function Board() {
     { board: "dev", column: "ISSUE", item: "***** NEEDS TO BE DONE FOR RELEASE *****" },
     { board: "dev", column: "ISSUE", item: "https://www.youtube.com/watch?v=-0Qi0yMyLwQ optimistic add for modifying forms for when you get used to the layour" },
     { board: "dev", column: "ISSUE", item: "make forms such as workorders as fast as lars to edit" },
+    { board: "dev", column: "ISSUE", item: "finish finance application from emails from overview" },
 
     { board: "dev", column: "IDEAS", item: "admin dashboard - when going over clients and other objects ie for clients open dialog on left have nave men`u with a first level of items such as finance, work order, acc order and the when you click on it you can then click on the tabs for each layer on that data segment" },
     { board: "dev", column: "DONE NEEDS TESTING", item: "check notifications needs to be fixed" },

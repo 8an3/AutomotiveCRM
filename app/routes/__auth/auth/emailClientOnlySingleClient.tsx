@@ -165,22 +165,7 @@ export default function NewCLientOnlyForClients() {
   const { instance } = useMsal();
   const authProvider = app.authProvider!
   const account = instance.getActiveAccount();
-  //const user = getUser(app.authProvider!);
-  /**  const { instance, accounts, inProgress } = useMsal();
-    const account = instance.getActiveAccount();
-    const response = await instance.acquireTokenSilent({
-      ...loginRequest,
-      account: account
-    });
-    if (!account) {
-      throw Error("No active account! Verify a user has been signed in and setActiveAccount has been called.");
-    }
-    const jsontoken = JSON.stringify(response.accessToken)
-   */
-  // const user = getUser(app.authProvider!);
 
-  // let search = useFetcher();
-  // let ref = useRef();
   console.log(user, 'user')
   const [emails, setEmails] = useState();
   const [getCountOf, setGetCountOf] = useState('');

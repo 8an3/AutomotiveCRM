@@ -239,12 +239,12 @@ export function DataTable({ columns, data, user, smsDetails }) {
    }); */
   console.log(columnVisibility, 'datatable')
 
-  useEffect(() => {
-    fetcher.submit(
-      { state: JSON.stringify(columnVisibility), intent: 'columnState' },
-      { method: "post" }
-    );
-  }, [columnVisibility]);
+  /**  useEffect(() => {
+      fetcher.submit(
+        { state: JSON.stringify(columnVisibility), intent: 'columnState' },
+        { method: "post" }
+      );
+    }, [columnVisibility]); */
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});

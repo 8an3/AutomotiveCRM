@@ -1559,6 +1559,10 @@ model Finance {
   uCDAForm                 UCDAForm[]            @relation("finance")
   FinCanOptions            FinCanOptions[]       @relation("finance")
 
+  FinanceApplicationId String?             @unique
+  FinanceApplication   FinanceApplication? @relation("FinanceApplicationToFinance", fields: [FinanceApplicationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([FinanceApplicationId])
   @@index([clientfileId])
 }
 
@@ -1948,7 +1952,7 @@ model FinanceDeptProducts {
 }
 
 model FinanceApplication {
-  id                 String  @id @default(cuid())
+  id                 String   @id @default(cuid())
   financeId          String?
   clientfileId       String?
   fullName           String?
@@ -1982,6 +1986,10 @@ model FinanceApplication {
   notes              String?
   finMgrEmail        String?
   userEmail          String?
+  FinanceId          String?
+  Finance            Finance? @relation("FinanceApplicationToFinance")
+
+  @@index([FinanceId])
 }
 
 model FinManOptions {

@@ -17,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from "~/components/ui/alert-dialog"
 import customer from '~/styles/customer.css'
+import { toast } from "sonner";
 
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: customer },
@@ -48,7 +49,7 @@ export default function DealerCompleted() {
               name='fullName'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  "> Full Name</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  "> Full Name</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -56,7 +57,7 @@ export default function DealerCompleted() {
               name='dob'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  "> Date of Birth</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  "> Date of Birth</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -64,7 +65,7 @@ export default function DealerCompleted() {
               name='sin'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">  Social Insurance Number</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">  Social Insurance Number</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -73,7 +74,7 @@ export default function DealerCompleted() {
               name='phone'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Phone Number</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Phone Number</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -82,7 +83,7 @@ export default function DealerCompleted() {
               name='email'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Email Address</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Email Address</label>
           </div>
           <p className='my-[15px] mx-[10px] font-[24px] font-[#262626]'>Current Address</p>
           <div className="relative mt-5">
@@ -93,7 +94,7 @@ export default function DealerCompleted() {
 
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Street Address</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Street Address</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -103,7 +104,7 @@ export default function DealerCompleted() {
 
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">City</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">City</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -112,7 +113,7 @@ export default function DealerCompleted() {
               defaultValue={province}
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Province</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Province</label>
           </div>
 
           <div className="relative mt-5">
@@ -122,7 +123,7 @@ export default function DealerCompleted() {
               defaultValue={postalCode}
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Postal Code</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Postal Code</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -130,7 +131,7 @@ export default function DealerCompleted() {
               name='addressDuration'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Duration at Current Address</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Duration at Current Address</label>
           </div>
           <p className='my-[15px] mx-[10px] font-[24px] font-[#262626]'>Employment Information</p>
           <hr className='text-center w-[90%] mb-[16px] mx-auto border-t-[#e6e6e6]' />
@@ -140,7 +141,7 @@ export default function DealerCompleted() {
               name='employer'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Current Employer</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Current Employer</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -148,7 +149,7 @@ export default function DealerCompleted() {
               name='job'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Job Title</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Job Title</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -156,7 +157,7 @@ export default function DealerCompleted() {
               name='employmentStatus'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Employment Status</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Employment Status</label>
           </div>
           <p className='my-[15px] mx-[10px] font-[24px] font-[#262626]'>Employment Information</p>
           <div className="relative mt-5">
@@ -165,7 +166,7 @@ export default function DealerCompleted() {
               name='employerAddress'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Employer Address</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Employer Address</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -173,7 +174,7 @@ export default function DealerCompleted() {
               name='employerCity'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Employer City</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Employer City</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -181,7 +182,7 @@ export default function DealerCompleted() {
               name='employerProvince'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Employer Province</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Employer Province</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -189,7 +190,7 @@ export default function DealerCompleted() {
               name='employerPostal'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Employer Postal Code</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Employer Postal Code</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -197,7 +198,7 @@ export default function DealerCompleted() {
               name='employerPhone'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Employer Phone Number</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Employer Phone Number</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -205,7 +206,7 @@ export default function DealerCompleted() {
               name='employmentDuration'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Duration of Employment</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Duration of Employment</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -213,7 +214,7 @@ export default function DealerCompleted() {
               name='monthlyGrossIncome'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Monthly Gross Income</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Monthly Gross Income</label>
           </div>
           <p className='my-[15px] mx-[10px] font-[24px] font-[#262626]'>Banking Information</p>
           <hr className='text-center w-[90%] mb-[16px] mx-auto border-t-[#e6e6e6]' />
@@ -223,7 +224,7 @@ export default function DealerCompleted() {
               name='bankName'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Bank Name</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Bank Name</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -231,7 +232,7 @@ export default function DealerCompleted() {
               name='branchAddress'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Branch Address</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Branch Address</label>
           </div>
           <p className='my-[15px] mx-[10px] font-[24px] font-[#262626]'>Current Monthly Housing Expenses</p>
 
@@ -241,7 +242,7 @@ export default function DealerCompleted() {
               name='mortgagePayment'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Rent/Mortgage Payment</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Rent/Mortgage Payment</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -249,7 +250,7 @@ export default function DealerCompleted() {
               name='utilities'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Utilities</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Utilities</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -257,7 +258,7 @@ export default function DealerCompleted() {
               name='propertyTaxes'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Property Taxes</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Property Taxes</label>
           </div>
           <p className='my-[15px] mx-[10px] font-[24px] font-[#262626]'>Outstanding Loans and Credit Card Debts</p>
 
@@ -267,7 +268,7 @@ export default function DealerCompleted() {
               name='loanType'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Type of Loan/Debt</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Type of Loan/Debt</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -275,7 +276,7 @@ export default function DealerCompleted() {
               name='loanMonthlyPayment'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Monthly Payment</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Monthly Payment</label>
           </div>
           <div className="relative mt-5">
             <Input
@@ -283,7 +284,7 @@ export default function DealerCompleted() {
               name='remainingBalance'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Remaining Balance</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Remaining Balance</label>
           </div>
           <p className='my-[15px] mx-[10px] font-[24px] font-[#262626]'>Additional Information You Would Like To Add</p>
           <hr className='text-center w-[90%] mb-[16px] mx-auto border-t-[#e6e6e6]' />
@@ -292,7 +293,7 @@ export default function DealerCompleted() {
               name='notes'
               className="w-full  bg-[#ffffff]   text-black border-[#eaeaea]"
             />
-            <label className=" text-[16px] leading-[24px] absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] peer-placeholder-shown:top-2.5  ">Notes</label>
+            <label className="   text-sm absolute left-3  rounded-full -top-3 px-2 bg-[#ffffff] transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-muted-foreground peer-focus:-top-3 peer-focus:text-muted-foreground text-black  ">Notes</label>
           </div>
           <input type='hidden' name='financeId' value={financeId} />
           <input type='hidden' name='userEmail' value={salesRep.email} />
@@ -301,30 +302,16 @@ export default function DealerCompleted() {
           <input type='hidden' name='brand' value={finance.brand} />
           <input type='hidden' name='year' value={finance.year} />
           <input type='hidden' name='email' value={finance.email} />
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button size='sm' className='bg-[#1c69d4] text-white mt-5' variant="outline">Submit Application</Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent className='bg-[#ffffff]'>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Congratulations on taking the first step!</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Thank-you for completing the finance application someone will be in contact with you shortly
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel className='text-white'>Cancel</AlertDialogCancel>
-                <AlertDialogAction>
-                  <Button
-                    type='submit'
-                    size='sm'
-                    className='bg-[#1c69d4] text-white mt-5' variant="outline">
-                    Confirm
-                  </Button>
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <Button
+            type='submit'
+            size='sm'
+            className='bg-[#1c69d4] text-white mt-5' variant="outline"
+            onClick={() => {
+              toast('Thank-you for filling out the application, someone from our finance deptarment will be in contact with you shortly.')
+            }}
+          >
+            Confirm
+          </Button>
         </div>
       </Form>
       <hr className="border border-solid border-[#eaeaea] my-[26px] mx-0 w-full mt-auto" />
@@ -343,7 +330,7 @@ export async function loader({ request, params }) {
   const dealer = await prisma.dealer.findUnique({ where: { id: 1 } })
   const finance = await prisma.finance.findUnique({ where: { id: financeId } })
   const salesRep = await prisma.user.findUnique({ where: { email: finance?.userEmail } })
-
+  console.log(dealer, finance, salesRep, ' dealer, finance, salesRep')
   return json({ dealer, finance, salesRep })
 }
 
@@ -366,7 +353,7 @@ export async function action({ request, }: ActionFunction) {
   const financeApp = await prisma.financeApplication.create({
     data: {
       financeId: formData.financeId,
-      clientfileId: formData.clientfileId,
+      clientfileId: clientfile.id,
       fullName: formData.fullName,
       dob: formData.dob,
       sin: formData.sin,

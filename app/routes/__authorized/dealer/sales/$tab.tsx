@@ -524,7 +524,7 @@ export function MainDashbaord({ user }) {
             cell: ({ row }) => {
                 const data = row.original;
                 return <div className="bg-transparent mx-1 flex h-[45px] w-[160px] flex-1 items-center justify-center px-5 text-center  text-[15px] uppercase leading-none text-foreground  outline-none  transition-all  duration-150 ease-linear target:text-primary hover:text-primary  focus:text-primary  focus:outline-none  active:bg-primary  ">
-                    {String(data.nextAppointment)}
+                    {data.nextAppointment === null ? 'No Appt Set' : String(data.nextAppointment)}
                 </div>
             },
         },
@@ -532,7 +532,30 @@ export function MainDashbaord({ user }) {
             id: 'customerState',
             accessorKey: "customerState",
             header: ({ column }) => (
-                <DataTableColumnHeader column={column} title="State" />
+                <>
+                    <Select onValueChange={(value) => {
+                        const status = table.getColumn("state")
+                        status?.setFilterValue(value)
+                    }}                                >
+                        <SelectTrigger className="w-full bg-background text-foreground border border-border">
+                            <SelectValue placeholder='State' />
+                        </SelectTrigger>
+                        <SelectContent className='bg-background text-foreground border border-border'>
+                            <SelectGroup>
+                                <SelectLabel>State</SelectLabel>
+                                <SelectItem value='Attempted' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                    Attempted
+                                </SelectItem>
+                                <SelectItem value='Reached' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                    Reached
+                                </SelectItem>
+                                <SelectItem value='Not Contacted' className='cursor-pointer hover:bg-accent hover:text-accent-foreground'>
+                                    Not Contacted
+                                </SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </>
             ), cell: ({ row }) => {
                 const data = row.original
                 //  const id = data.id ? data.id.toString() : '';

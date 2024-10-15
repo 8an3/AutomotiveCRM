@@ -838,12 +838,12 @@ export function UnitInv({ finance, tableData, user }) {
     // consignment: false,
   });
 
-  useEffect(() => {
-    fetcher.submit(
-      { state: JSON.stringify(columnVisibility), intent: 'columnState' },
-      { method: "post" }
-    );
-  }, [columnVisibility]);
+  /**  useEffect(() => {
+      fetcher.submit(
+        { state: JSON.stringify(columnVisibility), intent: 'columnState' },
+        { method: "post" }
+      );
+    }, [columnVisibility]); */
 
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState('')

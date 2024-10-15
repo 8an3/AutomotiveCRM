@@ -127,6 +127,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
 
   const [tradeToggled, setTradeToggled] = useState(true);
   const [financeInfo, setFinanceInfo] = useState(true);
+  const [editFirst, setEditFirst] = useState(false);
   const [PickUpCalendar, setPickUpCalendar] = useState('off');
 
   useEffect(() => {
@@ -1942,6 +1943,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
 
   const [firstOpen, setFirstOpen] = useState(false);
   const [salesOpen, setSalesOpen] = useState(false)
+  const [editSecond, setEditSecond] = useState(false)
   return (
     <Dialog open={firstOpen} onOpenChange={setFirstOpen} >
       <DialogTrigger asChild>
@@ -1963,62 +1965,144 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
             </CardHeader>
             <CardContent className='flex-grow !grow max-h-[600px] h-[600px] overflow-y-auto'>
               <TabsContent value="Sales" className="  text-foreground rounded-lg">
-                <ul className="grid gap-3 text-sm mt-2">
-                  {customerCard.map((customer, index) => (
-                    <li key={index} className="group flex items-center justify-between">
-                      <div className='flex'>
-                        <span className="text-muted-foreground">
-                          {customer.label}
-                        </span>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          onClick={() => copyText(customer.value)}
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                {!editFirst ? (<>
+                  <ul className="grid gap-3 text-sm mt-2">
+                    {customerCard.map((customer, index) => (
+                      <li key={index} className="group flex items-center justify-between">
+                        <div className='flex'>
+                          <span className="text-muted-foreground">
+                            {customer.label}
+                          </span>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            onClick={() => copyText(customer.value)}
+                            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                          >
+                            <Copy className="h-3 w-3" />
+                            <span className="sr-only">Copy</span>
+                          </Button>
+                          {copiedText === customer.value && <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />}
+                        </div>
+                        <EditableTextManual
+                          value={customer.value}
+                          fieldName={customer.name}
+                          inputClassName=" py-1 px-2 "
+                          buttonClassName="   py-1 px-2 "
+                          buttonLabel={`Edit board "${customer.name}" name`}
+                          inputLabel="Edit board name"
                         >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">Copy</span>
-                        </Button>
-                        {copiedText === customer.value && <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />}
-                      </div>
-                      <EditableTextManual
-                        value={customer.value}
-                        fieldName={customer.name}
-                        inputClassName=" py-1 px-2 "
-                        buttonClassName="   py-1 px-2 "
-                        buttonLabel={`Edit board "${customer.name}" name`}
-                        inputLabel="Edit board name"
+                          <input type="hidden" name="intent" value='updateClientInfoFinance' />
+                          <input type="hidden" name="financeId" value={finance.id} />
+                        </EditableTextManual>
+                      </li>
+                    ))}
+                  </ul>
+                </>) : (<>
+
+                  <fetcher.Form method='post'>
+
+                    <ul className="grid gap-3 text-sm mt-2">
+
+                      {customerCard.map((customer, index) => (
+                        <div className="grid gap-3 mx-3 mb-3">
+                          <div className="relative mt-3" key={index} >
+                            <Input
+                              defaultValue={customer.value}
+                              name={customer.name}
+                              type="text"
+                              className="w-full bg-background border-border "
+                            />
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{customer.label}</label>
+                          </div>
+                        </div>
+                      ))}
+                    </ul>
+                    <input type='hidden' name='financeId' defaultValue={finance.id} />
+                    <input type='hidden' name='userId' defaultValue={user.id} />
+                    <input type='hidden' name="clientfileId" defaultValue={data.clientfileId} />
+                    <div className='flex justify-center' >
+                      <ButtonLoading
+                        size="sm"
+                        value="updateClientInfoFinance"
+                        className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
+                        name="intent"
+                        type="submit"
+                        isSubmitting={isSubmitting}
+                        onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
+                        loadingText={`${data.firstName}'s customer file is updated...`}
                       >
-                        <input type="hidden" name="intent" value='updateClientInfoFinance' />
-                        <input type="hidden" name="financeId" value={finance.id} />
-                      </EditableTextManual>
-                    </li>
-                  ))}
-                </ul>
+                        Save
+                        <PaperPlaneIcon className="h-4 w-4 ml-2" />
+                      </ButtonLoading>
+                    </div>
+                  </fetcher.Form>
+                </>)}
+
               </TabsContent>
               <TabsContent value="Finance">
-                <ul className="grid gap-3 text-sm mt-[9px]">
-                  {financeApp.map((customer, index) => (
-                    <li key={index} className="group flex items-center justify-between">
-                      <div className='flex'>
-                        <span className="text-muted-foreground">
-                          {customer.label}
-                        </span>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          onClick={() => copyText(customer.value)}
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                {!editFirst ? (<>
+
+                  <ul className="grid gap-3 text-sm mt-[9px]">
+                    {financeApp.map((customer, index) => (
+                      <li key={index} className="group flex items-center justify-between">
+                        <div className='flex'>
+                          <span className="text-muted-foreground">
+                            {customer.label}
+                          </span>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            onClick={() => copyText(customer.value)}
+                            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                          >
+                            <Copy className="h-3 w-3" />
+                            <span className="sr-only">Copy</span>
+                          </Button>
+                          {copiedText === customer.value && <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />}
+                        </div>
+                        <p>{customer.value}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </>) : (
+                  <>
+                    <fetcher.Form method='post'>
+
+                      <ul className="grid gap-3 text-sm mt-2">
+                        {financeApp.map((customer, index) => (
+                          <div className="grid gap-3 mx-3 mb-3">
+                            <div className="relative mt-3" key={index} >
+                              <Input
+                                defaultValue={customer.value}
+                                name={customer.name}
+                                type="text"
+                                className="w-full bg-background border-border "
+                              />
+                              <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{customer.label}</label>
+                            </div>
+                            <input type='hidden' name='financeAppId' value={customer.id} />
+                          </div>
+                        ))}
+                      </ul>
+                      <div className='flex justify-center' >
+                        <ButtonLoading
+                          size="sm"
+                          value="updateFinanceApp"
+                          className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
+                          name="intent"
+                          type="submit"
+                          isSubmitting={isSubmitting}
+                          onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
+                          loadingText={`${data.firstName}'s customer file is updated...`}
                         >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">Copy</span>
-                        </Button>
-                        {copiedText === customer.value && <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />}
+                          Save
+                          <PaperPlaneIcon className="h-4 w-4 ml-2" />
+                        </ButtonLoading>
                       </div>
-                      <p>{customer.value}</p>
-                    </li>
-                  ))}
-                </ul>
+                    </fetcher.Form>
+                  </>
+                )}
               </TabsContent>
             </CardContent>
             <CardFooter className="mt-[7px] grid grid-cols-2 justify-between items-center border-t border-border bg-muted/50 px-6 py-3">
@@ -2027,109 +2111,14 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
                   navigate(`/dealer/sales/finance/${finance.id}`)
                 }} >Finance File</Button>
               </div>
-              <Dialog >
-                <DialogTrigger asChild>
-                  <Button size="sm" variant="outline" className="h-8 gap-1 ml-auto">
-                    <CiEdit className="h-3.5 w-3.5" />
-                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                      Edit
-                    </span>
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="gap-0 p-0 outline-none border-border text-foreground   max-h-[750px] h-[750px]  overflow-y-scroll">
-                  <Tabs defaultValue="Sales" className='m-3 p-3'>
-                    <TabsList >
-                      <TabsTrigger value="Sales">Customer Info</TabsTrigger>
-                      <TabsTrigger value="Finance">Finance App</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="Sales" className="  text-foreground rounded-lg">
-                      <fetcher.Form method='post'>
-                        <DialogHeader className="px-4 pb-4 pt-5">
-                          <DialogTitle>Edit Customer Info</DialogTitle>
-                          <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
-                        </DialogHeader>
-                        <ul className="grid gap-3 text-sm mt-2">
-
-                          {customerCard.map((customer, index) => (
-                            <div className="grid gap-3 mx-3 mb-3">
-                              <div className="relative mt-3" key={index} >
-                                <Input
-                                  defaultValue={customer.value}
-                                  name={customer.name}
-                                  type="text"
-                                  className="w-full bg-background border-border "
-                                />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{customer.label}</label>
-                              </div>
-                            </div>
-                          ))}
-                        </ul>
-                        <input type='hidden' name='financeId' defaultValue={finance.id} />
-                        <input type='hidden' name='userId' defaultValue={user.id} />
-                        <input type='hidden' name="clientfileId" defaultValue={data.clientfileId} />
-                        <div className='flex justify-center' >
-                          <ButtonLoading
-                            size="sm"
-                            value="updateClientInfoFinance"
-                            className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
-                            name="intent"
-                            type="submit"
-                            isSubmitting={isSubmitting}
-                            onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
-                            loadingText={`${data.firstName}'s customer file is updated...`}
-                          >
-                            Save
-                            <PaperPlaneIcon className="h-4 w-4 ml-2" />
-                          </ButtonLoading>
-                        </div>
-                      </fetcher.Form>
-                    </TabsContent>
-                    <TabsContent value="Finance">
-                      <fetcher.Form method='post'>
-                        <DialogHeader className="px-4 pb-4 pt-5">
-                          <DialogTitle>Finance Application Info</DialogTitle>
-                          <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
-                        </DialogHeader>
-
-                        <ul className="grid gap-3 text-sm mt-2">
-                          {financeApp.map((customer, index) => (
-                            <div className="grid gap-3 mx-3 mb-3">
-                              <div className="relative mt-3" key={index} >
-                                <Input
-                                  defaultValue={customer.value}
-                                  name={customer.name}
-                                  type="text"
-                                  className="w-full bg-background border-border "
-                                />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{customer.label}</label>
-                              </div>
-                              <input type='hidden' name='financeAppId' value={customer.id} />
-                            </div>
-                          ))}
-                        </ul>
-                        <div className='flex justify-center' >
-                          <ButtonLoading
-                            size="sm"
-                            value="updateFinanceApp"
-                            className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
-                            name="intent"
-                            type="submit"
-                            isSubmitting={isSubmitting}
-                            onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
-                            loadingText={`${data.firstName}'s customer file is updated...`}
-                          >
-                            Save
-                            <PaperPlaneIcon className="h-4 w-4 ml-2" />
-                          </ButtonLoading>
-                        </div>
-                      </fetcher.Form>
-                    </TabsContent>
-
-                  </Tabs>
-
-                </DialogContent>
-              </Dialog>
-
+              <Button size="sm" variant="outline" className="h-8 gap-1 ml-auto" onClick={() => {
+                setEditFirst(prev => !prev);
+              }}>
+                <CiEdit className="h-3.5 w-3.5" />
+                <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                  Edit
+                </span>
+              </Button>
             </CardFooter>
           </Card>
         </Tabs>
@@ -2859,7 +2848,7 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
           )}
           {firstPage && (
             <>
-              <CardContent className="flex-grow !grow  p-6 text-sm  bg-background  max-h-[600px] h-[600px] overflow-y-auto">
+              <CardContent className=" p-6 text-sm  bg-background  max-h-[550px] h-[550px] overflow-y-auto">
                 <div className="grid gap-3">
                   <div className="font-semibold">Payment Details</div>
                   <ul className="grid gap-3">
@@ -3591,28 +3580,68 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
             </CardHeader>
             <CardContent className='flex-grow !grow  max-h-[600px] h-[600px] overflow-y-auto'>
               <TabsContent value="Sales" className="  text-foreground rounded-lg">
-                <ul className="grid gap-3 text-sm mt-2">
-                  {bankingInformation.map((customer, index) => (
-                    <li key={index} className="group flex items-center justify-between">
-                      <div className='flex'>
-                        <span className="text-muted-foreground">
-                          {customer.label}
-                        </span>
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          onClick={() => copyText(customer.value)}
-                          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
-                        >
-                          <Copy className="h-3 w-3" />
-                          <span className="sr-only">Copy</span>
-                        </Button>
-                        {copiedText === customer.value && <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />}
-                      </div>
-                      <p>{customer.value}</p>
-                    </li>
-                  ))}
-                </ul>
+                {!editSecond ? (<>
+                  <ul className="grid gap-3 text-sm mt-2">
+                    {bankingInformation.map((customer, index) => (
+                      <li key={index} className="group flex items-center justify-between">
+                        <div className='flex'>
+                          <span className="text-muted-foreground">
+                            {customer.label}
+                          </span>
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            onClick={() => copyText(customer.value)}
+                            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100 ml-2"
+                          >
+                            <Copy className="h-3 w-3" />
+                            <span className="sr-only">Copy</span>
+                          </Button>
+                          {copiedText === customer.value && <FaCheck strokeWidth={1.5} className="ml-2 text-lg hover:text-primary" />}
+                        </div>
+                        <p>{customer.value}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </>) : (<>
+                  <fetcher.Form method='post'>
+                    <ul className="grid gap-3 text-sm mt-2">
+                      {bankingInformation.map((customer, index) => (
+                        <div className="grid gap-3 mx-3 mb-3">
+                          <div className="relative mt-3" key={index} >
+                            <Input
+                              defaultValue={customer.value}
+                              name={customer.name}
+                              type="text"
+                              className="w-full bg-background border-border "
+                            />
+                            <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{customer.label}</label>
+                          </div>
+                        </div>
+                      ))}
+                    </ul>
+                    <input type='hidden' name='financeId' defaultValue={finance.id} />
+                    <input type='hidden' name='userId' defaultValue={user.id} />
+                    <input type='hidden' name="clientId" defaultValue={finance.id} />
+                    <input type='hidden' name="clientfileId" defaultValue={data.clientfileId} />
+                    <div className='flex justify-center' >
+                      <ButtonLoading
+                        size="sm"
+                        value="updateClientInfoFinance"
+                        className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
+                        name="intent"
+                        type="submit"
+                        isSubmitting={isSubmitting}
+                        onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
+                        loadingText={`${data.firstName}'s customer file is updated...`}
+                      >
+                        Save
+                        <PaperPlaneIcon className="h-4 w-4 ml-2" />
+                      </ButtonLoading>
+                    </div>
+                  </fetcher.Form>
+                </>)}
+
               </TabsContent>
               <TabsContent value="Finance">
                 <MyIFrameComponent />
@@ -3665,108 +3694,14 @@ export function FinanceDialog({ data, user, deFees, products, emailTemplatesDrop
               <div>
                 <Badge className="h-8 gap-1">{finance.customerState}</Badge>
               </div>
-              <Dialog  >
-                <DialogTrigger asChild>
-                  <Button size="sm" variant="outline" className="h-8 gap-1 ml-auto">
-                    <CiEdit className="h-3.5 w-3.5" />
-                    <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
-                      Edit
-                    </span>
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="gap-0 p-0 outline-none border-border text-foreground   max-h-[750px] h-[750px]  overflow-y-auto">
-                  <Tabs defaultValue="Sales" className='m-3 p-3'>
-                    <TabsList >
-                      <TabsTrigger value="Sales">Bank Info</TabsTrigger>
-                      <TabsTrigger value="Finance">Finance App</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="Sales" className="  text-foreground rounded-lg">
-                      <fetcher.Form method='post'>
-                        <DialogHeader className="px-4 pb-4 pt-5">
-                          <DialogTitle>Edit Bank Info</DialogTitle>
-                          <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
-                        </DialogHeader>
-                        <ul className="grid gap-3 text-sm mt-2">
-
-                          {bankingInformation.map((customer, index) => (
-                            <div className="grid gap-3 mx-3 mb-3">
-                              <div className="relative mt-3" key={index} >
-                                <Input
-                                  defaultValue={customer.value}
-                                  name={customer.name}
-                                  type="text"
-                                  className="w-full bg-background border-border "
-                                />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{customer.label}</label>
-                              </div>
-                            </div>
-                          ))}
-                        </ul>
-
-                        <input type='hidden' name='financeId' defaultValue={finance.id} />
-                        <input type='hidden' name='userId' defaultValue={user.id} />
-
-                        <input type='hidden' name="clientId" defaultValue={finance.id} />
-                        <input type='hidden' name="clientfileId" defaultValue={data.clientfileId} />
-
-                        <div className='flex justify-center' >
-                          <ButtonLoading
-                            size="sm"
-                            value="updateClientInfoFinance"
-                            className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
-                            name="intent"
-                            type="submit"
-                            isSubmitting={isSubmitting}
-                            onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
-                            loadingText={`${data.firstName}'s customer file is updated...`}
-                          >
-                            Save
-                            <PaperPlaneIcon className="h-4 w-4 ml-2" />
-                          </ButtonLoading>
-                        </div>
-                      </fetcher.Form>
-                    </TabsContent>
-                    <TabsContent value="Finance">
-                      <fetcher.Form method='post'>
-                        <DialogHeader className="px-4 pb-4 pt-5">
-                          <DialogTitle>Finance App Info</DialogTitle>
-                          <hr className="my-3 text-muted-foreground w-[98%] mx-auto" />
-                        </DialogHeader>
-                        <ul className="grid gap-3 text-sm mt-2">
-                          {financeApp.map((customer, index) => (
-                            <div className="grid gap-3 mx-3 mb-3">
-                              <div className="relative mt-3" key={index} >
-                                <Input
-                                  defaultValue={customer.value}
-                                  name={customer.name}
-                                  type="text"
-                                  className="w-full bg-background border-border "
-                                />
-                                <label className=" text-sm absolute left-3 rounded-full -top-3 px-2 bg-background transition-all peer-placeholder-shown:top-2.5 peer-placeholder-shown:text-gray-400 peer-focus:-top-3 peer-focus:text-blue-500">{customer.label}</label>
-                              </div>
-                            </div>
-                          ))}
-                        </ul>
-                        <div className='flex justify-center' >
-                          <ButtonLoading
-                            size="sm"
-                            value="updateClientInfoFinance"
-                            className="w-auto cursor-pointer ml-auto mt-5 bg-primary"
-                            name="intent"
-                            type="submit"
-                            isSubmitting={isSubmitting}
-                            onClick={() => toast.success(`${finance.firstName}'s customer file is updated...`)}
-                            loadingText={`${data.firstName}'s customer file is updated...`}
-                          >
-                            Save
-                            <PaperPlaneIcon className="h-4 w-4 ml-2" />
-                          </ButtonLoading>
-                        </div>
-                      </fetcher.Form>
-                    </TabsContent>
-                  </Tabs>
-                </DialogContent>
-              </Dialog>
+              <Button size="sm" variant="outline" className="h-8 gap-1 ml-auto" onClick={() => {
+                setEditSecond(prev => !prev);
+              }}>
+                <CiEdit className="h-3.5 w-3.5" />
+                <span className="lg:sr-only xl:not-sr-only xl:whitespace-nowrap">
+                  Edit
+                </span>
+              </Button>
             </CardFooter>
           </Card>
         </Tabs>

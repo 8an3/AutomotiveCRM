@@ -433,27 +433,29 @@ export default function SettingsGenerral() {
 
                             let commissions = 0;
 
-                            if (checkboxState[index].perSale && checkboxState[index].percentage) {
+                            const currentCheckboxState = checkboxState[index] || {};
+
+                            if (currentCheckboxState.perSale && currentCheckboxState.percentage) {
                               commissions = (result.sales * commission.perSale) + (result.totalSales * commission.percentage);
-                            } else if (checkboxState[index].perSale) {
+                            } else if (currentCheckboxState.perSale) {
                               commissions = result.sales * commission.perSale;
-                            } else if (checkboxState[index].percentage) {
+                            } else if (currentCheckboxState.percentage) {
                               commissions = result.totalSales * commission.percentage;
                             }
 
                             const grandTotal = commissions + bonus;
+
                             return (
-                              <TableRow key={index} className="rounded-[6px] hover:bg-accent border-border"                          >
+                              <TableRow key={index} className="rounded-[6px] hover:bg-accent border-border">
                                 <TableCell className="tableCell w-auto min-w-[100px]">
                                   <p className='mx-auto text-center'>{result.userName}</p>
                                 </TableCell>
-                                <TableCell className="tableCell hidden sm:table-cell  w-auto min-w-[75px]">
+                                <TableCell className="tableCell hidden sm:table-cell w-auto min-w-[75px]">
                                   <p className='mx-auto text-center'>{result.sales}</p>
                                 </TableCell>
-                                <TableCell className="tableCell text-right  w-auto min-w-[200px]">
+                                <TableCell className="tableCell text-right w-auto min-w-[200px]">
                                   <p className='mx-auto text-center'>{result.totalSales}</p>
                                 </TableCell>
-
                                 <TableCell className="tableCell text-right w-auto min-w-[100px]">
                                   <p className='mx-auto text-center'>
                                     <Input
@@ -463,11 +465,10 @@ export default function SettingsGenerral() {
                                     />
                                   </p>
                                 </TableCell>
-
                                 <TableCell className="tableCell text-right w-auto min-w-[100px]">
                                   <Checkbox
                                     className='mx-auto'
-                                    checked={checkboxState[index].perSale}
+                                    checked={currentCheckboxState.perSale || false} // Default to false
                                     onCheckedChange={(checked) => {
                                       handleCheckboxChange(index, 'perSale');
                                     }}
@@ -476,7 +477,7 @@ export default function SettingsGenerral() {
                                 <TableCell className="tableCell text-right w-auto min-w-[100px]">
                                   <Checkbox
                                     className='mx-auto'
-                                    checked={checkboxState[index].percentage}
+                                    checked={currentCheckboxState.percentage || false} // Default to false
                                     onCheckedChange={(checked) => {
                                       handleCheckboxChange(index, 'percentage');
                                     }}
@@ -489,8 +490,9 @@ export default function SettingsGenerral() {
                                   <p className='mx-auto text-center'>{grandTotal.toFixed(2)}</p>
                                 </TableCell>
                               </TableRow>
-                            )
+                            );
                           })}
+
                       </TableBody>
                     </Table>
                   </CardContent>
@@ -561,24 +563,26 @@ export default function SettingsGenerral() {
 
                             let commissions = 0;
 
-                            if (checkboxState[index].perSale && checkboxState[index].percentage) {
+                            const currentCheckboxState = checkboxState[index] || {};
+
+                            if (currentCheckboxState.perSale && currentCheckboxState.percentage) {
                               commissions = (result.sales * commission.perSale) + (result.totalSales * commission.percentage);
-                            } else if (checkboxState[index].perSale) {
+                            } else if (currentCheckboxState.perSale) {
                               commissions = result.sales * commission.perSale;
-                            } else if (checkboxState[index].percentage) {
+                            } else if (currentCheckboxState.percentage) {
                               commissions = result.totalSales * commission.percentage;
                             }
 
                             const grandTotal = commissions + bonus;
                             return (
-                              <TableRow key={index} className="rounded-[6px] hover:bg-accent border-border"                          >
+                              <TableRow key={index} className="rounded-[6px] hover:bg-accent border-border">
                                 <TableCell className="tableCell w-auto min-w-[100px]">
                                   <p className='mx-auto text-center'>{result.userName}</p>
                                 </TableCell>
-                                <TableCell className="tableCell hidden sm:table-cell  w-auto min-w-[75px]">
+                                <TableCell className="tableCell hidden sm:table-cell w-auto min-w-[75px]">
                                   <p className='mx-auto text-center'>{result.sales}</p>
                                 </TableCell>
-                                <TableCell className="tableCell text-right  w-auto min-w-[200px]">
+                                <TableCell className="tableCell text-right w-auto min-w-[200px]">
                                   <p className='mx-auto text-center'>{result.totalSales}</p>
                                 </TableCell>
                                 <TableCell className="tableCell text-right w-auto min-w-[100px]">
@@ -593,7 +597,7 @@ export default function SettingsGenerral() {
                                 <TableCell className="tableCell text-center w-auto min-w-[100px]">
                                   <Checkbox
                                     className='mx-auto'
-                                    checked={checkboxState[index].perSale}
+                                    checked={currentCheckboxState.perSale || false} // Default to false
                                     onCheckedChange={(checked) => {
                                       handleCheckboxChange(index, 'perSale');
                                     }}
@@ -602,7 +606,7 @@ export default function SettingsGenerral() {
                                 <TableCell className="tableCell text-center w-auto min-w-[100px]">
                                   <Checkbox
                                     className='mx-auto'
-                                    checked={checkboxState[index].percentage}
+                                    checked={currentCheckboxState.percentage || false} // Default to false
                                     onCheckedChange={(checked) => {
                                       handleCheckboxChange(index, 'percentage');
                                     }}
@@ -615,8 +619,9 @@ export default function SettingsGenerral() {
                                   <p className='mx-auto text-center'>{grandTotal.toFixed(2)}</p>
                                 </TableCell>
                               </TableRow>
-                            )
+                            );
                           })}
+
                       </TableBody>
                     </Table>
                   </CardContent>

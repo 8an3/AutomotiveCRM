@@ -915,6 +915,29 @@ export async function SingleCustomerInbox(
     throw error;
   }
 }
+export async function SingleCustomerInboxSmallList(
+  authProvider: AuthCodeMSALBrowserAuthenticationProvider,
+  email: string
+) {
+  await ensureClient(authProvider);
+  try {
+    console.log('emails:', email)
+
+    const allMessages = await graphClient!
+      .api(`/me/messages`)
+      .search('"participants:skylerzanth@gmail.com"')
+      .expand("singleValueExtendedProperties")
+      .top(3)
+
+      .get();
+
+    console.log(allMessages, 'CreateNotifications')
+    return allMessages;
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    throw error;
+  }
+}
 export async function CreateNotifications(
   authProvider: AuthCodeMSALBrowserAuthenticationProvider,
 ) {

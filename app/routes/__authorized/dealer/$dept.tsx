@@ -256,31 +256,31 @@ export function SidebarNav({ className, items, ...props }: SidebarNavProps) {
             <nav className="grid gap-3  text-sm text-foreground">
               <NavLink to={`/dealer/${params.dept}/depts/sales`}   >
                 <Button variant='ghost' className={`flex items-center gap-2   md:text-base ml-[30px]
-              ${pathname === `/dealer/${params.dept}/users/dashboard` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  justify-start'}`}>
+              ${pathname === `/dealer/${params.dept}/depts/sales` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  justify-start'}`}>
                   Sales
                 </Button>
               </NavLink>
               <NavLink to={`/dealer/${params.dept}/depts/pac`}  >
                 <Button variant='ghost' className={`flex items-center gap-2   md:text-base ml-[30px]
-              ${pathname === `/dealer/${params.dept}/users/dashboard` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  justify-start'}`}>
+              ${pathname === `/dealer/${params.dept}/depts/pac` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  justify-start'}`}>
                   PAC
                 </Button>
               </NavLink>
               <NavLink to={`/dealer/${params.dept}/depts/service`}  >
                 <Button variant='ghost' className={`flex items-center gap-2   md:text-base ml-[30px]
-              ${pathname === `/dealer/${params.dept}/users/dashboard` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  justify-start'}`}>
+              ${pathname === `/dealer/${params.dept}/depts/service` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  justify-start'}`}>
                   Service
                 </Button>
               </NavLink>
               <NavLink to={`/dealer/${params.dept}/depts/admin`}  >
                 <Button variant='ghost' className={`flex items-center gap-2   md:text-base ml-[30px]
-              ${pathname === `/dealer/${params.dept}/users/dashboard` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%] justify-start '}`}>
+              ${pathname === `/dealer/${params.dept}/depts/admin` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%] justify-start '}`}>
                   Admin
                 </Button>
               </NavLink>
               <NavLink to={`/dealer/${params.dept}/depts/finance`}   >
                 <Button variant='ghost' className={`flex items-center gap-2   md:text-base ml-[30px]
-              ${pathname === `/dealer/${params.dept}/users/dashboard` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  justify-start'}`}>
+              ${pathname === `/dealer/${params.dept}/depts/finance` ? 'font-semibold text-primary hover:bg-muted/50 w-[90%] ' : 'hover:bg-muted/50 text-[#a1a1aa]  w-[90%]  justify-start'}`}>
                   Finance
                 </Button>
               </NavLink>

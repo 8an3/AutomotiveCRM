@@ -160,11 +160,11 @@ export default function EmailClient({
       console.log(currentHost, 'currentHost')
       if (iFrameRef.current) {
         if (currentHost === "localhost:3000") {
-          iFrameRef.current.src = "http://localhost:3000/dealer/features/email/composeClient";
+          iFrameRef.current.src = "http://localhost:3000/auth/composeClient";
         }
         if (currentHost === "dealersalesassistant.ca") {
           iFrameRef.current.src =
-            "https://www.dealersalesassistant.ca/dealer/features/email/composeClient";
+            "https://www.dealersalesassistant.ca/auth/composeClient";
         }
         window.addEventListener("message", handleHeightMessage);
 
@@ -204,6 +204,71 @@ export default function EmailClient({
       </>
     );
   };
+  const MyIFrameComponent2 = () => {
+    const [isLoading, setIsLoading] = useState(true);
+    useEffect(() => {
+      const handleHeightMessage = (event: MessageEvent) => {
+        if (
+          event.data &&
+          event.data.type === "iframeHeight" &&
+          event.data.height
+        ) {
+          setIsLoading(false);
+          if (iFrameRef.current) {
+            iFrameRef.current.style.height = `${event.data.height}px`;
+          }
+        }
+      };
+      const currentHost =
+        typeof window !== "undefined" ? window.location.host : null;
+      console.log(currentHost, 'currentHost')
+      if (iFrameRef.current) {
+        if (currentHost === "localhost:3000") {
+          iFrameRef.current.src = "http://localhost:3000/auth/displayEmailsShort";
+        }
+        if (currentHost === "dealersalesassistant.ca") {
+          iFrameRef.current.src =
+            "https://www.dealersalesassistant.ca/auth/displayEmailsShort";
+        }
+        window.addEventListener("message", handleHeightMessage);
+
+        const cust = {
+          email: data.email,
+          name: data.name,
+          financeId: data.financeId,
+        };
+        const sendData = { cust, user };
+
+        // Add load event listener to ensure iframe is loaded
+        const onLoad = () => {
+          iFrameRef.current.contentWindow.postMessage(sendData, '*');
+        };
+        iFrameRef.current.addEventListener('load', onLoad);
+
+        return () => {
+          window.removeEventListener("message", handleHeightMessage);
+          iFrameRef.current?.removeEventListener('load', onLoad);
+        };
+      }
+    }, []);
+
+    return (
+      <>
+        <div className="size-full ">
+          <iframe
+            ref={iFrameRef}
+            title="my-iframe"
+            width="100%"
+            className=" border-none"
+            style={{
+              minHeight: "250px"
+            }}
+          />
+        </div>
+      </>
+    );
+  };
+
 
   async function SubmitAi() {
     setAiMessages([...aiMessages, { author: 'user', content: userMessage }]);
@@ -259,7 +324,7 @@ export default function EmailClient({
     <>
       {data && (
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className='w-full max-w-[95%]  m-8  md:max-w-[75%] '>
+          <DialogContent className='w-full max-w-[95%]  m-8 h-auto max-h-[70%]  md:max-w-[75%] '>
             <Tabs defaultValue="account" className=" ">
               <TabsList className="">
                 <TabsTrigger value="account">Email</TabsTrigger>
@@ -273,69 +338,40 @@ export default function EmailClient({
                 </div>
               </TabsContent>
               <TabsContent value="password">
-                <Card className="overflow-hidden  text-foreground w-[600px] mx-auto" x-chunk="dashboard-05-chunk-4 "  >
-                  <CardHeader className="flex flex-row items-start bg-muted-background">
-                    <div className="grid gap-0.5">
-                      <CardTitle className="group flex items-center gap-2 text-lg">
-                        Customer Interactions
-                      </CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex-grow !grow overflow-y-auto overflow-x-clip p-6 text-sm bg-background">
-                    <div className="grid gap-3 max-h-[70vh] h-auto">
-                      <Card>
-                        <CardContent>{/**do a verical tabs with icons for email and sms only get the last 2 oe 3 messages  */}
-                          <Tabs defaultValue="account" className=" " orientation='vertical'>
-                            <TabsList className="">
-                              <TabsTrigger value="Email"><Mail /></TabsTrigger>
-                              <TabsTrigger value="text"><MessageSquare /></TabsTrigger>
-                            </TabsList>
-                            <TabsContent value="Email">
-                              <Accordion type="single" collapsible className="w-full">
-                                {emails && Array.isArray(emails) && emails.map((email: any, index: any) => (
-                                  <AccordionItem key={index} value={email.id}>
-                                    <AccordionTrigger>
-                                      {new Date(email.createdDateTime).toLocaleDateString("en-US", options2)}
-                                    </AccordionTrigger>
-                                    <AccordionContent>
-                                      <div className="flex-1 swhitespace-pre-wrap p-4 text-sm " dangerouslySetInnerHTML={{ __html: email.body.content }} />
-                                    </AccordionContent>
-                                  </AccordionItem>
-                                ))}
-                              </Accordion>
-                            </TabsContent>
-                            <TabsContent value="text">
-                            </TabsContent>
-                          </Tabs>
-                          <div className="space-y-4 mt-5">
-                            {conversationsList && conversationsList.length > 0 && conversationsList.map((message, index) => (
-                              <div
-                                key={index}
-                                className={cn(
-                                  "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
-                                  message.userEmail === user.email
-                                    ? "ml-auto bg-primary text-foreground"
-                                    : "bg-[#262626]"
-                                )}
-                              >
-                                <div className='grid grid-cols-1'>
-                                  {message.userEmail !== user.email && (
-                                    <p className='text-[#8c8c8c]'>
-                                      {message.userEmail}
-                                    </p>
-                                  )}
-                                  {message.body}
-                                </div>
-                              </div>
-                            ))}
+
+                <Tabs defaultValue="Email" className=" " orientation='vertical'>
+                  <TabsList className="">
+                    <TabsTrigger value="Email">Emails</TabsTrigger>
+                    <TabsTrigger value="text">Texts</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="Email">
+                    <MyIFrameComponent2 />
+                  </TabsContent>
+                  <TabsContent value="text">
+                    <div className="space-y-4 mt-5">
+                      {conversationsList && conversationsList.length > 0 && conversationsList.map((message, index) => (
+                        <div
+                          key={index}
+                          className={cn(
+                            "flex w-max max-w-[75%] flex-col gap-2 rounded-lg px-3 py-2 text-sm",
+                            message.userEmail === user.email
+                              ? "ml-auto bg-primary text-foreground"
+                              : "bg-[#262626]"
+                          )}
+                        >
+                          <div className='grid grid-cols-1'>
+                            {message.userEmail !== user.email && (
+                              <p className='text-[#8c8c8c]'>
+                                {message.userEmail}
+                              </p>
+                            )}
+                            {message.body}
                           </div>
-                        </CardContent>
-                      </Card>
+                        </div>
+                      ))}
                     </div>
-                  </CardContent>
-                  <CardFooter className="flex flex-row items-center border-t border-border bg-muted-background px-6 py-3">
-                  </CardFooter>
-                </Card>
+                  </TabsContent>
+                </Tabs>
               </TabsContent>
               <TabsContent value="notes" className="">
                 <div className='max-h-[900px] '>
